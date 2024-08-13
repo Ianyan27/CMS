@@ -33,13 +33,13 @@
                     <h3>Navigation</h3>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="#">Dashboard</a>
+                            <a class="nav-link text-white" href="/">Dashboard</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-white" href="#">Roles</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="#">Users</a>
+                            <a class="nav-link text-white" href="user_list_dashboard">Users</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-white" href="#">Contacts</a>
