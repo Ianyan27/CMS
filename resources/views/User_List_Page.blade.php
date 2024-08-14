@@ -20,10 +20,10 @@
                 <th class=" h5" scope="col">No #</th>
                 <th class=" h5" scope="col">Name <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
                 <th class=" h5" scope="col">Email <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
-                <th class=" h5" scope="col">Role <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
-                <th class=" h5" scope="col">Profile <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
-                <th class=" h5" scope="col">Assigned at <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
-                <th class=" h5" scope="col">Status <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
+                <th class=" h5" scope="col">Role <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"> </i></th>
+                <th class=" h5" scope="col">Profile </i></th>
+                <th class=" h5" scope="col">Assigned at </i></th>
+                <th class=" h5" scope="col">Status </i></th>
                 <th class=" h5" scope="col">Action</th>
             </tr>
         </thead>
