@@ -49,8 +49,8 @@
                 color: #000000;
             }
             .nav-item:hover{
-                color: #000000;
                 background-color: #2684A4;
+                color: #000000;
             }
             .delete-button{
                 background-color: #70183d;
@@ -58,7 +58,6 @@
             }
             .edit-button:hover{
                 background-color: #f2f2f2;
-                color: #000000;
             }
             .delete-button:hover{
                 color: #000000;
