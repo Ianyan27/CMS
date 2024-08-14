@@ -64,6 +64,9 @@
                 color: #000000;
                 background-color: #f2f2f2;
             }
+            .fa-circle-question{
+                font-size: 20px;
+            }
         </style>
     </head>
     <body>
