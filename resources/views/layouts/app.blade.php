@@ -42,7 +42,7 @@
                 border-color: #b35071;
             }
             .bg-dashboard{
-                background-color: #f2f2f2; 
+                background-color: #f2f2f2;
             }
             .edit-button{
                 background-color: #64c4b5;
@@ -91,7 +91,7 @@
                             <a class="nav-link font" href="#">Roles</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link font" href="user_list_dashboard">Users</a>
+                            <a class="nav-link font" href="/">Users</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link font" href="#">Contacts</a>
