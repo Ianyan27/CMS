@@ -9,9 +9,10 @@
                 <a href="#" class="btn edit-button color-white ml-2 mb-2">New Sales Agent</a>
             </div>
             <div class="search-box d-flex align-items-center mr-3 mb-2">
-                <input type="search" class="form-control mr-2" placeholder="Search..." id="">
-                <input type="button" class="btn btn-secondary bg-educ" value="Search">
-            </div>
+                <input type="search" class="form-control mr-1" placeholder="Search..." id="search-input" aria-label="Search">
+                <button class="btn btn-secondary bg-educ mx-1" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <i title="Enter the email you're looking for." class="fa-solid fa-circle-question font mx-2 text-center"></i>
+            </div>            
         </div>
         <table class="table table-striped table-hover mt-2">
             <thead class="font text-center">

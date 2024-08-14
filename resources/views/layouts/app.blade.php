@@ -48,9 +48,10 @@
                 background-color: #64c4b5;
                 color: #000000;
             }
-            .nav-item:hover{
+            .nav-link:hover{
                 background-color: #2684A4;
-                color: #000000;
+                color: #ffffff;
+                border-radius: 4px;
             }
             .delete-button{
                 background-color: #70183d;
@@ -62,6 +63,9 @@
             .delete-button:hover{
                 color: #000000;
                 background-color: #f2f2f2;
+            }
+            .fa-circle-question{
+                font-size: 20px;
             }
         </style>
     </head>
