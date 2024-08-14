@@ -6,10 +6,18 @@
         <title>@yield('title')</title>
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
         <style>
-            .bg-educ{
-                background-color: #91264c;
-                color: #fff;
+            *{
+                font-family:"sans-serif", Montserrat;
+            }
+            .color-font{
+                color:#91264c;
+            }
+            .bg-dashboard{
+                background-color: #f2f2f2; 
             }
         </style>
     </head>
@@ -29,33 +37,31 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3 bg-dark text-white vh-100 pt-4">
+                <div class="col-md-2 bg-dashboard my-3 h-auto pt-4 rounded-right">
                     <h3>Navigation</h3>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="/">Dashboard</a>
+                            <a class="nav-link font" href="/">Dashboard</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="#">Roles</a>
+                            <a class="nav-link font" href="#">Roles</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="user_list_dashboard">Users</a>
+                            <a class="nav-link font" href="user_list_dashboard">Users</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="#">Contacts</a>
+                            <a class="nav-link font" href="#">Contacts</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="#">Countries</a>
+                            <a class="nav-link font" href="#">Countries</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="#">Upload</a>
+                            <a class="nav-link font" href="#">Upload</a>
                         </li>
                     </ul>
                 </div>
                 <div class="col-md-9">
-                    <div class="content p-4">
-                        @yield('content')
-                    </div>
+                    @yield('content')
                 </div>
             </div>
         </div>
