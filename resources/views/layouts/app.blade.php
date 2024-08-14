@@ -67,6 +67,18 @@
             .fa-circle-question{
                 font-size: 20px;
             }
+            .fa-pen-to-square, .fa-trash{
+                font-size: 1.5rem;
+            }
+            .hover-action{
+                border: 1px solid #91264c;
+                color: #91264c;
+                font-style: center;
+            }
+            .hover-action:hover{
+                background-color: #91264c;
+                color: #f2f2f2;
+            }
         </style>
     </head>
     <body>
@@ -85,7 +97,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-2 bg-dashboard ml-4 my-3 h-auto pt-4 border-educ rounded">
+                <div class="col-md-2 ml-4 my-3 h-auto pt-4 border-educ rounded">
                     <ul class="nav flex-column">
                         <li class="nav-item">
                             <a class="nav-link font" href="/">Dashboard</a>
