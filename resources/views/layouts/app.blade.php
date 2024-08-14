@@ -49,20 +49,13 @@
                 color: #000000;
             }
             .nav-link:hover{
-                background-color: #2684A4;
-                color: #ffffff;
+                background-color: #91264c;
+                color: #f2f2f2;
                 border-radius: 4px;
             }
             .delete-button{
                 background-color: #70183d;
                 color: #f2f2f2;
-            }
-            .edit-button:hover{
-                background-color: #f2f2f2;
-            }
-            .delete-button:hover{
-                color: #000000;
-                background-color: #f2f2f2;
             }
             .fa-circle-question{
                 font-size: 20px;
@@ -124,43 +117,12 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-2 bg-dashboard ml-4 my-3 h-auto pt-4 border-educ rounded">
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link font" href="/">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link font" href="#">Roles</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link font" href="/">Users</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link font" href="/contactdetails">Contacts</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link font" href="#">Countries</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link font" href="#">Upload</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-md-9 table-container pt-4 ml-4 my-3 border-educ rounded">
-                @yield('content')
-            </div>
-        </div>
-    </div>
-
     <footer class="bg-light text-center py-3 mt-auto">
         © 2024 eduCLaaS Pte Ltd. All rights reserved.
     </footer>
-
     <script src="https://kit.fontawesome.com/4d2a01d4ef.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
-
 </html>
