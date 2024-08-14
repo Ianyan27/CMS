@@ -7,5 +7,5 @@ Route::get('/', function () {
 });
 
 Route::get('/user_list_dashboard', function(){
-    return view('User_Listing_Dashboard');
+    return view('User_List_Page');
 });

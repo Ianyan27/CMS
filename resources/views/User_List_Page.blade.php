@@ -5,8 +5,14 @@
 @section('content')
     <div class="table-container bg-dashboard pt-4 my-3 rounded">
         <div class="table-title d-flex justify-content-between align-items-center">
-            <h2 class="ml-3 mb-2">Users</h2>
-            <a href="#" class="btn btn-primary mr-3 mb-2">+</a>
+            <div class="d-flex align-items-center">
+                <h2 class="ml-3 mb-2">Users</h2>
+                <a href="#" class="btn btn-primary ml-2 mb-2">+</a>
+            </div>
+            <div class="search-box d-flex align-items-center mr-3 mb-2">
+                <input type="search" class="form-control mr-2" placeholder="Search..." id="">
+                <input type="button" class="btn btn-secondary" value="Search">
+            </div>
         </div>
         <table class="table table-hover">
             <thead class="font text-center">
@@ -31,8 +37,8 @@
                     <td><img src="{{url('/images/Screenshot 2024-05-15 085107.png')}}" alt="User Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
                     <td>2024-08-14</td>
                     <td>
-                        <a href="#" class="btn btn-sm btn-warning">Edit</a>
-                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                        <a href="#" class="btn btn-sm edit-button">Edit</a>
+                        <a href="#" class="btn btn-sm delete-button">Delete</a>
                     </td>
                 </tr>
                 <tr>
@@ -44,8 +50,8 @@
                     <td><img src="path_to_img" alt="User Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
                     <td>2024-08-14</td>
                     <td>
-                        <a href="#" class="btn btn-sm btn-warning">Edit</a>
-                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                        <a href="#" class="btn btn-sm edit-button">Edit</a>
+                        <a href="#" class="btn btn-sm delete-button">Delete</a>
                     </td>
                 </tr>
                 <tr>
@@ -57,8 +63,8 @@
                     <td><img src="path_to_img" alt="User Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
                     <td>2024-08-13</td>
                     <td>
-                        <a href="#" class="btn btn-sm btn-warning">Edit</a>
-                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                        <a href="#" class="btn btn-sm edit-button">Edit</a>
+                        <a href="#" class="btn btn-sm delete-button">Delete</a>
                     </td>
                 </tr>
                 <tr>
@@ -70,8 +76,8 @@
                     <td><img src="path_to_img" alt="User Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
                     <td>2024-08-13</td>
                     <td>
-                        <a href="#" class="btn btn-sm btn-warning">Edit</a>
-                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                        <a href="#" class="btn btn-sm edit-button">Edit</a>
+                        <a href="#" class="btn btn-sm delete-button">Delete</a>
                     </td>
                 </tr>
                 <tr>
@@ -83,8 +89,8 @@
                     <td><img src="path_to_img" alt="User Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
                     <td>2024-08-12</td>
                     <td>
-                        <a href="#" class="btn btn-sm btn-warning">Edit</a>
-                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                        <a href="#" class="btn btn-sm edit-button">Edit</a>
+                        <a href="#" class="btn btn-sm delete-button">Delete</a>
                     </td>
                 </tr>
                 <tr>
@@ -96,8 +102,8 @@
                     <td><img src="path_to_img" alt="User Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
                     <td>2024-08-12</td>
                     <td>
-                        <a href="#" class="btn btn-sm btn-warning">Edit</a>
-                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                        <a href="#" class="btn btn-sm edit-button">Edit</a>
+                        <a href="#" class="btn btn-sm delete-button">Delete</a>
                     </td>
                 </tr>
                 <tr>
@@ -109,8 +115,8 @@
                     <td><img src="path_to_img" alt="User Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
                     <td>2024-08-11</td>
                     <td>
-                        <a href="#" class="btn btn-sm btn-warning">Edit</a>
-                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                        <a href="#" class="btn btn-sm edit-button">Edit</a>
+                        <a href="#" class="btn btn-sm delete-button">Delete</a>
                     </td>
                 </tr>
                 <tr>
@@ -122,8 +128,8 @@
                     <td><img src="path_to_img" alt="User Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
                     <td>2024-08-11</td>
                     <td>
-                        <a href="#" class="btn btn-sm btn-warning">Edit</a>
-                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                        <a href="#" class="btn btn-sm edit-button">Edit</a>
+                        <a href="#" class="btn btn-sm delete-button">Delete</a>
                     </td>
                 </tr>
                 <tr>
@@ -135,8 +141,8 @@
                     <td><img src="path_to_img" alt="User Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
                     <td>2024-08-10</td>
                     <td>
-                        <a href="#" class="btn btn-sm btn-warning">Edit</a>
-                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                        <a href="#" class="btn btn-sm edit-button">Edit</a>
+                        <a href="#" class="btn btn-sm delete-button">Delete</a>
                     </td>
                 </tr>
                 <tr>
@@ -148,8 +154,8 @@
                     <td><img src="path_to_img" alt="User Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
                     <td>2024-08-10</td>
                     <td>
-                        <a href="#" class="btn btn-sm btn-warning">Edit</a>
-                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                        <a href="#" class="btn btn-sm edit-button">Edit</a>
+                        <a href="#" class="btn btn-sm delete-button">Delete</a>
                     </td>
                 </tr>
                 <tr>
@@ -161,8 +167,8 @@
                     <td><img src="path_to_img" alt="User Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
                     <td>2024-08-09</td>
                     <td>
-                        <a href="#" class="btn btn-sm btn-warning">Edit</a>
-                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                        <a href="#" class="btn btn-sm edit-button">Edit</a>
+                        <a href="#" class="btn btn-sm delete-button">Delete</a>
                     </td>
                 </tr>
             </tbody>        

@@ -13,11 +13,22 @@
             *{
                 font-family:"sans-serif", Montserrat;
             }
-            .color-font{
+            .font{
                 color:#91264c;
+            }
+            .table-border{
+                border-color: #b35071;
             }
             .bg-dashboard{
                 background-color: #f2f2f2; 
+            }
+            .edit-button{
+                background-color: #64c4b5;
+                color: #000000;
+            }
+            .delete-button{
+                background-color: #70183d;
+                color: #f2f2f2;
             }
         </style>
     </head>
