@@ -161,15 +161,20 @@
         </table>
         <footer aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
-              <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1">Previous</a>
-              </li>
-              <li class="page-item"><a class="page-link" href="#">1</a></li>
-              <li class="page-item"><a class="page-link" href="#">2</a></li>
-              <li class="page-item"><a class="page-link" href="#">3</a></li>
-              <li class="page-item">
-                <a class="page-link" href="#">Next</a>
-              </li>
+                <li class="page-item">
+                    <a class="page-link font" href="#">&#60;</a> <!-- &#60; is the HTML entity for '<' -->
+                </li>
+                <li class="page-item"><a class="page-link font" href="#">1</a></li>
+                <li class="page-item"><a class="page-link font" href="#">2</a></li>
+                <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
+                <li class="page-item"><a class="page-link font" href="#">9</a></li>
+                <li class="page-item"><a class="page-link font" href="#">10</a></li>
+                <li class="page-item">
+                    <a class="page-link font" href="#">&#62;</a> <!-- &#62; is the HTML entity for '>' -->
+                </li>
             </ul>
         </footer>
+        
 @endsection
