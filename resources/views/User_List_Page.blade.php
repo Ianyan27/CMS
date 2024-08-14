@@ -17,7 +17,7 @@
             <thead class="font text-center">
                 <tr>
                     <th scope="col"><input type="checkbox" name="" id=""></th>
-                    <th class=" h5" scope="col">No # <i class="fa-sharp fa-solid fa-folder-arrow-up"></i></th>
+                    <th class=" h5" scope="col">No #</th>
                     <th class=" h5" scope="col">Name <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
                     <th class=" h5" scope="col">Email <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
                     <th class=" h5" scope="col">Role <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
