@@ -6,10 +6,19 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
-Route::get('/', function(){
+/* ADMIN ROUTE */
+
+Route::get('/', function () {
     return view('User_List_Page');
 });
 
-Route::get('/contactdetails', function(){
+Route::get('/contactdetails', function () {
     return view('Contact_Details');
 });
+
+// Route::get('/dashboard', function () {
+//     return view('Dashboard');
+// });
+
+
+/*  */

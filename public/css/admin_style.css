@@ -2,6 +2,10 @@
     font-family: "sans-serif", Montserrat;
 }
 
+a:hover{
+    text-decoration: none;
+}
+
 table {
     border-collapse: collapse;
 }
