@@ -97,7 +97,7 @@
                             <a class="nav-link font" href="/">Users</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link font" href="#">Contacts</a>
+                            <a class="nav-link font" href="/contactdetails">Contacts</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link font" href="#">Countries</a>
