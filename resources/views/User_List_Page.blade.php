@@ -142,4 +142,35 @@
             </tr>
         </tbody>
     </table>
+    <footer aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <!-- Previous Page Link -->
+            <li class="page-item">
+                <a class="page-link" href="#">&#60;</a> <!-- &#60; is the HTML entity for '<' -->
+            </li>
+    
+            <!-- First Page Link -->
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+    
+            <!-- Second Page Link -->
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+    
+            <!-- Ellipsis -->
+            <li class="page-item disabled">
+                <span class="page-link">...</span>
+            </li>
+    
+            <!-- Ninth Page Link -->
+            <li class="page-item"><a class="page-link" href="#">9</a></li>
+    
+            <!-- Tenth Page Link -->
+            <li class="page-item"><a class="page-link" href="#">10</a></li>
+    
+            <!-- Next Page Link -->
+            <li class="page-item">
+                <a class="page-link" href="#">&#62;</a> <!-- &#62; is the HTML entity for '>' -->
+            </li>
+        </ul>
+    </footer>
+    
 @endsection
