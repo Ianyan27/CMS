@@ -13,6 +13,28 @@
             *{
                 font-family:"sans-serif", Montserrat;
             }
+            table{
+                border-collapse: collapse;
+            }
+            .fonts{
+                font-size: 16px;
+                font-weight: 550;
+            }
+            .color-white{
+                color:white;
+            }
+            .bg-row{
+                background-color: white;
+            }
+            .bg-edit{
+                background-color: #2684A4;
+            }
+            .bg-educ{
+                background-color:#91264c;
+            }
+            .border-educ{
+                border: 1px solid #91264c;
+            }
             .font{
                 color:#91264c;
             }
@@ -29,6 +51,14 @@
             .delete-button{
                 background-color: #70183d;
                 color: #f2f2f2;
+            }
+            .edit-button:hover{
+                background-color: #f2f2f2;
+                color: #000000;
+            }
+            .delete-button:hover{
+                color: #000000;
+                background-color: #f2f2f2;
             }
         </style>
     </head>
@@ -71,7 +101,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="col-md-9">
+                <div class="col-md-9 table-container pt-4 ml-4 my-3 border-educ rounded">
                     @yield('content')
                 </div>
             </div>
@@ -81,6 +111,7 @@
             © 2024 eduCLaaS Pte Ltd. All rights reserved.
         </footer>
 
+        <script src="https://kit.fontawesome.com/4d2a01d4ef.js" crossorigin="anonymous"></script>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
