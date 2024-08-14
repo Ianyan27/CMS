@@ -48,6 +48,10 @@
                 background-color: #64c4b5;
                 color: #000000;
             }
+            .nav-item:hover{
+                color: #000000;
+                background-color: #2684A4;
+            }
             .delete-button{
                 background-color: #70183d;
                 color: #f2f2f2;
@@ -73,13 +77,12 @@
                 <div class="col-md-6 d-flex justify-content-end align-items-center">
                     <div class="profile d-flex align-items-center">
                         <img src=" {{url('/images/Screenshot 2024-05-15 085107.png')}} " alt="Profile Picture" class="rounded-circle img-fluid" style="max-height: 40px; margin-right: 10px;">
-                        <div class="name">User Name</div>
+                        <div class="name">Gerome</div>
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-2 bg-dashboard my-3 h-auto pt-4 rounded-right">
-                    <h3>Navigation</h3>
+                <div class="col-md-2 bg-dashboard ml-4 my-3 h-auto pt-4 border-educ rounded">
                     <ul class="nav flex-column">
                         <li class="nav-item">
                             <a class="nav-link font" href="/">Dashboard</a>
