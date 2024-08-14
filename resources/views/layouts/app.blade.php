@@ -46,7 +46,7 @@
             }
             .edit-button{
                 background-color: #64c4b5;
-                color: #000000;
+                color: #1c1c1e;
             }
             .nav-link:hover{
                 background-color: #91264c;
@@ -71,6 +71,33 @@
             .hover-action:hover{
                 background-color: #91264c;
                 color: #f2f2f2;
+            }
+            .agent-meeting {
+            border: 1px solid #A47786;
+            color: #1c1c1e;
+            background-color: transparent;
+            }
+            .agent-active {
+                border: 1px solid #21468B;
+                color: #1c1c1e;
+                background-color: transparent;
+            }
+            .agent-offline {
+                border: 1px solid #D6E2f8;
+                color: #1c1c1e;
+                background-color: transparent;
+            }
+            .agent-meeting:hover {
+                background-color: #A47786;
+                color: #f2f2f2;
+            }
+            .agent-active:hover {
+                background-color: #21468B;
+                color: #f2f2f2;
+            }
+            .agent-offline:hover {
+                background-color: #D6E2f8;
+                color: #1c1c1e;
             }
         </style>
     </head>
@@ -103,6 +130,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link font" href="/contactdetails">Contacts</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link font" href="/salesagent">Sale Agent</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link font" href="#">Countries</a>
