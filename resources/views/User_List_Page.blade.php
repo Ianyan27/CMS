@@ -144,31 +144,18 @@
     </table>
     <footer aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
-            <!-- Previous Page Link -->
             <li class="page-item">
-                <a class="page-link" href="#">&#60;</a> <!-- &#60; is the HTML entity for '<' -->
+                <a class="page-link font" href="#">&#60;</a>
             </li>
-    
-            <!-- First Page Link -->
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-    
-            <!-- Second Page Link -->
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-    
-            <!-- Ellipsis -->
+            <li class="page-item"><a class="page-link font" href="#">1</a></li>
+            <li class="page-item"><a class="page-link font" href="#">2</a></li>
             <li class="page-item disabled">
-                <span class="page-link">...</span>
+                <span class="page-link font">...</span>
             </li>
-    
-            <!-- Ninth Page Link -->
-            <li class="page-item"><a class="page-link" href="#">9</a></li>
-    
-            <!-- Tenth Page Link -->
-            <li class="page-item"><a class="page-link" href="#">10</a></li>
-    
-            <!-- Next Page Link -->
+            <li class="page-item"><a class="page-link font" href="#">9</a></li>
+            <li class="page-item"><a class="page-link font" href="#">10</a></li>
             <li class="page-item">
-                <a class="page-link" href="#">&#62;</a> <!-- &#62; is the HTML entity for '>' -->
+                <a class="page-link font" href="#">&#62;</a>
             </li>
         </ul>
     </footer>
