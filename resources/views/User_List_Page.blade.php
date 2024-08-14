@@ -6,7 +6,7 @@
         <div class="table-title d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
                 <h2 class="ml-3 mb-2">User Listing Page</h2>
-                <a href="#" class="btn bg-edit color-white ml-2 mb-2">New Sales Agent</a>
+                <a href="#" class="btn edit-button color-white ml-2 mb-2">New Sales Agent</a>
             </div>
             <div class="search-box d-flex align-items-center mr-3 mb-2">
                 <input type="search" class="form-control mr-1" placeholder="Search..." id="search-input" aria-label="Search">
@@ -158,19 +158,19 @@
                         <a href="#" class="btn bg-educ"><i class="fa-solid fa-trash color-white"></i></a>
                     </td>
                 </tr>
-            </tbody>     
+                <tr>
+                    <td><input type="checkbox" name="" id=""></td>
+                    <td>11</td>
+                    <td>Daniel Lewis</td>
+                    <td>daniel.lewis@lithan.com</td>
+                    <td>Sales Agent</td>
+                    <td><img src="{{url('/images/Screenshot 2024-05-15 085107.png')}}" alt="Sales Agent Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
+                    <td>2024-08-09</td>
+                    <td>
+                        <a href="#" class="btn bg-edit"><i class="fa-solid fa-pen-to-square color-white"></i></a>
+                        <a href="#" class="btn bg-educ"><i class="fa-solid fa-trash color-white"></i></a>
+                    </td>
+                </tr>
+            </tbody>
         </table>
-        <footer aria-label="Page navigation example">
-            <ul class="pagination justify-content-center">
-              <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1">Previous</a>
-              </li>
-              <li class="page-item"><a class="page-link" href="#">1</a></li>
-              <li class="page-item"><a class="page-link" href="#">2</a></li>
-              <li class="page-item"><a class="page-link" href="#">3</a></li>
-              <li class="page-item">
-                <a class="page-link" href="#">Next</a>
-              </li>
-            </ul>
-        </footer>  
 @endsection
