@@ -5,13 +5,13 @@
 @section('content')
         <div class="table-title d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
-                <h2 class="ml-3 mb-2">User Listing Page</h2>
+                <h2 class="ml-3 mb-2 font"><strong>User Listing Page</strong></h2>
             </div>
             <div class="search-box d-flex align-items-center mr-3 mb-2">
                 <input type="search" class="form-control mr-1" placeholder="example@gmail.com" id="search-input" aria-label="Search">
                 <button class="btn btn-secondary bg-educ mx-1" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
                 <i title="Enter the email you're looking for." class="fa-solid fa-circle-question font mx-2 text-center"></i>
-            </div>            
+            </div>
         </div>
         <table class="table table-hover mt-2">
             <thead class="font text-center">
@@ -171,5 +171,5 @@
                 <a class="page-link" href="#">Next</a>
               </li>
             </ul>
-        </footer> 
+        </footer>
 @endsection
