@@ -150,6 +150,8 @@
             color: #1c1c1e;
         }
     </style>
+
+    <link rel="stylesheet" href="{{ URL::asset('css/admin_style.css') }}">
 </head>
 
 <body>
