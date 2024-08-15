@@ -19,6 +19,10 @@ Route::get('/contactdetails', function () {
     return view('Contact_Details');
 });
 
-Route::get('/salesagent', function(){
+Route::get('/salesagent', function () {
     return view('Sale_Agent_Page');
+});
+
+ROute::get("/dashboard", function () {
+    return view('Dashboard');
 });
