@@ -26,3 +26,7 @@ Route::get('/salesagent', function () {
 ROute::get("/dashboard", function () {
     return view('Dashboard');
 });
+
+Route::get('/import-copy-2nd', function(){
+    return view('2nd_Copy_Import_File');
+});

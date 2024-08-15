@@ -47,7 +47,7 @@
             border: 1px solid #91264c;
         }
 
-        .font {
+        .font-educ {
             color: #91264c;
         }
 
@@ -149,6 +149,45 @@
             background-color: white;
             color: #1c1c1e;
         }
+        .border-dashed{
+            border:1px dashed black;
+        }
+        .file-support{
+            font-size: 14px;
+        }
+        .file-info{
+            width: 100px;
+            text-align: center;
+        }
+        .bg-white{
+            background-color:white;
+        }
+        .border-educ{
+            border: 1px solid #91264c;
+        }
+        .button-educ{
+            background-color:#91264c;
+            color: white;
+        }
+        .button-educ:hover{
+            border:1px solid #91264c;
+            background-color: white;
+            color: #1c1c1e;
+        }
+        .drop-files{
+            font-size: 1.25rem;
+        }
+        .file-button i{
+            font-size: 1.5rem;
+        }
+        .file-button{
+            display: flex;
+            align-items: center;
+            justify-content: center; 
+        }
+        .border-educ-border{
+            border-bottom: 1px solid #91264c;
+        }
     </style>
 
     <link rel="stylesheet" href="{{ URL::asset('css/admin_style.css') }}">
@@ -191,12 +230,11 @@
                                 class="fa-solid fa-universal-access mr-3"></i>Sale Agent</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link color-white" href="#"><i
-                                class="fa-solid fa-file-import mr-3"></i>Upload Files</a>
+                        <a class="nav-link color-white" href="/import-copy-2nd"><i class="fa-solid fa-file-import mr-3"></i>Upload Files</a>
                     </li>
                 </ul>
             </div>
-            <div class="col table-container ml-2 my-3 py-3 border-educ rounded">
+            <div class="col table-container ml-2 mb-3 py-3 rounded">
                 @yield('content')
             </div>
         </div>
