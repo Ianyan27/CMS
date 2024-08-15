@@ -20,6 +20,9 @@
                 font-size: 16px;
                 font-weight: 550;
             }
+            .font-size{
+
+            }
             .color-white{
                 color:white;
             }
@@ -41,8 +44,10 @@
             .table-border{
                 border-color: #b35071;
             }
-            .bg-dashboard{
-                background-color: #f2f2f2;
+            .dashboard{
+                background-color: #91264c;
+                color: white;
+                font-size: 1.15rem;
             }
             .edit-button{
                 background-color: #64c4b5;
@@ -50,12 +55,12 @@
             }
             .nav-link:hover{
                 background-color: #91264c;
-                color: #f2f2f2;
+                color: white;
                 border-radius: 4px;
             }
             .delete-button{
                 background-color: #70183d;
-                color: #f2f2f2;
+                color: white;
             }
             .fa-circle-question{
                 font-size: 20px;
@@ -70,33 +75,47 @@
             }
             .hover-action:hover{
                 background-color: #91264c;
-                color: #f2f2f2;
+                color: white;
+            }
+            .agent-meeting, .agent-active, .agent-offline {
+                width: 125px;
+                display: inline-block;
+                text-align: center;
+            }
+            .active{
+                color: #75ce8a;
+            }
+            .offline{
+                color: #E2E2E2;
+            }
+            .meeting{
+                color: #91264c;
             }
             .agent-meeting {
-            border: 1px solid #A47786;
-            color: #1c1c1e;
-            background-color: transparent;
+                background-color: #A47786;
+                color: white;
             }
             .agent-active {
-                border: 1px solid #21468B;
+                background-color: #A0C8A9;
                 color: #1c1c1e;
-                background-color: transparent;
             }
             .agent-offline {
-                border: 1px solid #D6E2f8;
+                background-color: #E2E2E2;
                 color: #1c1c1e;
-                background-color: transparent;
             }
             .agent-meeting:hover {
-                background-color: #A47786;
-                color: #f2f2f2;
+                border: 1px solid #A47786;
+                background-color: white; 
+                color: #1c1c1e;
             }
             .agent-active:hover {
-                background-color: #21468B;
-                color: #f2f2f2;
+                border: 1px solid #A0C8A9;
+                background-color: white; 
+                color: #1c1c1e;
             }
             .agent-offline:hover {
-                background-color: #D6E2f8;
+                border: 1px solid #E2E2E2;
+                background-color: white;
                 color: #1c1c1e;
             }
         </style>
@@ -117,37 +136,33 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-2 ml-4 my-3 h-auto pt-4 border-educ rounded">
+                <div class="dashboard col-md-2 py-3 my-3 border-educ rounded-right  h-auto">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link font" href="/">Dashboard</a>
+                            <i cs="fa-solid fa-table-columns"></i>
+                            <a class="nav-link color-white" href="/dashboard"><i class="fa-solid fa-table-columns mr-3"></i>Dashboard</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link font" href="#">Roles</a>
+                            <a class="nav-link color-white " href="/"><i class="fa-regular fa-user mr-3"></i>Users</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link font" href="/">Users</a>
+                            <a class="nav-link color-white" href="/contactdetails"><i class="fa-solid fa-address-book mr-3"></i>Contact</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link font" href="/contactdetails">Contacts</a>
+                            <a class="nav-link color-white" href="/salesagent"><i class="fa-solid fa-universal-access mr-3"></i>Sale Agent</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link font" href="/salesagent">Sale Agent</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link font" href="#">Countries</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link font" href="#">Upload</a>
+                            <a class="nav-link color-white" href="#"><i class="fa-solid fa-file-import mr-3"></i>Upload Files</a>
                         </li>
                     </ul>
                 </div>
-                <div class="col-md-9 table-container pt-4 ml-4 my-3 border-educ rounded">
+                <div class="col table-container ml-2 my-3 py-3 border-educ rounded">
                     @yield('content')
                 </div>
             </div>
+            
         </div>
-    <footer class="bg-light text-center py-3 mt-auto">
+    <footer class="bg-educ color-white text-center py-3 mt-auto">
         © 2024 eduCLaaS Pte Ltd. All rights reserved.
     </footer>
     <script src="https://kit.fontawesome.com/4d2a01d4ef.js" crossorigin="anonymous"></script>
