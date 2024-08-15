@@ -28,5 +28,5 @@ ROute::get("/dashboard", function () {
 });
 
 Route::get('/import-copy-2nd', function(){
-    return view('2nd_Copy_Import_File');
+    return view('Import_File');
 });
