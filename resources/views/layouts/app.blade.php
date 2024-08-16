@@ -217,7 +217,7 @@
         .icon-container {
             position: absolute;
             left: 50%;
-            top: 5%;
+            top: 2%;
             transform: translate(-50%, -50%);
             width: 80px;
             height: 80px;
@@ -226,6 +226,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
         }
         .icon-container i {
             font-size: 3rem;
