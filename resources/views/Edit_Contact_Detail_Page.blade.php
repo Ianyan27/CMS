@@ -11,7 +11,7 @@
                     <i class="fa-solid fa-pen-to-square"></i>
                 </a>
             </div>
-            <div class="row row-margin-bottom row-border-bottom">
+            <div class="row row-margin-bottom row-border-bottom mx-1">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="name">Name</label>
@@ -33,7 +33,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row row-margin-bottom row-border-bottom">
+            <div class="row row-margin-bottom row-border-bottom mx-1">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="address">Address</label>
@@ -51,7 +51,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row mx-1">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="skills">Skills</label>
@@ -72,9 +72,7 @@
                         <input type="text" class="form-control" id="status" placeholder="New" readonly>
                     </div>
                 </div>
-            </div>
-            
-                
+            </div> 
         </div>
         <div class="col-md-7 pl-5">
             <div class="d-flex justify-content-between align-items-center my-3">
@@ -87,10 +85,11 @@
                 </div>
             </div>
             <div class="btn-group mb-3" role="group" aria-label="Activity Filter Buttons">
-                <button type="button" class="btn activity-button active-activity-button">Activities</button>
-                <button type="button" class="btn activity-button">Meetings</button>
-                <button type="button" class="btn activity-button">Emails</button>
-                <button type="button" class="btn activity-button">Calls</button>
+                <button type="button" class="btn activity-button mx-2 active-activity-button">Activities</button>
+                <button type="button" class="btn activity-button mx-2">Meetings</button>
+                <button type="button" class="btn activity-button mx-2">Emails</button>
+                <button type="button" class="btn activity-button mx-2">Calls</button>
+                <button type="button" class="btn activity-button mx-2">Whatsapp</button>
             </div>
             <div class="activity-list">
                 <div class="activity-date my-3 ml-2">
@@ -126,7 +125,7 @@
     </div>
     <div class="table-title d-flex justify-content-between align-items-center mt-5">
         <div class="d-flex align-items-center">
-            <h2 class="ml-3 mb-2 font"><strong>Activity Taken</strong></h2>
+            <h2 class="ml-3 mb-2 font">Activity Taken</h2>
         </div>
         <div class="d-flex align-items-center mr-3 mb-2">
             <button class="btn hover-action mx-1" type="submit"><i class="fa-solid fa-square-plus"></i></button>
@@ -151,8 +150,8 @@
                 <td>8/7/2024</td>
                 <td>Whatsapp</td>
                 <td>Sales Agent John Smith sent a message to the exsisting contact about the courses information</td>
-                <td>Screenshot.png</td>
-                <td><a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square"></i></a></td>
+                <td class="font">Screenshot.png</td>
+                <td><a href="#" class="btn hover-action" data-toggle="tooltip" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a></td>
             </tr>
             <tr>
                 <td><input type="checkbox" name="" id=""></td>
@@ -160,8 +159,8 @@
                 <td>10/7/2024</td>
                 <td>Phone</td>
                 <td>Sales Agent John Smith sent a message to the exsisting contact about the courses information</td>
-                <td>Screenshot.png</td>
-                <td><a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square"></i></a></td>
+                <td class="font">Screenshot.png</td>
+                <td><a href="#" class="btn hover-action" data-toggle="tooltip" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a></td>
             </tr>
             <tr>
                 <td><input type="checkbox" name="" id=""></td>
@@ -169,8 +168,8 @@
                 <td>12/7/2024</td>
                 <td>Email</td>
                 <td>Sales Agent John Smith sent a message to the exsisting contact about the courses information</td>
-                <td>Screenshot.png</td>
-                <td><a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square"></i></a></td>
+                <td class="font">Screenshot.png</td>
+                <td><a href="#" class="btn hover-action" data-toggle="tooltip" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a></td>
             </tr>
         </tbody>
     </table>
