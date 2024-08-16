@@ -21,9 +21,9 @@ Route::get('/dashboard', function () {
     return view('Dashboard');
 });
 
-Route::get('/contactdetails', function () {
-    return view('Contact_Details');
-});
+// Route::get('/contactdetails', function () {
+//     return view('Contact_Details');
+// });
 
 Route::get('/salesagent', function () {
     return view('Sale_Agent_Page');

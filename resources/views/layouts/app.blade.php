@@ -240,10 +240,10 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/"><i class="fa-regular fa-user mr-3"></i>Users</a>
                     </li>
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a class="nav-link" href="/contactdetails"><i
                                 class="fa-solid fa-address-book mr-3"></i>Contact</a>
-                    </li>
+                    </li> --}}
                     <li class="nav-item">
                         <a class="nav-link" href="/salesagent"><i
                                 class="fa-solid fa-universal-access mr-3"></i>Sale Agent</a>
@@ -254,6 +254,9 @@
                     {{-- <li class="nav-item">
                         <a class="nav-link" href="/editcontactdetail">Edit Contact Detail</a>
                     </li> --}}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact-listing"><i class="fa-solid fa-file-import mr-3"></i>Contact Listing</a>
+                    </li>
                 </ul>
             </div>
             <div class="col table-container ml-3 mb-3 py-3 rounded">

@@ -68,7 +68,7 @@
                         </span>
                     </td>
                     <td>
-                        <a href="#" class="btn hover-action"><i class="fa-solid fa-eye "
+                        <a href="/editcontactdetail" class="btn hover-action"><i class="fa-solid fa-eye "
                                 style="font-size: 1.5rem"></i></a>
                         <a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square"></i></a>
                     </td>
