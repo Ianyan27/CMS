@@ -27,6 +27,10 @@ ROute::get("/dashboard", function () {
     return view('Dashboard');
 });
 
-Route::get('/import-copy-2nd', function(){
+Route::get('/importcopy', function(){
     return view('Import_File');
+});
+
+Route::get('/editcontactdetail', function(){
+    return view('Edit_Contact_Detail_Page');
 });

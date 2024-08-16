@@ -16,14 +16,15 @@
         <thead class="font text-center">
             <tr>
                 <th scope="col"><input type="checkbox" name="" id=""></th>
-                <th class=" h5" scope="col">No #</th>
-                <th class=" h5" scope="col">Name <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
-                <th class=" h5" scope="col">Email <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
-                <th class=" h5" scope="col">Role <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
-                <th class=" h5" scope="col">Profile </i></th>
-                <th class=" h5" scope="col">Assigned at </i></th>
-                <th class=" h5" scope="col">Status </i></th>
-                <th class=" h5" scope="col">Actions</th>
+                <th class="h5" scope="col">No #</th>
+                <th class="h5" scope="col">Name <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
+                <th class="h5" scope="col">Email <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
+                <th class="h5" scope="col">Role <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
+                <th class="h5" scope="col">Profile </i></th>
+                <th class="h5" scope="col">BU</i></th>
+                <th class="h5" scope="col">Country</th>
+                <th class="h5" scope="col">Status </i></th>
+                <th class="h5" scope="col">Actions</th>
             </tr>
         </thead>
         <tbody class="text-center bg-row fonts">
@@ -32,9 +33,10 @@
                 <td>1</td>
                 <td>John Doe</td>
                 <td>john.doe@lithan.com</td>
-                <td>Super Admin</td>
+                <td>Admin</td>
                 <td><img src="{{url('/images/user-1.jpg')}}" alt="Sales Agent Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
-                <td>2024-08-14</td>
+                <td>Sales and Marketting</td>
+                <td>Philippines</td>
                 <td><span style="font-size: 1.5rem;" class="p-2 rounded"><i class="active fa-solid fa-circle-check"></i></span></td>
                 <td>
                     <a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square "></i></a>
@@ -48,7 +50,8 @@
                 <td>jane.smith@lithan.com</td>
                 <td>Sales Agent</td>
                 <td><img src="{{url('/images/user-2.jpg')}}" alt="Sales Agent Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
-                <td>2024-08-14</td>
+                <td>Sales and Marketing</td>
+                <td>Philippines</td>
                 <td><span style="font-size: 1.5rem;" class="p-2 rounded"><i class="active fa-solid fa-circle-check"></i></span></td>
                 <td>
                     <a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square"></i></a>
@@ -62,7 +65,8 @@
                 <td>michael.johnson@lithan.com</td>
                 <td>Admin</td>
                 <td><img src="{{url('/images/user-3.jpg')}}" alt="Sales Agent Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
-                <td>2024-08-13</td>
+                <td>Product Development</td>
+                <td>Philippines</td>
                 <td><span style="font-size: 1.5rem;color:rgba(70, 70, 70, 0.623);" class="p-2 rounded"><i class="fa-solid fa-circle-xmark"></i><span></td>
                 <td>
                     <a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square "></i></a>
@@ -76,7 +80,8 @@
                 <td>emily.davis@lithan.com</td>
                 <td>Sales Agent</td>
                 <td><img src="{{url('/images/user-4.jpg')}}" alt="Sales Agent Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
-                <td>2024-08-13</td>
+                <td>Finance and Accounting</td>
+                <td>Philippines</td>
                 <td><span style="font-size: 1.5rem;" class="p-2 rounded"><i class="active fa-solid fa-circle-check"></i></span></td>
                 <td>
                     <a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square "></i></a>
@@ -90,7 +95,8 @@
                 <td>chris.brown@lithan.com</td>
                 <td>BUH</td>
                 <td><img src="{{url('/images/user-5.jpg')}}" alt="Sales Agent Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
-                <td>2024-08-12</td>
+                <td>Human Resources</td>
+                <td>Philippines</td>
                 <td><span style="font-size: 1.5rem;color:rgba(70, 70, 70, 0.623);" class="p-2 rounded"><i class="fa-solid fa-circle-xmark"></i><span></td>
                 <td>
                     <a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square "></i></a>
@@ -104,7 +110,8 @@
                 <td>amy.wilson@lithan.com</td>
                 <td>Sales Agent</td>
                 <td><img src="{{url('/images/user-6.jpg')}}" alt="Sales Agent Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
-                <td>2024-08-12</td>
+                <td>It and Support</td>
+                <td>Philippines</td>
                 <td><span style="font-size: 1.5rem;" class="p-2 rounded"><i class="active fa-solid fa-circle-check"></i></span></td>
                 <td>
                     <a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square "></i></a>
@@ -118,7 +125,8 @@
                 <td>david.white@lithan.com</td>
                 <td>Sales Agent</td>
                 <td><img src="{{url('/images/user-7.jpg')}}" alt="Sales Agent Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
-                <td>2024-08-11</td>
+                <td>Customer Service</td>
+                <td>Philippines</td>
                 <td><span style="font-size: 1.5rem;color:rgba(70, 70, 70, 0.623);" class="p-2 rounded"><i class="fa-solid fa-circle-xmark"></i><span></td>
                 <td>
                     <a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square "></i></a>
@@ -132,7 +140,8 @@
                 <td>laura.martinez@lithan.com</td>
                 <td>BUH</td>
                 <td><img src="{{url('/images/user-8.jpg')}}" alt="Sales Agent Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
-                <td>2024-08-11</td>
+                <td>Legal and Compliance</td>
+                <td>Philippines</td>
                 <td><span style="font-size: 1.5rem;" class="p-2 rounded"><i class="active fa-solid fa-circle-check"></i></span></td>
                 <td>
                     <a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square "></i></a>

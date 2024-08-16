@@ -188,6 +188,24 @@
         .border-educ-border{
             border-bottom: 1px solid #91264c;
         }
+        .border-right{
+            border-right: 1px solid #1c1c1e;
+        }
+        .activity-button{
+            border-bottom: 1px solid gray;
+            font-weight: bold;
+        }
+        .active-activity-button{
+            border-bottom:3px solid #1c1c1e;
+        }
+        .custom-row {
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+        }
+        .custom-row:last-child {
+            border-bottom: none;
+        }
     </style>
 
     <link rel="stylesheet" href="{{ URL::asset('css/admin_style.css') }}">
@@ -230,7 +248,10 @@
                                 class="fa-solid fa-universal-access mr-3"></i>Sale Agent</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link color-white" href="/import-copy-2nd"><i class="fa-solid fa-file-import mr-3"></i>Upload Files</a>
+                        <a class="nav-link color-white" href="/importcopy"><i class="fa-solid fa-file-import mr-3"></i>Upload Files</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link color-white" href="/editcontactdetail">Edit Contact Detail</a>
                     </li>
                 </ul>
             </div>
