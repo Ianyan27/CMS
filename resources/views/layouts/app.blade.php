@@ -235,17 +235,11 @@
                 <ul class="nav flex-column">
                     {{-- <li class="nav-item">
                         <i cs="fa-solid fa-table-columns"></i>
-<<<<<<< HEAD
-                        <a class="nav-link color-white" href="/dashboard"><i
-                                class="fa-solid fa-table-columns mr-3"></i>Dashboard</a>
-                    </li> --}}
-=======
                         <a class="nav-link" href="/dashboard"><i class="fa-solid fa-table-columns mr-3"></i>Dashboard</a>
                     </li> --}}
                     <li class="nav-item">
                         <a class="nav-link" href="/"><i class="fa-regular fa-user mr-3"></i>Users</a>
                     </li>
->>>>>>> 2nd-branch
                     <li class="nav-item">
                         <a class="nav-link" href="/contactdetails"><i
                                 class="fa-solid fa-address-book mr-3"></i>Contact</a>
@@ -255,15 +249,7 @@
                                 class="fa-solid fa-universal-access mr-3"></i>Sale Agent</a>
                     </li>
                     <li class="nav-item">
-<<<<<<< HEAD
-                        <a class="nav-link color-white" href="/importcopy"><i
-                                class="fa-solid fa-file-import mr-3"></i>Upload Files</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link color-white" href="/editcontactdetail">Edit Contact Detail</a>
-=======
                         <a class="nav-link" href="/importcopy"><i class="fa-solid fa-file-import mr-3"></i>Upload Files</a>
->>>>>>> 2nd-branch
                     </li>
                     {{-- <li class="nav-item">
                         <a class="nav-link" href="/editcontactdetail">Edit Contact Detail</a>
