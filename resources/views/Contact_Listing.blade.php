@@ -5,7 +5,7 @@
 @section('content')
     <div class="table-title d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
-            <h2 class="ml-3 mb-2 font"><strong>Contact Listing Page</strong></h2>
+            <h2 class="ml-3 mb-2 font-educ"><strong>Contact Listing Page</strong></h2>
         </div>
         <div class="search-box d-flex align-items-center mr-3 mb-2">
             <input type="search" class="form-control mr-1" placeholder="Search..." id="search-input" aria-label="Search">
@@ -15,7 +15,7 @@
         </div>
     </div>
     <table class="table table-hover mt-2">
-        <thead class="font text-center">
+        <thead class="font-educ text-center">
             <tr>
                 <th scope="col"><input type="checkbox" name="" id=""></th>
                 <th class="h5" scope="col">No #</th>
@@ -70,7 +70,7 @@
                     </td>
                     <td>
                         <a href="/editcontactdetail" class="btn hover-action" data-toggle="tooltip" title="View">
-                            <i class="fa-solid fa-eye " style="font-size: 1.5rem"></i>
+                            <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
                         </a>
                         <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
                             <i class="fa-solid fa-pen-to-square"></i>
@@ -87,17 +87,17 @@
     <footer aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
             <li class="page-item">
-                <a class="page-link font" href="#">&#60;</a>
+                <a class="page-link font-educ-educ" href="#">&#60;</a>
             </li>
-            <li class="page-item"><a class="page-link font" href="#">1</a></li>
-            <li class="page-item"><a class="page-link font" href="#">2</a></li>
+            <li class="page-item"><a class="page-link font-educ" href="#">1</a></li>
+            <li class="page-item"><a class="page-link font-educ" href="#">2</a></li>
             <li class="page-item disabled">
-                <span class="page-link font">...</span>
+                <span class="page-link font-educ-educ">...</span>
             </li>
-            <li class="page-item"><a class="page-link font" href="#">9</a></li>
-            <li class="page-item"><a class="page-link font" href="#">10</a></li>
+            <li class="page-item"><a class="page-link font-educ" href="#">9</a></li>
+            <li class="page-item"><a class="page-link font-educ" href="#">10</a></li>
             <li class="page-item">
-                <a class="page-link font" href="#">&#62;</a>
+                <a class="page-link font-educ-educ" href="#">&#62;</a>
             </li>
         </ul>
     </footer>

@@ -7,7 +7,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="table-title d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="ml-3 mb-2 font">Contact Detail Page</h2>
+                    <h2 class="ml-3 mb-2 font-educ">Contact Detail Page</h2>
                     <a href="/editcontactdetail" class="btn hover-action mb-2" data-toggle="tooltip" title="Edit">
                         <i class="fa-solid fa-pen-to-square "></i>
                     </a>
@@ -17,7 +17,7 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="contact-detail-container mt-4 border-educ rounded p-3 bg-dashboard">
-                    <h4 class="font">Contact Information</h4>
+                    <h4 class="font-educ">Contact Information</h4>
                     <p><strong>John Doe</strong></p>
                     <p>john.doe@example.com</p>
                     <p>123-456-7890</p>
@@ -28,7 +28,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="contact-detail-container mt-4 border-educ rounded p-3 bg-dashboard">
-                            <h4 class="font">Email Activities</h4>
+                            <h4 class="font-educ">Email Activities</h4>
                             <ul class="list-unstyled fonts">
                                 <li>
                                     <p><strong>2023-02-20</strong></p>
@@ -46,7 +46,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="contact-detail-container mt-4 border-educ rounded p-3 bg-dashboard">
-                            <h4 class="font">Phone Activities</h4>
+                            <h4 class="font-educ">Phone Activities</h4>
                             <ul class="list-unstyled fonts">
                                 <li>
                                     <p><strong>2023-02-10</strong></p>
@@ -59,7 +59,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="contact-detail-container mt-4 border-educ rounded p-3 bg-dashboard">
-                            <h4 class="font">Meeting Activities</h4>
+                            <h4 class="font-educ">Meeting Activities</h4>
                             <ul class="list-unstyled fonts">
                                 <li>
                                     <p><strong>2023-02-18</strong></p>
@@ -72,7 +72,7 @@
                 {{-- <div class="row">
                     <div class="col-md-12">
                         <div class="contact-detail-container mt-4 border-educ rounded p-3 bg-dashboard">
-                            <h4 class="font">Promotions and Offers</h4>
+                            <h4 class="font-educ">Promotions and Offers</h4>
                             <ul class="list-unstyled fonts">
                                 <li>
                                     <p><strong>2023-02-22</strong></p>

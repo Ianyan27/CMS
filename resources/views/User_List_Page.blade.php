@@ -5,7 +5,7 @@
 @section('content')
     <div class="table-title d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
-            <h2 class="ml-3 mb-2 font"><strong>User Listing Page</strong></h2>
+            <h2 class="ml-3 mb-2 font-educ"><strong>User Listing Page</strong></h2>
         </div>
         <div class="search-box d-flex align-items-center mr-3 mb-2">
             <input type="search" class="form-control mr-1" placeholder="Search..." id="search-input" aria-label="Search">
@@ -15,7 +15,7 @@
         </div>
     </div>
     <table class="table table-hover mt-2">
-        <thead class="font text-center">
+        <thead class="font-educ text-center">
             <tr>
                 <th scope="col"><input type="checkbox" name="" id=""></th>
                 <th class="h5" scope="col">No #</th>

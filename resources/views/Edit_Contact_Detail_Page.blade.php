@@ -6,7 +6,7 @@
     <div class="row border-educ rounded h-auto">
         <div class="col-md-5 border-right">
             <div class="table-title d-flex justify-content-between align-items-center my-3">
-                <h2 class="mt-2 font"><strong>Contact Detail</strong></h2>
+                <h2 class="mt-2 font-educ"><strong>Contact Detail</strong></h2>
                 <button class="btn hover-action mx-1" data-toggle="modal" data-target="#editContactModal">
                     <i class="fa-solid fa-pen-to-square"></i>
                 </button>
@@ -81,7 +81,7 @@
         </div>
         <div class="col-md-7 pl-5">
             <div class="d-flex justify-content-between align-items-center my-3">
-                <h2 class="mt-2 font"><strong>Activities Notifications</strong></h2>
+                <h2 class="mt-2 font-educ"><strong>Activities Notifications</strong></h2>
                 <div class="d-flex align-items-center">
                     <input type="search" class="form-control mr-1" placeholder="Search..." id="search-input"
                         aria-label="Search">
@@ -102,7 +102,7 @@
                     <h5 class="text-muted">July 2024</h5>
                 </div>
                 <div class="activity-item mb-3 border-educ rounded p-3">
-                    <h5 class="font-educ">Email Activities</h5>
+                    <h5 class="font-educ-educ">Email Activities</h5>
                     <small>12-7-2024</small>
                     <p class="text-muted">Sales Agent John Smith sent a promotional email to John Doe about our new
                         product.</p>
@@ -113,7 +113,7 @@
                     <h5 class="text-muted">July 2024</h5>
                 </div>
                 <div class="activity-item mb-3 border-educ rounded p-3">
-                    <h5 class="font-educ">Phone Activities</h5>
+                    <h5 class="font-educ-educ">Phone Activities</h5>
                     <small>10-7-2024</small>
                     <p class="text-muted">Sales Agent John Smith sent a promotional email to John Doe about our new
                         product.</p>
@@ -124,7 +124,7 @@
                     <h5 class="text-muted">July 2024</h5>
                 </div>
                 <div class="activity-item mb-3 border-educ rounded p-3">
-                    <h5 class="font-educ">WhatsApp Activities</h5>
+                    <h5 class="font-educ-educ">WhatsApp Activities</h5>
                     <small>8-7-2024</small>
                     <p class="text-muted">Sales Agent John Smith sent a promotional email to John Doe about our new
                         product.</p>
@@ -136,7 +136,7 @@
     <!-- Activity Taken Section -->
     <div class="table-title d-flex justify-content-between align-items-center mt-5">
         <div class="d-flex align-items-center">
-            <h2 class="ml-3 mb-2 font">Activity Taken</h2>
+            <h2 class="ml-3 mb-2 font-educ">Activity Taken</h2>
         </div>
         <div class="d-flex align-items-center mr-3 mb-2">
             <!-- Button to trigger the modal -->
@@ -148,7 +148,7 @@
 
     <!-- Table -->
     <table class="table table-hover mt-2">
-        <thead class="font text-center">
+        <thead class="font-educ text-center">
             <tr>
                 <th scope="col"><input type="checkbox" name="" id=""></th>
                 <th class="h5" scope="col">No</th>
