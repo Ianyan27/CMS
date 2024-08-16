@@ -116,3 +116,17 @@ table {
     background-color: #D6E2f8;
     color: #1c1c1e;
 }
+
+
+.status-indicator {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 15px;
+    font-size: .8rem;
+    /* color: rgb(17, 17, 17); */
+    color: white;;
+    text-align: center;
+    font-weight: bold;
+    width: 106px;
+    height: 36px;
+}

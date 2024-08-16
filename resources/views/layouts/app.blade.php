@@ -149,68 +149,86 @@
             background-color: white;
             color: #1c1c1e;
         }
-        .border-dashed{
-            border:1px dashed black;
+
+        .border-dashed {
+            border: 1px dashed black;
         }
-        .file-support{
+
+        .file-support {
             font-size: 14px;
         }
-        .file-info{
+
+        .file-info {
             width: 100px;
             text-align: center;
         }
-        .bg-white{
-            background-color:white;
+
+        .bg-white {
+            background-color: white;
         }
-        .border-educ{
+
+        .border-educ {
             border: 1px solid #91264c;
         }
-        .button-educ{
-            background-color:#91264c;
+
+        .button-educ {
+            background-color: #91264c;
             color: white;
         }
-        .button-educ:hover{
-            border:1px solid #91264c;
+
+        .button-educ:hover {
+            border: 1px solid #91264c;
             background-color: white;
             color: #1c1c1e;
         }
-        .drop-files{
+
+        .drop-files {
             font-size: 1.25rem;
         }
-        .file-button i{
+
+        .file-button i {
             font-size: 1.5rem;
         }
-        .file-button{
+
+        .file-button {
             display: flex;
             align-items: center;
-            justify-content: center; 
+            justify-content: center;
         }
-        .border-educ-border{
+
+        .border-educ-border {
             border-bottom: 1px solid #91264c;
         }
-        .border-right{
+
+        .border-right {
             border-right: 1px solid #1c1c1e;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
         }
-        .activity-button{
+
+        .activity-button {
             border-bottom: 1px solid gray;
             font-weight: bold;
         }
-        .active-activity-button{
-            border-bottom:3px solid #1c1c1e;
+
+        .active-activity-button {
+            border-bottom: 3px solid #1c1c1e;
         }
+
         .custom-row {
             border-bottom: 1px solid #ddd;
             margin-bottom: 15px;
             padding-bottom: 15px;
         }
+
         .custom-row:last-child {
             border-bottom: none;
         }
-        .row-margin-bottom{
+
+        .row-margin-bottom {
             margin-bottom: 29px;
             padding-bottom: 25px;
         }
+
         .row-border-bottom {
             border-bottom: 1px solid #f2f2f2;
         }
@@ -239,10 +257,11 @@
         <div class="row">
             <div class="dashboard col-md-2 py-3 my-3 border-educ rounded-right  h-auto">
                 <ul class="nav flex-column">
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <i cs="fa-solid fa-table-columns"></i>
-                        <a class="nav-link color-white" href="/dashboard"><i class="fa-solid fa-table-columns mr-3"></i>Dashboard</a>
-                    </li>
+                        <a class="nav-link color-white" href="/dashboard"><i
+                                class="fa-solid fa-table-columns mr-3"></i>Dashboard</a>
+                    </li> --}}
                     <li class="nav-item">
                         <a class="nav-link color-white " href="/"><i class="fa-regular fa-user mr-3"></i>Users</a>
                     </li>
@@ -255,7 +274,8 @@
                                 class="fa-solid fa-universal-access mr-3"></i>Sale Agent</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link color-white" href="/importcopy"><i class="fa-solid fa-file-import mr-3"></i>Upload Files</a>
+                        <a class="nav-link color-white" href="/importcopy"><i
+                                class="fa-solid fa-file-import mr-3"></i>Upload Files</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link color-white" href="/editcontactdetail">Edit Contact Detail</a>
@@ -268,6 +288,7 @@
         </div>
 
     </div>
+
     <footer class="bg-educ color-white text-center py-3 mt-auto">
         © 2024 eduCLaaS Pte Ltd. All rights reserved.
     </footer>
