@@ -9,7 +9,9 @@
     </div>
     <div class="search-box d-flex align-items-center mr-3 mb-2">
         <input type="search" class="form-control mr-1" placeholder="Search" id="search-input" aria-label="Search">
-        <button class="btn btn-secondary bg-educ mx-1" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+        <button class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
     </div>
 </div>
 <table class="table mt-2">
@@ -33,7 +35,7 @@
             <td>John Doe</td>
             <td>25</td>
             <td>20</td>
-            <td><span style="font-size: 1.5rem;" class="p-2 rounded"><i class="meeting fa-solid fa-circle"></i></span></td>
+            <td><span style="font-size: 1.5rem;" data-toggle="tooltip" title="In a Meeting" class="p-2 rounded"><i class="meeting fa-solid fa-circle"></i></span></td>
             <td>08/13/2024, 2:30 PM</td>
             <td>00:30:12</td>
             <td>3</td>
@@ -44,7 +46,7 @@
             <td>Jane Smith</td>
             <td>18</td>
             <td>15</td>
-            <td><span style="font-size: 1.5rem;" class="p-2 rounded"><i class="active fa-solid fa-circle-check"></i></span></td>
+            <td><span style="font-size: 1.5rem;" class="p-2 rounded" data-toggle="tooltip" title="Active"><i class="active fa-solid fa-circle-check"></i></span></td>
             <td>08/13/2024, 4:00 PM</td>
             <td>00:20:11</td>
             <td>2</td>
@@ -55,7 +57,7 @@
             <td>Robert Brown</td>
             <td>22</td>
             <td>19</td>
-            <td><span style="font-size: 1.5rem;color:rgba(70, 70, 70, 0.623);" class="p-2 rounded"><i class="fa-solid fa-circle-xmark"></i><span></td>
+            <td><span style="font-size: 1.5rem;color:rgba(70, 70, 70, 0.623);" class="p-2 rounded" data-toggle="tooltip" title="Offline"><i class="fa-solid fa-circle-xmark"></i><span></td>
             <td>08/13/2024, 1:00 PM</td>
             <td>01:20:11</td>
             <td>0</td>
@@ -66,7 +68,7 @@
             <td>Emily White</td>
             <td>28</td>
             <td>23</td>
-            <td><span style="font-size: 1.5rem;" class="p-2 rounded"><i class="meeting fa-solid fa-circle"></i></span></td>
+            <td><span style="font-size: 1.5rem;" data-toggle="tooltip" title="In a Meeting" class="p-2 rounded"><i class="meeting fa-solid fa-circle"></i></span></td>
             <td>08/13/2024, 3:45 PM</td>
             <td>00:45:30</td>
             <td>4</td>
@@ -77,7 +79,7 @@
             <td>Michael Green</td>
             <td>20</td>
             <td>18</td>
-            <td><span style="font-size: 1.5rem;" class="p-2 rounded"><i class="active fa-solid fa-circle-check"></i></span></td>
+            <td><span style="font-size: 1.5rem;" class="p-2 rounded" data-toggle="tooltip" title="Active"><i class="active fa-solid fa-circle-check"></i></span></td>
             <td>08/13/2024, 5:00 PM</td>
             <td>00:25:45</td>
             <td>5</td>
@@ -88,7 +90,7 @@
             <td>Linda Black</td>
             <td>24</td>
             <td>17</td>
-            <td><span style="font-size: 1.5rem;color:rgba(70, 70, 70, 0.623);" class="p-2 rounded"><i class="fa-solid fa-circle-xmark"></i><span></td>
+            <td><span style="font-size: 1.5rem;color:rgba(70, 70, 70, 0.623);" class="p-2 rounded" data-toggle="tooltip" title="Offline"><i class="fa-solid fa-circle-xmark"></i><span></td>
             <td>08/13/2024, 6:00 PM</td>
             <td>01:10:30</td>
             <td>1</td>
@@ -99,7 +101,7 @@
             <td>David Johnson</td>
             <td>27</td>
             <td>22</td>
-            <td><span style="font-size: 1.5rem;" class="p-2 rounded"><i class="meeting fa-solid fa-circle"></i></span></td>
+            <td><span style="font-size: 1.5rem;" data-toggle="tooltip" title="In a Meeting" class="p-2 rounded"><i class="meeting fa-solid fa-circle"></i></span></td>
             <td>08/13/2024, 7:15 PM</td>
             <td>00:50:22</td>
             <td>3</td>
@@ -110,7 +112,7 @@
             <td>Sarah Wilson</td>
             <td>21</td>
             <td>19</td>
-            <td><span style="font-size: 1.5rem;" class="p-2 rounded"><i class="active fa-solid fa-circle-check"></i></span></td>
+            <td><span style="font-size: 1.5rem;" class="p-2 rounded" data-toggle="tooltip" title="Active"><i class="active fa-solid fa-circle-check"></i></span></td>
             <td>08/13/2024, 8:00 PM</td>
             <td>00:35:20</td>
             <td>4</td>
@@ -121,7 +123,7 @@
             <td>Brian Lee</td>
             <td>26</td>
             <td>21</td>
-            <td><span style="font-size: 1.5rem;color:rgba(70, 70, 70, 0.623);" class="p-2 rounded"><i class="fa-solid fa-circle-xmark"></i><span></td>
+            <td><span style="font-size: 1.5rem;color:rgba(70, 70, 70, 0.623);" class="p-2 rounded" data-toggle="tooltip" title="Offline"><i class="fa-solid fa-circle-xmark"></i><span></td>
             <td>08/13/2024, 9:30 PM</td>
             <td>01:05:10</td>
             <td>2</td>
@@ -132,7 +134,7 @@
             <td>Lisa Adams</td>
             <td>23</td>
             <td>16</td>
-            <td><span style="font-size: 1.5rem;" class="p-2 rounded"><i class="meeting fa-solid fa-circle"></i></span></td>
+            <td><span style="font-size: 1.5rem;" data-toggle="tooltip" title="In a Meeting" class="p-2 rounded"><i class="meeting fa-solid fa-circle"></i></span></td>
             <td>08/13/2024, 10:45 PM</td>
             <td>00:55:40</td>
             <td>1</td>
