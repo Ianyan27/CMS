@@ -190,6 +190,7 @@
         }
         .border-right{
             border-right: 1px solid #1c1c1e;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
         }
         .activity-button{
             border-bottom: 1px solid gray;
@@ -205,6 +206,13 @@
         }
         .custom-row:last-child {
             border-bottom: none;
+        }
+        .row-margin-bottom{
+            margin-bottom: 29px;
+            padding-bottom: 25px;
+        }
+        .row-border-bottom {
+            border-bottom: 1px solid #f2f2f2;
         }
     </style>
 
@@ -233,8 +241,7 @@
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <i cs="fa-solid fa-table-columns"></i>
-                        <a class="nav-link color-white" href="/dashboard"><i
-                                class="fa-solid fa-table-columns mr-3"></i>Dashboard</a>
+                        <a class="nav-link color-white" href="/dashboard"><i class="fa-solid fa-table-columns mr-3"></i>Dashboard</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link color-white " href="/"><i class="fa-regular fa-user mr-3"></i>Users</a>
@@ -255,7 +262,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="col table-container ml-2 mb-3 py-3 rounded">
+            <div class="col table-container ml-3 mb-3 py-3 rounded">
                 @yield('content')
             </div>
         </div>

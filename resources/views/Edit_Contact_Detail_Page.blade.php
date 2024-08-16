@@ -3,19 +3,15 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="row border-educ rounded">
+    <div class="row border-educ rounded h-auto">
         <div class="col-md-5 border-right">
             <div class="table-title d-flex justify-content-between align-items-center my-3">
-                <div class="d-flex align-items-center">
-                    <h2 class="mt-2 font"><strong>Contact Detail</strong></h2>
-                </div>
-                <div class="d-flex align-items-center mr-3 mb-2">
-                    <a href="#" class="btn hover-action ml-3">
-                        <i class="fa-solid fa-pen-to-square"></i>
-                    </a>
-                </div>
+                <h2 class="mt-2 font"><strong>Contact Detail</strong></h2>
+                <a href="#" class="btn hover-action ml-3">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </a>
             </div>
-            <div class="row custom-row">
+            <div class="row row-margin-bottom row-border-bottom">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="name">Name</label>
@@ -37,11 +33,11 @@
                     </div>
                 </div>
             </div>
-            <div class="row custom-row">
+            <div class="row row-margin-bottom row-border-bottom">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="address">Address</label>
-                        <textarea type="text" class="form-control" id="address" rows="4" placeholder="123, Jalan Bunga Raya, Taman Melati, 53100 Kuala Lumpur, Malaysia"></textarea>
+                        <textarea style="height: 125px; resize:none;" class="form-control" id="address" placeholder="123, Jalan Bunga Raya, Taman Melati, 53100 Kuala Lumpur, Malaysia" readonly></textarea>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -55,7 +51,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row custom-row">
+            <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="skills">Skills</label>
@@ -76,14 +72,14 @@
                         <input type="text" class="form-control" id="status" placeholder="New" readonly>
                     </div>
                 </div>
-            </div>    
+            </div>
+            
+                
         </div>
-        <div class="col-md-7">
+        <div class="col-md-7 pl-5">
             <div class="d-flex justify-content-between align-items-center my-3">
+                <h2 class="mt-2 font"><strong>Activities Notifications</strong></h2>
                 <div class="d-flex align-items-center">
-                    <h2 class="mt-2 font"><strong>Activity Taken</strong></h2>
-                </div>
-                <div class="d-flex align-items-center mr-3 mb-2">
                     <input type="search" class="form-control mr-1" placeholder="Search..." id="search-input" aria-label="Search">
                     <button class="btn btn-secondary bg-educ mx-1" type="submit">
                         <i class="fa-solid fa-magnifying-glass"></i>
@@ -121,7 +117,7 @@
                     <h5 class="text-muted">July 2024</h5>
                 </div>
                 <div class="activity-item mb-3 border-educ rounded p-3">
-                    <h5 class="font-educ">Whatsapp Activities</h5>
+                    <h5 class="font-educ">WhatsApp Activities</h5>
                     <small>8-7-2024</small>
                     <p class="text-muted">Sales Agent John Smith sent a promotional email to John Doe about our new product.</p>
                 </div>
@@ -131,6 +127,9 @@
     <div class="table-title d-flex justify-content-between align-items-center mt-5">
         <div class="d-flex align-items-center">
             <h2 class="ml-3 mb-2 font"><strong>Activity Taken</strong></h2>
+        </div>
+        <div class="d-flex align-items-center mr-3 mb-2">
+            <button class="btn hover-action mx-1" type="submit"><i class="fa-solid fa-square-plus"></i></button>
         </div>
     </div>
     <table class="table table-hover mt-2">
@@ -142,6 +141,7 @@
                 <th class="h5" scope="col">Type</th>
                 <th class="h5" scope="col">Description</th>
                 <th class="h5" scope="col">Attachment</th>
+                <th class="h5" scope="col">Action</th>
             </tr>
         </thead>
         <tbody class="text-center bg-row fonts">
@@ -152,6 +152,7 @@
                 <td>Whatsapp</td>
                 <td>Sales Agent John Smith sent a message to the exsisting contact about the courses information</td>
                 <td>Screenshot.png</td>
+                <td><a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square"></i></a></td>
             </tr>
             <tr>
                 <td><input type="checkbox" name="" id=""></td>
@@ -160,6 +161,7 @@
                 <td>Phone</td>
                 <td>Sales Agent John Smith sent a message to the exsisting contact about the courses information</td>
                 <td>Screenshot.png</td>
+                <td><a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square"></i></a></td>
             </tr>
             <tr>
                 <td><input type="checkbox" name="" id=""></td>
@@ -168,6 +170,7 @@
                 <td>Email</td>
                 <td>Sales Agent John Smith sent a message to the exsisting contact about the courses information</td>
                 <td>Screenshot.png</td>
+                <td><a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square"></i></a></td>
             </tr>
         </tbody>
     </table>

@@ -60,8 +60,8 @@
             <p class="mb-0">Newly Added File</p>
         </div>
         <div class="d-flex align-items-center">
-            <div class="mr-3">8 MB</div>
-            <div class="mr-3">Jane Smith</div>
+            <div class="file-info mr-3">8 MB</div>
+            <div class="file-info mr-3">Jane Smith</div>
             <a href="#" class="btn hover-action"><i class="fa-solid fa-eye"></i></a>
         </div>
     </div>
@@ -108,8 +108,8 @@
             <p class="mb-0">Newly Added File</p>
         </div>
         <div class="d-flex align-items-center">
-            <div class="mr-3">10 MB</div>
-            <div class="mr-3">Linda Black</div>
+            <div class="file-info mr-3">10 MB</div>
+            <div class="file-info mr-3">Linda Black</div>
             <a href="#" class="btn hover-action"><i class="fa-solid fa-eye"></i></a>
         </div>
     </div>
@@ -120,8 +120,8 @@
             <p class="mb-0">Newly Added File</p>
         </div>
         <div class="d-flex align-items-center">
-            <div class="mr-3">6 MB</div>
-            <div class="mr-3">David Johnson</div>
+            <div class="file-info mr-3">6 MB</div>
+            <div class="file-info mr-3">David Johnson</div>
             <a href="#" class="btn hover-action"><i class="fa-solid fa-eye"></i></a>
         </div>
     </div>
@@ -132,8 +132,8 @@
             <p class="mb-0">Newly Added File</p>
         </div>
         <div class="d-flex align-items-center">
-            <div class="mr-3">4 MB</div>
-            <div class="mr-3">Sarah Wilson</div>
+            <div class="file-info mr-3">4 MB</div>
+            <div class="file-info mr-3">Sarah Wilson</div>
             <a href="#" class="btn hover-action"><i class="fa-solid fa-eye"></i></a>
         </div>
     </div>
@@ -144,8 +144,8 @@
             <p class="mb-0">Newly Added File</p>
         </div>
         <div class="d-flex align-items-center">
-            <div class="mr-3">9 MB</div>
-            <div class="mr-3">Brian Lee</div>
+            <div class="file-info mr-3">9 MB</div>
+            <div class="file-info mr-3">Brian Lee</div>
             <a href="#" class="btn hover-action"><i class="fa-solid fa-eye"></i></a>
         </div>
     </div>
@@ -156,8 +156,8 @@
             <p class="mb-0">Newly Added File</p>
         </div>
         <div class="d-flex align-items-center">
-            <div class="mr-3">11 MB</div>
-            <div class="mr-3">Lisa Adams</div>
+            <div class="file-info mr-3">11 MB</div>
+            <div class="file-info mr-3">Lisa Adams</div>
             <a href="#" class="btn hover-action"><i class="fa-solid fa-eye"></i></a>
         </div>
     </div>
