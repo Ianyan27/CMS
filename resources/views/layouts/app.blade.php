@@ -260,10 +260,10 @@
         <div class="row">
             <div class="dashboard col-md-2 py-3 my-3 border-educ rounded-right  h-auto">
                 <ul class="nav flex-column">
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <i cs="fa-solid fa-table-columns"></i>
-                        <a class="nav-link" href="/delete"><i class="fa-solid fa-table-columns mr-3"></i>Dashboard</a>
-                    </li>
+                        <a class="nav-link" href="/dashboard"><i class="fa-solid fa-table-columns mr-3"></i>Dashboard</a>
+                    </li> --}}
                     <li class="nav-item">
                         <a class="nav-link" href="/"><i class="fa-regular fa-user mr-3"></i>Users</a>
                     </li>

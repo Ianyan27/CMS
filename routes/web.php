@@ -44,7 +44,3 @@ Route::get('/importcopy', function () {
 Route::get('/editcontactdetail', function () {
     return view('Edit_Contact_Detail_Page');
 });
-
-Route::get('/delete', function () {
-    return view('DeletePrompt');
-});
