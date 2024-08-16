@@ -9,8 +9,9 @@
         </div>
         <div class="search-box d-flex align-items-center mr-3 mb-2">
             <input type="search" class="form-control mr-1" placeholder="Search..." id="search-input" aria-label="Search">
-            <button class="btn btn-secondary bg-educ mx-1" type="submit"><i
-                    class="fa-solid fa-magnifying-glass"></i></button>
+            <button class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
         </div>
     </div>
     <table class="table table-hover mt-2">
