@@ -208,8 +208,35 @@
             background-color: #f2f2f2;
             color: #1c1c1e;
         }
+        .modal-header {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .icon-container {
+            position: absolute;
+            left: 50%;
+            top: 5%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background-color: #f0eded;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .icon-container i {
+            font-size: 3rem;
+            color: #dc3545;
+        }
+        .modal-header .close {
+            position: absolute;
+            right: 0.9rem;
+            top: 0.9rem;
+        }
     </style>
-
     <link rel="stylesheet" href="{{ URL::asset('css/admin_style.css') }}">
 </head>
 
@@ -233,10 +260,10 @@
         <div class="row">
             <div class="dashboard col-md-2 py-3 my-3 border-educ rounded-right  h-auto">
                 <ul class="nav flex-column">
-                    {{-- <li class="nav-item">
+                    <li class="nav-item">
                         <i cs="fa-solid fa-table-columns"></i>
-                        <a class="nav-link" href="/dashboard"><i class="fa-solid fa-table-columns mr-3"></i>Dashboard</a>
-                    </li> --}}
+                        <a class="nav-link" href="/delete"><i class="fa-solid fa-table-columns mr-3"></i>Dashboard</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/"><i class="fa-regular fa-user mr-3"></i>Users</a>
                     </li>

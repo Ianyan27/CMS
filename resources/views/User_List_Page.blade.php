@@ -45,8 +45,9 @@
                 <td>
                     <a href="#" class="btn hover-action" data-toggle="tooltip" title="Edit"><i
                             class="fa-solid fa-pen-to-square"></i></a>
-                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="Delete"><i
-                            class="fa-solid fa-trash "></i></a>
+                    <button type="button" class="btn hover-action" data-toggle="modal" data-target="#exampleModal">
+                        <i class="fa-solid fa-trash "></i>
+                    </button>
                 </td>
             </tr>
             <tr>
@@ -63,7 +64,9 @@
                             class="active fa-solid fa-circle-check"></i></span></td>
                 <td>
                     <a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square"></i></a>
-                    <a href="#" class="btn hover-action"><i class="fa-solid fa-trash"></i></a>
+                    <button type="button" class="btn hover-action" data-toggle="modal" data-target="#exampleModal">
+                        <i class="fa-solid fa-trash "></i>
+                    </button>
                 </td>
             </tr>
             <tr>
@@ -81,8 +84,9 @@
                 <td>
                     <a href="#" class="btn hover-action" data-toggle="tooltip" title="Edit"><i
                             class="fa-solid fa-pen-to-square"></i></a>
-                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="Delete"><i
-                            class="fa-solid fa-trash "></i></a>
+                    <button type="button" class="btn hover-action" data-toggle="modal" data-target="#exampleModal">
+                        <i class="fa-solid fa-trash "></i>
+                    </button>
                 </td>
             </tr>
             <tr>
@@ -100,8 +104,9 @@
                 <td>
                     <a href="#" class="btn hover-action" data-toggle="tooltip" title="Edit"><i
                             class="fa-solid fa-pen-to-square"></i></a>
-                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="Delete"><i
-                            class="fa-solid fa-trash "></i></a>
+                    <button type="button" class="btn hover-action" data-toggle="modal" data-target="#exampleModal">
+                        <i class="fa-solid fa-trash "></i>
+                    </button>
                 </td>
             </tr>
             <tr>
@@ -119,8 +124,9 @@
                 <td>
                     <a href="#" class="btn hover-action" data-toggle="tooltip" title="Edit"><i
                             class="fa-solid fa-pen-to-square"></i></a>
-                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="Delete"><i
-                            class="fa-solid fa-trash "></i></a>
+                    <button type="button" class="btn hover-action" data-toggle="modal" data-target="#exampleModal">
+                        <i class="fa-solid fa-trash "></i>
+                    </button>
                 </td>
             </tr>
             <tr>
@@ -138,8 +144,9 @@
                 <td>
                     <a href="#" class="btn hover-action" data-toggle="tooltip" title="Edit"><i
                             class="fa-solid fa-pen-to-square"></i></a>
-                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="Delete"><i
-                            class="fa-solid fa-trash "></i></a>
+                    <button type="button" class="btn hover-action" data-toggle="modal" data-target="#exampleModal">
+                        <i class="fa-solid fa-trash "></i>
+                    </button>
                 </td>
             </tr>
             <tr>
@@ -157,8 +164,9 @@
                 <td>
                     <a href="#" class="btn hover-action" data-toggle="tooltip" title="Edit"><i
                             class="fa-solid fa-pen-to-square"></i></a>
-                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="Delete"><i
-                            class="fa-solid fa-trash "></i></a>
+                    <button type="button" class="btn hover-action" data-toggle="modal" data-target="#exampleModal">
+                        <i class="fa-solid fa-trash "></i>
+                    </button>
                 </td>
             </tr>
             <tr>
@@ -176,8 +184,9 @@
                 <td>
                     <a href="#" class="btn hover-action" data-toggle="tooltip" title="Edit"><i
                             class="fa-solid fa-pen-to-square"></i></a>
-                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="Delete"><i
-                            class="fa-solid fa-trash "></i></a>
+                    <button type="button" class="btn hover-action" data-toggle="modal" data-target="#exampleModal">
+                        <i class="fa-solid fa-trash "></i>
+                    </button>
                 </td>
             </tr>
         </tbody>
@@ -199,4 +208,26 @@
             </li>
         </ul>
     </footer>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center">
+                <div class="icon-container mx-auto">
+                    <i class="fa-solid fa-trash"></i>
+                </div>
+                <div class="modal-header border-0">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span style="font-size:2.5rem;" aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="">You are about to delete this User List</p>
+                    <p class="text-muted">This will delete your user from your list.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
