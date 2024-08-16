@@ -15,68 +15,36 @@
         * {
             font-family: "sans-serif", Montserrat;
         }
-
         table {
             border-collapse: collapse;
         }
-
         .fonts {
             font-size: 16px;
             font-weight: 550;
         }
-
-        .font-size {}
-
         .color-white {
             color: white;
         }
-
         .bg-row {
             background-color: white;
         }
-
-        .bg-edit {
-            background-color: #2684A4;
-        }
-
         .bg-educ {
             background-color: #91264c;
         }
-
         .border-educ {
             border: 1px solid #91264c;
         }
-
         .font-educ {
             color: #91264c;
         }
-
         .table-border {
             border-color: #b35071;
         }
-
         .dashboard {
             background-color: #91264c;
             color: white;
             font-size: 1.15rem;
         }
-
-        .edit-button {
-            background-color: #64c4b5;
-            color: #1c1c1e;
-        }
-
-        .nav-link:hover {
-            background-color: #91264c;
-            color: white;
-            border-radius: 4px;
-        }
-
-        .delete-button {
-            background-color: #70183d;
-            color: white;
-        }
-
         .fa-circle-question {
             font-size: 20px;
         }
@@ -85,18 +53,23 @@
         .fa-trash {
             font-size: 1.5rem;
         }
-
         .hover-action {
             border: 1px solid #91264c;
             color: #91264c;
             font-style: center;
         }
-
-        .hover-action:hover {
+        .nav-item .nav-link{
+            color: #f2f2f2;
+        }
+        .nav-item .nav-link:hover{
+            color: #91264c;
+            background-color: #f2f2f2;
+            border: 1px solid #91264c; 
+        }
+        .hover-action:hover{
             background-color: #91264c;
             color: white;
         }
-
         .agent-meeting,
         .agent-active,
         .agent-offline {
@@ -193,7 +166,6 @@
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
         }
         .activity-button{
-            border-bottom: 1px solid gray;
             font-weight: bold;
         }
         .active-activity-button{
@@ -212,7 +184,12 @@
             padding-bottom: 25px;
         }
         .row-border-bottom {
-            border-bottom: 1px solid #f2f2f2;
+            border-bottom: 1px solid #91264c;
+        }
+        .input-contact-details{
+            border: none;
+            background-color: #f2f2f2;
+            color: #1c1c1e;
         }
     </style>
 
@@ -239,27 +216,27 @@
         <div class="row">
             <div class="dashboard col-md-2 py-3 my-3 border-educ rounded-right  h-auto">
                 <ul class="nav flex-column">
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <i cs="fa-solid fa-table-columns"></i>
-                        <a class="nav-link color-white" href="/dashboard"><i class="fa-solid fa-table-columns mr-3"></i>Dashboard</a>
+                        <a class="nav-link" href="/dashboard"><i class="fa-solid fa-table-columns mr-3"></i>Dashboard</a>
+                    </li> --}}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="fa-regular fa-user mr-3"></i>Users</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link color-white " href="/"><i class="fa-regular fa-user mr-3"></i>Users</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link color-white" href="/contactdetails"><i
+                        <a class="nav-link" href="/contactdetails"><i
                                 class="fa-solid fa-address-book mr-3"></i>Contact</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link color-white" href="/salesagent"><i
+                        <a class="nav-link" href="/salesagent"><i
                                 class="fa-solid fa-universal-access mr-3"></i>Sale Agent</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link color-white" href="/importcopy"><i class="fa-solid fa-file-import mr-3"></i>Upload Files</a>
+                        <a class="nav-link" href="/importcopy"><i class="fa-solid fa-file-import mr-3"></i>Upload Files</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link color-white" href="/editcontactdetail">Edit Contact Detail</a>
-                    </li>
+                    {{-- <li class="nav-item">
+                        <a class="nav-link" href="/editcontactdetail">Edit Contact Detail</a>
+                    </li> --}}
                 </ul>
             </div>
             <div class="col table-container ml-3 mb-3 py-3 rounded">

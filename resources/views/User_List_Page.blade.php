@@ -37,10 +37,10 @@
                 <td><img src="{{url('/images/user-1.jpg')}}" alt="Sales Agent Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
                 <td>Sales and Marketting</td>
                 <td>Philippines</td>
-                <td><span style="font-size: 1.5rem;" class="p-2 rounded"><i class="active fa-solid fa-circle-check"></i></span></td>
+                <td><span style="font-size: 1.5rem;" class="p-2 rounded" data-toggle="tooltip" title="Active"><i class="active fa-solid fa-circle-check"></i></span></td>
                 <td>
-                    <a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square "></i></a>
-                    <a href="#" class="btn hover-action"><i class="fa-solid fa-trash "></i></a>
+                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="Delete"><i class="fa-solid fa-trash "></i></a>
                 </td>
             </tr>
             <tr>
@@ -52,7 +52,7 @@
                 <td><img src="{{url('/images/user-2.jpg')}}" alt="Sales Agent Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
                 <td>Sales and Marketing</td>
                 <td>Philippines</td>
-                <td><span style="font-size: 1.5rem;" class="p-2 rounded"><i class="active fa-solid fa-circle-check"></i></span></td>
+                <td><span style="font-size: 1.5rem;" class="p-2 rounded" data-toggle="tooltip" title="Active"><i class="active fa-solid fa-circle-check"></i></span></td>
                 <td>
                     <a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square"></i></a>
                     <a href="#" class="btn hover-action"><i class="fa-solid fa-trash"></i></a>
@@ -67,10 +67,10 @@
                 <td><img src="{{url('/images/user-3.jpg')}}" alt="Sales Agent Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
                 <td>Product Development</td>
                 <td>Philippines</td>
-                <td><span style="font-size: 1.5rem;color:rgba(70, 70, 70, 0.623);" class="p-2 rounded"><i class="fa-solid fa-circle-xmark"></i><span></td>
+                <td><span style="font-size: 1.5rem;color:rgba(70, 70, 70, 0.623);" class="p-2 rounded" data-toogle="tooltip" title="Inactive"><i class="fa-solid fa-circle-xmark"></i><span></td>
                 <td>
-                    <a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square "></i></a>
-                    <a href="#" class="btn hover-action"><i class="fa-solid fa-trash "></i></a>
+                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="Delete"><i class="fa-solid fa-trash "></i></a>
                 </td>
             </tr>
             <tr>
@@ -82,10 +82,10 @@
                 <td><img src="{{url('/images/user-4.jpg')}}" alt="Sales Agent Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
                 <td>Finance and Accounting</td>
                 <td>Philippines</td>
-                <td><span style="font-size: 1.5rem;" class="p-2 rounded"><i class="active fa-solid fa-circle-check"></i></span></td>
+                <td><span style="font-size: 1.5rem;" class="p-2 rounded" data-toggle="tooltip" title="Active"><i class="active fa-solid fa-circle-check"></i></span></td>
                 <td>
-                    <a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square "></i></a>
-                    <a href="#" class="btn hover-action"><i class="fa-solid fa-trash "></i></a>
+                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="Delete"><i class="fa-solid fa-trash "></i></a>
                 </td>
             </tr>
             <tr>
@@ -97,10 +97,10 @@
                 <td><img src="{{url('/images/user-5.jpg')}}" alt="Sales Agent Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
                 <td>Human Resources</td>
                 <td>Philippines</td>
-                <td><span style="font-size: 1.5rem;color:rgba(70, 70, 70, 0.623);" class="p-2 rounded"><i class="fa-solid fa-circle-xmark"></i><span></td>
+                <td><span style="font-size: 1.5rem;color:rgba(70, 70, 70, 0.623);" class="p-2 rounded" data-toogle="tooltip" title="Inactive"><i class="fa-solid fa-circle-xmark"></i><span></td>
                 <td>
-                    <a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square "></i></a>
-                    <a href="#" class="btn hover-action"><i class="fa-solid fa-trash "></i></a>
+                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="Delete"><i class="fa-solid fa-trash "></i></a>
                 </td>
             </tr>
             <tr>
@@ -112,10 +112,10 @@
                 <td><img src="{{url('/images/user-6.jpg')}}" alt="Sales Agent Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
                 <td>It and Support</td>
                 <td>Philippines</td>
-                <td><span style="font-size: 1.5rem;" class="p-2 rounded"><i class="active fa-solid fa-circle-check"></i></span></td>
+                <td><span style="font-size: 1.5rem;" class="p-2 rounded" data-toggle="tooltip" title="Active"><i class="active fa-solid fa-circle-check"></i></span></td>
                 <td>
-                    <a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square "></i></a>
-                    <a href="#" class="btn hover-action"><i class="fa-solid fa-trash "></i></a>
+                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="Delete"><i class="fa-solid fa-trash "></i></a>
                 </td>
             </tr>
             <tr>
@@ -127,10 +127,10 @@
                 <td><img src="{{url('/images/user-7.jpg')}}" alt="Sales Agent Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
                 <td>Customer Service</td>
                 <td>Philippines</td>
-                <td><span style="font-size: 1.5rem;color:rgba(70, 70, 70, 0.623);" class="p-2 rounded"><i class="fa-solid fa-circle-xmark"></i><span></td>
+                <td><span style="font-size: 1.5rem;color:rgba(70, 70, 70, 0.623);" class="p-2 rounded" data-toogle="tooltip" title="Inactive"><i class="fa-solid fa-circle-xmark"></i><span></td>
                 <td>
-                    <a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square "></i></a>
-                    <a href="#" class="btn hover-action"><i class="fa-solid fa-trash "></i></a>
+                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="Delete"><i class="fa-solid fa-trash "></i></a>
                 </td>
             </tr>
             <tr>
@@ -142,10 +142,10 @@
                 <td><img src="{{url('/images/user-8.jpg')}}" alt="Sales Agent Image" class="img-fluid rounded-circle" style="max-width: 50px;"></td>
                 <td>Legal and Compliance</td>
                 <td>Philippines</td>
-                <td><span style="font-size: 1.5rem;" class="p-2 rounded"><i class="active fa-solid fa-circle-check"></i></span></td>
+                <td><span style="font-size: 1.5rem;" class="p-2 rounded" data-toggle="tooltip" title="Active"><i class="active fa-solid fa-circle-check"></i></span></td>
                 <td>
-                    <a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square "></i></a>
-                    <a href="#" class="btn hover-action"><i class="fa-solid fa-trash "></i></a>
+                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="Delete"><i class="fa-solid fa-trash "></i></a>
                 </td>
             </tr>
         </tbody>
