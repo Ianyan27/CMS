@@ -246,8 +246,10 @@
     </footer>
     <script>
         $(document).ready(function() {
+            
             $('#archive-table').hide();
             $('#discard-table').hide();
+
             $('#show-contacts').click(function() {
                 $('#contacts-table').show();
                 $('#archive-table').hide();
