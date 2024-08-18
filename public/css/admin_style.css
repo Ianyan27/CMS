@@ -34,7 +34,7 @@ table {
 }
 
 .fa-pen-to-square,
-.fa-trash {
+.fa-trash, .fa-eye {
     font-size: 1.5rem;
 }
 .hover-action {

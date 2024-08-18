@@ -78,10 +78,12 @@
                         </span>
                     </td>
                     <td>
-                        <a href=" {{ route('contact#view', $contact->contact_pid) }} " class="btn hover-action" data-toggle="tooltip" title="View">
-                            <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
+                        <a href=" {{ route('contact#view', $contact->contact_pid) }} " 
+                            class="btn hover-action" data-toggle="tooltip" title="View">
+                            <i class="fa-solid fa-eye "></i>
                         </a>
-                        <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
+                        <a href="#" class="btn hover-action" data-toggle="tooltip" 
+                            title="Edit">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </a>
                     </td>
