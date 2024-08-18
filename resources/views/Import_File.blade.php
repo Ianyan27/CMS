@@ -23,7 +23,7 @@
 <div class="border mt-4 rounded p-3 bg-white">
     <div class="row mb-2 align-items-center">
         <div class="col">
-            <span class="font-weight-bold">Uploaded Files (10)</span>
+            <span class="font-weight-bold">Imported Files (10)</span>
         </div>
         <div class="col text-right">
             <label for="sortFiles" class="mr-2 mb-0">Sorted By:</label>

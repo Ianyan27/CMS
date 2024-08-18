@@ -37,31 +37,31 @@
             @forelse ($contacts as $contact)
                 <tr>
                     <td><input type="checkbox" name="" id=""></td>
-                    <td>{{ $contact['id'] }}</td>
+                    <td>{{ $contact['contact_pid'] }}</td>
                     <td>{{ $contact['name'] }}</td>
                     <td>{{ $contact['email'] }}</td>
-                    <td>{{ $contact['phone'] }}</td>
+                    <td>{{ $contact['contact_number'] }}</td>
                     <td>{{ $contact['country'] }}</td>
                     <td>
                         <span class="status-indicator"
                             style="background-color:
-                            @if ($contact['status'] === 'hubspot-contact') #FFE8E2;color:#FF5C35;
+                            @if ($contact['status'] === 'HubSpot Contact') #FFE8E2;color:#FF5C35;
                             @elseif ($contact['status'] === 'discard')
                                 #FF7F86; color: #BD000C;
-                            @elseif ($contact['status'] === 'in_progress')
+                            @elseif ($contact['status'] === 'InProgress')
                                 #FFF3CD; color: #FF8300;
-                            @elseif ($contact['status'] === 'new')
+                            @elseif ($contact['status'] === 'New')
                                 #CCE5FF ; color:  #318FFC;
                             @elseif ($contact['status'] === 'archived')
                             #E2E3E5; color: #303030; @endif
                         ">
-                            @if ($contact['status'] === 'hubspot-contact')
+                            @if ($contact['status'] === 'HubSpot Contact')
                                 HubSpot
                             @elseif ($contact['status'] === 'discard')
                                 Discard
-                            @elseif ($contact['status'] === 'in_progress')
+                            @elseif ($contact['status'] === 'InProgress')
                                 In Progress
-                            @elseif ($contact['status'] === 'new')
+                            @elseif ($contact['status'] === 'New')
                                 New
                             @elseif ($contact['status'] === 'archived')
                                 Archive
@@ -69,7 +69,7 @@
                         </span>
                     </td>
                     <td>
-                        <a href="/editcontactdetail" class="btn hover-action" data-toggle="tooltip" title="View">
+                        <a href=" {{ route('contact#view', $contact->contact_pid) }} " class="btn hover-action" data-toggle="tooltip" title="View">
                             <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
                         </a>
                         <a href="#" class="btn hover-action" data-toggle="tooltip" title="">

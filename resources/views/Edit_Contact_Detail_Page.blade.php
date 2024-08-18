@@ -7,29 +7,30 @@
         <div class="col-md-5 border-right">
             <div class="table-title d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 font-educ"><strong>Contact Detail</strong></h2>
-                <button class="btn hover-action mx-1" data-toggle="modal" data-target="#editContactModal">
+                <a href="{{ route('contact#edit', $editContact->contact_pid) }}" class="btn hover-action mx-1" data-toggle="modal" data-target="#editContactModal">
                     <i class="fa-solid fa-pen-to-square"></i>
-                </button>
+                </a>
+                
             </div>
             <div class="row row-margin-bottom row-border-bottom mx-1">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="name">Name</label>
-                        <input type="text" class="form-control" id="name" placeholder="John Doe" readonly>
+                        <input type="text" class="form-control" id="name" value=" {{$editContact->name}} " readonly>
                     </div>
                     <div class="form-group">
                         <label for="contact-number">Contact Number</label>
-                        <input type="text" class="form-control" id="contact-number" placeholder="+659300224" readonly>
+                        <input type="text" class="form-control" id="contact_number" value= " {{$editContact->contact_number}} " readonly>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email" placeholder="johndoe@gmail.com" readonly>
+                        <input type="email" class="form-control" id="email" value=" {{$editContact->email}} " readonly>
                     </div>
                     <div class="form-group">
                         <label for="country">Country</label>
-                        <input type="text" class="form-control" id="country" placeholder="Malaysia" readonly>
+                        <input type="text" class="form-control" id="country" value=" {{$editContact->country}} " readonly>
                     </div>
                 </div>
             </div>
@@ -37,19 +38,17 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="address">Address</label>
-                        <textarea style="height: 125px; resize:none;" class="form-control" id="address"
-                            placeholder="123, Jalan Bunga Raya, Taman Melati, 53100 Kuala Lumpur, Malaysia" readonly></textarea>
+                        <input style="height: 125px;" type="text" class="form-control" id="address" value=" {{$editContact->address}} " readonly>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="date-of-allocation">Date of Allocation</label>
-                        <input type="date" class="form-control" id="date-of-allocation" placeholder="13/2/2024" readonly>
+                        <input type="datetime" class="form-control" id="date-of-allocation" value="{{$editContact->date_of_allocation}}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="qualification">Qualification</label>
-                        <input type="text" class="form-control" id="qualification"
-                            placeholder="Bachelor of Software Engineer" readonly>
+                        <input type="text" class="form-control" id="qualification" value=" {{$editContact->qualification}} " readonly>
                     </div>
                 </div>
             </div>
@@ -57,11 +56,11 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="skills">Skills</label>
-                        <input type="text" class="form-control" id="skills" placeholder="Communication" readonly>
+                        <input type="text" class="form-control" id="skills" value="{{$editContact->skills}}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="source">Source</label>
-                        <input type="text" class="form-control" id="source" placeholder="Facebook" readonly>
+                        <input type="text" class="form-control" id="source" value="{{$editContact->source}}" readonly>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -263,39 +262,39 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="editContactForm">
+                    <form action=" {{ route('contact#save_edit', $editContact->contact_pid) }}" method="POST"  id="editContactForm">
+                        @csrf
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="contact-name">Name</label>
-                                    <input type="text" class="form-control" id="contact-name" value="John Doe"
+                                    <input type="text" class="form-control" id="name" name="name" value="{{$editContact->name}}"
                                         required>
                                 </div>
                                 <div class="form-group">
                                     <label for="contact-email">Email</label>
-                                    <input type="email" class="form-control" id="contact-email"
-                                        value="johndoe@gmail.com" required>
+                                    <input type="email" class="form-control" id="email" name="email"
+                                        value="{{$editContact->email}}" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="contact-country">Country</label>
-                                    <input type="text" class="form-control" id="contact-country" value="Malaysia"
-                                        required>
+                                    <input type="text" class="form-control" id="contact-country" name="country" 
+                                    value="{{$editContact->country}}" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="contact-address">Address</label>
-                                    <textarea class="form-control" id="contact-address" rows="3" required>123, Jalan Bunga Raya, Taman Melati, 53100 Kuala Lumpur, Malaysia.</textarea>
+                                    <input class="form-control" style="height: 125px;" type="text" name="address" id="address" value="{{$editContact->address}}">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <label for="contact-number">Contact Number</label>
-                                        <button class="btn btn-outline-secondary" type="button">Add</button>
+                                        {{-- <button class="btn btn-outline-secondary" type="button">Add</button> --}}
                                     </div>
                                     <div>
-                                        <input type="text" class="form-control mb-2" id="contact-number"
-                                            value="+659300224" required>
-                                        <input type="text" class="form-control mb-2" value="+60174074712" required>
+                                        <input type="text" class="form-control mb-2" id="contact-number" name="contact_number"
+                                            value="{{$editContact->contact_number}}" required>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -305,38 +304,39 @@
                                     </div>
                                     <div>
                                         <input type="text" class="form-control mb-2" id="contact-qualification"
-                                            value="Bachelor of Software Engineering" required>
-                                        <input type="text" class="form-control mb-2" value="Master of Cyber Security"
-                                            required>
+                                            value="{{$editContact->qualification}}" name="qualification" required>
+                                        {{-- <input type="text" class="form-control mb-2" value="Master of Cyber Security"
+                                            required> --}}
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="contact-role">Job Role</label>
-                                    <input type="text" class="form-control" id="contact-role"
-                                        value="johndoe@gmail.com" required>
+                                    <input type="text" class="form-control" name="job_role" id="contact-role"
+                                        value="{{$editContact->job_role}}" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="contact-skills">Skills</label>
-                                    <input type="text" class="form-control" id="contact-skills" value="Communication"
+                                    <input type="text" class="form-control" name="skills" id="contact-skills" value="{{$editContact->skills}}"
                                         required>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="contact-allocation">Date of Allocation</label>
-                                    <input type="date" class="form-control" id="contact-allocation"
-                                        value="2024-03-21" required>
+                                    <input type="datetime" class="form-control" id="contact-allocation"
+                                        value="{{$editContact->date_of_allocation}}" readonly>
                                 </div>
                                 <div class="form-group">
                                     <label for="contact-source">Source</label>
-                                    <input type="text" class="form-control" id="contact-source" value="Facebook"
-                                        required>
+                                    <input type="text" class="form-control" id="contact-source" value="{{$editContact->source}}"
+                                        readonly>
                                 </div>
                                 <div class="form-group">
                                     <label for="contact-status">Status</label>
                                     <select class="form-control" id="contact-status" required>
-                                        <option selected>In progress</option>
+                                        <option value="{{$editContact->status}}" selected> {{$editContact->status}} </option>
+                                        <option>In progress</option>
                                         <option>Completed</option>
                                         <option>Pending</option>
                                     </select>

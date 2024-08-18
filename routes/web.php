@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ContactController;
+use App\Models\Contact;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/', function () {
@@ -33,8 +34,10 @@ Route::get("/dashboard", function () {
     return view('Dashboard');
 });
 
-Route::get("/contact-listing", [ContactController::class, 'index']);
-// Route::get("/contact-listing", [ContactController::class, 'second_index']);
+Route::get("/contact-listing", [ContactController::class, 'contacts']);
+Route::get('/view_contact/{contact_pid}', [ContactController::class, 'view_contact'])->name('contact#view');
+Route::get('/edit_contact/{contact_pid}', [ContactController::class, 'edit_contact'])->name('contact#edit');
+Route::post('/save_contact/{contact_pid}', [ContactController::class, 'save_contact'])->name('contact#save_edit');
 
 
 Route::get('/importcopy', function () {
