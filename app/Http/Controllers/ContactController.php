@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contact;
+use App\Models\ContactArchive;
+use App\Models\ContactDiscard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,10 +13,11 @@ class ContactController extends Controller
 
     public function contacts(){
         // Get contacts from model
-        $contacts = Contact::paginate(10);
-
+        $contacts = Contact::paginate(5);
+        $contactArchive = ContactArchive::paginate(5);
+        $contactDiscard = ContactDiscard::paginate(5);
         // Pass data to view
-        return view('Contact_Listing', ['contacts' => $contacts]);
+        return view('Contact_Listing', ['contacts' => $contacts, 'contactArchive' => $contactArchive, 'contactDiscard' => $contactDiscard]);
     }
 
     public function viewContact($contact_pid){

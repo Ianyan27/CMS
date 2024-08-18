@@ -49,6 +49,7 @@ table {
     color: #91264c;
     background-color: #f2f2f2;
     border: 1px solid #91264c; 
+    border-radius: 14px;
 }
 .hover-action:hover{
     background-color: #91264c;

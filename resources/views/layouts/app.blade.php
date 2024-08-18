@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
         rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="{{ URL::asset('css/admin_style.css') }}">
 </head>
 <body>
@@ -55,7 +56,7 @@
                         <a class="nav-link" href="/editcontactdetail">Edit Contact Detail</a>
                     </li> --}}
                     <li class="nav-item">
-                        <a class="nav-link" href="/contact-listing"><i class="fa-solid fa-file-import mr-3"></i>Contact Listing</a>
+                        <a class="nav-link" href="/contact-listing"><i class="fa-solid fa-address-book mr-3"></i>Contact Listing</a>
                     </li>
                 </ul>
             </div>
