@@ -253,3 +253,27 @@ table {
     z-index: 10;
     width: 500px;
 }
+
+.archive-table{
+    background-color: #E2E3E5;
+    color: #303030;
+    border-radius: 15px;
+}
+
+.discard-table{
+    background-color: #FF7f86;
+    color: #BD000C;
+    border-radius: 15px;
+}
+
+.archive-table:hover{
+    background-color: #2C3E50  ;
+    color: #ffffff;
+    border: 1px solid #2C3E50  ;
+}
+
+.discard-table:hover{
+    background-color: #FF3A44;
+    color: #ffffff;
+    border: 1px solid #FF3A44;
+}

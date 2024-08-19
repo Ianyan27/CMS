@@ -6,18 +6,19 @@
     <div class="table-title d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
             <h2 class="mx-3 my-2 font-educ"><strong>Contact Listing</strong></h2>
-            <button class="btn hover-action mx-3" id="show-contacts">
-                Contacts
+            <button style="border-radius: 15px;" class="btn hover-action mx-3" id="show-contacts">
+                Interested Contacts
             </button>
-            <button class="btn hover-action mx-3" id="show-archive">
+            <button class="archive-table btn mx-3" id="show-archive">
                 Archive Contacts
             </button>
-            <button class="btn hover-action mx-3" id="show-discard">
+            <button class="discard-table btn mx-3" id="show-discard">
                 Discard Contacts
             </button>
         </div>
         <div class="search-box d-flex align-items-center mr-3 mb-2">
-            <input type="search" class="form-control mr-1" placeholder="Search..." id="search-input" aria-label="Search">
+            <input type="search" class="form-control mr-1" placeholder="Search..." 
+            id="search-input" aria-label="Search">
             <button class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </button>
@@ -28,13 +29,31 @@
             <tr>
                 <th scope="col"><input type="checkbox" name="" id=""></th>
                 <th class="h5" scope="col">No #</th>
-                <th class="h5" scope="col">Name <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
-                <th class="h5" scope="col">Email <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
-                <th class="h5" scope="col">Contact</th>
-                <th class="h5" scope="col">Country <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
+                <th class="h5" scope="col" id="name-header">Name
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" 
+                        onclick="sortTable('name', 'asc')"></i>
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" 
+                        onclick="sortTable('name', 'desc')"></i>
+                </th>
+                <th class="h5" scope="col" id="email-header">Email
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" 
+                        onclick="sortTable('email', 'asc')"></i>
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" 
+                        onclick="sortTable('email', 'desc')"></i>
+                </th>
+                <th class="h5" scope="col">Contact
+
+                </th>
+                <th class="h5" scope="col">Country 
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" 
+                        onclick="sortTable('email', 'asc')"></i>
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" 
+                        onclick="sortTable('email', 'desc')"></i>
+                </th>
                 <th class="h5 position-relative" scope="col">
                     Status
-                    <i style="cursor: pointer;" class="fa-solid fa-filter" id="filterIcon" onclick="toggleFilter()"></i>
+                    <i style="cursor: pointer;" class="fa-solid fa-filter" 
+                    id="filterIcon" onclick="toggleFilter()"></i>
     
                     <!-- Filter Container -->
                     <div id="filterContainer" class="filter-popup container" style="display: none;">

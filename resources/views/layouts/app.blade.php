@@ -145,7 +145,8 @@
         }
         function toggleFilter() {
             const filterContainer = document.getElementById('filterContainer');
-            filterContainer.style.display = (filterContainer.style.display === 'none' || filterContainer.style.display === '') ? 'block' : 'none';
+            filterContainer.style.display = (filterContainer.style.display === 'none' 
+            || filterContainer.style.display === '') ? 'block' : 'none';
         }
 
         // Apply the filter to the table
