@@ -25,7 +25,7 @@
         </div>
     </div>
     <table class="table table-hover mt-2" id="contacts-table">
-        <thead class="font-educ text-center">
+        <thead class="text-left font-educ">
             <tr>
                 <th class="h5" scope="col">No #</th>
                 <th class="h5" scope="col" id="name-header">Name
@@ -73,7 +73,7 @@
                 <th class="h5" scope="col">Actions</th>
             </tr>
         </thead>
-        <tbody class="text-center bg-row">
+        <tbody class="text-left bg-row">
             @forelse ($contacts as $contact)
             <tr data-status="{{ $contact['status'] }}">
                 <td>{{ $contact['contact_pid'] }}</td>
@@ -105,7 +105,7 @@
                 </td>
                 <td>
                     <a href=" {{ route('contact#view', $contact->contact_pid) }} " class="btn hover-action" data-toggle="tooltip" title="View">
-                        <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
+                        <i class="fa-solid fa-eye "></i>
                     </a>
                     <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
                         <i class="fa-solid fa-pen-to-square"></i>
@@ -120,9 +120,8 @@
         </tbody>
     </table>
     <table class="table table-hover mt-2" id="archive-table">
-        <thead class="font-educ text-center">
-            <tr class="font-educ text-center">
-                <th scope="col"><input type="checkbox" name="" id=""></th>
+        <thead class="text-left font-educ">
+            <tr class="text-left">
                 <th class="h5" scope="col">No #</th>
                 <th class="h5" scope="col">Name <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
                 <th class="h5" scope="col">Email <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
@@ -138,10 +137,9 @@
                 <th class="h5" scope="col">Actions</th>
             </tr>
         </thead>
-        <tbody class="text-center bg-row fonts">
+        <tbody class="text-left bg-row">
             @foreach ($contactArchive as $archive)
             <tr>
-                <td><input type="checkbox" name="" id=""></td>
                 <td> {{$archive['contact_archive_pid']}} </td>
                 <td> {{$archive['name']}} </td>
                 <td> {{$archive['email']}} </td>
@@ -161,7 +159,7 @@
                 </td>
                 <td>
                     <a href=" {{ route('contact#view', $contact->contact_pid) }} " class="btn hover-action" data-toggle="tooltip" title="View">
-                        <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
+                        <i class="fa-solid fa-eye "></i>
                     </a>
                     <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
                         <i class="fa-solid fa-pen-to-square"></i>
@@ -172,9 +170,8 @@
         </tbody>
     </table>
     <table class="table table-hover mt-2" id="discard-table">
-        <thead class="font-educ text-center">
-            <tr class="font-educ text-center">
-                <th scope="col"><input type="checkbox" name="" id=""></th>
+        <thead class="font-educ text-left">
+            <tr class="font-educ text-left">
                 <th class="h5" scope="col">No #</th>
                 <th class="h5" scope="col">Name <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
                 <th class="h5" scope="col">Email <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
@@ -190,10 +187,9 @@
                 <th class="h5" scope="col">Actions</th>
             </tr>
         </thead>
-        <tbody class="text-center bg-row fonts">
+        <tbody class="text-left bg-row">
             @foreach ($contactDiscard as $discard)
             <tr>
-                <td><input type="checkbox" name="" id=""></td>
                 <td> {{$discard['contact_discard_pid']}} </td>
                 <td> {{$discard['name']}} </td>
                 <td> {{$discard['email']}} </td>
@@ -213,7 +209,7 @@
                 </td>
                 <td>
                     <a href=" {{ route('contact#view', $contact->contact_pid) }} " class="btn hover-action" data-toggle="tooltip" title="View">
-                        <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
+                        <i class="fa-solid fa-eye "></i>
                     </a>
                     <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
                         <i class="fa-solid fa-pen-to-square"></i>

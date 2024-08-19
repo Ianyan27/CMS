@@ -68,7 +68,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="col table-container ml-3 mb-3 py-3 border">
+            <div class="col ml-3 mb-3 py-3">
                 @yield('content')
             </div>
         </div>
