@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -21,21 +20,20 @@ class ContactsImportController extends Controller
         // Read the CSV file into an array
         $csvData = Excel::toArray([], $file);
         $rows = $csvData[0]; // Get the rows of the CSV file
-        $header = array_shift($rows); // Remove and get the header row
+        $header = array_map('strtolower', array_shift($rows)); // Normalize header to lowercase
 
-        // Define the required columns (These are logical names, not necessarily in the CSV)
+        // Define the required logical columns
         $requiredColumns = ['name', 'email', 'contact_number'];
 
         // Map the CSV headers to logical columns using the ContactsImport class
         $columnMap = (new ContactsImport)->getColumnMap();
-
 
         // Find missing required columns by checking against the header map
         $missingColumns = [];
         foreach ($requiredColumns as $required) {
             $found = false;
             foreach ($columnMap[$required] ?? [] as $possibleColumn) {
-                if (in_array($possibleColumn, $header)) {
+                if (in_array(strtolower($possibleColumn), $header)) {
                     $found = true;
                     break;
                 }
@@ -61,25 +59,29 @@ class ContactsImportController extends Controller
             // Find the email field in the row using the mapped header
             $emailColumn = null;
             foreach ($columnMap['email'] as $possibleColumn) {
-                if (in_array($possibleColumn, $header)) {
+                if (in_array(strtolower($possibleColumn), $header)) {
                     $emailColumn = $possibleColumn;
                     break;
                 }
             }
 
-            $email = $row[array_search($emailColumn, $header)];
+            if ($emailColumn !== null) {
+                $email = $row[array_search(strtolower($emailColumn), $header)];
 
-            // Validate the email format
-            $validator = Validator::make(['email' => $email], [
-                'email' => 'required|email',
-            ]);
+                // Validate the email format
+                $validator = Validator::make(['email' => $email], [
+                    'email' => 'required|email',
+                ]);
 
-            if ($validator->fails()) {
-                // Store the invalid row for exporting later
-                $invalidRows[] = $row;
+                if ($validator->fails()) {
+                    // Store the invalid row for exporting later
+                    $invalidRows[] = $row;
+                } else {
+                    // Store the valid row for importing
+                    $validRows[] = $row;
+                }
             } else {
-                // Store the valid row for importing
-                $validRows[] = $row;
+                $invalidRows[] = $row; // Add to invalid rows if email column is missing
             }
         }
 
