@@ -114,7 +114,7 @@ class ContactsImportController extends Controller
             return response()->download(storage_path('app/' . $invalidCsvFileName))->deleteFileAfterSend(true);
         }
 
-        return redirect('/contacts')->with('success', 'CSV imported successfully!');
+        return redirect('/contact-listing')->with('success', 'CSV imported successfully!');
     }
 
     private function arrayToCsv(array $array)
