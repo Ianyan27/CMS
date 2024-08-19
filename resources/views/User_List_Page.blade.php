@@ -19,9 +19,24 @@
             <tr>
                 <th scope="col"><input type="checkbox" name="" id=""></th>
                 <th class="h5" scope="col">No #</th>
-                <th class="h5" scope="col">Name <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
-                <th class="h5" scope="col">Email <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
-                <th class="h5" scope="col">Role <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
+                <th class="h5" scope="col" id="name-header">Name
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" 
+                        onclick="sortTable('name', 'asc')"></i>
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" 
+                        onclick="sortTable('name', 'desc')"></i>
+                </th>
+                <th class="h5" scope="col" id="email-header">Email
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" 
+                        onclick="sortTable('email', 'asc')"></i>
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" 
+                        onclick="sortTable('email', 'desc')"></i>
+                </th>
+                <th class="h5" scope="col" id="role-header">Role 
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" 
+                    onclick="sortTable('role', 'asc')"></i>
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" 
+                    onclick="sortTable('role', 'desc')"></i>
+                </th>
                 <th class="h5" scope="col">Profile </i></th>
                 <th class="h5" scope="col">BU</i></th>
                 <th class="h5" scope="col">Country</th>

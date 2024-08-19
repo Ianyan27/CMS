@@ -35,9 +35,15 @@ Route::get("/dashboard", function () {
 });
 
 Route::get("/contact-listing", [ContactController::class, 'contacts']);
-Route::get('/view_contact/{contact_pid}', [ContactController::class, 'viewContact'])->name('contact#view');
-Route::get('/edit_contact/{contact_pid}', [ContactController::class, 'edit_contact'])->name('contact#edit');
-Route::post('/save_contact/{contact_pid}', [ContactController::class, 'saveContact'])->name('contact#save_edit');
+Route::get('/view_contact/{contact_pid}', 
+[ContactController::class, 'viewContact'])->name('contact#view');
+Route::get('/edit_contact/{contact_pid}', 
+[ContactController::class, 'edit_contact'])->name('contact#edit');
+Route::post('/save_contact/{contact_pid}', 
+[ContactController::class, 'saveContact'])->name('contact#save_edit');
+
+Route::post('/save_activity/{contact_pid}', 
+[ContactController::class, 'saveActivity'])->name('contact#save_activity');
 
 
 Route::get('/importcopy', function () {

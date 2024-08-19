@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Contact;
 use App\Models\ContactArchive;
 use App\Models\ContactDiscard;
+use App\Models\Engagement;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
 class ContactController extends Controller
@@ -17,14 +19,17 @@ class ContactController extends Controller
         $contactArchive = ContactArchive::paginate(5);
         $contactDiscard = ContactDiscard::paginate(5);
         // Pass data to view
-        return view('Contact_Listing', ['contacts' => $contacts, 'contactArchive' => $contactArchive, 'contactDiscard' => $contactDiscard]);
+        return view('Contact_Listing', ['contacts' => $contacts, 
+        'contactArchive' => $contactArchive, 'contactDiscard' => $contactDiscard]);
     }
 
     public function viewContact($contact_pid){
         /* Retrieve the contact record with the specified 'contact_pid' and pass
          it to the 'Edit_Contact_Detail_Page' view for editing. */
         $editContact = Contact::where('contact_pid', $contact_pid)->first();
-        return view('Edit_Contact_Detail_Page')->with(['editContact' => $editContact]);
+        $engagement = Engagement::where('fk_engagements__contact_pid', $contact_pid)->get();
+        return view('Edit_Contact_Detail_Page')->with
+        (['editContact' => $editContact, 'engagement' => $engagement]);
     }
 
     public function saveContact(Request $request, $contact_pid){
@@ -42,5 +47,37 @@ class ContactController extends Controller
         $contact->skills = $request->input('skills');
         $contact->save();
         return redirect()->route('contact#view', ['contact_pid' => $contact_pid]);
+    }
+
+    public function saveActivity(Request $request, $contact_pid){
+
+        $validator = Validator::make($request->all(), [
+            'activity-date' => 'required',
+            'activity-name' => 'required',
+            'activity-details' => 'required',
+            'activity-attachments' => 'required|file'
+        ]);
+
+        if ($validator->fails()){
+            return back()->withErrors($validator)->withInput();
+        }
+
+        $engagement = new Engagement();
+
+        if ($request->hasFile('activity-attachments')){
+            $imageFile = $request->file('activity-attachments');
+            $imageName = uniqid() . '_' . $imageFile->getClientOriginalName();
+            $imageFile->move(public_path('/attachments'), $imageName);
+            $engagement->attachments = json_encode([$imageName]); // Save as a JSON array
+        }
+
+        $engagement->date = $request->input('activity-date');
+        $engagement->details = $request->input('activity-details');
+        $engagement->activity_name = $request->input('activity-name');
+        $engagement->date = $request->input('activity-date');
+        $engagement->fk_engagements__contact_pid = $request->input('contact_pid');
+        $engagement->save();
+
+        return redirect()->route('contact#view', ['contact_pid'=> $contact_pid]);
     }
 }

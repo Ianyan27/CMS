@@ -36,10 +36,13 @@
                 <ul class="nav flex-column">
                     {{-- <li class="nav-item">
                         <i cs="fa-solid fa-table-columns"></i>
-                        <a class="nav-link" href="/dashboard"><i class="fa-solid fa-table-columns mr-3"></i>Dashboard</a>
+                        <a class="nav-link" href="/dashboard">
+                            <i class="fa-solid fa-table-columns mr-3"></i>Dashboard
+                        </a>
                     </li> --}}
                     <li class="nav-item">
-                        <a class="nav-link" href="/"><i class="fa-regular fa-user mr-3"></i>Users</a>
+                        <a class="nav-link" href="/"><i class="fa-regular fa-user mr-3"></i>Users
+                        </a>
                     </li>
                     {{-- <li class="nav-item">
                         <a class="nav-link" href="/contactdetails"><i
@@ -47,16 +50,21 @@
                     </li> --}}
                     <li class="nav-item">
                         <a class="nav-link" href="/salesagent"><i
-                                class="fa-solid fa-universal-access mr-3"></i>Sale Agent</a>
+                                class="fa-solid fa-universal-access mr-3"></i>Sale Agent
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/importcopy"><i class="fa-solid fa-file-import mr-3"></i>Upload Files</a>
+                        <a class="nav-link" href="/importcopy"><i class="fa-solid fa-file-import mr-3">
+                            </i>Upload Files
+                        </a>
                     </li>
                     {{-- <li class="nav-item">
                         <a class="nav-link" href="/editcontactdetail">Edit Contact Detail</a>
                     </li> --}}
                     <li class="nav-item">
-                        <a class="nav-link" href="/contact-listing"><i class="fa-solid fa-address-book mr-3"></i>Contact Listing</a>
+                        <a class="nav-link" href="/contact-listing">
+                            <i class="fa-solid fa-address-book mr-3"></i>Contact Listing
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -74,6 +82,68 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.getElementById('search-input').addEventListener('input', function() {
+            let input = this.value.toLowerCase();
+            let table = document.querySelector('.table');
+            let rows = table.querySelectorAll('tbody tr');
+
+            rows.forEach(row => {
+                let emailCell = row.querySelectorAll('td')[3]; // Assuming email is in the 4th column
+                let email = emailCell.textContent.toLowerCase();
+
+                if (email.includes(input)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+        function sortTable(columnName, order) {
+            let table, rows, switching, i, x, y, shouldSwitch;
+            table = document.querySelector(".table");
+            switching = true;
+            
+            // Loop until no switching has been done
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                
+                // Loop through all table rows except the first (headers)
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    
+                    // Determine the column index based on columnName
+                    let columnIndex;
+                    if (columnName === 'name') {
+                        columnIndex = 2; // Index for the 'Name' column
+                    }else if(columnName === 'email'){
+                        columnIndex = 3; // Indes for the 'Email' column
+                    }else if(columnName === 'role') {
+                        columnIndex = 4; // Index for the 'Role' column
+                    }
+                    
+                    // Compare the two elements in the column to see if they should switch
+                    x = rows[i].querySelectorAll("td")[columnIndex];
+                    y = rows[i + 1].querySelectorAll("td")[columnIndex];
+                    
+                    if (order === 'asc' && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    } else if (order === 'desc' && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                
+                if (shouldSwitch) {
+                    // If a switch has been marked, make the switch and mark the switch as done
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+        }
+    </script>
 </body>
 
 </html>

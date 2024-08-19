@@ -159,34 +159,17 @@
             </tr>
         </thead>
         <tbody class="text-center bg-row fonts">
+        @foreach ($engagement as $engagements)
             <tr>
                 <td><input type="checkbox" name="" id=""></td>
-                <td>1</td>
-                <td>8/7/2024</td>
-                <td>Whatsapp</td>
-                <td>Sales Agent John Smith sent a message to the exsisting contact about the courses information</td>
-                <td>Screenshot.png</td>
+                <td> {{$engagements->engagement_pid}} </td>
+                <td> {{$engagements->date}} </td>
+                <td> {{$engagements->activity_name}} </td>
+                <td> {{$engagements->details}} </td>
+                <td> {{$engagements->attachments}} </td>
                 <td><a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square"></i></a></td>
             </tr>
-            <tr>
-                <td><input type="checkbox" name="" id=""></td>
-                <td>2</td>
-                <td>10/7/2024</td>
-                <td>Phone</td>
-                <td>Sales Agent John Smith sent a message to the exsisting contact about the courses information</td>
-                <td>Screenshot.png</td>
-                <td><a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square"></i></a></td>
-            </tr>
-            <tr>
-                <td><input type="checkbox" name="" id=""></td>
-                <td>3</td>
-                <td>12/7/2024</td>
-                <td>Email</td>
-                <td>Sales Agent John Smith sent a message to the exsisting contact about the courses information</td>
-                <td>Screenshot.png</td>
-                <td><a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square"></i></a></td>
-            </tr>
-        </tbody>
+        @endforeach
     </table>
 
     <!-- Add Activity Modal -->
@@ -201,18 +184,23 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="addActivityForm">
+                    <form action=" {{route('contact#save_activity', $editContact->contact_pid)}} " 
+                        method="POST" id="addActivityForm" enctype="multipart/form-data">
+                        @csrf
+                        <input type="text" name="contact_pid" value=" {{$editContact->contact_pid}} " 
+                        readonly>
                         <div class="row row-margin-bottom row-border-bottom">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="activity-date">Date</label>
-                                    <input type="date" class="form-control" id="activity-date" required>
+                                    <input type="date" name="activity-date" class="form-control" 
+                                    id="activity-date" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="activity-type">Type</label>
-                                    <select class="form-control" id="activity-type" required>
+                                    <select class="form-control" id="activity-type" name="activity-name"required>
                                         <option value="Email">Email</option>
                                         <option value="Phone">Phone</option>
                                         <option value="Meeting">Meeting</option>
@@ -225,8 +213,9 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="activity-description">Description</label>
-                                    <textarea style="height: 100px; resize:none;" class="form-control" id="activity-description" rows="3"
-                                        required></textarea>
+                                    <textarea style="height: 100px; resize:none;" 
+                                        class="form-control" id="activity-description" rows="3"
+                                        name="activity-details"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -236,7 +225,7 @@
                                     <label for="activity-attachment">Attachment</label>
                                     <!-- Restrict file upload to images only -->
                                     <input type="file" class="form-control" id="activity-attachment"
-                                        accept="image/*">
+                                        name="activity-attachments" accept="image/*">
                                 </div>
                             </div>
                         </div>
@@ -262,13 +251,15 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action=" {{ route('contact#save_edit', $editContact->contact_pid) }}" method="POST"  id="editContactForm">
+                    <form action=" {{ route('contact#save_edit', $editContact->contact_pid) }}" 
+                        method="POST"  id="editContactForm">
                         @csrf
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="contact-name">Name</label>
-                                    <input type="text" class="form-control" id="name" name="name" value="{{$editContact->name}}"
+                                    <input type="text" class="form-control" id="name" name="name" 
+                                    value="{{$editContact->name}}"
                                         required>
                                 </div>
                                 <div class="form-group">
@@ -278,22 +269,26 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="contact-country">Country</label>
-                                    <input type="text" class="form-control" id="contact-country" name="country" 
+                                    <input type="text" class="form-control" id="contact-country" 
+                                    name="country" 
                                     value="{{$editContact->country}}" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="contact-address">Address</label>
-                                    <input class="form-control" style="height: 125px;" type="text" name="address" id="address" value="{{$editContact->address}}">
+                                    <input class="form-control" style="height: 125px;" type="text" 
+                                    name="address" id="address" value="{{$editContact->address}}">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <label for="contact-number">Contact Number</label>
-                                        {{-- <button class="btn btn-outline-secondary" type="button">Add</button> --}}
+                                        {{-- <button class="btn btn-outline-secondary" 
+                                        type="button">Add</button> --}}
                                     </div>
                                     <div>
-                                        <input type="text" class="form-control mb-2" id="contact-number" name="contact_number"
+                                        <input type="text" class="form-control mb-2" id="contact-number" 
+                                        name="contact_number"
                                             value="{{$editContact->contact_number}}" required>
                                     </div>
                                 </div>
@@ -303,9 +298,12 @@
                                         <button class="btn btn-outline-secondary" type="button">Add</button>
                                     </div>
                                     <div>
-                                        <input type="text" class="form-control mb-2" id="contact-qualification"
-                                            value="{{$editContact->qualification}}" name="qualification" required>
-                                        {{-- <input type="text" class="form-control mb-2" value="Master of Cyber Security"
+                                        <input type="text" class="form-control mb-2" 
+                                        id="contact-qualification"
+                                            value="{{$editContact->qualification}}" 
+                                            name="qualification" required>
+                                        {{-- <input type="text" class="form-control mb-2" 
+                                        value="Master of Cyber Security"
                                             required> --}}
                                     </div>
                                 </div>
@@ -317,7 +315,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="contact-skills">Skills</label>
-                                    <input type="text" class="form-control" name="skills" id="contact-skills" value="{{$editContact->skills}}"
+                                    <input type="text" class="form-control" name="skills" 
+                                    id="contact-skills" value="{{$editContact->skills}}"
                                         required>
                                 </div>
                             </div>
@@ -329,13 +328,15 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="contact-source">Source</label>
-                                    <input type="text" class="form-control" id="contact-source" value="{{$editContact->source}}"
+                                    <input type="text" class="form-control" id="contact-source" 
+                                    value="{{$editContact->source}}"
                                         readonly>
                                 </div>
                                 <div class="form-group">
                                     <label for="contact-status">Status</label>
                                     <select class="form-control" id="contact-status" required>
-                                        <option value="{{$editContact->status}}" selected> {{$editContact->status}} </option>
+                                        <option value="{{$editContact->status}}" selected> 
+                                            {{$editContact->status}} </option>
                                         <option>In progress</option>
                                         <option>Completed</option>
                                         <option>Pending</option>
