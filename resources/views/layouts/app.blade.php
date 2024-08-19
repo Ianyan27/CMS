@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,7 +31,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="dashboard col-md-2 py-3 my-3 border-educ rounded-right  h-auto">
+            <div class="dashboard py-3 my-3 border-educ rounded-right  h-auto">
                 <ul class="nav flex-column">
                     {{-- <li class="nav-item">
                         <i cs="fa-solid fa-table-columns"></i>
@@ -41,7 +40,8 @@
                         </a>
                     </li> --}}
                     <li class="nav-item">
-                        <a class="nav-link" href="/"><i class="fa-regular fa-user mr-3"></i>Users
+                        <a class="nav-link dashboard-link" href="/">
+                            <i class="fa-regular fa-user mr-3"></i>Users
                         </a>
                     </li>
                     {{-- <li class="nav-item">
@@ -49,11 +49,11 @@
                                 class="fa-solid fa-address-book mr-3"></i>Contact</a>
                     </li> --}}
                     <li class="nav-item">
-                        <a class="nav-link" href="/salesagent"><i
+                        <a class="nav-link dashboard-link" href="/salesagent"><i
                                 class="fa-solid fa-universal-access mr-3"></i>Sale Agent
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item dashboard-link">
                         <a class="nav-link" href="/importcopy"><i class="fa-solid fa-file-import mr-3">
                             </i>Upload Files
                         </a>
@@ -61,14 +61,14 @@
                     {{-- <li class="nav-item">
                         <a class="nav-link" href="/editcontactdetail">Edit Contact Detail</a>
                     </li> --}}
-                    <li class="nav-item">
+                    <li class="nav-item dashboard-link">
                         <a class="nav-link" href="/contact-listing">
                             <i class="fa-solid fa-address-book mr-3"></i>Contact Listing
                         </a>
                     </li>
                 </ul>
             </div>
-            <div class="col table-container ml-3 mb-3 py-3 rounded">
+            <div class="col table-container ml-3 mb-3 py-3 border">
                 @yield('content')
             </div>
         </div>
@@ -99,6 +99,18 @@
                 }
             });
         });
+        function toggleSort(downIconId, upIconId) {
+            const sortDown = document.getElementById(downIconId);
+            const sortUp = document.getElementById(upIconId);
+
+            if (sortDown.style.display === 'none') {
+                sortDown.style.display = 'inline';
+                sortUp.style.display = 'none';
+            } else {
+                sortDown.style.display = 'none';
+                sortUp.style.display = 'inline';
+            }
+        }
         function sortTable(columnName, order) {
             let table, rows, switching, i, x, y, shouldSwitch;
             table = document.querySelector(".table");
@@ -116,11 +128,11 @@
                     // Determine the column index based on columnName
                     let columnIndex;
                     if (columnName === 'name') {
-                        columnIndex = 2; // Index for the 'Name' column
+                        columnIndex = 1; // Index for the 'Name' column
                     }else if(columnName === 'email'){
-                        columnIndex = 3; // Indes for the 'Email' column
+                        columnIndex = 2; // Indes for the 'Email' column
                     }else if(columnName === 'role') {
-                        columnIndex = 4; // Index for the 'Role' column
+                        columnIndex = 3; // Index for the 'Role' column
                     }
                     
                     // Compare the two elements in the column to see if they should switch
@@ -135,7 +147,6 @@
                         break;
                     }
                 }
-                
                 if (shouldSwitch) {
                     // If a switch has been marked, make the switch and mark the switch as done
                     rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
@@ -148,20 +159,17 @@
             filterContainer.style.display = (filterContainer.style.display === 'none' 
             || filterContainer.style.display === '') ? 'block' : 'none';
         }
-
         // Apply the filter to the table
         function applyFilter() {
             const checkboxes = document.querySelectorAll('#filterContainer input[type="checkbox"]');
             const rows = document.querySelectorAll('#contacts-table tbody tr');
             let selectedFilters = [];
-
             // Gather selected filters
             checkboxes.forEach(checkbox => {
                 if (checkbox.checked) {
                     selectedFilters.push(checkbox.value);
                 }
             });
-
             // Show/hide rows based on filter
             rows.forEach(row => {
                 const status = row.getAttribute('data-status');

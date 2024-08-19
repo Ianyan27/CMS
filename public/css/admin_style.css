@@ -1,15 +1,23 @@
 * {
-    font-family: "sans-serif", Montserrat;
+    font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",
+    "Noto Sans","Liberation Sans",Arial,sans-serif,"Apple Color Emoji",
+    "Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
 }
 table {
     border-collapse: collapse;
 }
 .fonts {
-    font-size: 16px;
+    font-size: 12px;
     font-weight: 550;
 }
 .color-white {
     color: white;
+}
+
+tbody{
+    font-size: 1rem;
+    font-weight: 470;
+    line-height: 1.5;
 }
 .bg-row {
     background-color: white;
@@ -25,18 +33,24 @@ table {
 }
 
 .dashboard {
-    background-color: #91264c;
-    color: white;
-    font-size: 1.15rem;
-}
-.fa-circle-question {
-    font-size: 20px;
+    background-color: white;
+    font-size: 1rem;
 }
 
+.dashboard-link{
+    font-size: 1rem;
+}
+
+.fa-circle-question {
+    font-size: 1rem;
+}
+.fa-arrow-down-z-a{
+    display: none;
+}
 .fa-pen-to-square,
 .fa-eye,
 .fa-trash {
-    font-size: 1.5rem;
+    font-size: 1rem;
 }
 .hover-action {
     border: 1px solid #91264c;
@@ -44,14 +58,14 @@ table {
     font-style: center;
 }
 .nav-item .nav-link{
-    color: #f2f2f2;
+    color: #91264c;
 }
-.nav-item .nav-link:hover{
+/* .nav-item .nav-link:hover{
     color: #91264c;
     background-color: #f2f2f2;
     border: 1px solid #91264c; 
     border-radius: 14px;
-}
+} */
 .hover-action:hover{
     background-color: #91264c;
     color: white;
@@ -114,7 +128,7 @@ table {
 }
 
 .file-support {
-    font-size: 14px;
+    font-size: 1rem;
 }
 
 .file-info {
@@ -142,11 +156,11 @@ table {
 }
 
 .drop-files {
-    font-size: 1.25rem;
+    font-size: 1rem;
 }
 
 .file-button i {
-    font-size: 1.5rem;
+    font-size: 1rem;
 }
 
 .file-button {
@@ -215,7 +229,7 @@ table {
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
 }
 .icon-container i {
-    font-size: 3rem;
+    font-size: 1rem;
     color: #dc3545;
 }
 .modal-header .close {
@@ -228,12 +242,12 @@ table {
     display: inline-block;
     padding: 0.5rem 1.5rem;
     border-radius: 15px;
-    font-size: .8rem;
+    font-size: 1rem;
     /* color: rgb(17, 17, 17); */
     color: white;;
     text-align: center;
     font-weight: bold;
-    width: 126px;
+    width: 140px;
     height: 36px;
 }
 

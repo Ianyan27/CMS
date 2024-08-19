@@ -15,9 +15,9 @@ class ContactController extends Controller
 
     public function contacts(){
         // Get contacts from model
-        $contacts = Contact::paginate(5);
-        $contactArchive = ContactArchive::paginate(5);
-        $contactDiscard = ContactDiscard::paginate(5);
+        $contacts = Contact::paginate(10);
+        $contactArchive = ContactArchive::paginate(10);
+        $contactDiscard = ContactDiscard::paginate(10);
         // Pass data to view
         return view('Contact_Listing', ['contacts' => $contacts, 
         'contactArchive' => $contactArchive, 'contactDiscard' => $contactDiscard]);

@@ -27,28 +27,22 @@
     <table class="table table-hover mt-2" id="contacts-table">
         <thead class="font-educ text-center">
             <tr>
-                <th scope="col"><input type="checkbox" name="" id=""></th>
                 <th class="h5" scope="col">No #</th>
                 <th class="h5" scope="col" id="name-header">Name
-                    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" 
-                        onclick="sortTable('name', 'asc')"></i>
-                    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" 
-                        onclick="sortTable('name', 'desc')"></i>
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name" 
+                        onclick="sortTable('name', 'asc'); toggleSort('sortDown-name', 'sortUp-name')"></i>
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name" 
+                        onclick="sortTable('name', 'desc'); toggleSort('sortUp-name', 'sortDown-name')" style="display: none;"></i>
                 </th>
                 <th class="h5" scope="col" id="email-header">Email
-                    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" 
-                        onclick="sortTable('email', 'asc')"></i>
-                    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" 
-                        onclick="sortTable('email', 'desc')"></i>
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-email" 
+                        onclick="sortTable('email', 'asc'); toggleSort('sortDown-email', 'sortUp-email')"></i>
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-email" 
+                        onclick="sortTable('email', 'desc'); toggleSort('sortUp-email', 'sortDown-email')" style="display: none;"></i>
                 </th>
                 <th class="h5" scope="col">Contact
-
                 </th>
                 <th class="h5" scope="col">Country 
-                    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" 
-                        onclick="sortTable('email', 'asc')"></i>
-                    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" 
-                        onclick="sortTable('email', 'desc')"></i>
                 </th>
                 <th class="h5 position-relative" scope="col">
                     Status
@@ -79,10 +73,9 @@
                 <th class="h5" scope="col">Actions</th>
             </tr>
         </thead>
-        <tbody class="text-center bg-row fonts">
+        <tbody class="text-center bg-row">
             @forelse ($contacts as $contact)
             <tr data-status="{{ $contact['status'] }}">
-                <td><input type="checkbox" name="" id=""></td>
                 <td>{{ $contact['contact_pid'] }}</td>
                 <td>{{ $contact['name'] }}</td>
                 <td>{{ $contact['email'] }}</td>

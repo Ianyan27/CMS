@@ -15,28 +15,27 @@
         </div>
     </div>
     <table class="table table-hover mt-2">
-        <thead class="font-educ text-center">
+        <thead class="font-educ text-left">
             <tr>
-                <th scope="col"><input type="checkbox" name="" id=""></th>
                 <th class="h5" scope="col">No #</th>
                 <th class="h5" scope="col" id="name-header">Name
-                    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" 
-                        onclick="sortTable('name', 'asc')"></i>
-                    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" 
-                        onclick="sortTable('name', 'desc')"></i>
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name" 
+                        onclick="sortTable('name', 'asc'); toggleSort('sortDown-name', 'sortUp-name')"></i>
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name" 
+                        onclick="sortTable('name', 'desc'); toggleSort('sortUp-name', 'sortDown-name')" style="display: none;"></i>
                 </th>
                 <th class="h5" scope="col" id="email-header">Email
-                    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" 
-                        onclick="sortTable('email', 'asc')"></i>
-                    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" 
-                        onclick="sortTable('email', 'desc')"></i>
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-email" 
+                        onclick="sortTable('email', 'asc'); toggleSort('sortDown-email', 'sortUp-email')"></i>
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-email" 
+                        onclick="sortTable('email', 'desc'); toggleSort('sortUp-email', 'sortDown-email')" style="display: none;"></i>
                 </th>
                 <th class="h5" scope="col" id="role-header">Role 
-                    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" 
-                    onclick="sortTable('role', 'asc')"></i>
-                    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" 
-                    onclick="sortTable('role', 'desc')"></i>
-                </th>
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-role" 
+                        onclick="sortTable('role', 'asc'); toggleSort('sortDown-role', 'sortUp-role')"></i>
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-role" 
+                        onclick="sortTable('role', 'desc'); toggleSort('sortUp-role', 'sortDown-role')" style="display: none;"></i>
+                </th>                
                 <th class="h5" scope="col">Profile </i></th>
                 <th class="h5" scope="col">BU</i></th>
                 <th class="h5" scope="col">Country</th>
@@ -46,7 +45,6 @@
         </thead>
         <tbody class="text-center bg-row fonts">
             <tr>
-                <td><input type="checkbox" name="" id=""></td>
                 <td>1</td>
                 <td>John Doe</td>
                 <td>john.doe@lithan.com</td>
