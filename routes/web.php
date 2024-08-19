@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ContactsImportController;
 use App\Models\Contact;
 use Illuminate\Support\Facades\Route;
 
@@ -43,6 +44,11 @@ Route::post('/save_contact/{contact_pid}', [ContactController::class, 'saveConta
 Route::get('/importcopy', function () {
     return view('Import_File');
 });
+
+
+
+Route::post('/import', [ContactsImportController::class, 'import'])->name('import');
+
 
 Route::get('/editcontactdetail', function () {
     return view('Edit_Contact_Detail_Page');
