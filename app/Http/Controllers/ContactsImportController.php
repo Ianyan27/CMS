@@ -27,7 +27,8 @@ class ContactsImportController extends Controller
         $requiredColumns = ['name', 'email', 'contact_number'];
 
         // Map the CSV headers to logical columns using the ContactsImport class
-        $columnMap = (new ContactsImport)->columnMap;
+        $columnMap = (new ContactsImport)->getColumnMap();
+
 
         // Find missing required columns by checking against the header map
         $missingColumns = [];

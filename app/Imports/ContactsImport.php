@@ -24,6 +24,9 @@ class ContactsImport implements ToModel, WithHeadingRow
         'source' => ['source', 'origin', 'referral_source'],
         'datetime_of_hubspot_sync' => ['datetime_of_hubspot_sync', 'sync_datetime', 'hubspot_sync_date'],
     ];
+    public function getColumnMap(){
+        return $this->columnMap;
+    }
 
     /**
     * Map the CSV columns to the Contact model fields
