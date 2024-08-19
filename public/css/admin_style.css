@@ -125,7 +125,11 @@ table {
     background-color: white;
 }
 
-.border-educ {
+.bg-silver{
+    background-color: rgb(231, 231, 231);
+}
+
+.border-educ {  
     border: 1px solid #91264c;
 }
 
