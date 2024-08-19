@@ -32,64 +32,78 @@
                 <th class="h5" scope="col">Email <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
                 <th class="h5" scope="col">Contact</th>
                 <th class="h5" scope="col">Country <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
-                <th class="h5" scope="col">
+                <th class="h5 position-relative" scope="col">
                     Status
-                    <span class="ml-2" data-bs-toggle="tooltip" data-bs-placement="top"
-                        title="Status of the contact: Active, Discarded, New, In Progress, Archived">
-                        <i class="fa-solid fa-info-circle text-muted"></i>
-                    </span>
+                    <i style="cursor: pointer;" class="fa-solid fa-filter" id="filterIcon" onclick="toggleFilter()"></i>
+    
+                    <!-- Filter Container -->
+                    <div id="filterContainer" class="filter-popup container" style="display: none;">
+                        <div class="row">
+                            <div class="filter-option mb-2 col-4">
+                                <input type="checkbox" id="new" name="status" value="New">
+                                <label for="new">New</label>
+                            </div>
+                            <div class="filter-option mb-2 col-4">
+                                <input type="checkbox" id="inProgress" name="status" value="InProgress">
+                                <label for="inProgress">In Progress</label>
+                            </div>
+                            <div class="filter-option mb-2 col-4">
+                                <input type="checkbox" id="hubspot" name="status" value="HubSpot Contact">
+                                <label for="hubspot">HubSpot</label>
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-center">
+                            <button class="btn hover-action col-11" type="button" onclick="applyFilter()">Apply Filter</button>
+                        </div>
+                    </div>
                 </th>
                 <th class="h5" scope="col">Actions</th>
             </tr>
         </thead>
         <tbody class="text-center bg-row fonts">
             @forelse ($contacts as $contact)
-                <tr>
-                    <td><input type="checkbox" name="" id=""></td>
-                    <td>{{ $contact['contact_pid'] }}</td>
-                    <td>{{ $contact['name'] }}</td>
-                    <td>{{ $contact['email'] }}</td>
-                    <td>{{ $contact['contact_number'] }}</td>
-                    <td>{{ $contact['country'] }}</td>
-                    <td>
-                        <span class="status-indicator"
-                            style="background-color:
-                            @if ($contact['status'] === 'HubSpot Contact') #FFE8E2;color:#FF5C35;
-                            @elseif ($contact['status'] === 'discard')
-                                #FF7F86; color: #BD000C;
-                            @elseif ($contact['status'] === 'InProgress')
-                                #FFF3CD; color: #FF8300;
-                            @elseif ($contact['status'] === 'New')
-                                #CCE5FF ; color:  #318FFC;
-                            @elseif ($contact['status'] === 'Archive')
-                            #E2E3E5; color: #303030; @endif
-                        ">
-                            @if ($contact['status'] === 'HubSpot Contact')
-                                HubSpot
-                            @elseif ($contact['status'] === 'discard')
-                                Discard
-                            @elseif ($contact['status'] === 'InProgress')
-                                In Progress
-                            @elseif ($contact['status'] === 'New')
-                                New
-                            @elseif ($contact['status'] === 'Archive')
-                                Archive
-                            @endif
-                        </span>
-                    </td>
-                    <td>
-                        <a href=" {{ route('contact#view', $contact->contact_pid) }} " class="btn hover-action" data-toggle="tooltip" title="View">
-                            <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
-                        </a>
-                        <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </a>
-                    </td>
-                </tr>
+            <tr data-status="{{ $contact['status'] }}">
+                <td><input type="checkbox" name="" id=""></td>
+                <td>{{ $contact['contact_pid'] }}</td>
+                <td>{{ $contact['name'] }}</td>
+                <td>{{ $contact['email'] }}</td>
+                <td>{{ $contact['contact_number'] }}</td>
+                <td>{{ $contact['country'] }}</td>
+                <td>
+                    <span class="status-indicator"
+                        style="background-color:
+                        @if ($contact['status'] === 'HubSpot Contact') #FFE8E2;color:#FF5C35;
+                        @elseif ($contact['status'] === 'discard')
+                            #FF7F86; color: #BD000C;
+                        @elseif ($contact['status'] === 'InProgress')
+                            #FFF3CD; color: #FF8300;
+                        @elseif ($contact['status'] === 'New')
+                            #CCE5FF ; color:  #318FFC;
+                        @elseif ($contact['status'] === 'Archive')
+                        #E2E3E5; color: #303030; @endif
+                    ">
+                        @if ($contact['status'] === 'HubSpot Contact')
+                            HubSpot
+                        @elseif ($contact['status'] === 'InProgress')
+                            In Progress
+                        @elseif ($contact['status'] === 'New')
+                            New
+                        @endif
+                    </span>
+                </td>
+                <td>
+                    <a href=" {{ route('contact#view', $contact->contact_pid) }} " class="btn hover-action" data-toggle="tooltip" title="View">
+                        <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
+                    </a>
+                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </a>
+                </td>
+            </tr>
             @empty
-                <tr>
-                    <td colspan="8" class="text-center">No contacts found.</td>
-                </tr>
+            <tr>
+                <td colspan="8" class="text-center">No contacts found.</td>
+            </tr>
             @endforelse
         </tbody>
     </table>
@@ -243,7 +257,7 @@
                 <a class="page-link font-educ-educ" href="{{ $contacts->nextPageUrl() }}" aria-label="Next">&#62;</a>
             </li>
         </ul>
-    </footer>
+    </footer> 
     <script>
         $(document).ready(function() {
             $('#archive-table').hide();
