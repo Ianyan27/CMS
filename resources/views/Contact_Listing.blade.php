@@ -50,7 +50,12 @@
                     <td>{{ $contact['name'] }}</td>
                     <td>{{ $contact['email'] }}</td>
                     <td>{{ $contact['contact_number'] }}</td>
-                    <td>{{ $contact['country'] }}</td>
+                    @inject('countryCodeMapper', 'App\Services\CountryCodeMapper')
+                    <td>
+                        {{ $contact['country'] }}
+                        <img src="{{ asset('flags/' . strtolower($countryCodeMapper->getCountryCode($contact['country'])) . '.svg') }}"
+                            alt="{{ $contact['country'] }}" width="20" height="15">
+                    </td>
                     <td>
                         <span class="status-indicator"
                             style="background-color:
@@ -78,7 +83,8 @@
                         </span>
                     </td>
                     <td>
-                        <a href=" {{ route('contact#view', $contact->contact_pid) }} " class="btn hover-action" data-toggle="tooltip" title="View">
+                        <a href=" {{ route('contact#view', $contact->contact_pid) }} " class="btn hover-action"
+                            data-toggle="tooltip" title="View">
                             <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
                         </a>
                         <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
@@ -114,34 +120,33 @@
         </thead>
         <tbody class="text-center bg-row fonts">
             @foreach ($contactArchive as $archive)
-            <tr>
-                <td><input type="checkbox" name="" id=""></td>
-                <td> {{$archive['contact_archive_pid']}} </td>
-                <td> {{$archive['name']}} </td>
-                <td> {{$archive['email']}} </td>
-                <td> {{$archive['contact_number']}} </td>
-                <td> {{$archive['country']}} </td>
-                <td>
-                    <span class="status-indicator"
-                        style="background-color:
-                        @if($archive['status'] === 'Archive')
-                        #E2E3E5; color: #303030; 
-                        @endif
+                <tr>
+                    <td><input type="checkbox" name="" id=""></td>
+                    <td> {{ $archive['contact_archive_pid'] }} </td>
+                    <td> {{ $archive['name'] }} </td>
+                    <td> {{ $archive['email'] }} </td>
+                    <td> {{ $archive['contact_number'] }} </td>
+                    <td> {{ $archive['country'] }} </td>
+                    <td>
+                        <span class="status-indicator"
+                            style="background-color:
+                        @if ($archive['status'] === 'Archive') #E2E3E5; color: #303030; @endif
                         ">
-                        @if($archive['status'] === 'Archive')
-                            Archive
-                        @endif
-                    </span>
-                </td>
-                <td>
-                    <a href=" {{ route('contact#view', $contact->contact_pid) }} " class="btn hover-action" data-toggle="tooltip" title="View">
-                        <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
-                    </a>
-                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
-                        <i class="fa-solid fa-pen-to-square"></i>
-                    </a>
-                </td>
-            </tr>
+                            @if ($archive['status'] === 'Archive')
+                                Archive
+                            @endif
+                        </span>
+                    </td>
+                    <td>
+                        <a href=" {{ route('contact#view', $contact->contact_pid) }} " class="btn hover-action"
+                            data-toggle="tooltip" title="View">
+                            <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
+                        </a>
+                        <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+                    </td>
+                </tr>
             @endforeach
         </tbody>
     </table>
@@ -166,78 +171,80 @@
         </thead>
         <tbody class="text-center bg-row fonts">
             @foreach ($contactDiscard as $discard)
-            <tr>
-                <td><input type="checkbox" name="" id=""></td>
-                <td> {{$discard['contact_discard_pid']}} </td>
-                <td> {{$discard['name']}} </td>
-                <td> {{$discard['email']}} </td>
-                <td> {{$discard['contact_number']}} </td>
-                <td> {{$discard['country']}} </td>
-                <td>
-                    <span class="status-indicator"
-                        style="background-color:
-                        @if($discard['status'] === 'Discard')
-                            #FF7F86; color: #BD000C;
-                        @endif
+                <tr>
+                    <td><input type="checkbox" name="" id=""></td>
+                    <td> {{ $discard['contact_discard_pid'] }} </td>
+                    <td> {{ $discard['name'] }} </td>
+                    <td> {{ $discard['email'] }} </td>
+                    <td> {{ $discard['contact_number'] }} </td>
+                    <td> {{ $discard['country'] }} </td>
+                    <td>
+                        <span class="status-indicator"
+                            style="background-color:
+                        @if ($discard['status'] === 'Discard') #FF7F86; color: #BD000C; @endif
                     ">
-                        @if($discard['status'] === 'Discard')
-                            Discard
-                        @endif
-                    </span>
-                </td>
-                <td>
-                    <a href=" {{ route('contact#view', $contact->contact_pid) }} " class="btn hover-action" data-toggle="tooltip" title="View">
-                        <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
-                    </a>
-                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
-                        <i class="fa-solid fa-pen-to-square"></i>
-                    </a>
-                </td>
-            </tr>
+                            @if ($discard['status'] === 'Discard')
+                                Discard
+                            @endif
+                        </span>
+                    </td>
+                    <td>
+                        <a href=" {{ route('contact#view', $contact->contact_pid) }} " class="btn hover-action"
+                            data-toggle="tooltip" title="View">
+                            <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
+                        </a>
+                        <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+                    </td>
+                </tr>
             @endforeach
         </tbody>
     </table>
-    
+
     <footer aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
             <!-- Previous Button -->
             <li class="page-item {{ $contacts->onFirstPage() ? 'disabled' : '' }}">
-                <a class="page-link font-educ-educ" href="{{ $contacts->previousPageUrl() }}" aria-label="Previous">&#60;</a>
+                <a class="page-link font-educ-educ" href="{{ $contacts->previousPageUrl() }}"
+                    aria-label="Previous">&#60;</a>
             </li>
-    
+
             <!-- First Page Button -->
             @if ($contacts->currentPage() > 2)
                 <li class="page-item">
                     <a class="page-link font-educ" href="{{ $contacts->url(1) }}">1</a>
                 </li>
             @endif
-    
+
             <!-- Second Page Button -->
             @if ($contacts->currentPage() > 1)
                 <li class="page-item">
                     <a class="page-link font-educ" href="{{ $contacts->url(2) }}">2</a>
                 </li>
             @endif
-    
+
             <!-- Current Page Button -->
             <li class="page-item active">
                 <span class="page-link font-educ-educ">{{ $contacts->currentPage() }}</span>
             </li>
-    
+
             <!-- Penultimate Page Button -->
             @if ($contacts->lastPage() > $contacts->currentPage() + 1)
                 <li class="page-item">
-                    <a class="page-link font-educ" href="{{ $contacts->url($contacts->lastPage() - 1) }}">{{ $contacts->lastPage() - 1 }}</a>
+                    <a class="page-link font-educ"
+                        href="{{ $contacts->url($contacts->lastPage() - 1) }}">{{ $contacts->lastPage() - 1 }}</a>
                 </li>
             @endif
-    
+
             <!-- Last Page Button -->
             @if ($contacts->lastPage() > $contacts->currentPage())
                 <li class="page-item">
-                    <a class="page-link font-educ" href="{{ $contacts->url($contacts->lastPage()) }}">{{ $contacts->lastPage() }}</a>
+                    <a class="page-link font-educ"
+                        href="{{ $contacts->url($contacts->lastPage()) }}">{{ $contacts->lastPage() }}</a>
                 </li>
             @endif
-    
+
             <!-- Next Button -->
             <li class="page-item {{ !$contacts->hasMorePages() ? 'disabled' : '' }}">
                 <a class="page-link font-educ-educ" href="{{ $contacts->nextPageUrl() }}" aria-label="Next">&#62;</a>
@@ -253,13 +260,13 @@
                 $('#archive-table').hide();
                 $('#discard-table').hide();
             });
-        
+
             $('#show-archive').click(function() {
                 $('#contacts-table').hide();
                 $('#archive-table').show();
                 $('#discard-table').hide();
             });
-        
+
             $('#show-discard').click(function() {
                 $('#contacts-table').hide();
                 $('#archive-table').hide();
@@ -279,6 +286,6 @@
             });
         });
     </script>
-    
-    
+
+
 @endsection
