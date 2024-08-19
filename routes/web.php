@@ -42,7 +42,7 @@ Route::post('/save_contact/{contact_pid}', [ContactController::class, 'saveConta
 
 
 Route::get('/importcopy', function () {
-    return view('Import_File');
+    return view('csv_import_form');
 });
 
 
