@@ -187,7 +187,7 @@
                     <form action=" {{route('contact#save_activity', $editContact->contact_pid)}} " 
                         method="POST" id="addActivityForm" enctype="multipart/form-data">
                         @csrf
-                        <input type="text" name="contact_pid" value=" {{$editContact->contact_pid}} " 
+                        <input type="hidden" name="contact_pid" value=" {{$editContact->contact_pid}} " 
                         readonly>
                         <div class="row row-margin-bottom row-border-bottom">
                             <div class="col-md-6">
