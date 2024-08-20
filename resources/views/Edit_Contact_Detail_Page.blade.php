@@ -10,7 +10,7 @@
     <div class="row border-educ rounded h-auto">
         <div class="col-md-5 border-right" id="contact-detail">
             <div class="table-title d-flex justify-content-between align-items-center my-3">
-                <h2 class="mt-2 font-educ"><strong>Contact Detail</strong></h2>
+                <h2 class="mt-2 ml-3 headings">Contact Detail</h2>
                 <a href="{{ route('contact#edit', $editContact->contact_pid) }}" class="btn hover-action mx-1"
                     data-toggle="modal" data-target="#editContactModal">
                     <i class="fa-solid fa-pen-to-square"></i>
@@ -20,25 +20,25 @@
             <div class="row row-margin-bottom row-border-bottom mx-1">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" class="form-control" id="name" value=" {{ $editContact->name }} "
+                        <label class="font-educ" for="name">Name</label>
+                        <input type="text" class="form-control fonts" id="name" value=" {{ $editContact->name }} "
                             readonly>
                     </div>
                     <div class="form-group">
-                        <label for="contact-number">Contact Number</label>
-                        <input type="text" class="form-control" id="contact_number"
+                        <label class="font-educ" for="contact-number">Contact Number</label>
+                        <input type="text" class="form-control fonts" id="contact_number"
                             value= " {{ $editContact->contact_number }} " readonly>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email" value=" {{ $editContact->email }} "
+                        <label class="font-educ" for="email">Email</label>
+                        <input type="email" class="form-control fonts" id="email" value=" {{ $editContact->email }} "
                             readonly>
                     </div>
                     <div class="form-group">
-                        <label for="country">Country</label>
-                        <input type="text" class="form-control" id="country" value=" {{ $editContact->country }} "
+                        <label class="font-educ" for="country">Country</label>
+                        <input type="text" class="form-control fonts" id="country" value=" {{ $editContact->country }} "
                             readonly>
                     </div>
                 </div>
@@ -46,20 +46,20 @@
             <div class="row row-margin-bottom row-border-bottom mx-1">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="address">Address</label>
-                        <input style="height: 125px;" type="text" class="form-control" id="address"
+                        <label class="font-educ" for="address">Address</label>
+                        <input style="height: 125px;" type="text" class="form-control fonts" id="address"
                             value=" {{ $editContact->address }} " readonly>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="date-of-allocation">Date of Allocation</label>
-                        <input type="datetime" class="form-control" id="date-of-allocation"
+                        <label class="font-educ" for="date-of-allocation">Date of Allocation</label>
+                        <input type="datetime" class="form-control fonts" id="date-of-allocation"
                             value="{{ $editContact->date_of_allocation }}" readonly>
                     </div>
                     <div class="form-group">
-                        <label for="qualification">Qualification</label>
-                        <input type="text" class="form-control" id="qualification"
+                        <label class="font-educ" for="qualification">Qualification</label>
+                        <input type="text" class="form-control fonts" id="qualification"
                             value=" {{ $editContact->qualification }} " readonly>
                     </div>
                 </div>
@@ -67,25 +67,32 @@
             <div class="row mx-1">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="skills">Skills</label>
-                        <input type="text" class="form-control" id="skills" value="{{ $editContact->skills }}"
+                        <label class="font-educ" for="skills">Skills</label>
+                        <input type="text" class="form-control fonts" id="skills" value="{{ $editContact->skills }}"
                             readonly>
                     </div>
                     <div class="form-group">
-                        <label for="source">Source</label>
-                        <input type="text" class="form-control" id="source" value="{{ $editContact->source }}"
+                        <label class="font-educ" for="source">Source</label>
+                        <input type="text" class="form-control fonts" id="source" value="{{ $editContact->source }}"
                             readonly>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="job-role">Job Role</label>
-                        <input type="text" class="form-control" id="job-role" placeholder="Technology Associate"
+                        <label class="font-educ" for="job-role">Job Role</label>
+                        <input type="text" class="form-control fonts" id="job-role" value=" {{ $editContact->job_role }} "
                             readonly>
                     </div>
                     <div class="form-group">
-                        <label for="status">Status</label>
-                        <input type="text" class="form-control" id="status" placeholder="New" readonly>
+                        <label class="font-educ" for="status">Status</label>
+                        <input type="text" class="form-control fonts" id="status" 
+                            value="{{ trim(
+                                $editContact->status === 'HubSpot Contact' ? 'HubSpot' :
+                                ($editContact->status === 'discard' ? 'Discard' :
+                                ($editContact->status === 'InProgress' ? 'In Progress' :
+                                ($editContact->status === 'New' ? 'New' :
+                                ($editContact->status === 'Archive' ? 'Archive' : ''))))
+                            ) }}" readonly>
                     </div>
                 </div>
             </div>
@@ -94,9 +101,9 @@
         </div>
         <div class="col-md-7 pl-5" id="activity-container">
             <div class="d-flex justify-content-between align-items-center my-3">
-                <h2 class="mt-2 font-educ"><strong>Activities Notifications</strong></h2>
+                <h2 class="mt-2 headings">Activities Notifications</h2>
                 <div class="d-flex align-items-center">
-                    <input type="search" class="form-control mr-1" placeholder="Search..." id="search-input"
+                    <input type="search" class="form-control fonts mr-1" placeholder="Search..." id="search-input"
                         aria-label="Search">
                     <button class="btn btn-secondary bg-educ mx-1" type="button" id="search-button">
                         <i class="fa-solid fa-magnifying-glass"></i>
@@ -146,9 +153,9 @@
     <!-- Activity Taken Section -->
     <div class="table-title d-flex justify-content-between align-items-center mt-5">
         <div class="d-flex align-items-center">
-            <h2 class="ml-3 mb-2 font-educ">Activity Taken</h2>
+            <h2 class="ml-2 mb-1 headings">Activity Taken</h2>
         </div>
-        <div class="d-flex align-items-center mr-3 mb-2">
+        <div class="d-flex align-items-center mr-2 mb-2">
             <!-- Button to trigger the modal -->
             <button class="btn hover-action add-activity-button" data-toggle="modal" data-target="#addActivityModal">
                 <i class="fa-solid fa-square-plus"></i>
@@ -160,12 +167,12 @@
     <table class="table table-hover mt-2">
         <thead class="font-educ text-left">
             <tr>
-                <th class="h5" scope="col">No</th>
-                <th class="h5" scope="col">Date</th>
-                <th class="h5" scope="col">Type</th>
-                <th class="h5" scope="col">Description</th>
-                <th class="h5" scope="col">Attachment</th>
-                <th class="h5" scope="col">Action</th>
+                <th scope="col">No</th>
+                <th scope="col">Date</th>
+                <th scope="col">Type</th>
+                <th scope="col">Description</th>
+                <th scope="col">Attachment</th>
+                <th scope="col">Action</th>
             </tr>
         </thead>
         <tbody class="text-left bg-row">
@@ -203,15 +210,15 @@
                         <div class="row row-margin-bottom row-border-bottom">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="activity-date">Date</label>
-                                    <input type="date" name="activity-date" class="form-control" id="activity-date"
+                                    <label class="font-educ" for="activity-date">Date</label>
+                                    <input type="date" name="activity-date" class="form-control fonts" id="activity-date"
                                         required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="activity-type">Type</label>
-                                    <select class="form-control" id="activity-type" name="activity-name"required>
+                                    <label class="font-educ" for="activity-type">Type</label>
+                                    <select class="form-control fonts" id="activity-type" name="activity-name"required>
                                         <option value="Email">Email</option>
                                         <option value="Phone">Phone</option>
                                         <option value="Meeting">Meeting</option>
@@ -225,7 +232,7 @@
                                 <div class="form-group">
                                     <!-- Attachment Label and Button Side by Side -->
                                     <div class="attachment-container">
-                                        <label for="activity-attachment">Attachment</label>
+                                        <label class="font-educ" for="activity-attachment">Attachment</label>
                                         <input type="file" id="activity-attachment" multiple accept="image/*"
                                             style="display: none;" name="activity-attachments">
                                         <button type="button" class="btn btn-upload"
@@ -240,8 +247,8 @@
                         <div class="row ">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="activity-description">Description</label>
-                                    <textarea style="height: 100px; " class="form-control" id="activity-description" rows="3"
+                                    <label class="font-educ" for="activity-description">Description</label>
+                                    <textarea style="height: 100px; " class="form-control fonts" id="activity-description" rows="3"
                                         name="activity-details"></textarea>
                                 </div>
                             </div>
@@ -281,23 +288,23 @@
                             <!-- Left Column -->
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="contact-name">Name</label>
-                                    <input type="text" class="form-control" id="name" name="name"
+                                    <label class="font-educ" for="contact-name">Name</label>
+                                    <input type="text" class="form-control fonts" id="name" name="name"
                                         value="{{ $editContact->name }}" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="contact-email">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email"
+                                    <label class="font-educ" for="contact-email">Email</label>
+                                    <input type="email" class="form-control fonts" id="email" name="email"
                                         value="{{ $editContact->email }}" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="contact-country">Country</label>
-                                    <input type="text" class="form-control" id="contact-country" name="country"
+                                    <label class="font-educ" for="contact-country">Country</label>
+                                    <input type="text" class="form-control fonts" id="contact-country" name="country"
                                         value="{{ $editContact->country }}" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="contact-address">Address</label>
-                                    <input class="form-control" style="height: 125px;" type="text" name="address"
+                                    <label class="font-educ" for="contact-address">Address</label>
+                                    <input class="form-control fonts" style="height: 125px;" type="text" name="address"
                                         id="address" value="{{ $editContact->address }}">
                                 </div>
                             </div>
@@ -305,48 +312,48 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <label for="contact-number">Contact Number</label>
+                                        <label class="font-educ" for="contact-number">Contact Number</label>
                                     </div>
                                     <div>
-                                        <input type="text" class="form-control mb-2" id="contact-number"
+                                        <input type="text" class="form-control fonts mb-2" id="contact-number"
                                             name="contact_number" value="{{ $editContact->contact_number }}" required>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <label for="contact-qualification">Qualification</label>
+                                        <label class="font-educ" for="contact-qualification">Qualification</label>
                                     </div>
                                     <div>
-                                        <input type="text" class="form-control mb-2" id="contact-qualification"
+                                        <input type="text" class="form-control fonts mb-2" id="contact-qualification"
                                             value="{{ $editContact->qualification }}" name="qualification" required>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="contact-role">Job Role</label>
-                                    <input type="text" class="form-control" name="job_role" id="contact-role"
+                                    <label class="font-educ" for="contact-role">Job Role</label>
+                                    <input type="text" class="form-control fonts" name="job_role" id="contact-role"
                                         value="{{ $editContact->job_role }}" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="contact-skills">Skills</label>
-                                    <input type="text" class="form-control" name="skills" id="contact-skills"
+                                    <label class="font-educ" for="contact-skills">Skills</label>
+                                    <input type="text" class="form-control fonts" name="skills" id="contact-skills"
                                         value="{{ $editContact->skills }}" required>
                                 </div>
                             </div>
                             <!-- Right Column -->
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="contact-allocation">Date of Allocation</label>
-                                    <input type="datetime" class="form-control" id="contact-allocation"
+                                    <label class="font-educ" for="contact-allocation">Date of Allocation</label>
+                                    <input type="datetime" class="form-control fonts" id="contact-allocation"
                                         value="{{ $editContact->date_of_allocation }}" readonly>
                                 </div>
                                 <div class="form-group">
-                                    <label for="contact-source">Source</label>
-                                    <input type="text" class="form-control" id="contact-source"
+                                    <label class="font-educ" for="contact-source">Source</label>
+                                    <input type="text" class="form-control fonts" id="contact-source"
                                         value="{{ $editContact->source }}" readonly>
                                 </div>
                                 <div class="form-group">
-                                    <label for="contact-status">Status</label>
-                                    <select class="form-control" id="contact-status" required>
+                                    <label class="font-educ" for="contact-status">Status</label>
+                                    <select class="form-control fonts" id="contact-status" required>
                                         <option value="{{ $editContact->status }}" selected>
                                             {{ $editContact->status }} </option>
                                         <option>In progress</option>
@@ -369,5 +376,6 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ URL::asset('js/contact_detail.js') }}"></script>
+    <script src="{{ URL::asset('js/status_color.js') }}"></script>
 
 @endsection
