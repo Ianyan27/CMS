@@ -93,8 +93,8 @@
                                 <p id="file-name" class="text-muted d-none"></p>
                             </div>
                             <div class="w-50">
-                                <div class="progress" id="progressContainer" role="progressbar" aria-valuenow="0" aria-valuemin="0"
-                                    aria-valuemax="100">
+                                <div class="progress" id="progressContainer" role="progressbar" aria-valuenow="0"
+                                    aria-valuemin="0" aria-valuemax="100">
                                     <div class="progress-bar bg-educ" id="progressBar" style="width: 0%;"></div>
                                 </div>
                                 <p id="progress-message" class="text-muted d-none mt-2"></p>
@@ -157,6 +157,16 @@
                         if (response.status === 500) {
                             throw new Error('Internal Server Error: Please try again later.');
                         }
+                        else if (error.status === 422) {
+                            const errors = error.errors;
+                            let errorText = 'Validation failed for the uploaded file:<br>';
+                            for (const [key, errorMessages] of Object.entries(errors)) {
+                                errorText += errorMessages.join('<br>') + '<br>';
+                            }
+                            errorMessage.innerHTML = errorText;
+                        } else {
+                            errorMessage.textContent = error.message;
+                        }
                         throw new Error('Upload failed');
                     }
                     // Check if the response is a CSV file
@@ -172,6 +182,7 @@
                         // Show the download prompt
                         showDownloadPrompt(data);
                         progressMessage.classList.add('d-none');
+                        progressContainer.classList.add('d-none');
                         progressBar.classList.add('d-none');
 
                     } else if (data.success) {
@@ -198,13 +209,13 @@
             downloadPrompt.style.transform = 'translate(-50%, -50%)';
             downloadPrompt.style.backgroundColor = '#fff';
             downloadPrompt.style.padding = '20px';
-            downloadPrompt.style.boxShadow = '0px 0px 10px rgba(0, 0, 0, 0.1)';
+            downloadPrompt.style.boxShadow = '0px 0px 10px rgba(0, 0, 0, 0.4)';
             downloadPrompt.style.zIndex = '1000';
             downloadPrompt.innerHTML = `
         <h5>Invalid Rows Found</h5>
         <p>We found some invalid rows in your file. Would you like to download them as a CSV?</p>
-        <button id="download-btn" class="btn btn-primary">Download</button>
-        <button id="cancel-btn" class="btn btn-secondary">Cancel</button>
+        <button id="download-btn" class="btn bg-educ color-white">Download</button>
+        <button id="cancel-btn" class="btn">Cancel</button>
     `;
 
             // Append the modal to the body
