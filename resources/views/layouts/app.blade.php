@@ -13,54 +13,41 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="{{ URL::asset('css/admin_style.css') }}">
 </head>
-<body>
-    <div class="container-fluid">
+<body class="d-flex flex-column min-vh-100">
+    <div class="container-fluid flex-grow-1">
         <div class="row shadow-sm py-3">
             <div class="col-md-6 d-flex align-items-center">
                 <div class="logo">
-                    <img src=" {{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }} " alt="Logo"
+                    <img src="{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}" alt="Logo"
                         class="img-fluid" style="max-height: 50px;">
                 </div>
             </div>
             <div class="col-md-6 d-flex justify-content-end align-items-center">
                 <div class="profile d-flex align-items-center">
-                    <img src=" {{ url('/images/Screenshot 2024-05-15 085107.png') }} " alt="Profile Picture"
+                    <img src="{{ url('/images/Screenshot 2024-05-15 085107.png') }}" alt="Profile Picture"
                         class="rounded-circle img-fluid" style="max-height: 40px; margin-right: 10px;">
                     <div class="name">Gerome</div>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="dashboard py-3 my-3 border-educ rounded-right  h-auto">
+            <div class="dashboard py-3 border-right-educ rounded-right h-auto">
                 <ul class="nav flex-column">
-                    {{-- <li class="nav-item">
-                        <i cs="fa-solid fa-table-columns"></i>
-                        <a class="nav-link" href="/dashboard">
-                            <i class="fa-solid fa-table-columns mr-3"></i>Dashboard
-                        </a>
-                    </li> --}}
                     <li class="nav-item">
                         <a class="nav-link dashboard-link" href="/">
                             <i class="fa-regular fa-user mr-3"></i>Users
                         </a>
                     </li>
-                    {{-- <li class="nav-item">
-                        <a class="nav-link" href="/contactdetails"><i
-                                class="fa-solid fa-address-book mr-3"></i>Contact</a>
-                    </li> --}}
                     <li class="nav-item">
-                        <a class="nav-link dashboard-link" href="/salesagent"><i
-                                class="fa-solid fa-universal-access mr-3"></i>Sale Agent
+                        <a class="nav-link dashboard-link" href="/salesagent">
+                            <i class="fa-solid fa-universal-access mr-3"></i>Sale Agent
                         </a>
                     </li>
                     <li class="nav-item dashboard-link">
-                        <a class="nav-link" href="/importcopy"><i class="fa-solid fa-file-import mr-3">
-                            </i>Upload Files
+                        <a class="nav-link" href="/importcopy">
+                            <i class="fa-solid fa-file-import mr-3"></i>Upload Files
                         </a>
                     </li>
-                    {{-- <li class="nav-item">
-                        <a class="nav-link" href="/editcontactdetail">Edit Contact Detail</a>
-                    </li> --}}
                     <li class="nav-item dashboard-link">
                         <a class="nav-link" href="/contact-listing">
                             <i class="fa-solid fa-address-book mr-3"></i>Contact Listing
@@ -72,7 +59,6 @@
                 @yield('content')
             </div>
         </div>
-
     </div>
 
     <footer class="bg-educ color-white text-center py-3 mt-auto">

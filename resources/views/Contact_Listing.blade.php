@@ -80,9 +80,9 @@
                     <td>{{ $contact['contact_number'] }}</td>
                     @inject('countryCodeMapper', 'App\Services\CountryCodeMapper')
                     <td>
-                        {{ $contact['country'] }}
                         <img src="{{ asset('flags/' . strtolower($countryCodeMapper->getCountryCode($contact['country'])) . '.svg') }}"
                             alt="{{ $contact['country'] }}" width="20" height="15">
+                            {{ $contact['country'] }}
                     </td>
                     <td>
                         <span class="status-indicator"
@@ -149,7 +149,11 @@
                     <td> {{ $archive['name'] }} </td>
                     <td> {{ $archive['email'] }} </td>
                     <td> {{ $archive['contact_number'] }} </td>
-                    <td> {{ $archive['country'] }} </td>
+                    <td>
+                        <img src="{{ asset('flags/' . strtolower($countryCodeMapper->getCountryCode($archive['country'])) . '.svg') }}"
+                            alt="{{ $archive['country'] }}" width="20" height="15">
+                        {{ $archive['country'] }}
+                    </td>
                     <td>
                         <span class="status-indicator"
                             style="background-color:
@@ -198,7 +202,11 @@
                     <td> {{ $discard['name'] }} </td>
                     <td> {{ $discard['email'] }} </td>
                     <td> {{ $discard['contact_number'] }} </td>
-                    <td> {{ $discard['country'] }} </td>
+                    <td>
+                        <img src="{{ asset('flags/' . strtolower($countryCodeMapper->getCountryCode($discard['country'])) . '.svg') }}"
+                            alt="{{ $discard['country'] }}" width="20" height="15">
+                            {{ $discard['country'] }}
+                    </td>
                     <td>
                         <span class="status-indicator"
                             style="background-color:
@@ -223,55 +231,52 @@
         </tbody>
     </table>
 
-    <footer aria-label="Page navigation example">
+    <div aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
             <!-- Previous Button -->
             <li class="page-item {{ $contacts->onFirstPage() ? 'disabled' : '' }}">
-                <a class="page-link font-educ-educ" href="{{ $contacts->previousPageUrl() }}"
-                    aria-label="Previous">&#60;</a>
+                <a class="page-link font-educ" href="{{ $contacts->previousPageUrl() }}" aria-label="Previous">&#60;</a>
             </li>
-
+    
             <!-- First Page Button -->
-            @if ($contacts->currentPage() > 2)
+            @if ($contacts->currentPage() > 3)
                 <li class="page-item">
                     <a class="page-link font-educ" href="{{ $contacts->url(1) }}">1</a>
                 </li>
-            @endif
-
-            <!-- Second Page Button -->
-            @if ($contacts->currentPage() > 1)
                 <li class="page-item">
                     <a class="page-link font-educ" href="{{ $contacts->url(2) }}">2</a>
                 </li>
-            @endif
-
-            <!-- Current Page Button -->
-            <li class="page-item active">
-                <span class="page-link font-educ-educ">{{ $contacts->currentPage() }}</span>
-            </li>
-
-            <!-- Penultimate Page Button -->
-            @if ($contacts->lastPage() > $contacts->currentPage() + 1)
-                <li class="page-item">
-                    <a class="page-link font-educ"
-                        href="{{ $contacts->url($contacts->lastPage() - 1) }}">{{ $contacts->lastPage() - 1 }}</a>
+                <li class="page-item disabled">
+                    <span class="page-link">...</span>
                 </li>
             @endif
-
+    
+            <!-- Middle Page Buttons -->
+            @for ($i = max($contacts->currentPage() - 1, 1); $i <= min($contacts->currentPage() + 1, $contacts->lastPage()); $i++)
+                <li class="page-item {{ $i == $contacts->currentPage() ? 'active' : '' }}">
+                    <a class="page-link font-educ {{ $i == $contacts->currentPage() ? 'active-bg' : '' }}" href="{{ $contacts->url($i) }}">{{ $i }}</a>
+                </li>
+            @endfor
+    
             <!-- Last Page Button -->
-            @if ($contacts->lastPage() > $contacts->currentPage())
+            @if ($contacts->currentPage() < $contacts->lastPage() - 2)
+                <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
                 <li class="page-item">
-                    <a class="page-link font-educ"
-                        href="{{ $contacts->url($contacts->lastPage()) }}">{{ $contacts->lastPage() }}</a>
+                    <a class="page-link font-educ" href="{{ $contacts->url($contacts->lastPage() - 1) }}">{{ $contacts->lastPage() - 1 }}</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link font-educ" href="{{ $contacts->url($contacts->lastPage()) }}">{{ $contacts->lastPage() }}</a>
                 </li>
             @endif
-
+    
             <!-- Next Button -->
             <li class="page-item {{ !$contacts->hasMorePages() ? 'disabled' : '' }}">
-                <a class="page-link font-educ-educ" href="{{ $contacts->nextPageUrl() }}" aria-label="Next">&#62;</a>
+                <a class="page-link font-educ" href="{{ $contacts->nextPageUrl() }}" aria-label="Next">&#62;</a>
             </li>
         </ul>
-    </footer>
+    </div>    
     <script>
         $(document).ready(function() {
             $('#archive-table').hide();

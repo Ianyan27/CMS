@@ -41,7 +41,6 @@ Route::get('/edit_contact/{contact_pid}',
 [ContactController::class, 'edit_contact'])->name('contact#edit');
 Route::post('/save_contact/{contact_pid}', 
 [ContactController::class, 'saveContact'])->name('contact#save_edit');
-
 Route::post('/save_activity/{contact_pid}', 
 [ContactController::class, 'saveActivity'])->name('contact#save_activity');
 
