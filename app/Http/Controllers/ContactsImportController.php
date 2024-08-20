@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -12,8 +13,9 @@ class ContactsImportController extends Controller
 {
     public function import(Request $request)
     {
+        // Validate the uploaded file
         $request->validate([
-            'csv_file' => 'required|mimes:csv,txt',
+            'csv_file' => 'required|mimes:csv,txt|max:2048', // Max 2MB
         ], [
             'csv_file.mimes' => 'The uploaded file must be a file of type: csv, txt.',
         ]);
@@ -28,124 +30,112 @@ class ContactsImportController extends Controller
         // Define the required logical columns
         $requiredColumns = ['name', 'email', 'contact_number'];
 
-        // Map the CSV headers to logical columns using the ContactsImport class
+        // Get the column map from the ContactsImport class
         $columnMap = (new ContactsImport)->getColumnMap();
 
-        // Find missing required columns by checking against the header map
-        $missingColumns = [];
-        foreach ($requiredColumns as $required) {
-            $found = false;
-            foreach ($columnMap[$required] ?? [] as $possibleColumn) {
-                if (in_array(strtolower($possibleColumn), $header)) {
-                    $found = true;
-                    break;
-                }
-            }
-            if (!$found) {
-                $missingColumns[] = $required;
-            }
-        }
+        // Check for missing required columns
+        $mappedColumns = array_merge(...array_values($columnMap));
+        $missingColumns = array_diff($requiredColumns, array_intersect($header, $mappedColumns));
 
         if (!empty($missingColumns)) {
-            // Escape special characters in the missing columns
-            $escapedColumns = array_map(function($column) {
-                return htmlspecialchars($column, ENT_QUOTES, 'UTF-8');
-            }, $missingColumns);
-
-            // Join the escaped column names with proper formatting
+            $escapedColumns = array_map('htmlspecialchars', $missingColumns, [ENT_QUOTES, 'UTF-8']);
             $missingColumnsString = implode('", "', $escapedColumns);
             $errorMessage = 'The CSV file must contain the following logical column(s): "' . $missingColumnsString . '".';
 
-            // Show the error message and redirect back to the import page
             return redirect()->back()->with('error', $errorMessage);
         }
 
+        // Cache the index of the email column for efficiency
+        $emailColumn = $this->getColumnIndex('email', $header, $columnMap);
         $validRows = [];
         $invalidRows = [];
 
         foreach ($rows as $row) {
-            // Validate and map each required column
-            $emailColumn = null;
-            foreach ($columnMap['email'] as $possibleColumn) {
-                if (in_array(strtolower($possibleColumn), $header)) {
-                    $emailColumn = $possibleColumn;
-                    break;
-                }
-            }
-
             if ($emailColumn !== null) {
-                $email = $row[array_search(strtolower($emailColumn), $header)];
+                $email = $row[$emailColumn];
 
                 // Validate the email format
                 $validator = Validator::make(['email' => $email], [
                     'email' => 'required|email',
                 ]);
 
-                if ($validator->fails()) {
-                    // Store the invalid row for exporting later
+                if ($validator->fails() || $this->isDuplicateEmail($email)) {
                     $invalidRows[] = $row;
                 } else {
-                    // Check for duplicates in the database
-                    $existingRecord = DB::table('contacts')->where('email', $email)->first();
-
-                    if ($existingRecord) {
-                        // Handle the duplicate record
-                        $invalidRows[] = $row;
-                    } else {
-                        // Store the valid row for importing
-                        $validRows[] = $row;
-                    }
+                    $validRows[] = $row;
                 }
             } else {
                 $invalidRows[] = $row; // Add to invalid rows if email column is missing
             }
         }
 
-        // If there are valid rows, import them using ContactsImport
+        // Handle valid rows
         if (!empty($validRows)) {
-            $tempFile = tempnam(sys_get_temp_dir(), 'valid_csv');
-            $handle = fopen($tempFile, 'w+');
-            fputcsv($handle, $header);
-
-            foreach ($validRows as $row) {
-                fputcsv($handle, $row);
-            }
-
-            fclose($handle);
-
-            try {
-                // Import the valid CSV file
-                Excel::import(new ContactsImport, $tempFile);
-            } catch (\Illuminate\Database\QueryException $e) {
-                // Handle database errors, such as unique constraint violations
-                return redirect()->back()->with('error', 'An error occurred while importing data: ' . $e->getMessage());
-            } finally {
-                // Remove the temporary file
-                unlink($tempFile);
-            }
+            $this->importValidRows($validRows, $header);
         }
 
-        // Handle exporting invalid rows as CSV
+        // Handle invalid rows
         if (!empty($invalidRows)) {
-            $invalidCsvData = array_merge([$header], $invalidRows);
-            $invalidCsvFileName = 'invalid_emails.csv';
-
-            // Store invalid CSV temporarily
-            Storage::disk('local')->put($invalidCsvFileName, $this->arrayToCsv($invalidCsvData));
-
-            // Return download link for invalid rows
-            return response()->download(storage_path('app/' . $invalidCsvFileName))->deleteFileAfterSend(true);
+            return $this->exportInvalidRows($invalidRows, $header);
         }
 
         return redirect('/contact-listing')->with('success', 'CSV imported successfully!');
     }
 
+    private function getColumnIndex($logicalColumn, $header, $columnMap)
+    {
+        foreach ($columnMap[$logicalColumn] as $possibleColumn) {
+            $index = array_search(strtolower($possibleColumn), $header);
+            if ($index !== false) {
+                return $index;
+            }
+        }
+        return null;
+    }
+
+    private function isDuplicateEmail($email)
+    {
+        return DB::table('contacts')->where('email', $email)->exists();
+    }
+
+    private function importValidRows(array $validRows, array $header)
+    {
+        $tempFile = tempnam(sys_get_temp_dir(), 'valid_csv');
+        $handle = fopen($tempFile, 'w+');
+        fputcsv($handle, $header);
+
+        foreach ($validRows as $row) {
+            fputcsv($handle, $row);
+        }
+
+        fclose($handle);
+
+        try {
+            Excel::import(new ContactsImport, $tempFile);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred while importing data: ' . $e->getMessage());
+        } finally {
+            unlink($tempFile);
+        }
+    }
+
+    private function exportInvalidRows(array $invalidRows, array $header)
+    {
+        $invalidCsvData = array_merge([$header], $invalidRows);
+        $invalidCsvFileName = 'invalid_emails.csv';
+
+        Storage::disk('local')->put($invalidCsvFileName, $this->arrayToCsv($invalidCsvData));
+
+        return response()->download(storage_path('app/' . $invalidCsvFileName))->deleteFileAfterSend(true);
+    }
+
     private function arrayToCsv(array $array)
     {
-        $csv = '';
+        $csv = fopen('php://temp', 'r+');
         foreach ($array as $row) {
-            $csv .= implode(',', $row) . "\n";
+            fputcsv($csv, $row);
         }
-        return $csv;
+        rewind($csv);
+        return stream_get_contents($csv);
     }
 }
