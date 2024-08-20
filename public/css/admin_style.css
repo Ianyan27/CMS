@@ -61,7 +61,7 @@ tbody {
 
 .border-right-educ {
     border-right: 1px solid #DCDCDC;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
 }
 
 .border-right {
@@ -129,6 +129,10 @@ tbody {
 
 .active-link {
     border-right: 5px solid #91264c;
+}
+
+.active-link:hover{
+    border-right: none;
 }
 
 .nav-item i {
