@@ -50,26 +50,22 @@
                     <i style="cursor: pointer;" class="fa-solid fa-filter" id="filterIcon" onclick="toggleFilter()"></i>
 
                     <!-- Filter Container -->
-                    <div id="filterContainer" class="filter-popup container" style="display: none;">
+                    <div id="filterContainer" class="filter-popup container rounded-bottom" style="display: none;">
                         <div class="row">
                             <div class="filter-option">
-                                <input class="ml-3" type="checkbox" id="new" name="status" value="New"
-                                    onclick="applyFilter()">
-                                <label for="new">New</label>
+                                <input class="ml-3" type="checkbox" id="new" name="status" value="New" onclick="applyFilter()">
+                                <label for="new" style= "color: #318FFC;">New</label>
                             </div>
                             <div class="filter-option">
-                                <input class="ml-3" type="checkbox" id="inProgress" name="status" value="InProgress"
-                                    onclick="applyFilter()">
-                                <label for="inProgress">In Progress</label>
+                                <input class="ml-3" type="checkbox" id="inProgress" name="status" value="InProgress" onclick="applyFilter()">
+                                <label for="inProgress" style="color: #FF8300;">In Progress</label>
                             </div>
                             <div class="filter-option">
-                                <input class="ml-3" type="checkbox" id="hubspot" name="status" value="HubSpot Contact"
-                                    onclick="applyFilter()">
-                                <label for="hubspot">HubSpot</label>
+                                <input class="ml-3" type="checkbox" id="hubspot" name="status" value="HubSpot Contact" onclick="applyFilter()">
+                                <label for="hubspot" style="color: #FF5C35;">HubSpot</label>
                             </div>
                         </div>
                     </div>
-
                 </th>
                 <th scope="col">Actions</th>
             </tr>

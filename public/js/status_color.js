@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function() {
     const statusInput = document.getElementById('status');
     const statusValue = statusInput.value;
