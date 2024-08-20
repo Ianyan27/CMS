@@ -78,27 +78,7 @@
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     }
                 })
-                .then(response => {
-                    if (response.error) {   
-                        return response.json().then(errorData => {
-                            throw new Error(errorData.message || 'Failed to upload file.');
-                        });
-                    }
-                })
-                .then(data => {
-                    progressBar.style.width = '100%';
-                    progressMessage.textContent = 'Upload complete!';
-                    setTimeout(() => {
-                        progressMessage.classList.add('d-none');
-                        progressBar.style.width = '0%';
-                    }, 2000);
-                })
-                .catch(error => {
-                    errorMessage.textContent = `Error: ${error.message}`;
-                    errorMessage.classList.remove('d-none');
-                    progressBar.style.width = '0%';
-                    progressMessage.classList.add('d-none');
-                });
+                
         });
     </script>
 @endsection
