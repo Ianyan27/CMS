@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -14,11 +13,21 @@ class ContactsImportController extends Controller
     public function import(Request $request)
     {
         // Validate the uploaded file
-        $request->validate([
+        $fileValidator = Validator::make($request->all(), [
             'csv_file' => 'required|mimes:csv,txt|max:2048', // Max 2MB
         ], [
+            'csv_file.required' => 'The CSV file is required.',
             'csv_file.mimes' => 'The uploaded file must be a file of type: csv, txt.',
+            'csv_file.max' => 'The uploaded file may not be greater than 2MB.',
         ]);
+
+        if ($fileValidator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed for the uploaded file.',
+                'errors' => $fileValidator->errors()
+            ], 422);
+        }
 
         $file = $request->file('csv_file');
 
@@ -42,31 +51,79 @@ class ContactsImportController extends Controller
             $missingColumnsString = implode('", "', $escapedColumns);
             $errorMessage = 'The CSV file must contain the following logical column(s): "' . $missingColumnsString . '".';
 
-            return redirect()->back()->with('error', $errorMessage);
+            return response()->json([
+                'success' => false,
+                'message' => $errorMessage,
+                'missing_columns' => $missingColumns
+            ], 400);
         }
 
-        // Cache the index of the email column for efficiency
+        // Cache the indices for required columns
+        $nameColumn = $this->getColumnIndex('name', $header, $columnMap);
         $emailColumn = $this->getColumnIndex('email', $header, $columnMap);
+        $phoneColumn = $this->getColumnIndex('contact_number', $header, $columnMap);
+        $urlColumn = $this->getColumnIndex('social_profile', $header, $columnMap);
+        $dateColumn = $this->getColumnIndex('datetime_of_hubspot_sync', $header, $columnMap);
+
         $validRows = [];
         $invalidRows = [];
+        $errors = [];
 
-        foreach ($rows as $row) {
+        foreach ($rows as $index => $row) {
+            $validationData = [];
+            $validationRules = [];
+
+            if ($nameColumn !== null) {
+                $name = $row[$nameColumn];
+                $validationData['name'] = $name;
+                $validationRules['name'] = 'required|regex:/^[a-zA-Z\s]+$/';
+            }
+
             if ($emailColumn !== null) {
                 $email = $row[$emailColumn];
-
-                // Validate the email format
-                $validator = Validator::make(['email' => $email], [
-                    'email' => 'required|email',
-                ]);
-
-                if ($validator->fails() || $this->isDuplicateEmail($email)) {
-                    $invalidRows[] = $row;
-                } else {
-                    $validRows[] = $row;
-                }
-            } else {
-                $invalidRows[] = $row; // Add to invalid rows if email column is missing
+                $validationData['email'] = $email;
+                $validationRules['email'] = 'required|email|unique:contacts,email';
             }
+
+            if ($phoneColumn !== null) {
+                $phone = $row[$phoneColumn];
+                $validationData['phone'] = $phone;
+                $validationRules['phone'] = 'required|regex:/^\+?[0-9]+$/';
+            }
+
+            if ($urlColumn !== null) {
+                $url = $row[$urlColumn];
+                $validationData['url'] = $url;
+                $validationRules['url'] = 'nullable|url';
+            }
+
+            if ($dateColumn !== null) {
+                $date = $row[$dateColumn];
+                $validationData['date'] = $date;
+                $validationRules['date'] = 'nullable|date_format:Y-m-d';
+            }
+
+            // Validate the data
+            $validator = Validator::make($validationData, $validationRules);
+
+            if ($validator->fails()) {
+                $errors[] = [
+                    'row' => $index + 1,
+                    'errors' => $validator->errors()
+                ];
+                $invalidRows[] = $row;
+            } else {
+                $validRows[] = $row;
+            }
+        }
+
+        // If there are validation errors, return them in JSON format
+        if (!empty($errors)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed for some rows.',
+                'row_errors' => $errors
+            ], 422);
         }
 
         // Handle valid rows
@@ -79,7 +136,10 @@ class ContactsImportController extends Controller
             return $this->exportInvalidRows($invalidRows, $header);
         }
 
-        return redirect('/contact-listing')->with('success', 'CSV imported successfully!');
+        return response()->json([
+            'success' => true,
+            'message' => 'CSV imported successfully!'
+        ]);
     }
 
     private function getColumnIndex($logicalColumn, $header, $columnMap)
@@ -91,11 +151,6 @@ class ContactsImportController extends Controller
             }
         }
         return null;
-    }
-
-    private function isDuplicateEmail($email)
-    {
-        return DB::table('contacts')->where('email', $email)->exists();
     }
 
     private function importValidRows(array $validRows, array $header)
@@ -113,7 +168,10 @@ class ContactsImportController extends Controller
         try {
             Excel::import(new ContactsImport, $tempFile);
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'An error occurred while importing data: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while importing data: ' . $e->getMessage()
+            ], 500);
         } finally {
             unlink($tempFile);
         }
@@ -126,7 +184,11 @@ class ContactsImportController extends Controller
 
         Storage::disk('local')->put($invalidCsvFileName, $this->arrayToCsv($invalidCsvData));
 
-        return response()->download(storage_path('app/' . $invalidCsvFileName))->deleteFileAfterSend(true);
+        return response()->json([
+            'success' => false,
+            'message' => 'Some rows were invalid. You can download the file containing invalid rows.',
+            'download_link' => url('storage/' . $invalidCsvFileName)
+        ]);
     }
 
     private function arrayToCsv(array $array)
