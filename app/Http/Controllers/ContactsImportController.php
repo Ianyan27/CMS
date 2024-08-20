@@ -6,7 +6,7 @@ use App\Imports\ContactsImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
+use App\Models\Contact;
 
 class ContactsImportController extends Controller
 {
@@ -14,7 +14,7 @@ class ContactsImportController extends Controller
     {
         // Validate the uploaded file
         $fileValidator = Validator::make($request->all(), [
-            'csv_file' => 'required|mimes:csv,txt|max:2048', // Max 2MB
+            'csv_file' => 'required|mimes:csv,txt|max:2048',
         ], [
             'csv_file.required' => 'The CSV file is required.',
             'csv_file.mimes' => 'The uploaded file must be a file of type: csv, txt.',
@@ -31,31 +31,43 @@ class ContactsImportController extends Controller
 
         $file = $request->file('csv_file');
 
-        // Read the CSV file into an array
-        $csvData = Excel::toArray([], $file);
-        $rows = $csvData[0]; // Get the rows of the CSV file
-        $header = array_map('strtolower', array_shift($rows)); // Normalize header to lowercase
+        try {
+            // Read the CSV file into an array
+            $csvData = Excel::toArray([], $file);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to read the CSV file: ' . $e->getMessage()
+            ], 500);
+        }
+
+        $rows = $csvData[0];
+        $header = array_map('strtolower', array_shift($rows));
 
         // Define the required logical columns
         $requiredColumns = ['name', 'email', 'contact_number'];
-
-        // Get the column map from the ContactsImport class
         $columnMap = (new ContactsImport)->getColumnMap();
 
-        // Check for missing required columns
-        $mappedColumns = array_merge(...array_values($columnMap));
-        $missingColumns = array_diff($requiredColumns, array_intersect($header, $mappedColumns));
+        // Find missing required columns
+        $missingColumns = [];
+        foreach ($requiredColumns as $required) {
+            $found = false;
+            foreach ($columnMap[$required] ?? [] as $possibleColumn) {
+                if (in_array(strtolower($possibleColumn), $header)) {
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) {
+                $missingColumns[] = $required;
+            }
+        }
 
         if (!empty($missingColumns)) {
-            $escapedColumns = array_map('htmlspecialchars', $missingColumns, [ENT_QUOTES, 'UTF-8']);
+            $escapedColumns = array_map(fn($column) => htmlspecialchars($column, ENT_QUOTES, 'UTF-8'), $missingColumns);
             $missingColumnsString = implode('", "', $escapedColumns);
             $errorMessage = 'The CSV file must contain the following logical column(s): "' . $missingColumnsString . '".';
-
-            return response()->json([
-                'success' => false,
-                'message' => $errorMessage,
-                'missing_columns' => $missingColumns
-            ], 400);
+            return redirect()->back()->with('error', $errorMessage);
         }
 
         // Cache the indices for required columns
@@ -74,33 +86,33 @@ class ContactsImportController extends Controller
             $validationRules = [];
 
             if ($nameColumn !== null) {
-                $name = $row[$nameColumn];
+                $name = trim($row[$nameColumn]);
                 $validationData['name'] = $name;
                 $validationRules['name'] = 'required|regex:/^[a-zA-Z\s]+$/';
             }
 
             if ($emailColumn !== null) {
-                $email = $row[$emailColumn];
+                $email = trim($row[$emailColumn]);
                 $validationData['email'] = $email;
-                $validationRules['email'] = 'required|email|unique:contacts,email';
+                $validationRules['email'] = 'email|unique:contacts,email';
             }
 
             if ($phoneColumn !== null) {
-                $phone = $row[$phoneColumn];
-                $validationData['phone'] = $phone;
-                $validationRules['phone'] = 'required|regex:/^\+?[0-9]+$/';
+                $phone = trim($row[$phoneColumn]);
+                $validationData['contact_number'] = $phone;
+                $validationRules['contact_number'] = 'regex:/^\+?[0-9]+$/';
             }
 
             if ($urlColumn !== null) {
-                $url = $row[$urlColumn];
-                $validationData['url'] = $url;
-                $validationRules['url'] = 'nullable|url';
+                $url = trim($row[$urlColumn]);
+                $validationData['social_profile'] = $url;
+                $validationRules['social_profile'] = 'nullable|url';
             }
 
             if ($dateColumn !== null) {
-                $date = $row[$dateColumn];
-                $validationData['date'] = $date;
-                $validationRules['date'] = 'nullable|date_format:Y-m-d';
+                $date = trim($row[$dateColumn]);
+                $validationData['datetime_of_hubspot_sync'] = $date;
+                $validationRules['datetime_of_hubspot_sync'] = 'nullable|date_format:Y-m-d';
             }
 
             // Validate the data
@@ -111,43 +123,35 @@ class ContactsImportController extends Controller
                     'row' => $index + 1,
                     'errors' => $validator->errors()
                 ];
-                $invalidRows[] = $row;
+                $invalidRows[] = array_merge($row, ['validation_errors' => $validator->errors()->toArray()]);
             } else {
                 $validRows[] = $row;
             }
         }
 
-        // If there are validation errors, return them in JSON format
-        if (!empty($errors)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed for some rows.',
-                'row_errors' => $errors
-            ], 422);
-        }
-
-        // Handle valid rows
         if (!empty($validRows)) {
             $this->importValidRows($validRows, $header);
         }
 
-        // Handle invalid rows
         if (!empty($invalidRows)) {
             return $this->exportInvalidRows($invalidRows, $header);
         }
 
         return response()->json([
             'success' => true,
-            'message' => 'CSV imported successfully!'
+            'message' => 'CSV imported successfully!',
+            'errors' => !empty($errors) ? $errors : null
         ]);
     }
 
     private function getColumnIndex($logicalColumn, $header, $columnMap)
     {
-        foreach ($columnMap[$logicalColumn] as $possibleColumn) {
-            $index = array_search(strtolower($possibleColumn), $header);
-            if ($index !== false) {
-                return $index;
+        if (isset($columnMap[$logicalColumn])) {
+            foreach ($columnMap[$logicalColumn] as $possibleColumn) {
+                $index = array_search(strtolower($possibleColumn), $header);
+                if ($index !== false) {
+                    return $index;
+                }
             }
         }
         return null;
@@ -155,40 +159,67 @@ class ContactsImportController extends Controller
 
     private function importValidRows(array $validRows, array $header)
     {
-        $tempFile = tempnam(sys_get_temp_dir(), 'valid_csv');
-        $handle = fopen($tempFile, 'w+');
-        fputcsv($handle, $header);
-
         foreach ($validRows as $row) {
-            fputcsv($handle, $row);
-        }
+            $contact = new Contact();
+            $nameColumnIndex = $this->getColumnIndex('name', $header, (new ContactsImport)->getColumnMap());
+            $emailColumnIndex = $this->getColumnIndex('email', $header, (new ContactsImport)->getColumnMap());
+            $contactNumberColumnIndex = $this->getColumnIndex('contact_number', $header, (new ContactsImport)->getColumnMap());
+            $socialProfileColumnIndex = $this->getColumnIndex('social_profile', $header, (new ContactsImport)->getColumnMap());
+            $datetimeOfHubspotSyncColumnIndex = $this->getColumnIndex('datetime_of_hubspot_sync', $header, (new ContactsImport)->getColumnMap());
 
-        fclose($handle);
+            $contact->name = $row[$nameColumnIndex] ?? '';
+            $contact->contact_number = $row[$contactNumberColumnIndex] ?? '';
+            $contact->social_profile = $row[$socialProfileColumnIndex] ?? '';
 
-        try {
-            Excel::import(new ContactsImport, $tempFile);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'An error occurred while importing data: ' . $e->getMessage()
-            ], 500);
-        } finally {
-            unlink($tempFile);
+            // Handle email
+            $email = $row[$emailColumnIndex] ?? null;
+            if (empty($email)) {
+                // Skip the row if email is empty
+                continue;
+            } else {
+                // Check if the email already exists in the database
+                if (Contact::where('email', $email)->exists()) {
+                    // Skip or handle the duplicate email case
+                    continue;
+                }
+                $contact->email = $email;
+            }
+
+            // Handle datetime_of_hubspot_sync
+            $datetimeOfHubspotSync = $row[$datetimeOfHubspotSyncColumnIndex] ?? null;
+            $contact->datetime_of_hubspot_sync = !empty($datetimeOfHubspotSync) ? $datetimeOfHubspotSync : null;
+
+            $contact->save();
         }
     }
 
+
+
     private function exportInvalidRows(array $invalidRows, array $header)
     {
-        $invalidCsvData = array_merge([$header], $invalidRows);
+        $invalidCsvData = array_merge([$header], $this->flattenInvalidRows($invalidRows));
         $invalidCsvFileName = 'invalid_emails.csv';
 
-        Storage::disk('local')->put($invalidCsvFileName, $this->arrayToCsv($invalidCsvData));
+        try {
+            Storage::disk('local')->put($invalidCsvFileName, $this->arrayToCsv($invalidCsvData));
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while exporting invalid rows: ' . $e->getMessage()
+            ], 500);
+        }
 
-        return response()->json([
-            'success' => false,
-            'message' => 'Some rows were invalid. You can download the file containing invalid rows.',
-            'download_link' => url('storage/' . $invalidCsvFileName)
-        ]);
+        return response()->download(storage_path('app/' . $invalidCsvFileName))->deleteFileAfterSend(true);
+    }
+
+    private function flattenInvalidRows(array $invalidRows)
+    {
+        return array_map(function ($row) {
+            return array_map(function ($item) {
+                // If the item is an array (e.g., validation errors), convert it to a JSON string or serialize it
+                return is_array($item) ? json_encode($item) : $item;
+            }, $row);
+        }, $invalidRows);
     }
 
     private function arrayToCsv(array $array)
@@ -200,4 +231,5 @@ class ContactsImportController extends Controller
         rewind($csv);
         return stream_get_contents($csv);
     }
+
 }
