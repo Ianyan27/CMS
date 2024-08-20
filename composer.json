@@ -28,8 +28,8 @@
 
         },
         "files": [
+            "app/Services/CountryCodeMapper.php"
 
-            "app/Providers/CountryCodeMapper.php"
         ]
     },
     "autoload-dev": {

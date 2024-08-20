@@ -17,8 +17,7 @@
             </button>
         </div>
         <div class="search-box d-flex align-items-center mr-3 mb-2">
-            <input type="search" class="form-control mr-1" placeholder="Search..." 
-            id="search-input" aria-label="Search">
+            <input type="search" class="form-control mr-1" placeholder="Search..." id="search-input" aria-label="Search">
             <button class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </button>
@@ -29,26 +28,27 @@
             <tr>
                 <th class="h5" scope="col">No #</th>
                 <th class="h5" scope="col" id="name-header">Name
-                    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name" 
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name"
                         onclick="sortTable('name', 'asc'); toggleSort('sortDown-name', 'sortUp-name')"></i>
-                    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name" 
-                        onclick="sortTable('name', 'desc'); toggleSort('sortUp-name', 'sortDown-name')" style="display: none;"></i>
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name"
+                        onclick="sortTable('name', 'desc'); toggleSort('sortUp-name', 'sortDown-name')"
+                        style="display: none;"></i>
                 </th>
                 <th class="h5" scope="col" id="email-header">Email
-                    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-email" 
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-email"
                         onclick="sortTable('email', 'asc'); toggleSort('sortDown-email', 'sortUp-email')"></i>
-                    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-email" 
-                        onclick="sortTable('email', 'desc'); toggleSort('sortUp-email', 'sortDown-email')" style="display: none;"></i>
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-email"
+                        onclick="sortTable('email', 'desc'); toggleSort('sortUp-email', 'sortDown-email')"
+                        style="display: none;"></i>
                 </th>
                 <th class="h5" scope="col">Contact
                 </th>
-                <th class="h5" scope="col">Country 
+                <th class="h5" scope="col">Country
                 </th>
                 <th class="h5 position-relative" scope="col">
                     Status
-                    <i style="cursor: pointer;" class="fa-solid fa-filter" 
-                    id="filterIcon" onclick="toggleFilter()"></i>
-    
+                    <i style="cursor: pointer;" class="fa-solid fa-filter" id="filterIcon" onclick="toggleFilter()"></i>
+
                     <!-- Filter Container -->
                     <div id="filterContainer" class="filter-popup container" style="display: none;">
                         <div class="row">
@@ -66,7 +66,8 @@
                             </div>
                         </div>
                         <div class="row d-flex justify-content-center">
-                            <button class="btn hover-action col-11" type="button" onclick="applyFilter()">Apply Filter</button>
+                            <button class="btn hover-action col-11" type="button" onclick="applyFilter()">Apply
+                                Filter</button>
                         </div>
                     </div>
                 </th>
@@ -80,7 +81,7 @@
                     <td>{{ $contact['name'] }}</td>
                     <td>{{ $contact['email'] }}</td>
                     <td>{{ $contact['contact_number'] }}</td>
-                    @inject('CountryCodeMapper', 'App\Service\CountryCodeMapper')
+                    @inject('countryCodeMapper', 'App\Services\CountryCodeMapper')
                     <td>
                         {{ $contact['country'] }}
                         <img src="{{ asset('flags/' . strtolower($countryCodeMapper->getCountryCode($contact['country'])) . '.svg') }}"
@@ -123,9 +124,9 @@
                     </td>
                 </tr>
             @empty
-            <tr>
-                <td colspan="8" class="text-center">No contacts found.</td>
-            </tr>
+                <tr>
+                    <td colspan="8" class="text-center">No contacts found.</td>
+                </tr>
             @endforelse
         </tbody>
     </table>
@@ -276,7 +277,7 @@
                 <a class="page-link font-educ-educ" href="{{ $contacts->nextPageUrl() }}" aria-label="Next">&#62;</a>
             </li>
         </ul>
-    </footer> 
+    </footer>
     <script>
         $(document).ready(function() {
             $('#archive-table').hide();

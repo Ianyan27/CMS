@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 
@@ -212,6 +213,6 @@ class CountryCodeMapper
     }
     public function getCountryCode($countryName)
     {
-        return CountryCodeMapper::getCountryCodes($countryName);
+        return $this->getCountryCodes($countryName);
     }
 }

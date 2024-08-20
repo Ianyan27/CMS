@@ -14,9 +14,9 @@ class AppServiceProvider extends ServiceProvider
     {
         //
 
-         $this->app->bind('App\Services\CountryCodeMapper', function ($app) {
-        return new CountryCodeMapper();
-    });
+        $this->app->singleton(CountryCodeMapper::class, function ($app) {
+            return new CountryCodeMapper();
+        });
     }
 
     /**
