@@ -3,10 +3,71 @@
 @section('title', 'Import Files Page')
 
 @section('content')
+    <style>
+        /* Custom styling for the select box */
+        select {
+            appearance: none;
+            background-color: transparent;
+            padding: 0.5rem;
+            border: 1px solid #c58ca8;
+            /* Similar color to the one in the image */
+            border-radius: 50px;
+            outline: none;
+            color: #660634;
+            /* Text color similar to the border */
+            font-size: 1rem;
+            background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' width=\'24\' height=\'24\' fill=\'%23c58ca8\'%3e%3cpath d=\'M7.4 8.8l3.6 3.6 3.6-3.6 1.4 1.4-5 5-5-5z\'/%3e%3c/svg%3e');
+            /* Dropdown arrow */
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            background-size: 1rem;
+        }
+
+        select:focus {
+            border-color: #c58ca8;
+            box-shadow: 0 0 0 2px rgba(197, 140, 168, 0.5);
+            /* Add shadow similar to focus state */
+        }
+
+        .card-custom {
+            border: 1px solid #c58ca8;
+            border-radius: 0.5rem;
+        }
+
+        .progress-bar-custom {
+            background-color: #870f4a;
+            /* Custom progress bar color */
+        }
+
+        .btn-custom {
+            background-color: #870f4a;
+            color: white;
+            border: none;
+        }
+
+        .btn-close-custom {
+            color: #c58ca8;
+        }
+
+        .status-text {
+            color: green;
+        }
+    </style>
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-12">
+            <div class="col-sm-12">
+                <label for="platform" class="block text-gray-700 font-bold mb-2">Select platform</label>
+                <div class="form-select w-100 mb-4" style="width: 100%">
+                    <select id="platform" class="form-select w-100">
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="facebook">Facebook</option>
+                        <option value="twitter">Twitter</option>
+                        <option value="instagram">Instagram</option>
+                    </select>
+                </div>
+
                 <div class="card text-center mb-4">
+
                     <div class="card-body bg-silver">
                         <form action="{{ route('import') }}" method="POST" enctype="multipart/form-data"
                             class="d-flex justify-content-center align-items-center">
@@ -23,27 +84,29 @@
                     </div>
                 </div>
 
+
                 <div class="card d-none" id="file-card">
                     <div class="card-body">
-                        <div class="d-flex justify-content-end align-items-center">
-                            <div class="col-sm-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
                                 <img src="../images/csv.png" alt="" style="height:4rem">
                                 <p id="file-name" class="text-muted d-none"></p>
                             </div>
-                            <div class="col-sm-4">
-                                <div class="progress" role="progressbar" aria-valuenow="0" aria-valuemin="0"
+                            <div class="w-50">
+                                <div class="progress" id="progressContainer" role="progressbar" aria-valuenow="0" aria-valuemin="0"
                                     aria-valuemax="100">
-                                    <div class="progress-bar bg-purple" id="progressBar" style="width: 0%;"></div>
+                                    <div class="progress-bar bg-educ" id="progressBar" style="width: 0%;"></div>
                                 </div>
+                                <p id="progress-message" class="text-muted d-none mt-2"></p>
+                                <p id="error-message" class="text-danger d-none mt-2"></p>
                             </div>
-                            <div class="col-sm-4 ">
+                            <div>
                                 <button type="submit" id="submit-btn" class="btn bg-educ color-white d-none"
                                     style="margin-left: auto">Submit</button>
                             </div>
                         </div>
 
-                        <p id="progress-message" class="text-muted d-none mt-2"></p>
-                        <p id="error-message" class="text-danger d-none mt-2"></p>
+
                     </div>
                 </div>
             </div>
@@ -55,6 +118,7 @@
         const submitBtn = document.getElementById('submit-btn');
         const fileName = document.getElementById('file-name');
         const card = document.getElementById('file-card');
+        const progressContainer = document.getElementById('progressContainer');
         const progressBar = document.getElementById('progressBar');
         const progressMessage = document.getElementById('progress-message');
         const errorMessage = document.getElementById('error-message');
@@ -65,16 +129,21 @@
             fileName.classList.remove('d-none');
             submitBtn.classList.remove('d-none');
             card.classList.remove('d-none');
+            errorMessage.classList.add('d-none');
+            progressContainer.classList.add('d-none')
         });
 
         submitBtn.addEventListener('click', (e) => {
             e.preventDefault();
+            submitBtn.classList.add('d-none');
+            progressContainer.classList.remove('d-none')
             const formData = new FormData();
             formData.append('csv_file', fileInput.files[0]);
             progressBar.style.width = '0%';
             progressMessage.textContent = 'Uploading...';
             progressMessage.classList.remove('d-none');
             errorMessage.classList.add('d-none'); // Hide any previous error message
+            progressBar.style.width = '30%';
 
             fetch('{{ route('import') }}', {
                     method: 'POST',
