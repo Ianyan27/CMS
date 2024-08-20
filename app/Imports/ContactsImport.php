@@ -11,14 +11,14 @@ class ContactsImport implements ToModel, WithHeadingRow
     protected $columnMap = [
         'fk_contacts__owner_pid' => ['owner_pid', 'owner_id', 'owner'],
         'date_of_allocation' => ['date_of_allocation', 'allocation_date', 'allocated_on'],
-        'name' => ['name', 'full_name', 'contact_name', 'lead_full_name','Lead Full Name'],
+        'name' => ['name', 'full_name', 'contact_name', 'lead_full_name', 'lead full name','Lead Full Name'],
         'email' => ['email', 'email_address', 'contact_email'],
-        'contact_number' => ['contact_number', 'phone_number', 'mobile', 'phone', 'contact_no', 'Contact No'],
+        'contact_number' => ['contact_number', 'phone_number', 'mobile', 'phone', 'contact_no', 'contact no','Contact No'],
         'address' => ['address', 'contact_address', 'location', 'lead_location_raw'],
         'country' => ['country', 'nation', 'lead_location_country_name'],
         'qualification' => ['qualification', 'degree', 'education'],
         'job_role' => ['job_role', 'position', 'role', 'lead_job_title'],
-        'company_name' => ['company_name', 'company', 'organization', 'company_name'],
+        'company_name' => ['company_name', 'company', 'organization', 'company name'],
         'skills' => ['skills', 'expertise', 'competencies'],
         'social_profile' => ['social_profile', 'linkedin', 'twitter', 'lead_linkedin_url'],
         'status' => ['status'],
@@ -50,6 +50,11 @@ class ContactsImport implements ToModel, WithHeadingRow
                     break;
                 }
             }
+        }
+
+        // Validate required fields
+        if (empty($data['name']) || empty($data['email']) || empty($data['contact_number'])) {
+            return null; // Skip the row if required fields are missing
         }
 
         return new Contact($data);
