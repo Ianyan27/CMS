@@ -53,15 +53,15 @@
                     <div id="filterContainer" class="filter-popup container" style="display: none;">
                         <div class="row">
                             <div class="filter-option">
-                                <input class="ml-3" type="checkbox" id="new" name="status" value="New" onclick="applyFilter()">
+                                <input class="ml-3 new-status" type="checkbox" id="new" name="status" value="New" onclick="applyFilter()">
                                 <label for="new">New</label>
                             </div>
                             <div class="filter-option">
-                                <input class="ml-3" type="checkbox" id="inProgress" name="status" value="InProgress" onclick="applyFilter()">
+                                <input class="ml-3 inprogress-status" type="checkbox" id="inProgress" name="status" value="InProgress" onclick="applyFilter()">
                                 <label for="inProgress">In Progress</label>
                             </div>
                             <div class="filter-option">
-                                <input class="ml-3" type="checkbox" id="hubspot" name="status" value="HubSpot Contact" onclick="applyFilter()">
+                                <input class="ml-3 hubspot-status" type="checkbox" id="hubspot" name="status" value="HubSpot Contact" onclick="applyFilter()">
                                 <label for="hubspot">HubSpot</label>
                             </div>
                         </div>
@@ -114,6 +114,9 @@
                         <a href=" {{ route('contact#view', $contact->contact_pid) }} " class="btn hover-action"
                             data-toggle="tooltip" title="View">
                             <i class="fa-solid fa-eye "></i>
+                        </a>
+                        <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
+                            <i class="fa-solid fa-pen-to-square"></i>
                         </a>
                     </td>
                 </tr>

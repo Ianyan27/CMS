@@ -206,6 +206,21 @@ tbody {
     color: #91264c;
 }
 
+.new-status{
+    background-color: #CCE4FF; 
+    color: #318FFC;
+}
+
+.inprogress-status{
+    background-color: #FFF3CD;
+    color: #FF8300;
+}
+
+.hubspot-status{
+    background-color: #FFE8E2;
+    color:#FF5C35; 
+}
+
 /* Input Fields */
 .input-contact-details {
     border: none;
