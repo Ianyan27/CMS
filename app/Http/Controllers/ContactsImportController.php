@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -7,6 +6,7 @@ use App\Imports\ContactsImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class ContactsImportController extends Controller
 {
@@ -45,6 +45,7 @@ class ContactsImportController extends Controller
                 $missingColumns[] = $required;
             }
         }
+
         if (!empty($missingColumns)) {
             // Escape special characters in the missing columns
             $escapedColumns = array_map(function($column) {
@@ -59,12 +60,11 @@ class ContactsImportController extends Controller
             return redirect()->back()->with('error', $errorMessage);
         }
 
-
         $validRows = [];
         $invalidRows = [];
 
         foreach ($rows as $row) {
-            // Find the email field in the row using the mapped header
+            // Validate and map each required column
             $emailColumn = null;
             foreach ($columnMap['email'] as $possibleColumn) {
                 if (in_array(strtolower($possibleColumn), $header)) {
@@ -85,8 +85,16 @@ class ContactsImportController extends Controller
                     // Store the invalid row for exporting later
                     $invalidRows[] = $row;
                 } else {
-                    // Store the valid row for importing
-                    $validRows[] = $row;
+                    // Check for duplicates in the database
+                    $existingRecord = DB::table('contacts')->where('email', $email)->first();
+
+                    if ($existingRecord) {
+                        // Handle the duplicate record
+                        $invalidRows[] = $row;
+                    } else {
+                        // Store the valid row for importing
+                        $validRows[] = $row;
+                    }
                 }
             } else {
                 $invalidRows[] = $row; // Add to invalid rows if email column is missing
@@ -105,11 +113,16 @@ class ContactsImportController extends Controller
 
             fclose($handle);
 
-            // Import the valid CSV file
-            Excel::import(new ContactsImport, $tempFile);
-
-            // Remove the temporary file
-            unlink($tempFile);
+            try {
+                // Import the valid CSV file
+                Excel::import(new ContactsImport, $tempFile);
+            } catch (\Illuminate\Database\QueryException $e) {
+                // Handle database errors, such as unique constraint violations
+                return redirect()->back()->with('error', 'An error occurred while importing data: ' . $e->getMessage());
+            } finally {
+                // Remove the temporary file
+                unlink($tempFile);
+            }
         }
 
         // Handle exporting invalid rows as CSV
