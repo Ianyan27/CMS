@@ -117,3 +117,8 @@
  .attachment-container label {
      margin-right: 10px;
  }
+
+ /* create rounded pop ups */
+ .modal-header, .modal-content{
+    border-radius: 10px;
+ }
