@@ -99,9 +99,9 @@
 
 
         </div>
-        <div class="col-md-7 pl-5" id="activity-container">
+        <div class="col-md-7 px-3" id="activity-container">
             <div class="d-flex justify-content-between align-items-center my-3">
-                <h2 class="mt-2 headings">Activities Notifications</h2>
+                <h2 class="mt-2 ml-2 headings">Activities Notifications</h2>
                 <div class="d-flex align-items-center">
                     <input type="search" class="form-control fonts mr-1" placeholder="Search..." id="search-input"
                         aria-label="Search">
@@ -127,11 +127,11 @@
             return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
         }) as $month => $activitiesInMonth)
                 <div class="activity-list">
-                    <div class="activity-date my-3 ml-2">
-                        <h5 class="text-muted">{{ $month }}</h5>
+                    <div class="activity-date my-3 ml-3">
+                        <span class="text-muted">{{ $month }}</span>
                     </div>
                     @foreach ($activitiesInMonth as $activity)
-                        <div class="activity-item mb-3 border-educ rounded p-3"
+                        <div class="activity-item mb-3 mx-3 border-educ rounded p-3"
                             data-type="{{ strtolower($activity->activity_name) }}">
                             <h5 class="font-educ">{{ $activity->activity_name }} Activities</h5>
                             <small>{{ \Carbon\Carbon::parse($activity->date)->format('d-m-Y') }}</small>
@@ -158,7 +158,7 @@
         <div class="d-flex align-items-center mr-2 mb-2">
             <!-- Button to trigger the modal -->
             <button class="btn hover-action add-activity-button" data-toggle="modal" data-target="#addActivityModal">
-                <i class="fa-solid fa-square-plus"></i>
+                <i style="font-size: 22px;" class="fa-solid fa-square-plus p-1"></i>
             </button>
         </div>
     </div>
@@ -232,10 +232,10 @@
                                 <div class="form-group">
                                     <!-- Attachment Label and Button Side by Side -->
                                     <div class="attachment-container">
-                                        <label class="font-educ" for="activity-attachment">Attachment</label>
+                                        <label class="font-educ my-1" for="activity-attachment">Attachment</label>
                                         <input type="file" id="activity-attachment" multiple accept="image/*"
                                             style="display: none;" name="activity-attachments">
-                                        <button type="button" class="btn btn-upload"
+                                        <button type="button" class="btn hover-action"
                                             onclick="document.getElementById('activity-attachment').click();">
                                             <i class="fa-solid fa-upload"></i> Upload
                                         </button>

@@ -28,7 +28,7 @@
                 <div class="profile d-flex align-items-center">
                     <img src="{{ url('/images/Screenshot 2024-05-15 085107.png') }}" alt="Profile Picture"
                         class="rounded-circle img-fluid" style="max-height: 40px; margin-right: 10px;">
-                    <div class="name">Gerome</div>
+                    <div class="name">Signout</div>
                 </div>
             </div>
         </div>
