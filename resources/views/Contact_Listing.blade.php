@@ -53,20 +53,23 @@
                     <div id="filterContainer" class="filter-popup container" style="display: none;">
                         <div class="row">
                             <div class="filter-option">
-                                <input class="ml-3 new-status" type="checkbox" id="new" name="status" value="New" onclick="applyFilter()">
+                                <input class="ml-3" type="checkbox" id="new" name="status" value="New"
+                                    onclick="applyFilter()">
                                 <label for="new">New</label>
                             </div>
                             <div class="filter-option">
-                                <input class="ml-3 inprogress-status" type="checkbox" id="inProgress" name="status" value="InProgress" onclick="applyFilter()">
+                                <input class="ml-3" type="checkbox" id="inProgress" name="status" value="InProgress"
+                                    onclick="applyFilter()">
                                 <label for="inProgress">In Progress</label>
                             </div>
                             <div class="filter-option">
-                                <input class="ml-3 hubspot-status" type="checkbox" id="hubspot" name="status" value="HubSpot Contact" onclick="applyFilter()">
+                                <input class="ml-3" type="checkbox" id="hubspot" name="status" value="HubSpot Contact"
+                                    onclick="applyFilter()">
                                 <label for="hubspot">HubSpot</label>
                             </div>
                         </div>
                     </div>
-                    
+
                 </th>
                 <th class="h5" scope="col">Actions</th>
             </tr>
@@ -82,7 +85,7 @@
                     <td>
                         <img src="{{ asset('flags/' . strtolower($countryCodeMapper->getCountryCode($contact['country'])) . '.svg') }}"
                             alt="{{ $contact['country'] }}" width="20" height="15">
-                            {{ $contact['country'] }}
+                        {{ $contact['country'] }}
                     </td>
                     <td>
                         <span class="status-indicator"
@@ -208,7 +211,7 @@
                     <td>
                         <img src="{{ asset('flags/' . strtolower($countryCodeMapper->getCountryCode($discard['country'])) . '.svg') }}"
                             alt="{{ $discard['country'] }}" width="20" height="15">
-                            {{ $discard['country'] }}
+                        {{ $discard['country'] }}
                     </td>
                     <td>
                         <span class="status-indicator"
@@ -221,13 +224,13 @@
                         </span>
                     </td>
                     <td>
-                        <a href=" {{ route('contact#view', $contact->contact_pid) }} " class="btn hover-action"
-                            data-toggle="tooltip" title="View">
-                            <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
+                        <a href="{{ route('contact#view', ['contact_pid' => $contact->contact_pid]) }}"
+                            class="btn hover-action" data-toggle="tooltip" title="View">
+                            <i class="fa-solid fa-eye" style="font-size: 1.5rem"></i>
                         </a>
-                        <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
+                        {{-- <a href="#" class="btn hover-action" data-toggle="tooltip" title="Edit">
                             <i class="fa-solid fa-pen-to-square"></i>
-                        </a>
+                        </a> --}}
                     </td>
                 </tr>
             @endforeach
@@ -240,7 +243,7 @@
             <li class="page-item {{ $contacts->onFirstPage() ? 'disabled' : '' }}">
                 <a class="page-link font-educ" href="{{ $contacts->previousPageUrl() }}" aria-label="Previous">&#60;</a>
             </li>
-    
+
             <!-- First Page Button -->
             @if ($contacts->currentPage() > 3)
                 <li class="page-item">
@@ -253,33 +256,36 @@
                     <span class="page-link">...</span>
                 </li>
             @endif
-    
+
             <!-- Middle Page Buttons -->
             @for ($i = max($contacts->currentPage() - 1, 1); $i <= min($contacts->currentPage() + 1, $contacts->lastPage()); $i++)
                 <li class="page-item {{ $i == $contacts->currentPage() ? 'active' : '' }}">
-                    <a class="page-link font-educ {{ $i == $contacts->currentPage() ? 'active-bg' : '' }}" href="{{ $contacts->url($i) }}">{{ $i }}</a>
+                    <a class="page-link font-educ {{ $i == $contacts->currentPage() ? 'active-bg' : '' }}"
+                        href="{{ $contacts->url($i) }}">{{ $i }}</a>
                 </li>
             @endfor
-    
+
             <!-- Last Page Button -->
             @if ($contacts->currentPage() < $contacts->lastPage() - 2)
                 <li class="page-item disabled">
                     <span class="page-link">...</span>
                 </li>
                 <li class="page-item">
-                    <a class="page-link font-educ" href="{{ $contacts->url($contacts->lastPage() - 1) }}">{{ $contacts->lastPage() - 1 }}</a>
+                    <a class="page-link font-educ"
+                        href="{{ $contacts->url($contacts->lastPage() - 1) }}">{{ $contacts->lastPage() - 1 }}</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link font-educ" href="{{ $contacts->url($contacts->lastPage()) }}">{{ $contacts->lastPage() }}</a>
+                    <a class="page-link font-educ"
+                        href="{{ $contacts->url($contacts->lastPage()) }}">{{ $contacts->lastPage() }}</a>
                 </li>
             @endif
-    
+
             <!-- Next Button -->
             <li class="page-item {{ !$contacts->hasMorePages() ? 'disabled' : '' }}">
                 <a class="page-link font-educ" href="{{ $contacts->nextPageUrl() }}" aria-label="Next">&#62;</a>
             </li>
         </ul>
-    </div>    
+    </div>
     <script>
         $(document).ready(function() {
             $('#archive-table').hide();

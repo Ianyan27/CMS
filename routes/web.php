@@ -22,7 +22,7 @@ Route::get('/salesagent', function () {
 Route::get('/contact-listing', [ContactController::class, 'contacts'])->name('contact-listing');
 
 // View Contact Route
-Route::get('view_contact/{contact_pid}', [ContactController::class, 'view'])->name('contact#view');
+Route::get('view_contact/{contact_pid}', [ContactController::class, 'viewContact'])->name('contact#view');
 
 
 // Edit Contact Route
