@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +14,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="{{ URL::asset('css/admin_style.css') }}">
 </head>
+
 <body class="d-flex flex-column min-vh-100">
     <div class="container-fluid flex-grow-1">
         <div class="row shadow-sm py-3">
@@ -31,25 +33,35 @@
             </div>
         </div>
         <div class="row">
-            <div class="dashboard py-3 border-right-educ rounded-right h-auto">
+            <div id="side-bar" class="dashboard py-3 border-right-educ rounded-right h-auto">
                 <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link dashboard-link" href="/">
+                    {{-- <li class="nav-item">
+                        <a class="nav-link {{ Route::currentRouteName() == 'dashboard' ? 'active-link' : '' }}"
+                            href="{{ route('dashboard') }}">
+                            <i class="fa-solid fa-table-columns mr-3"></i>Dashboard
+                        </a>
+                    </li> --}}
+                    <li class="nav-item dashboard-link">
+                        <a class="nav-link {{ Route::currentRouteName() == 'user-list' ? 'active-link' : '' }}"
+                            href="{{ route('user-list') }}">
                             <i class="fa-regular fa-user mr-3"></i>Users
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link dashboard-link" href="/salesagent">
+                    <li class="nav-item dashboard-link">
+                        <a class="nav-link {{ Route::currentRouteName() == 'salesagent' ? 'active-link' : '' }}"
+                            href="{{ route('salesagent') }}">
                             <i class="fa-solid fa-universal-access mr-3"></i>Sale Agent
                         </a>
                     </li>
                     <li class="nav-item dashboard-link">
-                        <a class="nav-link" href="/importcopy">
+                        <a class="nav-link {{ Route::currentRouteName() == 'importcopy' ? 'active-link' : '' }}"
+                            href="{{ route('importcopy') }}">
                             <i class="fa-solid fa-file-import mr-3"></i>Upload Files
                         </a>
                     </li>
                     <li class="nav-item dashboard-link">
-                        <a class="nav-link" href="/contact-listing">
+                        <a class="nav-link {{ Route::currentRouteName() == 'contact-listing' ? 'active-link' : '' }}"
+                            href="{{ route('contact-listing') }}">
                             <i class="fa-solid fa-address-book mr-3"></i>Contact Listing
                         </a>
                     </li>
@@ -72,4 +84,5 @@
     <script src="{{ URL::asset('js/sort.js') }}"></script>
     <script src="{{ URL::asset('js/filter_status.js') }}"></script>
 </body>
+
 </html>
