@@ -172,6 +172,10 @@ tbody {
 }
 
 /* Icons */
+.dashboard i{
+    font-size: 1.45rem;
+}
+
 .fa-circle-question, .fa-pen-to-square, .fa-eye, .fa-trash, .file-button i {
     font-size: 1rem;
 }

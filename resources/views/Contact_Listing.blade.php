@@ -5,7 +5,7 @@
 @section('content')
     <div class="table-title d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
-            <h2 class="mx-3 my-2 font-educ"><strong>Contact Listing</strong></h2>
+            <h5 class="mx-3 my-2 font-educ">Contact Listing</h5>
             <button style="border-radius: 15px;" class="btn hover-action mx-3" id="show-contacts">
                 Interested Contacts
             </button>
