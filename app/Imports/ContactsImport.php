@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Imports;
 
 use App\Models\Contact;
@@ -12,7 +13,7 @@ class ContactsImport implements ToModel, WithHeadingRow
         'date_of_allocation' => ['date_of_allocation', 'allocation_date', 'allocated_on'],
         'name' => ['name', 'full_name', 'contact_name', 'lead_full_name','Lead Full Name'],
         'email' => ['email', 'email_address', 'contact_email'],
-        'contact_number' => ['contact_number', 'phone_number', 'mobile', 'phone', 'contact_no', 'Contact No'], // Added 'Contact No'
+        'contact_number' => ['contact_number', 'phone_number', 'mobile', 'phone', 'contact_no', 'Contact No'],
         'address' => ['address', 'contact_address', 'location', 'lead_location_raw'],
         'country' => ['country', 'nation', 'lead_location_country_name'],
         'qualification' => ['qualification', 'degree', 'education'],
@@ -39,13 +40,11 @@ class ContactsImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         $data = [];
-
-        // Normalize row keys to lowercase for case-insensitive matching
         $normalizedRow = array_change_key_case($row, CASE_LOWER);
 
         foreach ($this->columnMap as $field => $possibleColumns) {
             foreach ($possibleColumns as $column) {
-                $normalizedColumn = strtolower($column); // Normalize column name for comparison
+                $normalizedColumn = strtolower($column);
                 if (isset($normalizedRow[$normalizedColumn])) {
                     $data[$field] = $normalizedRow[$normalizedColumn];
                     break;
