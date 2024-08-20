@@ -5,7 +5,7 @@
 @section('content')
     <div class="table-title d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
-            <h5 class="mx-3 my-2 font-educ">Contact Listing</h5>
+            <h5 class="mr-3 my-2 headings">Contact Listing</h5>
             <button style="border-radius: 15px;" class="btn hover-action mx-3" id="show-contacts">
                 Interested Contacts
             </button>
@@ -26,26 +26,26 @@
     <table class="table table-hover mt-2" id="contacts-table">
         <thead class="text-left font-educ">
             <tr>
-                <th class="h5" scope="col">No #</th>
-                <th class="h5" scope="col" id="name-header">Name
+                <th scope="col">No #</th>
+                <th scope="col" id="name-header">Name
                     <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name"
                         onclick="sortTable('name', 'asc'); toggleSort('sortDown-name', 'sortUp-name')"></i>
                     <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name"
                         onclick="sortTable('name', 'desc'); toggleSort('sortUp-name', 'sortDown-name')"
                         style="display: none;"></i>
                 </th>
-                <th class="h5" scope="col" id="email-header">Email
+                <th scope="col" id="email-header">Email
                     <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-email"
                         onclick="sortTable('email', 'asc'); toggleSort('sortDown-email', 'sortUp-email')"></i>
                     <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-email"
                         onclick="sortTable('email', 'desc'); toggleSort('sortUp-email', 'sortDown-email')"
                         style="display: none;"></i>
                 </th>
-                <th class="h5" scope="col">Contact
+                <th scope="col">Contact
                 </th>
-                <th class="h5" scope="col">Country
+                <th scope="col">Country
                 </th>
-                <th class="h5 position-relative" scope="col">
+                <th class=" position-relative" scope="col">
                     Status
                     <i style="cursor: pointer;" class="fa-solid fa-filter" id="filterIcon" onclick="toggleFilter()"></i>
 
@@ -71,10 +71,10 @@
                     </div>
 
                 </th>
-                <th class="h5" scope="col">Actions</th>
+                <th scope="col">Actions</th>
             </tr>
         </thead>
-        <tbody class="text-left bg-row">
+        <tbody class="text-left bg-row fonts">
             @forelse ($contacts as $contact)
                 <tr data-status="{{ $contact['status'] }}">
                     <td>{{ $contact['contact_pid'] }}</td>
@@ -133,19 +133,19 @@
     <table class="table table-hover mt-2" id="archive-table">
         <thead class="text-left font-educ">
             <tr class="text-left">
-                <th class="h5" scope="col">No #</th>
-                <th class="h5" scope="col">Name <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
-                <th class="h5" scope="col">Email <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
-                <th class="h5" scope="col">Contact</th>
-                <th class="h5" scope="col">Country <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
-                <th class="h5" scope="col">
+                <th scope="col">No #</th>
+                <th scope="col">Name <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
+                <th scope="col">Email <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
+                <th scope="col">Contact</th>
+                <th scope="col">Country <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
+                <th scope="col">
                     Status
                     <span class="ml-2" data-bs-toggle="tooltip" data-bs-placement="top"
                         title="Status of the contact: Active, Discarded, New, In Progress, Archived">
                         <i class="fa-solid fa-info-circle text-muted"></i>
                     </span>
                 </th>
-                <th class="h5" scope="col">Actions</th>
+                <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody class="text-left bg-row">
@@ -186,19 +186,19 @@
     <table class="table table-hover mt-2" id="discard-table">
         <thead class="font-educ text-left">
             <tr class="font-educ text-left">
-                <th class="h5" scope="col">No #</th>
-                <th class="h5" scope="col">Name <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
-                <th class="h5" scope="col">Email <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
-                <th class="h5" scope="col">Contact</th>
-                <th class="h5" scope="col">Country <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
-                <th class="h5" scope="col">
+                <th scope="col">No #</th>
+                <th scope="col">Name <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
+                <th scope="col">Email <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
+                <th scope="col">Contact</th>
+                <th scope="col">Country <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
+                <th scope="col">
                     Status
                     <span class="ml-2" data-bs-toggle="tooltip" data-bs-placement="top"
                         title="Status of the contact: Active, Discarded, New, In Progress, Archived">
                         <i class="fa-solid fa-info-circle text-muted"></i>
                     </span>
                 </th>
-                <th class="h5" scope="col">Actions</th>
+                <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody class="text-left bg-row">

@@ -34,7 +34,7 @@
         </div>
         <div class="row">
             <div id="side-bar" class="dashboard py-3 border-right-educ rounded-right h-auto">
-                <ul class="nav flex-column">
+                <ul class="nav flex-column fonts">
                     {{-- <li class="nav-item">
                         <a class="nav-link {{ Route::currentRouteName() == 'dashboard' ? 'active-link' : '' }}"
                             href="{{ route('dashboard') }}">
@@ -42,27 +42,27 @@
                         </a>
                     </li> --}}
                     <li class="nav-item dashboard-link">
-                        <a class="nav-link {{ Route::currentRouteName() == 'user-list' ? 'active-link' : '' }}"
+                        <a class="nav-link mb-2 {{ Route::currentRouteName() == 'user-list' ? 'active-link' : '' }}"
                             href="{{ route('user-list') }}">
-                            <i class="fa-regular fa-user mr-3"></i>Users
+                            <i class="fa-regular fa-user mr-3"></i> <span>Users</span>
                         </a>
-                    </li>
+                    </li>                    
                     <li class="nav-item dashboard-link">
-                        <a class="nav-link {{ Route::currentRouteName() == 'salesagent' ? 'active-link' : '' }}"
+                        <a class="nav-link mb-2 {{ Route::currentRouteName() == 'salesagent' ? 'active-link' : '' }}"
                             href="{{ route('salesagent') }}">
-                            <i class="fa-solid fa-universal-access mr-3"></i>Sale Agent
+                            <i class="fa-solid fa-universal-access mr-3"></i></i> <span>Sale Agent</span>
                         </a>
                     </li>
                     <li class="nav-item dashboard-link">
-                        <a class="nav-link {{ Route::currentRouteName() == 'importcopy' ? 'active-link' : '' }}"
+                        <a class="nav-link mb-2 {{ Route::currentRouteName() == 'importcopy' ? 'active-link' : '' }}"
                             href="{{ route('importcopy') }}">
-                            <i class="fa-solid fa-file-import mr-3"></i>Upload Files
+                            <i class="fa-solid fa-file-import mr-3"></i><span>Upload Files</span>
                         </a>
                     </li>
                     <li class="nav-item dashboard-link">
-                        <a class="nav-link {{ Route::currentRouteName() == 'contact-listing' ? 'active-link' : '' }}"
+                        <a class="nav-link mb-2 {{ Route::currentRouteName() == 'contact-listing' ? 'active-link' : '' }}"
                             href="{{ route('contact-listing') }}">
-                            <i class="fa-solid fa-address-book mr-3"></i>Contact Listing
+                            <i class="fa-solid fa-address-book mr-3"></i><span>Contact Listing</span>
                         </a>
                     </li>
                 </ul>

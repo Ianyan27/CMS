@@ -16,11 +16,6 @@ body {
     flex-grow: 1;
 }
 
-.fonts {
-    font-size: 12px;
-    font-weight: 550;
-}
-
 .color-white {
     color: white;
 }
@@ -35,7 +30,16 @@ tbody {
     line-height: 1.5;
 }
 
+.headings{
+    font-size: 32px;
+    font-weight: 700;
+    color: #91264c;
+}
 
+.fonts {
+    font-size: 16px;
+    font-weight: 470;
+}
 
 /* Backgrounds */
 .bg-row {
@@ -114,7 +118,9 @@ tbody {
 }
 
 .dashboard-link {
-    font-size: 1rem;
+    font-size: 18px;
+    font-weight: 500;
+    height: 43px;
 }
 
 .dashboard-link:hover{
@@ -122,11 +128,14 @@ tbody {
 }
 
 .active-link {
-    border-right: 3px solid #91264c;
+    border-right: 5px solid #91264c;
 }
 
-.nav-item .nav-link {
+.nav-item i {
     color: #91264c;
+}
+.nav-item .nav-link span{
+    color: black;
 }
 
 /* Hover Effects */
@@ -275,6 +284,10 @@ tbody {
 }
 
 /* Row & Table Styles */
+th{
+    font-size: 18px;
+    font-weight: 500;
+}
 .custom-row {
     border-bottom: 1px solid #ddd;
     margin-bottom: 15px;
