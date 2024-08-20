@@ -6,9 +6,8 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-12">
-                <div class="card text-center mb-4 ">
+                <div class="card text-center mb-4">
                     <div class="card-body bg-silver">
-
                         <form action="{{ route('import') }}" method="POST" enctype="multipart/form-data"
                             class="d-flex justify-content-center align-items-center">
                             <div class="mx-5">
@@ -26,18 +25,21 @@
 
                 <div class="card d-none" id="file-card">
                     <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <div>
+                        <div class="d-flex justify-content-end align-items-center">
+                            <div class="col-sm-4">
+                                <img src="../images/csv.png" alt="" style="height:4rem">
                                 <p id="file-name" class="text-muted d-none"></p>
                             </div>
-                            <div>
-                                <button type="submit" id="submit-btn" class="btn btn-success d-none">Submit</button>
+                            <div class="col-sm-4">
+                                <div class="progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar bg-purple" id="progressBar" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4 ">
+                                <button type="submit" id="submit-btn" class="btn bg-educ color-white d-none" style="margin-left: auto">Submit</button>
                             </div>
                         </div>
-                        <div class="progress mt-4" role="progressbar" aria-valuenow="0" aria-valuemin="0"
-                            aria-valuemax="100">
-                            <div class="progress-bar bg-purple" id="progressBar" style="width: 0%;"></div>
-                        </div>
+                    
                         <p id="progress-message" class="text-muted d-none mt-2"></p>
                         <p id="error-message" class="text-danger d-none mt-2"></p>
                     </div>
@@ -56,7 +58,7 @@
 
         fileInput.addEventListener('change', () => {
             const fileNameText = fileInput.files[0].name;
-            fileName.textContent = `Selected file: ${fileNameText}`;
+            fileName.textContent = `${fileNameText}`;
             fileName.classList.remove('d-none');
             submitBtn.classList.remove('d-none');
             card.classList.remove('d-none');
@@ -78,7 +80,29 @@
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     }
                 })
-                
+                .then(response => {
+                    if (!response.ok) {
+                        if (response.status === 500) {
+                            throw new Error('Internal Server Error: Please try again later.');
+                        }
+                        throw new Error('Upload failed');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        progressBar.style.width = '100%';
+                        progressMessage.textContent = 'Upload complete!';
+                    } else {
+                        throw new Error(data.message || 'Upload failed');
+                    }
+                })
+                .catch(error => {
+                    progressBar.style.width = '0%';
+                    progressMessage.classList.add('d-none');
+                    errorMessage.textContent = error.message;
+                    errorMessage.classList.remove('d-none');
+                });
         });
     </script>
 @endsection
