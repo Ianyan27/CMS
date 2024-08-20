@@ -253,16 +253,16 @@ tbody{
 }
 
 .filter-popup {
-    display: none;
+    display: block;
     position: absolute;
     top: 100%;
-    right: 30%;
+    left: 1%;
     background-color: white;
     border: 1px solid #ccc;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     padding: 10px;
     z-index: 10;
-    width: 500px;
+    width: 150px;
 }
 
 .archive-table{
@@ -287,4 +287,8 @@ tbody{
     background-color: #FF3A44;
     color: #ffffff;
     border: 1px solid #FF3A44;
+}
+
+.add-activity-button{
+    margin-right: 36.6px;
 }

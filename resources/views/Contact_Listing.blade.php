@@ -52,31 +52,28 @@
                     <!-- Filter Container -->
                     <div id="filterContainer" class="filter-popup container" style="display: none;">
                         <div class="row">
-                            <div class="filter-option mb-2 col-4">
-                                <input type="checkbox" id="new" name="status" value="New">
+                            <div class="filter-option">
+                                <input class="ml-3" type="checkbox" id="new" name="status" value="New" onclick="applyFilter()">
                                 <label for="new">New</label>
                             </div>
-                            <div class="filter-option mb-2 col-4">
-                                <input type="checkbox" id="inProgress" name="status" value="InProgress">
+                            <div class="filter-option">
+                                <input class="ml-3" type="checkbox" id="inProgress" name="status" value="InProgress" onclick="applyFilter()">
                                 <label for="inProgress">In Progress</label>
                             </div>
-                            <div class="filter-option mb-2 col-4">
-                                <input type="checkbox" id="hubspot" name="status" value="HubSpot Contact">
+                            <div class="filter-option">
+                                <input class="ml-3" type="checkbox" id="hubspot" name="status" value="HubSpot Contact" onclick="applyFilter()">
                                 <label for="hubspot">HubSpot</label>
                             </div>
                         </div>
-                        <div class="row d-flex justify-content-center">
-                            <button class="btn hover-action col-11" type="button" onclick="applyFilter()">Apply
-                                Filter</button>
-                        </div>
                     </div>
+                    
                 </th>
                 <th class="h5" scope="col">Actions</th>
             </tr>
         </thead>
         <tbody class="text-left bg-row">
             @forelse ($contacts as $contact)
-                <tr>
+                <tr data-status="{{ $contact['status'] }}">
                     <td>{{ $contact['contact_pid'] }}</td>
                     <td>{{ $contact['name'] }}</td>
                     <td>{{ $contact['email'] }}</td>
@@ -116,10 +113,7 @@
                     <td>
                         <a href=" {{ route('contact#view', $contact->contact_pid) }} " class="btn hover-action"
                             data-toggle="tooltip" title="View">
-                            <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
-                        </a>
-                        <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
-                            <i class="fa-solid fa-pen-to-square"></i>
+                            <i class="fa-solid fa-eye "></i>
                         </a>
                     </td>
                 </tr>

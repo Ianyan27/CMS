@@ -93,7 +93,7 @@
 
         </div>
         <div class="col-md-7 pl-5" id="activity-container">
-            <<div class="d-flex justify-content-between align-items-center my-3">
+            <div class="d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 font-educ"><strong>Activities Notifications</strong></h2>
                 <div class="d-flex align-items-center">
                     <input type="search" class="form-control mr-1" placeholder="Search..." id="search-input"
@@ -126,7 +126,7 @@
                     @foreach ($activitiesInMonth as $activity)
                         <div class="activity-item mb-3 border-educ rounded p-3"
                             data-type="{{ strtolower($activity->activity_name) }}">
-                            <h5 class="font-educ-educ">{{ $activity->activity_name }} Activities</h5>
+                            <h5 class="font-educ">{{ $activity->activity_name }} Activities</h5>
                             <small>{{ \Carbon\Carbon::parse($activity->date)->format('d-m-Y') }}</small>
                             <p class="text-muted">{{ $activity->details }}</p>
                             {{-- @if ($activity->attachments)
@@ -150,7 +150,7 @@
         </div>
         <div class="d-flex align-items-center mr-3 mb-2">
             <!-- Button to trigger the modal -->
-            <button class="btn hover-action mx-1" data-toggle="modal" data-target="#addActivityModal">
+            <button class="btn hover-action add-activity-button" data-toggle="modal" data-target="#addActivityModal">
                 <i class="fa-solid fa-square-plus"></i>
             </button>
         </div>
@@ -158,9 +158,8 @@
 
     <!-- Table -->
     <table class="table table-hover mt-2">
-        <thead class="font-educ text-center">
+        <thead class="font-educ text-left">
             <tr>
-                <th scope="col"><input type="checkbox" name="" id=""></th>
                 <th class="h5" scope="col">No</th>
                 <th class="h5" scope="col">Date</th>
                 <th class="h5" scope="col">Type</th>
@@ -169,10 +168,9 @@
                 <th class="h5" scope="col">Action</th>
             </tr>
         </thead>
-        <tbody class="text-center bg-row fonts">
+        <tbody class="text-left bg-row">
             @foreach ($engagement as $engagements)
                 <tr>
-                    <td><input type="checkbox" name="" id=""></td>
                     <td> {{ $engagements->engagement_pid }} </td>
                     <td> {{ $engagements->date }} </td>
                     <td> {{ $engagements->activity_name }} </td>
