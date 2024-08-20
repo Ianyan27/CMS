@@ -117,6 +117,14 @@ tbody {
     font-size: 1rem;
 }
 
+.dashboard-link:hover{
+    border-right: 3px solid #91264c;
+}
+
+.active-link {
+    border-right: 3px solid #91264c;
+}
+
 .nav-item .nav-link {
     color: #91264c;
 }
