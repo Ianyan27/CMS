@@ -13,6 +13,8 @@ class ContactsImportController extends Controller
     {
         $request->validate([
             'csv_file' => 'required|mimes:csv,txt',
+        ], [
+            'csv_file.mimes' => 'The uploaded file must be a file of type: csv, txt.',
         ]);
 
         $file = $request->file('csv_file');
@@ -42,15 +44,20 @@ class ContactsImportController extends Controller
                 $missingColumns[] = $required;
             }
         }
-
         if (!empty($missingColumns)) {
-            // Required columns are missing, prepare the error message
-            $missingColumnsString = implode('", "', $missingColumns);
+            // Escape special characters in the missing columns
+            $escapedColumns = array_map(function($column) {
+                return htmlspecialchars($column, ENT_QUOTES, 'UTF-8');
+            }, $missingColumns);
+
+            // Join the escaped column names with proper formatting
+            $missingColumnsString = implode('", "', $escapedColumns);
             $errorMessage = 'The CSV file must contain the following logical column(s): "' . $missingColumnsString . '".';
 
             // Show the error message and redirect back to the import page
             return redirect()->back()->with('error', $errorMessage);
         }
+
 
         $validRows = [];
         $invalidRows = [];
