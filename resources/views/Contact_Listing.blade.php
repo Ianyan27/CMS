@@ -76,12 +76,11 @@
         <tbody class="text-left bg-row">
             @forelse ($contacts as $contact)
                 <tr>
-                    <td><input type="checkbox" name="" id=""></td>
                     <td>{{ $contact['contact_pid'] }}</td>
                     <td>{{ $contact['name'] }}</td>
                     <td>{{ $contact['email'] }}</td>
                     <td>{{ $contact['contact_number'] }}</td>
-                    @inject('countryCodeMapper', 'App\Services\CountryCodeMapper')
+                    @inject('CountryCodeMapper', 'App\Service\CountryCodeMapper')
                     <td>
                         {{ $contact['country'] }}
                         <img src="{{ asset('flags/' . strtolower($countryCodeMapper->getCountryCode($contact['country'])) . '.svg') }}"
@@ -151,7 +150,6 @@
         <tbody class="text-left bg-row">
             @foreach ($contactArchive as $archive)
                 <tr>
-                    <td><input type="checkbox" name="" id=""></td>
                     <td> {{ $archive['contact_archive_pid'] }} </td>
                     <td> {{ $archive['name'] }} </td>
                     <td> {{ $archive['email'] }} </td>
@@ -201,7 +199,6 @@
         <tbody class="text-left bg-row">
             @foreach ($contactDiscard as $discard)
                 <tr>
-                    <td><input type="checkbox" name="" id=""></td>
                     <td> {{ $discard['contact_discard_pid'] }} </td>
                     <td> {{ $discard['name'] }} </td>
                     <td> {{ $discard['email'] }} </td>

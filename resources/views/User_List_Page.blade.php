@@ -43,7 +43,7 @@
                 <th class="h5" scope="col">Actions</th>
             </tr>
         </thead>
-        <tbody class="text-center bg-row fonts">
+        <tbody class="text-left bg-row">
             <tr>
                 <td>1</td>
                 <td>John Doe</td>
@@ -64,7 +64,6 @@
                 </td>
             </tr>
             <tr>
-                <td><input type="checkbox" name="" id=""></td>
                 <td>2</td>
                 <td>Jane Smith</td>
                 <td>jane.smith@lithan.com</td>
@@ -83,7 +82,6 @@
                 </td>
             </tr>
             <tr>
-                <td><input type="checkbox" name="" id=""></td>
                 <td>3</td>
                 <td>Michael Johnson</td>
                 <td>michael.johnson@lithan.com</td>
@@ -103,7 +101,6 @@
                 </td>
             </tr>
             <tr>
-                <td><input type="checkbox" name="" id=""></td>
                 <td>4</td>
                 <td>Emily Davis</td>
                 <td>emily.davis@lithan.com</td>
@@ -123,7 +120,6 @@
                 </td>
             </tr>
             <tr>
-                <td><input type="checkbox" name="" id=""></td>
                 <td>5</td>
                 <td>Chris Brown</td>
                 <td>chris.brown@lithan.com</td>
@@ -143,7 +139,6 @@
                 </td>
             </tr>
             <tr>
-                <td><input type="checkbox" name="" id=""></td>
                 <td>6</td>
                 <td>Amy Wilson</td>
                 <td>amy.wilson@lithan.com</td>
@@ -163,7 +158,6 @@
                 </td>
             </tr>
             <tr>
-                <td><input type="checkbox" name="" id=""></td>
                 <td>7</td>
                 <td>David White</td>
                 <td>david.white@lithan.com</td>
@@ -183,7 +177,6 @@
                 </td>
             </tr>
             <tr>
-                <td><input type="checkbox" name="" id=""></td>
                 <td>8</td>
                 <td>Laura Martinez</td>
                 <td>laura.martinez@lithan.com</td>
