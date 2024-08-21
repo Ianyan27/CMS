@@ -52,6 +52,19 @@
         .status-text {
             color: green;
         }
+
+        .drop-zone {
+            border: 2px dashed #c58ca8;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .drop-zone.dragover {
+            background-color: #f2e6ec;
+        }
     </style>
     <div class="container">
         <div class="row justify-content-center">
@@ -67,8 +80,7 @@
                 </div>
 
                 <div class="card text-center mb-4">
-
-                    <div class="card-body bg-silver">
+                    <div class="card-body bg-silver"  id="dropZone">
                         <form action="{{ route('import') }}" method="POST" enctype="multipart/form-data"
                             class="d-flex justify-content-center align-items-center">
                             <div class="mx-5">
@@ -78,12 +90,14 @@
                             @csrf
                             <div>
                                 <input type="file" name="csv_file" required id="fileInput" class="d-none">
-                                <label for="fileInput" class="btn bg-educ color-white">Import Manually</label>
+                                
+                            </div>
+                            <div>
+                                <label for="fileInput" class="btn bg-educ color-white mt-4">Import Manually</label>
                             </div>
                         </form>
                     </div>
                 </div>
-
 
                 <div class="card d-none" id="file-card">
                     <div class="card-body">
@@ -105,8 +119,6 @@
                                     style="margin-left: auto">Submit</button>
                             </div>
                         </div>
-
-
                     </div>
                 </div>
             </div>
@@ -114,7 +126,12 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+
+
+        const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
+        const uploadForm = document.getElementById('uploadForm');
+
         const submitBtn = document.getElementById('submit-btn');
         const fileName = document.getElementById('file-name');
         const card = document.getElementById('file-card');
@@ -123,15 +140,40 @@
         const progressMessage = document.getElementById('progress-message');
         const errorMessage = document.getElementById('error-message');
 
-        fileInput.addEventListener('change', () => {
+        dropZone.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length) {
+                fileInput.files = files;
+                handleFiles();
+            }
+        });
+
+        fileInput.addEventListener('change', handleFiles);
+
+        function handleFiles() {
             const fileNameText = fileInput.files[0].name;
             fileName.textContent = `${fileNameText}`;
             fileName.classList.remove('d-none');
             submitBtn.classList.remove('d-none');
             card.classList.remove('d-none');
             errorMessage.classList.add('d-none');
-            progressContainer.classList.add('d-none')
-        });
+            progressContainer.classList.add('d-none');
+        }
 
         submitBtn.addEventListener('click', (e) => {
             e.preventDefault();
