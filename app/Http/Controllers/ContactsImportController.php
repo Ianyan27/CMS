@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -101,7 +100,7 @@ class ContactsImportController extends Controller
 
             $validationRules = [
                 'name' => 'required',
-                'email' => 'nulllable|email',
+                'email' => 'nullable|email',
                 'contact_number' => 'nullable|numeric',
             ];
 
