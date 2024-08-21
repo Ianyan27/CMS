@@ -4,7 +4,6 @@
 
 @section('content')
     <link rel="stylesheet" href="{{ URL::asset('css/contact_listing.css') }}">
-
     <div class="table-title d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
             <h5 class="mr-3 my-2 headings">Contact Listing</h5>
@@ -25,8 +24,8 @@
             </button>
         </div>
     </div>
-    <table class="table table-hover mt-2" id="contacts-table">
-        <thead class="text-left font-educ">
+    <table class=" table table-hover mt-2 h-75" id="contacts-table">
+        <thead class="text-left font-educ w-100">
             <tr>
                 <th scope="col">No #</th>
                 <th scope="col" id="name-header">Name
@@ -217,11 +216,12 @@
                     <td>
                         <span class="status-indicator"
                             style="background-color:
-                        @if ($discard['status'] === 'Discard') #FF7F86; color: #BD000C; @endif
-                    ">
-                            @if ($discard['status'] === 'Discard')
-                                Discard
-                            @endif
+                        @if ($discard['status'] === 'Discard') #FF7F86; color: #BD000C; 
+                        @endif
+                        ">
+                        @if ($discard['status'] === 'Discard')
+                            Discard
+                        @endif
                         </span>
                     </td>
                     <td>
@@ -237,14 +237,12 @@
             @endforeach
         </tbody>
     </table>
-
     <div aria-label="Page navigation example " class="paginationContainer">
         <ul class="pagination justify-content-center">
             <!-- Previous Button -->
             <li class="page-item {{ $contacts->onFirstPage() ? 'disabled' : '' }}">
                 <a class="page-link font-educ" href="{{ $contacts->previousPageUrl() }}" aria-label="Previous">&#60;</a>
             </li>
-
             <!-- First Page Button -->
             @if ($contacts->currentPage() > 3)
                 <li class="page-item">
@@ -257,7 +255,6 @@
                     <span class="page-link">...</span>
                 </li>
             @endif
-
             <!-- Middle Page Buttons -->
             @for ($i = max($contacts->currentPage() - 1, 1); $i <= min($contacts->currentPage() + 1, $contacts->lastPage()); $i++)
                 <li class="page-item {{ $i == $contacts->currentPage() ? 'active' : '' }}">
@@ -265,7 +262,6 @@
                         href="{{ $contacts->url($i) }}">{{ $i }}</a>
                 </li>
             @endfor
-
             <!-- Last Page Button -->
             @if ($contacts->currentPage() < $contacts->lastPage() - 2)
                 <li class="page-item disabled">
@@ -280,7 +276,6 @@
                         href="{{ $contacts->url($contacts->lastPage()) }}">{{ $contacts->lastPage() }}</a>
                 </li>
             @endif
-
             <!-- Next Button -->
             <li class="page-item {{ !$contacts->hasMorePages() ? 'disabled' : '' }}">
                 <a class="page-link font-educ" href="{{ $contacts->nextPageUrl() }}" aria-label="Next">&#62;</a>
@@ -296,7 +291,6 @@
                 $('#archive-table').hide();
                 $('#discard-table').hide();
             });
-
             $('#show-archive').click(function() {
                 $('#contacts-table').hide();
                 $('#archive-table').show();
@@ -308,12 +302,9 @@
                 $('#archive-table').hide();
                 $('#discard-table').show();
             });
-
-
         });
     </script>
 @endsection
-
 @section('scripts')
     <!-- Add Bootstrap Tooltip Initialization -->
     <script>
@@ -324,6 +315,4 @@
             });
         });
     </script>
-
-
 @endsection

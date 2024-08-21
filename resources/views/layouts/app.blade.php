@@ -16,7 +16,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ URL::asset('css/admin_style.css') }}">
 </head>
-<body class="d-flex flex-column min-vh-100">
+<body class="d-flex flex-column">
     <div class="container-fluid flex-grow-1">
         <div class="row shadow-sm py-3">
             <div class="col-md-6 d-flex align-items-center">
@@ -33,9 +33,9 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div id="side-bar" class="dashboard col-auto py-3 border-right-educ rounded-right h-auto">
-                <ul class="nav flex-column fonts">
+        <div class="row my-4" style="height: 730px;">
+            <div id="side-bar" class="col-auto dashboard border-right-educ rounded-right" style="width:250px;padding:0;">
+                <ul class="nav flex-column fonts w-100 mt-2">
                     {{-- <li class="nav-item">
                         <a class="nav-link {{ Route::currentRouteName() == 'dashboard' ? 'active-link' : '' }}"
                             href="{{ route('dashboard') }}">
@@ -43,32 +43,32 @@
                         </a>
                     </li> --}}
                     <li class="nav-item dashboard-link">
-                        <a class="nav-link mb-2 {{ Route::currentRouteName() == 'user-list' ? 'active-link' : '' }}"
+                        <a class="nav-link {{ Route::currentRouteName() == 'user-list' ? 'active-link' : '' }}"
                             href="{{ route('user-list') }}">
-                            <i class="fa-regular fa-user mr-3"></i> <span>Users</span>
+                            <i class="fa-regular fa-user"></i><span>Users</span>
                         </a>
                     </li>                    
                     <li class="nav-item dashboard-link">
-                        <a class="nav-link mb-2 {{ Route::currentRouteName() == 'salesagent' ? 'active-link' : '' }}"
+                        <a class="nav-link {{ Route::currentRouteName() == 'salesagent' ? 'active-link' : '' }}"
                             href="{{ route('salesagent') }}">
-                            <i class="fa-solid fa-universal-access mr-3"></i></i> <span>Sale Agent</span>
+                            <i class="fa-solid fa-universal-access"></i></i><span>Sale Agent</span>
                         </a>
                     </li>
                     <li class="nav-item dashboard-link">
-                        <a class="nav-link mb-2 {{ Route::currentRouteName() == 'importcopy' ? 'active-link' : '' }}"
+                        <a class="nav-link {{ Route::currentRouteName() == 'importcopy' ? 'active-link' : '' }}"
                             href="{{ route('importcopy') }}">
-                            <i class="fa-solid fa-file-import mr-3"></i><span>Upload Files</span>
+                            <i class="fa-solid fa-file-arrow-up"></i><span>Upload Files</span>
                         </a>
                     </li>
                     <li class="nav-item dashboard-link">
-                        <a class="nav-link mb-2 {{ Route::currentRouteName() == 'contact-listing' ? 'active-link' : '' }}"
+                        <a class="nav-link {{ Route::currentRouteName() == 'contact-listing' ? 'active-link' : '' }}"
                             href="{{ route('contact-listing') }}">
-                            <i class="fa-solid fa-address-book mr-3"></i><span>Contact Listing</span>
+                            <i class="fa-solid fa-address-book"></i><span>Contact Listing</span>
                         </a>
                     </li>
                 </ul>
             </div>
-            <div class="col-10 ml-3 mb-3 py-3">
+            <div class="col-11 px-4" style="width: 1650px;">
                 @yield('content')
             </div>
         </div>

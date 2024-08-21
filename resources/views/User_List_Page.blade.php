@@ -197,23 +197,54 @@
             </tr>
         </tbody>
     </table>
-    <footer aria-label="Page navigation example">
+    <div aria-label="Page navigation example " class="paginationContainer">
         <ul class="pagination justify-content-center">
-            <li class="page-item">
-                <a class="page-link font" href="#">&#60;</a>
+            <!-- Previous Button -->
+            <li class="page-item ">
+                <a class="page-link font-educ" href="#" aria-label="Previous">&#60;</a>
             </li>
-            <li class="page-item"><a class="page-link font" href="#">1</a></li>
-            <li class="page-item"><a class="page-link font" href="#">2</a></li>
-            <li class="page-item disabled">
-                <span class="page-link font">...</span>
-            </li>
-            <li class="page-item"><a class="page-link font" href="#">9</a></li>
-            <li class="page-item"><a class="page-link font" href="#">10</a></li>
+
+            <!-- First Page Button -->
+            {{-- @if ($contacts->currentPage() > 3) --}}
+                <li class="page-item">
+                    <a class="page-link font-educ" href="#">1</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link font-educ" href="#">2</a>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
+            {{-- @endif --}}
+
+            <!-- Middle Page Buttons -->
+            {{-- @for ($i = max($contacts->currentPage() - 1, 1); $i <= min($contacts->currentPage() + 1, $contacts->lastPage()); $i++) --}}
+                <li class="page-item">
+                    <a class="page-link font-educ" href="#"></a>
+                </li>
+            {{-- @endfor --}}
+
+            <!-- Last Page Button -->
+            {{-- @if ($contacts->currentPage() < $contacts->lastPage() - 2) --}}
+                <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
+                <li class="page-item">
+                    <a class="page-link font-educ"
+                        href="#"></a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link font-educ"
+                        href="#"></a>
+                </li>
+            {{-- @endif --}}
+
+            <!-- Next Button -->
             <li class="page-item">
-                <a class="page-link font" href="#">&#62;</a>
+                <a class="page-link font-educ" href="#" aria-label="Next">&#62;</a>
             </li>
         </ul>
-    </footer>
+    </div>
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content text-center">
