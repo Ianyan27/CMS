@@ -33,9 +33,9 @@
                 </div>
             </div>
         </div>
-        <div class="row my-4" style="">
-            <div id="side-bar" class="col-auto dashboard border-right-educ rounded-right" style="width:250px;padding:0; min-height: 750px;">
-                <ul class="nav flex-column fonts w-100 mt-2">
+        <div class="row my-4">
+            <div id="side-bar" class="col-auto dashboard border-right-educ rounded-right min-height" style="width:250px;padding:0;">
+                <ul class="nav flex-column fonts mt-2">
                     {{-- <li class="nav-item">
                         <a class="nav-link {{ Route::currentRouteName() == 'dashboard' ? 'active-link' : '' }}"
                             href="{{ route('dashboard') }}">
@@ -68,7 +68,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="col-11 px-4" style="width: 1650px;">
+            <div class="col-11 px-4 min-height" style="width: 1650px;">
                 @yield('content')
             </div>
         </div>

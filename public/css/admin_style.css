@@ -12,6 +12,14 @@ body {
     flex-direction: column;
 }
 
+.min-height{
+    min-height: 720px;
+}
+
+.container-max-height{
+    max-height: 730px;
+}
+
 .container-fluid {
     flex-grow: 1;
 }
@@ -136,6 +144,7 @@ tbody {
 }
 
 .nav-item i {
+    width: 40px;
     color: #91264c;
 }
 .nav-item .nav-link span{
@@ -383,4 +392,15 @@ th, label{
     padding: 10px;
     z-index: 10;
     width: 150px;
+}
+
+/* Pagination */
+.paginationContainer {
+    position: -webkit-sticky; 
+    position: sticky;
+    bottom: 0;
+    background-color: #fff; 
+    z-index: 1000; 
+    margin-top: 20px;
+    padding: 10px 0; 
 }
