@@ -47,7 +47,7 @@ Route::post('/save_activity_update/{contact_pid}', [ContactController::class, 's
 Route::get('/importcopy', function () {
 
     return view('csv_import_form');
-});
+})->name('importcopy');
 
 
 
