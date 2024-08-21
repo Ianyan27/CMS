@@ -40,14 +40,14 @@ Route::post('/save_activity/{contact_pid}', [ContactController::class, 'saveActi
 // Edit Activity Route
 Route::get('/edit_activity/{fk_engagements__contact_pid}', [ContactController::class, 'updateActivity'])->name('contact#update_activity');
 
-// Update Activity Route 
+// Update Activity Route
 Route::post('/save_activity_update/{contact_pid}', [ContactController::class, 'saveUpdateActivity'])->name('contact#save_update_activity');
 
 // Import Copy Route
 Route::get('/importcopy', function () {
 
     return view('csv_import_form');
-});
+})->name('importcopy');
 
 
 
