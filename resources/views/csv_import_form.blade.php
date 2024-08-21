@@ -85,7 +85,8 @@
                             class="d-flex justify-content-center align-items-center">
                             <div class="mx-5">
                                 <h4 class="mb-4">Drag and drop your files</h4>
-                                <p class="text-muted mb-4" title="Only .csv is suppoted">File formats we support <i class="fas fa-info-circle"></i></p>
+                                <p class="text-muted mb-4" title="Only .csv is suppoted">File formats we support <i
+                                        class="fas fa-info-circle"></i></p>
                             </div>
                             @csrf
                             <div>
@@ -112,6 +113,7 @@
                                     <div class="progress-bar bg-educ" id="progressBar" style="width: 0%;"></div>
                                 </div>
                                 <p id="progress-message" class="text-muted d-none mt-2"></p>
+                                
                                 <p id="error-message" class="text-danger d-none mt-2"></p>
                             </div>
                             <div>
@@ -138,7 +140,7 @@
         const progressMessage = document.getElementById('progress-message');
         const errorMessage = document.getElementById('error-message');
 
-      
+
 
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
@@ -227,7 +229,7 @@
                         progressBar.style.width = '100%';
                         progressMessage.textContent = 'Upload complete!';
 
-                        
+
                         let valid_count = data.data.valid_count;
                         let invalid_count = data.data.invalid_count;
                         let duplicate_count = data.data.duplicate_count;
@@ -236,12 +238,14 @@
 
                         if (data.data.invalid_count > 0) {
                             let download_invalid_link = data.data.download_invalid_link;
-                            showDownloadPrompt(valid_count, invalid_count, duplicate_count,total_count,
+                            showDownloadPrompt(valid_count, invalid_count, duplicate_count, total_count,
                                 download_invalid_link);
-                            
+
+                        } else {
+                            showResult(valid_count, invalid_count, duplicate_count, total_count);
                         }
 
-                       
+
                         progressMessage.classList.remove('d-none');
                         progressContainer.classList.add('d-none');
                     } else {
@@ -256,8 +260,37 @@
                 });
         });
 
+        function showResult(valid_count, invalid_count, duplicate_count, total_count) {
+            const result = document.createElement('div');
+            result.style.position = 'fixed';
+            result.style.top = '50%';
+            result.style.left = '50%';
+            result.style.transform = 'translate(-50%, -50%)';
+            result.style.backgroundColor = '#fff';
+            result.style.padding = '20px';
+            result.style.boxShadow = '0px 0px 10px rgba(0, 0, 0, 0.4)';
+            result.style.zIndex = '1000';
+
+            result.innerHTML = `
+        <h5>Upload complete!</h5>
+        <ul>
+            <li>Total Rows: ${total_count}</li>
+            <li>Imported Rows: ${valid_count}</li> 
+            <li>Invalid Rows: ${invalid_count}</li> 
+            <li>Duplicate Rows: ${duplicate_count}</li>    
+        </ul>
+        <button id="cancel-btn" class="btn bg-educ color-white">Close</button>
+    `;
+            // Append the modal to the body
+            document.body.appendChild(result);
+            // Handle cancel button click
+            document.getElementById('cancel-btn').addEventListener('click', () => {
+                result.remove();
+            });
+        }
+
         //function showDownloadPrompt(blobData) {
-        function showDownloadPrompt(valid_count, invalid_count, duplicate_count,total_count, download_invalid_link) {
+        function showDownloadPrompt(valid_count, invalid_count, duplicate_count, total_count, download_invalid_link) {
             // Create the modal element
             const downloadPrompt = document.createElement('div');
             downloadPrompt.style.position = 'fixed';
