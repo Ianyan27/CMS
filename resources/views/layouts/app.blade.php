@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="row">
-            <div id="side-bar" class="dashboard py-3 border-right-educ rounded-right h-auto">
+            <div id="side-bar" class="dashboard col-auto py-3 border-right-educ rounded-right h-auto">
                 <ul class="nav flex-column fonts">
                     {{-- <li class="nav-item">
                         <a class="nav-link {{ Route::currentRouteName() == 'dashboard' ? 'active-link' : '' }}"
@@ -68,7 +68,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="col ml-3 mb-3 py-3">
+            <div class="col-10 ml-3 mb-3 py-3">
                 @yield('content')
             </div>
         </div>
