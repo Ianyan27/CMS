@@ -113,7 +113,7 @@
                                     <div class="progress-bar bg-educ" id="progressBar" style="width: 0%;"></div>
                                 </div>
                                 <p id="progress-message" class="text-muted d-none mt-2"></p>
-                                
+
                                 <p id="error-message" class="text-danger d-none mt-2"></p>
                             </div>
                             <div>
@@ -181,7 +181,7 @@
             progressMessage.textContent = 'Uploading...';
             progressMessage.classList.remove('d-none');
             errorMessage.classList.add('d-none'); // Hide any previous error message
-            progressBar.style.width = '30%';
+            progressBar.style.width = '20%';
 
             fetch('{{ route('import') }}', {
                     method: 'POST',
@@ -216,15 +216,7 @@
                 })
 
                 .then(data => {
-                    if (data instanceof Blob) {
-                        // Show the download prompt
-                        showDownloadPrompt(data);
-                        progressMessage.classList.add('d-none');
-                        progressContainer.classList.add('d-none');
-                        progressBar.classList.add('d-none');
-                        card.classList.add('d-none')
-
-                    } else if (data.success) {
+                    if (data.success) {
 
                         progressBar.style.width = '100%';
                         progressMessage.textContent = 'Upload complete!';
@@ -235,8 +227,8 @@
                         let duplicate_count = data.data.duplicate_count;
                         let total_count = valid_count + invalid_count + duplicate_count;
 
-
-                        if (data.data.invalid_count > 0) {
+                        setTimeout(() => {
+                            if (data.data.invalid_count > 0) {
                             let download_invalid_link = data.data.download_invalid_link;
                             showDownloadPrompt(valid_count, invalid_count, duplicate_count, total_count,
                                 download_invalid_link);
@@ -244,10 +236,12 @@
                         } else {
                             showResult(valid_count, invalid_count, duplicate_count, total_count);
                         }
+                        }, 1500);
+
+                       
 
 
                         progressMessage.classList.remove('d-none');
-                        progressContainer.classList.add('d-none');
                     } else {
                         throw new Error(data.message || 'Upload failed');
                     }
@@ -303,16 +297,18 @@
             downloadPrompt.style.zIndex = '1000';
 
             downloadPrompt.innerHTML = `
-        
+        <h5>Would you like to download the invalid records?</h5>
         <ul>
             <li>Total Rows: ${total_count}</li>
             <li>Imported Rows: ${valid_count}</li> 
             <li>Invalid Rows: ${invalid_count}</li> 
             <li>Duplicate Rows: ${duplicate_count}</li>    
         </ul>
-        <p>Click Download button to download invalid rows as a CSV?</p>
-        <a href="app${download_invalid_link}" id="download-btn" class="btn bg-educ color-white">Download</a>
+        <div class="text-end">
+       
         <button id="cancel-btn" class="btn">Cancel</button>
+         <a href="app${download_invalid_link}" id="download-btn" class="btn bg-educ color-white">Download</a>
+         </div>
     `;
 
             // Append the modal to the body
