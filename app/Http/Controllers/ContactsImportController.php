@@ -101,7 +101,7 @@ class ContactsImportController extends Controller
 
             $validationRules = [
                 'name' => 'required',
-                'email' => 'required|email',
+                'email' => 'nulllable|email',
                 'contact_number' => 'nullable|numeric',
             ];
 
