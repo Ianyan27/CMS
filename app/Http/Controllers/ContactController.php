@@ -27,12 +27,16 @@ class ContactController extends Controller
         /* Retrieve the contact record with the specified 'contact_pid' and pass
          it to the 'Edit_Contact_Detail_Page' view for editing. */
         $editContact = Contact::where('contact_pid', $contact_pid)->first();
-        $engagement = Engagement::where('fk_engagements__contact_pid', $contact_pid)->get();
-        return view('Edit_Contact_Detail_Page')->with
-        (['editContact' => $editContact, 'engagement' => $engagement]);
+        $engagements = Engagement::where('fk_engagements__contact_pid', $contact_pid)->get();
+        $updateEngagement = $engagements->first();
+        return view('Edit_Contact_Detail_Page')->with([
+            'editContact' => $editContact, 
+            'engagements' => $engagements, 
+            'updateEngagement' => $updateEngagement
+        ]);
     }
 
-    public function saveContact(Request $request, $contact_pid){
+    public function updateContact(Request $request, $contact_pid){
         /* Find the contact record using the given 'contact_pid', update its attributes
         with the data from the request, and save the changes to the database. 
         After saving, redirect to the contact view page with the updated 'contact_pid'.*/
@@ -74,10 +78,16 @@ class ContactController extends Controller
         $engagement->date = $request->input('activity-date');
         $engagement->details = $request->input('activity-details');
         $engagement->activity_name = $request->input('activity-name');
-        $engagement->date = $request->input('activity-date');
         $engagement->fk_engagements__contact_pid = $request->input('contact_pid');
         $engagement->save();
 
         return redirect()->route('contact#view', ['contact_pid'=> $contact_pid]);
+    }
+
+    public function updateActivity($fk_engagements__contact_pid){
+        $updateEngagement = Engagement::where('fk_engagements__contact_pid', $fk_engagements__contact_pid)->get();
+
+        return redirect()->route('contact#view', ['updateEngagement' => $fk_engagements__contact_pid]);
+
     }
 }

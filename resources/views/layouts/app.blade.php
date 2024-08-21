@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +13,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="{{ URL::asset('css/admin_style.css') }}">
 </head>
-
 <body class="d-flex flex-column min-vh-100">
     <div class="container-fluid flex-grow-1">
         <div class="row shadow-sm py-3">
@@ -72,7 +70,6 @@
             </div>
         </div>
     </div>
-
     <footer class="bg-educ color-white text-center py-3 mt-auto">
         © 2024 eduCLaaS Pte Ltd. All rights reserved.
     </footer>
@@ -84,5 +81,4 @@
     <script src="{{ URL::asset('js/sort.js') }}"></script>
     <script src="{{ URL::asset('js/filter_status.js') }}"></script>
 </body>
-
 </html>

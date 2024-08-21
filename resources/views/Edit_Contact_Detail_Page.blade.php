@@ -1,12 +1,12 @@
 @section('title', 'Edit Contact Detail Page')
 
 @extends('layouts.app')
-
+@extends('layouts.Update_Activity_Modal')
+@extends('layouts.Edit_Contact_Modal')
+@extends('layouts.Add_Activity_Modal')
 @section('content')
     {{-- css will edit to css file soon --}}
-
     <link rel="stylesheet" href="{{ URL::asset('css/contact_detail.css') }}">
-
     <div class="row border-educ rounded h-auto">
         <div class="col-md-5 border-right" id="contact-detail">
             <div class="table-title d-flex justify-content-between align-items-center my-3">
@@ -15,7 +15,6 @@
                     data-toggle="modal" data-target="#editContactModal">
                     <i class="fa-solid fa-pen-to-square"></i>
                 </a>
-
             </div>
             <div class="row row-margin-bottom row-border-bottom mx-1">
                 <div class="col-md-6">
@@ -96,8 +95,6 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
         <div class="col-md-7 px-3" id="activity-container">
             <div class="d-flex justify-content-between align-items-center my-3">
@@ -110,7 +107,6 @@
                     </button>
                 </div>
         </div>
-
         <!-- Filter Buttons -->
         <div class="btn-group mb-3" role="group" aria-label="Activity Filter Buttons">
             <button type="button" class="btn activity-button mx-2 active-activity-button"
@@ -120,10 +116,9 @@
             <button type="button" class="btn activity-button mx-2" data-filter="phone">Calls</button>
             <button type="button" class="btn activity-button mx-2" data-filter="whatsapp">Whatsapp</button>
         </div>
-
         {{-- Iterating all the activities from all contacts --}}
         <div class="activities">
-            @foreach ($engagement->groupBy(function ($date) {
+            @foreach ($engagements->groupBy(function ($date) {
             return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
         }) as $month => $activitiesInMonth)
                 <div class="activity-list">
@@ -144,12 +139,9 @@
                     @endforeach
                 </div>
             @endforeach
-
         </div>
-
     </div>
     </div>
-
     <!-- Activity Taken Section -->
     <div class="table-title d-flex justify-content-between align-items-center mt-5">
         <div class="d-flex align-items-center">
@@ -162,7 +154,6 @@
             </button>
         </div>
     </div>
-
     <!-- Table -->
     <table class="table table-hover mt-2">
         <thead class="font-educ text-left">
@@ -176,206 +167,23 @@
             </tr>
         </thead>
         <tbody class="text-left bg-row">
-            @foreach ($engagement as $engagements)
+            @foreach ($engagements as $engagement)
                 <tr>
-                    <td> {{ $engagements->engagement_pid }} </td>
-                    <td> {{ $engagements->date }} </td>
-                    <td> {{ $engagements->activity_name }} </td>
-                    <td> {{ $engagements->details }} </td>
-                    <td> {{ $engagements->attachments }} </td>
-                    <td><a href="#" class="btn hover-action"><i class="fa-solid fa-pen-to-square"></i></a></td>
+                    <td> {{ $engagement->engagement_pid }} </td>
+                    <td> {{ $engagement->date }} </td>
+                    <td> {{ $engagement->activity_name }} </td>
+                    <td> {{ $engagement->details }} </td>
+                    <td> {{ $engagement->attachments }} </td>
+                    <td>
+                        {{-- <a href=" {{route('contact#update_activity', $engagement->fk_engagements__contact_pid)}}" data-toggle="modal" data-target="#updateActivityModal"> --}}
+                            <i  class=" btn hover-action fa-solid fa-pen-to-square" ></i>
+                        </a>
+                    </td>
                 </tr>
             @endforeach
+        </tbody>
     </table>
-
-    <!-- Add Activity Modal -->
-    <div class="modal fade" id="addActivityModal" tabindex="-1" aria-labelledby="addActivityModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header d-flex justify-content-between align-items-center">
-                    <h5 class="modal-title" id="editContactModalLabel">
-                        <strong>Add New Activity</strong>
-                    </h5>
-                    <!-- Adding the logo on the right side -->
-                    <img src="{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}" alt="Company Logo"
-                        style="height: 30px;">
-
-                </div>
-                <div class="modal-body">
-                    <form action=" {{ route('contact#save_activity', $editContact->contact_pid) }} " method="POST"
-                        id="addActivityForm" enctype="multipart/form-data">
-                        @csrf
-                        <input type="hidden" name="contact_pid" value=" {{ $editContact->contact_pid }} " readonly>
-                        <div class="row row-margin-bottom row-border-bottom">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="font-educ" for="activity-date">Date</label>
-                                    <input type="date" name="activity-date" class="form-control fonts" id="activity-date"
-                                        required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="font-educ" for="activity-type">Type</label>
-                                    <select class="form-control fonts" id="activity-type" name="activity-name"required>
-                                        <option value="Email">Email</option>
-                                        <option value="Phone">Phone</option>
-                                        <option value="Meeting">Meeting</option>
-                                        <option value="WhatsApp">WhatsApp</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <!-- Attachment Label and Button Side by Side -->
-                                    <div class="attachment-container">
-                                        <label class="font-educ my-1" for="activity-attachment">Attachment</label>
-                                        <input type="file" id="activity-attachment" multiple accept="image/*"
-                                            style="display: none;" name="activity-attachments">
-                                        <button type="button" class="btn hover-action"
-                                            onclick="document.getElementById('activity-attachment').click();">
-                                            <i class="fa-solid fa-upload"></i> Upload
-                                        </button>
-                                    </div>
-                                    <div id="file-names" class="file-list"></div> <!-- Display filenames here -->
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row ">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="font-educ" for="activity-description">Description</label>
-                                    <textarea style="height: 100px; " class="form-control fonts" id="activity-description" rows="3"
-                                        name="activity-details"></textarea>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn" style="background: #91264c; color:white;">Save</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
-    <!-- Edit Contact Modal -->
-    <div class="modal fade" id="editContactModal" tabindex="-1" aria-labelledby="editContactModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header d-flex justify-content-between align-items-center">
-                    <h5 class="modal-title" id="editContactModalLabel">
-                        <strong>Edit Contact</strong>
-                    </h5>
-                    <!-- Adding the logo on the right side -->
-                    <img src="{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}" alt="Company Logo"
-                        style="height: 30px;">
-
-                </div>
-                <div class="modal-body">
-                    <form action=" {{ route('contact#save_edit', $editContact->contact_pid) }}" method="POST"
-                        id="editContactForm">
-                        @csrf
-                        <div class="row">
-                            <!-- Left Column -->
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="font-educ" for="contact-name">Name</label>
-                                    <input type="text" class="form-control fonts" id="name" name="name"
-                                        value="{{ $editContact->name }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-educ" for="contact-email">Email</label>
-                                    <input type="email" class="form-control fonts" id="email" name="email"
-                                        value="{{ $editContact->email }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-educ" for="contact-country">Country</label>
-                                    <input type="text" class="form-control fonts" id="contact-country" name="country"
-                                        value="{{ $editContact->country }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-educ" for="contact-address">Address</label>
-                                    <input class="form-control fonts" style="height: 125px;" type="text" name="address"
-                                        id="address" value="{{ $editContact->address }}">
-                                </div>
-                            </div>
-                            <!-- Middle Column -->
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <label class="font-educ" for="contact-number">Contact Number</label>
-                                    </div>
-                                    <div>
-                                        <input type="text" class="form-control fonts mb-2" id="contact-number"
-                                            name="contact_number" value="{{ $editContact->contact_number }}" required>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <label class="font-educ" for="contact-qualification">Qualification</label>
-                                    </div>
-                                    <div>
-                                        <input type="text" class="form-control fonts mb-2" id="contact-qualification"
-                                            value="{{ $editContact->qualification }}" name="qualification" required>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-educ" for="contact-role">Job Role</label>
-                                    <input type="text" class="form-control fonts" name="job_role" id="contact-role"
-                                        value="{{ $editContact->job_role }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-educ" for="contact-skills">Skills</label>
-                                    <input type="text" class="form-control fonts" name="skills" id="contact-skills"
-                                        value="{{ $editContact->skills }}" required>
-                                </div>
-                            </div>
-                            <!-- Right Column -->
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="font-educ" for="contact-allocation">Date of Allocation</label>
-                                    <input type="datetime" class="form-control fonts" id="contact-allocation"
-                                        value="{{ $editContact->date_of_allocation }}" readonly>
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-educ" for="contact-source">Source</label>
-                                    <input type="text" class="form-control fonts" id="contact-source"
-                                        value="{{ $editContact->source }}" readonly>
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-educ" for="contact-status">Status</label>
-                                    <select class="form-control fonts" id="contact-status" required>
-                                        <option value="{{ $editContact->status }}" selected>
-                                            {{ $editContact->status }} </option>
-                                        <option>In progress</option>
-                                        <option>Completed</option>
-                                        <option>Pending</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn " style="background: #91264c; color:white;">Save</button>
-
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ URL::asset('js/contact_detail.js') }}"></script>
     <script src="{{ URL::asset('js/status_color.js') }}"></script>
-
 @endsection
