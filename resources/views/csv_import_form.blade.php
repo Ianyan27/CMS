@@ -57,8 +57,8 @@
         <div class="row justify-content-center">
             <div class="col-sm-12">
                 <label for="platform" class="block text-gray-700 font-bold mb-2">Select platform</label>
-                <div class="form-select w-100 mb-4" style="width: 100%">
-                    <select id="platform" class="form-select w-100">
+                <div class=" w-100 mb-4" style="width: 100%">
+                    <select id="platform" class=" w-100">
                         <option value="linkedin">LinkedIn</option>
                         <option value="facebook">Facebook</option>
                         <option value="twitter">Twitter</option>
@@ -184,6 +184,7 @@
                         progressMessage.classList.add('d-none');
                         progressContainer.classList.add('d-none');
                         progressBar.classList.add('d-none');
+                        card.classList.add('d-none')
 
                     } else if (data.success) {
                         progressBar.style.width = '100%';
@@ -211,6 +212,7 @@
             downloadPrompt.style.padding = '20px';
             downloadPrompt.style.boxShadow = '0px 0px 10px rgba(0, 0, 0, 0.4)';
             downloadPrompt.style.zIndex = '1000';
+         
             downloadPrompt.innerHTML = `
         <h5>Invalid Rows Found</h5>
         <p>We found some invalid rows in your file. Would you like to download them as a CSV?</p>
