@@ -55,8 +55,8 @@
                         </a>
                     </li>
                     <li class="nav-item dashboard-link">
-                        <a class="nav-link {{ Route::currentRouteName() == 'importcopy' ? 'active-link' : '' }}"
-                            href="{{ route('importcopy') }}">
+                        <a class="nav-link {{ Route::currentRouteName() == 'importcsv' ? 'active-link' : '' }}"
+                            href="{{ route('importcsv') }}">
                             <i class="fa-solid fa-file-arrow-up"></i><span>Upload Files</span>
                         </a>
                     </li>

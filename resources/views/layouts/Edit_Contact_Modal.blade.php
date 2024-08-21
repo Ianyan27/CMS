@@ -84,12 +84,28 @@ aria-hidden="true">
                         </div>
                         <div class="form-group">
                             <label class="font-educ" for="contact-status">Status</label>
-                            <select class="form-control fonts" id="contact-status" required>
-                                <option value="{{ $editContact->status }}" selected>
-                                    {{ $editContact->status }} </option>
-                                <option>In progress</option>
-                                <option>Completed</option>
-                                <option>Pending</option>
+                            <select class="form-control fonts" id="contact-status" name="status" required>
+                                <option value="InProgress" {{ $editContact->status === 'InProgress' ? 'selected' : '' }}>
+                                    In Progress
+                                </option>
+                                <option value="Completed" {{ $editContact->status === 'Completed' ? 'selected' : '' }}>
+                                    Completed
+                                </option>
+                                <option value="Pending" {{ $editContact->status === 'Pending' ? 'selected' : '' }}>
+                                    Pending
+                                </option>
+                                <option value="HubSpot" {{ $editContact->status === 'HubSpot Contact' ? 'selected' : '' }}>
+                                    HubSpot
+                                </option>
+                                <option value="Discard" {{ $editContact->status === 'discard' ? 'selected' : '' }}>
+                                    Discard
+                                </option>
+                                <option value="New" {{ $editContact->status === 'New' ? 'selected' : '' }}>
+                                    New
+                                </option>
+                                <option value="Archive" {{ $editContact->status === 'Archive' ? 'selected' : '' }}>
+                                    Archive
+                                </option>
                             </select>
                         </div>
                     </div>
