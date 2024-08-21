@@ -80,17 +80,17 @@
                 </div>
 
                 <div class="card text-center mb-4">
-                    <div class="card-body bg-silver"  id="dropZone">
+                    <div class="card-body bg-silver" id="dropZone">
                         <form action="{{ route('import') }}" method="POST" enctype="multipart/form-data"
                             class="d-flex justify-content-center align-items-center">
                             <div class="mx-5">
                                 <h4 class="mb-4">Drag and drop your files</h4>
-                                <p class="text-muted mb-4">File formats we support <i class="fas fa-info-circle"></i></p>
+                                <p class="text-muted mb-4" title="Only .csv is suppoted">File formats we support <i class="fas fa-info-circle"></i></p>
                             </div>
                             @csrf
                             <div>
-                                <input type="file" name="csv_file" required id="fileInput" class="d-none">
-                                
+                                <input accept=".csv" type="file" name="csv_file" required id="fileInput" class="d-none">
+
                             </div>
                             <div>
                                 <label for="fileInput" class="btn bg-educ color-white mt-4">Import Manually</label>
@@ -126,8 +126,6 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-
-
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
         const uploadForm = document.getElementById('uploadForm');
@@ -140,18 +138,13 @@
         const progressMessage = document.getElementById('progress-message');
         const errorMessage = document.getElementById('error-message');
 
-        dropZone.addEventListener('click', () => {
-            fileInput.click();
-        });
+      
 
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
             dropZone.classList.add('dragover');
         });
 
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('dragover');
-        });
 
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
@@ -173,6 +166,7 @@
             card.classList.remove('d-none');
             errorMessage.classList.add('d-none');
             progressContainer.classList.add('d-none');
+            progressMessage.classList.add('d-none');
         }
 
         submitBtn.addEventListener('click', (e) => {
@@ -229,20 +223,27 @@
                         card.classList.add('d-none')
 
                     } else if (data.success) {
+
                         progressBar.style.width = '100%';
                         progressMessage.textContent = 'Upload complete!';
-                        
-                        let message =
-                            `Import completed. Valid Rows: ${data.data.valid_count}, Invalid Rows: ${data.data.invalid_count}, Duplicate Rows: ${data.data.duplicate_count}.`;
 
-                        if (data.invalid_count > 0) {
-                            message += '<br>Please download the invalid rows and correct them.';
-                            downloadLink.href = data.download_invalid_link;
-                            downloadLink.classList.remove('d-none');
+                        
+                        let valid_count = data.data.valid_count;
+                        let invalid_count = data.data.invalid_count;
+                        let duplicate_count = data.data.duplicate_count;
+                        let total_count = valid_count + invalid_count + duplicate_count;
+
+
+                        if (data.data.invalid_count > 0) {
+                            let download_invalid_link = data.data.download_invalid_link;
+                            showDownloadPrompt(valid_count, invalid_count, duplicate_count,total_count,
+                                download_invalid_link);
+                            
                         }
 
-                        progressMessage.innerHTML = message;
+                       
                         progressMessage.classList.remove('d-none');
+                        progressContainer.classList.add('d-none');
                     } else {
                         throw new Error(data.message || 'Upload failed');
                     }
@@ -255,7 +256,8 @@
                 });
         });
 
-        function showDownloadPrompt(blobData) {
+        //function showDownloadPrompt(blobData) {
+        function showDownloadPrompt(valid_count, invalid_count, duplicate_count,total_count, download_invalid_link) {
             // Create the modal element
             const downloadPrompt = document.createElement('div');
             downloadPrompt.style.position = 'fixed';
@@ -268,9 +270,15 @@
             downloadPrompt.style.zIndex = '1000';
 
             downloadPrompt.innerHTML = `
-        <h5>Invalid Rows Found</h5>
-        <p>We found some invalid rows in your file. Would you like to download them as a CSV?</p>
-        <button id="download-btn" class="btn bg-educ color-white">Download</button>
+        
+        <ul>
+            <li>Total Rows: ${total_count}</li>
+            <li>Imported Rows: ${valid_count}</li> 
+            <li>Invalid Rows: ${invalid_count}</li> 
+            <li>Duplicate Rows: ${duplicate_count}</li>    
+        </ul>
+        <p>Click Download button to download invalid rows as a CSV?</p>
+        <a href="app${download_invalid_link}" id="download-btn" class="btn bg-educ color-white">Download</a>
         <button id="cancel-btn" class="btn">Cancel</button>
     `;
 
