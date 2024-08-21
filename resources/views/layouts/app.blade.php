@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="row my-4" style="">
-            <div id="side-bar" class="col-auto dashboard border-right-educ rounded-right" style="width:250px;padding:0;">
+            <div id="side-bar" class="col-auto dashboard border-right-educ rounded-right" style="width:250px;padding:0; min-height: 750px;">
                 <ul class="nav flex-column fonts w-100 mt-2">
                     {{-- <li class="nav-item">
                         <a class="nav-link {{ Route::currentRouteName() == 'dashboard' ? 'active-link' : '' }}"
