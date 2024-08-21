@@ -1,6 +1,10 @@
 <?php
 
 use App\Http\Controllers\ContactController;
+
+use App\Http\Controllers\ContactsImportController;
+use App\Models\Contact;
+
 use Illuminate\Support\Facades\Route;
 
 // Default Route
@@ -41,10 +45,17 @@ Route::post('/save_activity_update/{contact_pid}', [ContactController::class, 's
 
 // Import Copy Route
 Route::get('/importcopy', function () {
-    return view('Import_File');
-})->name('importcopy');
+
+    return view('csv_import_form');
+});
+
+
+
+Route::post('/import', [ContactsImportController::class, 'import'])->name('import');
+
 
 // Edit Contact Detail Route
 Route::get('/editcontactdetail', function () {
     return view('Edit_Contact_Detail_Page');
 })->name('editcontactdetail');
+
