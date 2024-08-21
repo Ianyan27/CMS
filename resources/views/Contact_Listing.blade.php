@@ -3,6 +3,8 @@
 @section('title', 'Contact Listing Page')
 
 @section('content')
+    <link rel="stylesheet" href="{{ URL::asset('css/contact_listing.css') }}">
+
     <div class="table-title d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
             <h5 class="mr-3 my-2 headings">Contact Listing</h5>
@@ -53,15 +55,18 @@
                     <div id="filterContainer" class="filter-popup container rounded-bottom" style="display: none;">
                         <div class="row">
                             <div class="filter-option">
-                                <input class="ml-3" type="checkbox" id="new" name="status" value="New" onclick="applyFilter()">
+                                <input class="ml-3" type="checkbox" id="new" name="status" value="New"
+                                    onclick="applyFilter()">
                                 <label for="new" style= "color: #318FFC;">New</label>
                             </div>
                             <div class="filter-option">
-                                <input class="ml-3" type="checkbox" id="inProgress" name="status" value="InProgress" onclick="applyFilter()">
+                                <input class="ml-3" type="checkbox" id="inProgress" name="status" value="InProgress"
+                                    onclick="applyFilter()">
                                 <label for="inProgress" style="color: #FF8300;">In Progress</label>
                             </div>
                             <div class="filter-option">
-                                <input class="ml-3" type="checkbox" id="hubspot" name="status" value="HubSpot Contact" onclick="applyFilter()">
+                                <input class="ml-3" type="checkbox" id="hubspot" name="status" value="HubSpot Contact"
+                                    onclick="applyFilter()">
                                 <label for="hubspot" style="color: #FF5C35;">HubSpot</label>
                             </div>
                         </div>
@@ -233,7 +238,7 @@
         </tbody>
     </table>
 
-    <div aria-label="Page navigation example">
+    <div aria-label="Page navigation example " class="paginationContainer">
         <ul class="pagination justify-content-center">
             <!-- Previous Button -->
             <li class="page-item {{ $contacts->onFirstPage() ? 'disabled' : '' }}">
@@ -303,6 +308,8 @@
                 $('#archive-table').hide();
                 $('#discard-table').show();
             });
+
+
         });
     </script>
 @endsection
