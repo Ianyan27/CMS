@@ -15,13 +15,27 @@
         </div>
     </div>
     <table class="table table-hover mt-2">
-        <thead class="font-educ text-center">
+        <thead class="font-educ text-left">
             <tr>
-                <th scope="col"><input type="checkbox" name="" id=""></th>
                 <th class="h5" scope="col">No #</th>
-                <th class="h5" scope="col">Name <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
-                <th class="h5" scope="col">Email <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
-                <th class="h5" scope="col">Role <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
+                <th class="h5" scope="col" id="name-header">Name
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name" 
+                        onclick="sortTable('name', 'asc'); toggleSort('sortDown-name', 'sortUp-name')"></i>
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name" 
+                        onclick="sortTable('name', 'desc'); toggleSort('sortUp-name', 'sortDown-name')" style="display: none;"></i>
+                </th>
+                <th class="h5" scope="col" id="email-header">Email
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-email" 
+                        onclick="sortTable('email', 'asc'); toggleSort('sortDown-email', 'sortUp-email')"></i>
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-email" 
+                        onclick="sortTable('email', 'desc'); toggleSort('sortUp-email', 'sortDown-email')" style="display: none;"></i>
+                </th>
+                <th class="h5" scope="col" id="role-header">Role 
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-role" 
+                        onclick="sortTable('role', 'asc'); toggleSort('sortDown-role', 'sortUp-role')"></i>
+                    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-role" 
+                        onclick="sortTable('role', 'desc'); toggleSort('sortUp-role', 'sortDown-role')" style="display: none;"></i>
+                </th>                
                 <th class="h5" scope="col">Profile </i></th>
                 <th class="h5" scope="col">BU</i></th>
                 <th class="h5" scope="col">Country</th>
@@ -29,9 +43,8 @@
                 <th class="h5" scope="col">Actions</th>
             </tr>
         </thead>
-        <tbody class="text-center bg-row fonts">
+        <tbody class="text-left bg-row">
             <tr>
-                <td><input type="checkbox" name="" id=""></td>
                 <td>1</td>
                 <td>John Doe</td>
                 <td>john.doe@lithan.com</td>
@@ -51,7 +64,6 @@
                 </td>
             </tr>
             <tr>
-                <td><input type="checkbox" name="" id=""></td>
                 <td>2</td>
                 <td>Jane Smith</td>
                 <td>jane.smith@lithan.com</td>
@@ -70,7 +82,6 @@
                 </td>
             </tr>
             <tr>
-                <td><input type="checkbox" name="" id=""></td>
                 <td>3</td>
                 <td>Michael Johnson</td>
                 <td>michael.johnson@lithan.com</td>
@@ -90,7 +101,6 @@
                 </td>
             </tr>
             <tr>
-                <td><input type="checkbox" name="" id=""></td>
                 <td>4</td>
                 <td>Emily Davis</td>
                 <td>emily.davis@lithan.com</td>
@@ -110,7 +120,6 @@
                 </td>
             </tr>
             <tr>
-                <td><input type="checkbox" name="" id=""></td>
                 <td>5</td>
                 <td>Chris Brown</td>
                 <td>chris.brown@lithan.com</td>
@@ -130,7 +139,6 @@
                 </td>
             </tr>
             <tr>
-                <td><input type="checkbox" name="" id=""></td>
                 <td>6</td>
                 <td>Amy Wilson</td>
                 <td>amy.wilson@lithan.com</td>
@@ -150,7 +158,6 @@
                 </td>
             </tr>
             <tr>
-                <td><input type="checkbox" name="" id=""></td>
                 <td>7</td>
                 <td>David White</td>
                 <td>david.white@lithan.com</td>
@@ -170,7 +177,6 @@
                 </td>
             </tr>
             <tr>
-                <td><input type="checkbox" name="" id=""></td>
                 <td>8</td>
                 <td>Laura Martinez</td>
                 <td>laura.martinez@lithan.com</td>

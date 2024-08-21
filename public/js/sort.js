@@ -1,0 +1,55 @@
+function toggleSort(downIconId, upIconId) {
+    const sortDown = document.getElementById(downIconId);
+    const sortUp = document.getElementById(upIconId);
+
+    if (sortDown.style.display === 'none') {
+        sortDown.style.display = 'inline';
+        sortUp.style.display = 'none';
+    } else {
+        sortDown.style.display = 'none';
+        sortUp.style.display = 'inline';
+    }
+}
+function sortTable(columnName, order) {
+    let table, rows, switching, i, x, y, shouldSwitch;
+    table = document.querySelector(".table");
+    switching = true;
+    
+    // Loop until no switching has been done
+    while (switching) {
+        switching = false;
+        rows = table.rows;
+        
+        // Loop through all table rows except the first (headers)
+        for (i = 1; i < (rows.length - 1); i++) {
+            shouldSwitch = false;
+            
+            // Determine the column index based on columnName
+            let columnIndex;
+            if (columnName === 'name') {
+                columnIndex = 1; // Index for the 'Name' column
+            }else if(columnName === 'email'){
+                columnIndex = 2; // Indes for the 'Email' column
+            }else if(columnName === 'role' || columnName === 'country') {
+                columnIndex = 3; // Index for the 'Role' column
+            }
+            
+            // Compare the two elements in the column to see if they should switch
+            x = rows[i].querySelectorAll("td")[columnIndex];
+            y = rows[i + 1].querySelectorAll("td")[columnIndex];
+            
+            if (order === 'asc' && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                shouldSwitch = true;
+                break;
+            } else if (order === 'desc' && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                shouldSwitch = true;
+                break;
+            }
+        }
+        if (shouldSwitch) {
+            // If a switch has been marked, make the switch and mark the switch as done
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+        }
+    }
+}
