@@ -41,6 +41,11 @@ class ContactsImport implements ToModel, WithHeadingRow
                 }
             }
         }
+        // Ensure that required fields like 'email' are present in the data array
+        if (empty($data['email'])) {
+            $this->invalidRows[] = array_merge($row, ['validation_errors' => ['Email field is missing or not recognized']]);
+            return null; // Skip this row
+        }
 
         // Check for duplicates
         if (Contact::where('email', $data['email'])->exists()) {
