@@ -53,3 +53,53 @@ function sortTable(columnName, order) {
         }
     }
 }
+
+
+/*
+*
+*   Sorting for Sales Agent Page
+* 
+*/
+function sortByColumn(columnName, order) {
+            let table, rows, switching, i, x, y, shouldSwitch;
+            table = document.querySelector("#sales-agents-table");
+            switching = true;
+
+            // Define column indices based on columnName
+            let columnIndex;
+            if (columnName === 'agent') {
+                columnIndex = 2; // Index for 'Agent' column
+            } else if (columnName === 'country') {
+                columnIndex = 3; // Index for 'Country' column
+            } else {
+                return; // Exit if columnName is not handled
+            }
+
+            // Loop until no switching has been done
+            while (switching) {
+                switching = false;
+                rows = table.tBodies[0].rows;
+
+                for (i = 0; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+
+                    x = rows[i].cells[columnIndex].innerText.trim().toLowerCase();
+                    y = rows[i + 1].cells[columnIndex].innerText.trim().toLowerCase();
+
+                    // Debugging output
+                    console.log(`Comparing: '${x}' with '${y}'`);
+
+                    if (order === 'asc' && x > y) {
+                        shouldSwitch = true;
+                        break;
+                    } else if (order === 'desc' && x < y) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+        }
