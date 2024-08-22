@@ -54,18 +54,24 @@ class ContactsImportController extends Controller
         $fileLinks = [];
 
         if (!empty($invalidRows)) {
-            $invalidCsvData = array_merge([['name', 'email', 'contact_number', 'validation_errors']], $invalidRows);
+            // Use the first row of the invalidRows as the header if available
+            $headers = array_keys($invalidRows[0]);
+            $headers[] = 'validation_errors'; // Add validation errors column
+            $invalidCsvData = array_merge([$headers], $invalidRows);
             $invalidCsvFileName = 'invalid_rows.csv';
             $invalidCsvUrl = $this->exportCsv($invalidCsvFileName, $invalidCsvData);
             $fileLinks['invalid_rows'] = $invalidCsvUrl;
         }
 
         if (!empty($duplicateRows)) {
-            $duplicateCsvData = array_merge([['name', 'email', 'contact_number']], $duplicateRows);
+            // Use the first row of the duplicateRows as the header if available
+            $headers = array_keys($duplicateRows[0]);
+            $duplicateCsvData = array_merge([$headers], $duplicateRows);
             $duplicateCsvFileName = 'duplicate_rows.csv';
             $duplicateCsvUrl = $this->exportCsv($duplicateCsvFileName, $duplicateCsvData);
             $fileLinks['duplicate_rows'] = $duplicateCsvUrl;
         }
+
 
         return response()->json([
             'success' => true,
