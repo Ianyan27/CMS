@@ -5,6 +5,7 @@ use App\Http\Controllers\ContactController;
 
 use App\Http\Controllers\ContactsImportController;
 use App\Http\Controllers\DiscardController;
+use App\Http\Controllers\OwnerController;
 use App\Models\Contact;
 
 use Illuminate\Support\Facades\Route;
@@ -20,9 +21,7 @@ Route::get('/dashboard', function () {
 })->name('dashboard');
 
 // Sales Agent Route
-Route::get('/salesagent', function () {
-    return view('Sale_Agent_Page');
-})->name('salesagent');
+Route::get('/sales-agent', [OwnerController::class, 'viewOwner'])->name('owner#view');
 
 // Contact Listing Route
 Route::get('/contact-listing', [ContactController::class, 'contacts'])->name('contact-listing');

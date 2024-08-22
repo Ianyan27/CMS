@@ -57,8 +57,8 @@
         </div>
     </div>
     <div class="container-max-height">
-        <table class=" table table-hover mt-2 h-75" id="contacts-table">
-            <thead class="text-left font-educ w-100">
+        <table class=" table table-hover mt-2" id="contacts-table">
+            <thead class="text-left font-educ">
                 <tr>
                     <th scope="col">No #</th>
                     <th scope="col" id="name-header">Name
