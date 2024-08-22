@@ -37,20 +37,36 @@ class ContactController extends Controller
     }
 
     public function updateContact(Request $request, $contact_pid){
-        /* Find the contact record using the given 'contact_pid', update its attributes
-        with the data from the request, and save the changes to the database. 
-        After saving, redirect to the contact view page with the updated 'contact_pid'.*/
+        // Determine if the contact exists in the original table
         $contact = Contact::find($contact_pid);
-        $contact->name = $request->input('name');
-        $contact->email = $request->input('email');
-        $contact->contact_number = $request->input('contact_number');
-        $contact->address = $request->input('address');
-        $contact->country = $request->input('country');
-        $contact->qualification = $request->input('qualification');
-        $contact->job_role = $request->input('job_role');
-        $contact->skills = $request->input('skills');
-        $contact->save();
-        return redirect()->route('contact#view', ['contact_pid' => $contact_pid]);
+        // Handle the "Archive" and "Discard" status cases
+        if (in_array($request->input('status'), ['Archive', 'Discard'])) {
+            // Determine the target model based on the status
+            $targetModel = $request->input('status') === 'Archive' ? new ContactArchive() : new ContactDiscard();
+            // Copy the contact data to the new table
+            $targetModel->fill($contact->toArray());
+            $targetModel->status = $request->input('status'); // Explicitly set the status
+            $targetModel->save();
+            // Delete the contact from the current table
+            $contact->delete();
+            // Redirect with a success message
+            return redirect()->route('contact-listing')->with('success', 'Contact moved to ' . $request->input('status') . ' successfully.');
+        }
+        // If status is not "Archive" or "Discard", update the contact normally
+        $contact->update([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'contact_number' => $request->input('contact_number'),
+            'address' => $request->input('address'),
+            'country' => $request->input('country'),
+            'qualification' => $request->input('qualification'),
+            'job_role' => $request->input('job_role'),
+            'skills' => $request->input('skills'),
+            'status' => $request->input('status')
+        ]);
+
+        // Redirect with a success message
+        return redirect()->route('contact#view', ['contact_pid' => $contact_pid])->with('success', 'Contact updated successfully.');
     }
 
     public function saveActivity(Request $request, $contact_pid){
@@ -71,7 +87,7 @@ class ContactController extends Controller
         if ($request->hasFile('activity-attachments')){
             $imageFile = $request->file('activity-attachments');
             $imageName = uniqid() . '_' . $imageFile->getClientOriginalName();
-            $imageFile->move(public_path('/attachments'), $imageName);
+            $imageFile->move(public_path('/attachments/leads'), $imageName);
             $engagement->attachments = json_encode([$imageName]); // Save as a JSON array
         }
 

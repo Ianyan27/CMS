@@ -3,6 +3,37 @@
 @section('title', 'Contact Listing Page')
 
 @section('content')
+@if (session('success'))
+    <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
+    <button id="successModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal" style="display: none;">
+        Open Modal
+    </button>
+    <!-- Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">Success</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ session('success') }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Script to trigger the modal -->
+    <script type="text/javascript">
+        window.onload = function() {
+            document.getElementById('successModalBtn').click();
+        };
+    </script>
+@endif
 <div class="container-max-height">
     <link rel="stylesheet" href="{{ URL::asset('css/contact_listing.css') }}">
     <div class="table-title d-flex justify-content-between align-items-center">
@@ -51,7 +82,6 @@
                     <th class=" position-relative" scope="col">
                         Status
                         <i style="cursor: pointer;" class="fa-solid fa-filter" id="filterIcon" onclick="toggleFilter()"></i>
-
                         <!-- Filter Container -->
                         <div id="filterContainer" class="filter-popup container rounded-bottom" style="display: none;">
                             <div class="row">
@@ -175,7 +205,7 @@
                             </span>
                         </td>
                         <td>
-                            <a href=" {{ route('contact#view', $contact->contact_pid) }} " class="btn hover-action"
+                            <a href=" {{ route('archive#view', $archive->contact_archive_pid) }} " class="btn hover-action"
                                 data-toggle="tooltip" title="View">
                                 <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
                             </a>
@@ -231,7 +261,7 @@
                             </span>
                         </td>
                         <td>
-                            <a href="{{ route('contact#view', ['contact_pid' => $contact->contact_pid]) }}"
+                            <a href="{{ route('discard#view', ['contact_discard_pid' => $discard->contact_discard_pid]) }}"
                                 class="btn hover-action" data-toggle="tooltip" title="View">
                                 <i class="fa-solid fa-eye" style="font-size: 1.5rem"></i>
                             </a>
