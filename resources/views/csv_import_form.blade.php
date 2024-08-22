@@ -229,14 +229,14 @@
 
                         setTimeout(() => {
                             if (data.data.invalid_count > 0) {
-                            let download_invalid_link = data.data.download_invalid_link;
+                            let download_invalid_link = data.   data.file_links.invalid_rows;
                             showDownloadPrompt(valid_count, invalid_count, duplicate_count, total_count,
                                 download_invalid_link);
 
                         } else {
                             showResult(valid_count, invalid_count, duplicate_count, total_count);
                         }
-                        }, 1500);
+                        }, 800);
 
                        
 
@@ -273,7 +273,9 @@
             <li>Invalid Rows: ${invalid_count}</li> 
             <li>Duplicate Rows: ${duplicate_count}</li>    
         </ul>
+          <div class="text-end">
         <button id="cancel-btn" class="btn bg-educ color-white">Close</button>
+        </div>
     `;
             // Append the modal to the body
             document.body.appendChild(result);
@@ -307,7 +309,7 @@
         <div class="text-end">
        
         <button id="cancel-btn" class="btn">Cancel</button>
-         <a href="app${download_invalid_link}" id="download-btn" class="btn bg-educ color-white">Download</a>
+         <a  id="download-btn" class="btn bg-educ color-white">Download</a>
          </div>
     `;
 
@@ -316,14 +318,17 @@
 
             // Handle download button click
             document.getElementById('download-btn').addEventListener('click', () => {
-                const url = window.URL.createObjectURL(blobData);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'invalid_emails.csv'; // Set the file name
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-                window.URL.revokeObjectURL(url);
+                // const url = window.URL.createObjectURL(blobData);
+                // const a = document.createElement('a');
+                // a.href = url;
+                // a.download = 'invalid_emails.csv'; // Set the file name
+                // document.body.appendChild(a);
+                // a.click();
+                // a.remove();
+                // window.URL.revokeObjectURL(url);
+                console.log(download_invalid_link);
+                
+                window.location.href = download_invalid_link;
 
                 // Remove the modal after download
                 downloadPrompt.remove();
