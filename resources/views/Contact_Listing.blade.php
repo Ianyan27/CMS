@@ -178,7 +178,9 @@
                                 <i class="fa-solid fa-info-circle text-muted"></i>
                             </span>
                         </th>
-                        <th scope="col">Actions</th>
+                        <th scope="col">Actions
+                            
+                        </th>
                     </tr>
                 </thead>
                 <tbody class="text-left bg-row">
