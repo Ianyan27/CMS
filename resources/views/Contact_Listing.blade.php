@@ -25,7 +25,7 @@
             </button>
         </div>
     </div>
-    <div style="max-height: 550px; overflow-y: auto;">
+    <div class="table-container">
         <table class=" table table-hover mt-2 h-75" id="contacts-table">
             <thead class="text-left font-educ w-100">
                 <tr>

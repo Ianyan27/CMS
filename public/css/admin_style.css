@@ -20,6 +20,11 @@ body {
     max-height: 730px;
 }
 
+.table-container{
+    max-height: 550px; 
+    overflow-y: auto;
+}
+
 .container-fluid {
     flex-grow: 1;
 }
@@ -31,6 +36,41 @@ body {
 .font-educ{
     color: #91264c;
 }
+
+.navigation-width {
+    width: 250px;
+    padding: 0;
+}
+
+.content-width {
+    width: calc(100% - 250px);
+}
+
+@media screen and (max-width: 1920px) {
+    .content-width {
+        width: calc(100% - 250px);
+    }
+}
+
+@media screen and (max-width: 1600px) {
+    .content-width {
+        width: calc(100% - 250px);
+    }
+}
+
+@media screen and (max-width: 1366px) {
+    .content-width {
+        width: calc(100% - 250px);
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .content-width {
+        width: calc(100% - 250px);
+    }
+}
+
+
 /* Typography */
 tbody {
     font-size: 1rem;
