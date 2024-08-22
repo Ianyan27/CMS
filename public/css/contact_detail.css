@@ -43,14 +43,14 @@
      /* Change to desired input text color */
  }
 
- #editContactModal .modal-title,
+ .updateActivityModal .modal-title,
  #addActivityModal .modal-title {
      color: #91264c;
      /* Change to desired modal title color */
  }
 
  /* Apply gradient background to the modal header */
- #editContactModal .modal-header,
+ .updateActivityModal .modal-header,
  #addActivityModal .modal-header {
      height: 90px;
      background: hsla(339, 100%, 73%, 1);
@@ -77,8 +77,8 @@
  }
 
  /* remove the border bottom */
- #editContactModal .modal-header,
- #editContactModal .modal-footer,
+ .updateActivityModal .modal-header,
+ .updateActivityModal .modal-footer,
  #addActivityModal .modal-header,
  #addActivityModal .modal-footer {
      border-bottom: none;
