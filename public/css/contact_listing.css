@@ -1,4 +1,4 @@
-#contacts-table, #archive-table, #discard-table{
+.table-container{
     min-height: 65vh;
 }
 
