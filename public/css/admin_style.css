@@ -18,6 +18,7 @@ body {
 
 .container-max-height{
     max-height: 730px;
+    overflow-y: auto;
 }
 
 .table-container{

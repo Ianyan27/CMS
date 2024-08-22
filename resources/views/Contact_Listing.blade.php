@@ -56,7 +56,7 @@
             </button>
         </div>
     </div>
-    <div class="table-container">
+    <div class="container-max-height">
         <table class=" table table-hover mt-2 h-75" id="contacts-table">
             <thead class="text-left font-educ w-100">
                 <tr>
@@ -162,7 +162,7 @@
                 </tbody>
             </table>
         </div>
-        <div style="max-height: 550px; overflow-y: auto;">
+        <div class="container-max-height">
             <table class="table table-hover mt-2" id="archive-table">
                 <thead class="text-left font-educ">
                     <tr class="text-left">
@@ -179,7 +179,7 @@
                             </span>
                         </th>
                         <th scope="col">Actions
-                            
+        
                         </th>
                     </tr>
                 </thead>
@@ -206,7 +206,7 @@
                                 </span>
                             </td>
                             <td>
-                                <a href=" {{ route('contact#view', $contact->contact_pid) }} " class="btn hover-action"
+                                <a href=" {{ route('archive#view', $archive->contact_archive_pid) }} " class="btn hover-action"
                                     data-toggle="tooltip" title="View">
                                     <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
                                 </a>
@@ -219,7 +219,7 @@
                 </tbody>
             </table>
         </div>
-        <div style="max-height: 550px; overflow-y: auto;">
+        <div class="container-max-height">
             <table class="table table-hover mt-2" id="discard-table">
                 <thead class="font-educ text-left">
                     <tr class="font-educ text-left">
@@ -235,15 +235,7 @@
                                 <i class="fa-solid fa-info-circle text-muted"></i>
                             </span>
                         </td>
-                        <td>
-                            <a href=" {{ route('archive#view', $archive->contact_archive_pid) }} " class="btn hover-action"
-                                data-toggle="tooltip" title="View">
-                                <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
-                            </a>
-                            <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </a>
-                        </td>
+                        <td scope="col">Action</td>
                     </tr>
                 </thead>
                 <tbody class="text-left bg-row">

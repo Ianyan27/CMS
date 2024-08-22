@@ -45,7 +45,7 @@
         }
     </style>
 
-
+<div class="container-max-height">
     <div class="container-fluid mb-2">
         <div class="table-title d-flex justify-content-between align-items-center mb-3">
             <h2 class="ml-3 mb-2 font-educ"><strong>Sales Agents</strong></h2>
@@ -67,7 +67,7 @@
 
     </div>
 
-    <div class="table-responsive" style="min-height: 70vh">
+    <div class="">
         <table id="sales-agents-table" class="table table-striped table-bordered mt-2">
             <thead class="font-educ text-center">
                 <tr>
@@ -424,6 +424,7 @@
         </ul>
     </footer>
     </div>
+</div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
