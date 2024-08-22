@@ -85,7 +85,7 @@
                             class="d-flex justify-content-center align-items-center">
                             <div class="mx-5">
                                 <h4 class="mb-4">Drag and drop your files</h4>
-                                <p class="text-muted mb-4" title="Only .csv is suppoted">File formats we support <i
+                                <p class="text-muted mb-4" title="The uploaded file must be a file of type: csv">File formats we support <i
                                         class="fas fa-info-circle"></i></p>
                             </div>
                             @csrf
@@ -141,7 +141,6 @@
         const errorMessage = document.getElementById('error-message');
 
 
-
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
             dropZone.classList.add('dragover');
@@ -192,19 +191,23 @@
                 })
                 .then(response => {
                     if (!response.ok) {
-                        if (response.status === 500) {
-                            throw new Error('Internal Server Error: Please try again later.');
-                        } else if (error.status === 422) {
-                            const errors = error.errors;
-                            let errorText = 'Validation failed for the uploaded file:<br>';
-                            for (const [key, errorMessages] of Object.entries(errors)) {
-                                errorText += errorMessages.join('<br>') + '<br>';
+                        return response.json().then(errorData => {
+                            // Handle 500 error with custom message from the server
+                            if (response.status === 500) {
+                                throw new Error(errorData.message || 'Internal Server Error');
                             }
-                            errorMessage.innerHTML = errorText;
-                        } else {
-                            errorMessage.textContent = error.message;
-                        }
-                        throw new Error('Upload failed');
+                            // Handle 422 validation errors
+                            if (response.status === 422) {
+                                const errors = errorData.errors;
+                                let errorText = '';
+                                for (const [key, errorMessages] of Object.entries(errors)) {
+                                    errorText += errorMessages;
+                                }
+                                errorMessage.innerHTML = errorText;
+                                throw new Error(errorText || 'Validation Error');
+                            }
+                            throw new Error(errorData.message || 'Upload failed');
+                        });
                     }
                     // Check if the response is a CSV file
                     const contentDisposition = response.headers.get('Content-Disposition');
@@ -229,16 +232,17 @@
 
                         setTimeout(() => {
                             if (data.data.invalid_count > 0) {
-                            let download_invalid_link = data.   data.file_links.invalid_rows;
-                            showDownloadPrompt(valid_count, invalid_count, duplicate_count, total_count,
-                                download_invalid_link);
+                                let download_invalid_link = data.data.file_links.invalid_rows;
+                                showDownloadPrompt(valid_count, invalid_count, duplicate_count,
+                                    total_count,
+                                    download_invalid_link);
 
-                        } else {
-                            showResult(valid_count, invalid_count, duplicate_count, total_count);
-                        }
+                            } else {
+                                showResult(valid_count, invalid_count, duplicate_count, total_count);
+                            }
                         }, 800);
 
-                       
+
 
 
                         progressMessage.classList.remove('d-none');
@@ -247,6 +251,7 @@
                     }
                 })
                 .catch(error => {
+
                     progressBar.style.width = '0%';
                     progressMessage.classList.add('d-none');
                     errorMessage.textContent = error.message;
@@ -327,7 +332,7 @@
                 // a.remove();
                 // window.URL.revokeObjectURL(url);
                 console.log(download_invalid_link);
-                
+
                 window.location.href = download_invalid_link;
 
                 // Remove the modal after download
