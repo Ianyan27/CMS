@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Services\RoundRobinAllocator;
@@ -39,7 +40,7 @@ class ContactsImportController extends Controller
             $allocator = new RoundRobinAllocator();
             $allocator->allocate();
         } catch (\Exception $e) {
-            \Log::error('Failed to import data:', ['error' => $e->getMessage()]);
+            
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to import data: ' . $e->getMessage()
@@ -92,10 +93,13 @@ class ContactsImportController extends Controller
     {
         try {
             $csvContent = $this->arrayToCsv($data);
-            Storage::disk('local')->put($fileName, $csvContent);
+            // Save the file to the 'public' disk
+            Storage::disk('public')->put($fileName, $csvContent);
+
+            // Generate a public URL
             return Storage::url($fileName);
         } catch (\Exception $e) {
-            \Log::error("Failed to export $fileName:", ['error' => $e->getMessage()]);
+
             throw new \Exception("Failed to export $fileName: " . $e->getMessage());
         }
     }
@@ -106,7 +110,7 @@ class ContactsImportController extends Controller
 
         foreach ($array as $row) {
             // Flatten the row to ensure no nested arrays
-            $flattenedRow = array_map(function($value) {
+            $flattenedRow = array_map(function ($value) {
                 if (is_array($value)) {
                     // Convert array to a JSON string or serialize it if necessary
                     return json_encode($value);
@@ -120,5 +124,4 @@ class ContactsImportController extends Controller
         rewind($csv);
         return stream_get_contents($csv);
     }
-
 }
