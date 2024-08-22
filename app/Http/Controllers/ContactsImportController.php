@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Services\RoundRobinAllocator;
 use Illuminate\Http\Request;
 use App\Imports\ContactsImport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -35,6 +36,8 @@ class ContactsImportController extends Controller
             // Import the data into the database using the ContactsImport class
             $import = new ContactsImport;
             Excel::import($import, $file);
+            $allocator = new RoundRobinAllocator();
+            $allocator->allocate();
         } catch (\Exception $e) {
             \Log::error('Failed to import data:', ['error' => $e->getMessage()]);
             return response()->json([
