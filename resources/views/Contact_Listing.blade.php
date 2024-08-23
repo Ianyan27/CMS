@@ -3,75 +3,102 @@
 @section('title', 'Contact Listing Page')
 
 @section('content')
-    <div class="container-max-height">
-        <link rel="stylesheet" href="{{ URL::asset('css/contact_listing.css') }}">
-        <div class="table-title d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center">
-                <h5 class="mr-3 my-2 headings">Contact Listing</h5>
-                <button style="border-radius: 15px;" class="btn hover-action mx-3" id="show-contacts">
-                    Interested Contacts
-                </button>
-                <button class="archive-table btn mx-3" id="show-archive">
-                    Archive Contacts
-                </button>
-                <button class="discard-table btn mx-3" id="show-discard">
-                    Discard Contacts
-                </button>
-            </div>
-            <div class="search-box d-flex align-items-center mr-3 mb-2">
-                <input type="search" class="form-control mr-1" placeholder="Search..." id="search-input"
-                    aria-label="Search">
-                <button class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
+@if (session('success'))
+    <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
+    <button id="successModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal" style="display: none;">
+        Open Modal
+    </button>
+    <!-- Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">Success</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ session('success') }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
-        <div class="table-container">
-            <table class=" table table-hover mt-2 h-75" id="contacts-table">
-                <thead class="text-left font-educ w-100">
-                    <tr>
-                        <th scope="col">No #</th>
-                        <th scope="col" id="name-header">Name
-                            <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name"
-                                onclick="sortTable('name', 'asc'); toggleSort('sortDown-name', 'sortUp-name')"></i>
-                            <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name"
-                                onclick="sortTable('name', 'desc'); toggleSort('sortUp-name', 'sortDown-name')"
-                                style="display: none;"></i>
-                        </th>
-                        <th scope="col" id="email-header">Email
-                            <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-email"
-                                onclick="sortTable('email', 'asc'); toggleSort('sortDown-email', 'sortUp-email')"></i>
-                            <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-email"
-                                onclick="sortTable('email', 'desc'); toggleSort('sortUp-email', 'sortDown-email')"
-                                style="display: none;"></i>
-                        </th>
-                        <th scope="col">Contact
-                        </th>
-                        <th scope="col">Country
-                        </th>
-                        <th class=" position-relative" scope="col">
-                            Status
-                            <i style="cursor: pointer;" class="fa-solid fa-filter" id="filterIcon"
-                                onclick="toggleFilter()"></i>
-
-                            <!-- Filter Container -->
-                            <div id="filterContainer" class="filter-popup container rounded-bottom" style="display: none;">
-                                <div class="row">
-                                    <div class="filter-option">
-                                        <input class="ml-3" type="checkbox" id="new" name="status" value="New"
-                                            onclick="applyFilter()">
-                                        <label for="new" style= "color: #318FFC;">New</label>
-                                    </div>
-                                    <div class="filter-option">
-                                        <input class="ml-3" type="checkbox" id="inProgress" name="status"
-                                            value="InProgress" onclick="applyFilter()">
-                                        <label for="inProgress" style="color: #FF8300;">In Progress</label>
-                                    </div>
-                                    <div class="filter-option">
-                                        <input class="ml-3" type="checkbox" id="hubspot" name="status"
-                                            value="HubSpot Contact" onclick="applyFilter()">
-                                        <label for="hubspot" style="color: #FF5C35;">HubSpot</label>
-                                    </div>
+    </div>
+    <!-- Script to trigger the modal -->
+    <script type="text/javascript">
+        window.onload = function() {
+            document.getElementById('successModalBtn').click();
+        };
+    </script>
+@endif
+<div class="container-max-height">
+    <link rel="stylesheet" href="{{ URL::asset('css/contact_listing.css') }}">
+    <div class="table-title d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <h5 class="mr-3 my-2 headings">Contact Listing</h5>
+            <button style="border-radius: 15px;" class="btn hover-action mx-3" id="show-contacts">
+                Interested Contacts
+            </button>
+            <button class="archive-table btn mx-3" id="show-archive">
+                Archive Contacts
+            </button>
+            <button class="discard-table btn mx-3" id="show-discard">
+                Discard Contacts
+            </button>
+        </div>
+        <div class="search-box d-flex align-items-center mr-3 mb-2">
+            <input type="search" class="form-control mr-1" placeholder="Search..." id="search-input" aria-label="Search">
+            <button class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </div>
+    </div>
+    <div class="container-max-height">
+        <table class=" table table-hover mt-2" id="contacts-table">
+            <thead class="text-left font-educ">
+                <tr>
+                    <th scope="col">No #</th>
+                    <th scope="col" id="name-header">Name
+                        <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name"
+                            onclick="sortTable('name', 'asc'); toggleSort('sortDown-name', 'sortUp-name')"></i>
+                        <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name"
+                            onclick="sortTable('name', 'desc'); toggleSort('sortUp-name', 'sortDown-name')"
+                            style="display: none;"></i>
+                    </th>
+                    <th scope="col" id="email-header">Email
+                        <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-email"
+                            onclick="sortTable('email', 'asc'); toggleSort('sortDown-email', 'sortUp-email')"></i>
+                        <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-email"
+                            onclick="sortTable('email', 'desc'); toggleSort('sortUp-email', 'sortDown-email')"
+                            style="display: none;"></i>
+                    </th>
+                    <th scope="col">Contact
+                    </th>
+                    <th scope="col">Country
+                    </th>
+                    <th class=" position-relative" scope="col">
+                        Status
+                        <i style="cursor: pointer;" class="fa-solid fa-filter" id="filterIcon" onclick="toggleFilter()"></i>
+                        <!-- Filter Container -->
+                        <div id="filterContainer" class="filter-popup container rounded-bottom" style="display: none;">
+                            <div class="row">
+                                <div class="filter-option">
+                                    <input class="ml-3" type="checkbox" id="new" name="status" value="New"
+                                        onclick="applyFilter()">
+                                    <label for="new" style= "color: #318FFC;">New</label>
+                                </div>
+                                <div class="filter-option">
+                                    <input class="ml-3" type="checkbox" id="inProgress" name="status" value="InProgress"
+                                        onclick="applyFilter()">
+                                    <label for="inProgress" style="color: #FF8300;">In Progress</label>
+                                </div>
+                                <div class="filter-option">
+                                    <input class="ml-3" type="checkbox" id="hubspot" name="status" value="HubSpot Contact"
+                                        onclick="applyFilter()">
+                                    <label for="hubspot" style="color: #FF5C35;">HubSpot</label>
                                 </div>
                             </div>
                         </th>
@@ -135,7 +162,7 @@
                 </tbody>
             </table>
         </div>
-        <div style="max-height: 550px; overflow-y: auto;">
+        <div class="container-max-height">
             <table class="table table-hover mt-2" id="archive-table">
                 <thead class="text-left font-educ">
                     <tr class="text-left">
@@ -151,7 +178,9 @@
                                 <i class="fa-solid fa-info-circle text-muted"></i>
                             </span>
                         </th>
-                        <th scope="col">Actions</th>
+                        <th scope="col">Actions
+        
+                        </th>
                     </tr>
                 </thead>
                 <tbody class="text-left bg-row">
@@ -177,7 +206,7 @@
                                 </span>
                             </td>
                             <td>
-                                <a href=" {{ route('contact#view', $contact->contact_pid) }} " class="btn hover-action"
+                                <a href=" {{ route('archive#view', $archive->contact_archive_pid) }} " class="btn hover-action"
                                     data-toggle="tooltip" title="View">
                                     <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
                                 </a>
@@ -190,7 +219,7 @@
                 </tbody>
             </table>
         </div>
-        <div style="max-height: 550px; overflow-y: auto;">
+        <div class="container-max-height">
             <table class="table table-hover mt-2" id="discard-table">
                 <thead class="font-educ text-left">
                     <tr class="font-educ text-left">
@@ -205,8 +234,8 @@
                                 title="Status of the contact: Active, Discarded, New, In Progress, Archived">
                                 <i class="fa-solid fa-info-circle text-muted"></i>
                             </span>
-                        </th>
-                        <th scope="col">Actions</th>
+                        </td>
+                        <td scope="col">Action</td>
                     </tr>
                 </thead>
                 <tbody class="text-left bg-row">
@@ -226,17 +255,17 @@
                                     style="background-color:
                             @if ($discard['status'] === 'Discard') #FF7F86; color: #BD000C; @endif
                             ">
-                                    @if ($discard['status'] === 'Discard')
-                                        Discard
-                                    @endif
-                                </span>
-                            </td>
-                            <td>
-                                <a href="{{ route('contact#view', ['contact_pid' => $contact->contact_pid]) }}"
-                                    class="btn hover-action" data-toggle="tooltip" title="View">
-                                    <i class="fa-solid fa-eye" style="font-size: 1.5rem"></i>
-                                </a>
-                                {{-- <a href="#" class="btn hover-action" data-toggle="tooltip" title="Edit">
+                            @if ($discard['status'] === 'Discard')
+                                Discard
+                            @endif
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{{ route('discard#view', ['contact_discard_pid' => $discard->contact_discard_pid]) }}"
+                                class="btn hover-action" data-toggle="tooltip" title="View">
+                                <i class="fa-solid fa-eye" style="font-size: 1.5rem"></i>
+                            </a>
+                            {{-- <a href="#" class="btn hover-action" data-toggle="tooltip" title="Edit">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a> --}}
                             </td>

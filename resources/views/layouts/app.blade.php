@@ -33,7 +33,7 @@
                 </div>
             </div>
         </div>
-        <div class="row my-4">
+        <div class="row my-4 content-height">
             <div id="side-bar" class="col-auto dashboard border-right-educ rounded-right min-height navigation-width">
                 <ul class="nav flex-column fonts mt-2">
                     {{-- <li class="nav-item">
@@ -45,13 +45,13 @@
                     <li class="nav-item dashboard-link">
                         <a class="nav-link {{ Route::currentRouteName() == 'user-list' ? 'active-link' : '' }}"
                             href="{{ route('user-list') }}">
-                            <i class="fa-regular fa-user"></i><span>Users</span>
+                            <i class="fa-solid fa-user"></i><span>Users</span>
                         </a>
                     </li>                    
                     <li class="nav-item dashboard-link">
-                        <a class="nav-link {{ Route::currentRouteName() == 'salesagent' ? 'active-link' : '' }}"
-                            href="{{ route('salesagent') }}">
-                            <i class="fa-solid fa-universal-access"></i></i><span>Sale Agent</span>
+                        <a class="nav-link {{ Route::currentRouteName() == 'sales-agent' ? 'active-link' : '' }}"
+                            href="{{ route('owner#view') }}">
+                            <i class="fa-solid fa-universal-access"></i></i><span>Owner</span>
                         </a>
                     </li>
                     <li class="nav-item dashboard-link">

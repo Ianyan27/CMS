@@ -13,11 +13,12 @@ body {
 }
 
 .min-height{
-    min-height: 720px;
+    min-height: 550px;
 }
 
 .container-max-height{
     max-height: 730px;
+    overflow-y: auto;
 }
 
 .table-container{
@@ -42,34 +43,28 @@ body {
     padding: 0;
 }
 
+/* Base Styles */
 .content-width {
     width: calc(100% - 250px);
 }
 
-@media screen and (max-width: 1920px) {
-    .content-width {
-        width: calc(100% - 250px);
-    }
+.content-height {
+    min-height: calc(100vh - 82.98px - 56px - 48px); /* Adjusted for navbar, footer, and my-4 margins */
 }
 
-@media screen and (max-width: 1600px) {
-    .content-width {
-        width: calc(100% - 250px);
-    }
-}
-
-@media screen and (max-width: 1366px) {
-    .content-width {
-        width: calc(100% - 250px);
-    }
-}
-
+/* Responsive Adjustments */
 @media screen and (max-width: 1024px) {
     .content-width {
-        width: calc(100% - 250px);
+        width: calc(100% - 250px); /* Same width for smaller screens */
     }
 }
 
+/* Further Adjustments (if needed) */
+@media screen and (max-width: 768px) {
+    .content-width {
+        width: 100%; /* Full width for mobile devices */
+    }
+}
 
 /* Typography */
 tbody {

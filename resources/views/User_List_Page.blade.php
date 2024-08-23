@@ -6,7 +6,7 @@
 <div class="container-max-height">
     <div class="table-title d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
-            <h2 class="ml-3 mb-2 font-educ"><strong>User Listing Page</strong></h2>
+            <h5 class="ml-3 my-2 headings">User Listing Page</h5>
         </div>
         <div class="search-box d-flex align-items-center mr-3 mb-2">
             <input type="search" class="form-control mr-1" placeholder="Search..." id="search-input" aria-label="Search">
@@ -15,34 +15,34 @@
             </button>
         </div>
     </div>
-    <div style="max-height: 550px; overflow-y: auto;">
+    <div class="table-container">
         <table class="table table-hover mt-2">
             <thead class="font-educ text-left">
                 <tr>
-                    <th class="h5" scope="col">No #</th>
-                    <th class="h5" scope="col" id="name-header">Name
+                    <th scope="col">No #</th>
+                    <th scope="col" id="name-header">Name
                         <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name" 
                             onclick="sortTable('name', 'asc'); toggleSort('sortDown-name', 'sortUp-name')"></i>
                         <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name" 
                             onclick="sortTable('name', 'desc'); toggleSort('sortUp-name', 'sortDown-name')" style="display: none;"></i>
                     </th>
-                    <th class="h5" scope="col" id="email-header">Email
+                    <th scope="col" id="email-header">Email
                         <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-email" 
                             onclick="sortTable('email', 'asc'); toggleSort('sortDown-email', 'sortUp-email')"></i>
                         <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-email" 
                             onclick="sortTable('email', 'desc'); toggleSort('sortUp-email', 'sortDown-email')" style="display: none;"></i>
                     </th>
-                    <th class="h5" scope="col" id="role-header">Role 
+                    <th scope="col" id="role-header">Role 
                         <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-role" 
                             onclick="sortTable('role', 'asc'); toggleSort('sortDown-role', 'sortUp-role')"></i>
                         <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-role" 
                             onclick="sortTable('role', 'desc'); toggleSort('sortUp-role', 'sortDown-role')" style="display: none;"></i>
                     </th>                
-                    <th class="h5" scope="col">Profile </i></th>
-                    <th class="h5" scope="col">BU</i></th>
-                    <th class="h5" scope="col">Country</th>
-                    <th class="h5" scope="col">Status </i></th>
-                    <th class="h5" scope="col">Actions</th>
+                    <th scope="col">Profile </i></th>
+                    <th scope="col">BU</i></th>
+                    <th scope="col">Country</th>
+                    <th scope="col">Status </i></th>
+                    <th scope="col">Actions</th>
                 </tr>
             </thead>
             <tbody class="text-left bg-row">
