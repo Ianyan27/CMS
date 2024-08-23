@@ -30,6 +30,7 @@
         .dropdown-item input[type="radio"] {
             margin-right: 10px;
         }
+
         .dropdown-toggle {
             cursor: pointer;
             padding: 5px;
@@ -115,8 +116,8 @@
                 <a class="page-link font-educ" href="#" aria-label="Previous">&#60;</a>
             </li>
 
-            <!-- First Page Button -->
-            {{-- @if ($contacts->currentPage() > 3) --}}
+                <!-- First Page Button -->
+                {{-- @if ($contacts->currentPage() > 3) --}}
                 <li class="page-item">
                     <a class="page-link font-educ" href="#">1</a>
                 </li>
@@ -126,39 +127,37 @@
                 <li class="page-item disabled">
                     <span class="page-link">...</span>
                 </li>
-            {{-- @endif --}}
+                {{-- @endif --}}
 
-            <!-- Middle Page Buttons -->
-            {{-- @for ($i = max($contacts->currentPage() - 1, 1); $i <= min($contacts->currentPage() + 1, $contacts->lastPage()); $i++) --}}
+                <!-- Middle Page Buttons -->
+                {{-- @for ($i = max($contacts->currentPage() - 1, 1); $i <= min($contacts->currentPage() + 1, $contacts->lastPage()); $i++) --}}
                 <li class="page-item">
                     <a class="page-link font-educ" href="#"></a>
                 </li>
-            {{-- @endfor --}}
+                {{-- @endfor --}}
 
-            <!-- Last Page Button -->
-            {{-- @if ($contacts->currentPage() < $contacts->lastPage() - 2) --}}
+                <!-- Last Page Button -->
+                {{-- @if ($contacts->currentPage() < $contacts->lastPage() - 2) --}}
                 <li class="page-item disabled">
                     <span class="page-link">...</span>
                 </li>
                 <li class="page-item">
-                    <a class="page-link font-educ"
-                        href="#"></a>
+                    <a class="page-link font-educ" href="#"></a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link font-educ"
-                        href="#"></a>
+                    <a class="page-link font-educ" href="#"></a>
                 </li>
-            {{-- @endif --}}
+                {{-- @endif --}}
 
-            <!-- Next Button -->
-            <li class="page-item">
-                <a class="page-link font-educ" href="#" aria-label="Next">&#62;</a>
-            </li>
-        </ul>
+                <!-- Next Button -->
+                <li class="page-item">
+                    <a class="page-link font-educ" href="#" aria-label="Next">&#62;</a>
+                </li>
+            </ul>
+        </div>
     </div>
-</div>
 
-</div>
+    </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {

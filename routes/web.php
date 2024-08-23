@@ -61,10 +61,11 @@ Route::post('/save_discard/{contact_discard_pid}', [DiscardController::class, 'u
 Route::post('/save_activity/{contact_pid}', [ContactController::class, 'saveActivity'])->name('contact#save_activity');
 
 // Edit Activity Route
-Route::get('/edit_activity/{fk_engagements__contact_pid}', [ContactController::class, 'updateActivity'])->name('contact#update_activity');
+Route::get('/edit_activity/{contact_id}/{activity_id}', [ContactController::class, 'editActivity'])->name('contact#update_activity');
 
 // Update Activity Route
-Route::post('/save_activity_update/{contact_pid}', [ContactController::class, 'saveUpdateActivity'])->name('contact#save_update_activity');
+Route::post('/contact/{contact_pid}/activity/{activity_id}/update', [ContactController::class, 'saveUpdateActivity'])
+    ->name('contact#save_update_activity');
 
 // Save Discard Activity Route
 Route::post('/save_discard_activity/{contact_discard_pid}', [DiscardController::class, 'saveDiscardActivity'])->name('discard#save_discard_activity');
@@ -80,4 +81,3 @@ Route::post('/import', [ContactsImportController::class, 'import'])->name('impor
 Route::get('/editcontactdetail', function () {
     return view('Edit_Contact_Detail_Page');
 })->name('editcontactdetail');
-
