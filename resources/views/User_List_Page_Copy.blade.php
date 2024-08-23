@@ -27,6 +27,8 @@
                     <th scope="col">Name</th>
                     <th scope="col">Email</th>
                     <th scope="col">Role</th>
+                    <th scope="col">BU</th>
+                    <th scope="col">Country</th>
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
@@ -37,6 +39,8 @@
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
                     <td>{{ $user->role }}</td>
+                    <td>Delivery Management</td>
+                    <td>Myanmmar</td>
                     <td>
                         <!-- Trigger Edit Modal -->
                         <button type="button" class="btn hover-action" data-toggle="modal" data-target="#editUserModal{{ $user->id }}">
