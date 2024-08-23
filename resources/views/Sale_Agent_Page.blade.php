@@ -63,7 +63,7 @@
             <thead class="font-educ text-left">
                 <tr>
                     <th scope="col">No #</th>
-                    <th scope="col" id="name-header">Owner Name
+                    <th scope="col" id="name-header">Sale Agent Name
                         <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-agent"
                             onclick="sortByColumn('agent', 'asc'); toggleSort('sortDown-agent', 'sortUp-agent')"></i>
                         <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-agent"
@@ -71,6 +71,7 @@
                             style="display: none;"></i>
                     </th>
                     <th scope="col">Hubspot ID</th>
+                    <th scope="colr">Owner Business Unit</th>
                     <th scope="col" id="country-header">Country
                         <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-country"
                             onclick="sortByColumn('country', 'asc'); toggleSort('sortDown-country', 'sortUp-country')"></i>
@@ -89,6 +90,7 @@
                         <td> {{ $owners->owner_pid }} </td>
                         <td> {{ $owners->owner_name }} </td>
                         <td> {{ $owners->owner_hubspot_id }} </td>
+                        <td> {{ $owners->owner_business_unit }} </td>
                         <td> {{ $owners->country }} </td>
                         <td> {{ $owners->total_in_progress }} </td>
                         <td> {{ $owners->total_hubspot_sync }} </td>
