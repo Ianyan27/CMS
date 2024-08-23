@@ -6,22 +6,28 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ContactsImportController;
 use App\Http\Controllers\DiscardController;
 use App\Http\Controllers\OwnerController;
+use App\Http\Controllers\UserController;
 use App\Models\Contact;
 
 use Illuminate\Support\Facades\Route;
-
-// Default Route
-Route::get('/', function () {
-    return view('User_List_Page');
-})->name('user-list');
 
 // Dashboard Route
 Route::get('/dashboard', function () {
     return view('Dashboard');
 })->name('dashboard');
 
+// Default Route
+Route::get('/', [UserController::class, 'viewUser'])->name('view-user');
+Route::get('/edit-user/{id}', [UserController::class, 'editUser'])->name('user#edit-user');
+Route::post('/update-user/{id}', [UserController::class, 'updateUser'])->name('user#update-user');
+//Create User
+Route::post('/save-user', [UserController::class, 'saveUser'])->name('save-user');
+
 // Sales Agent Route
-Route::get('/sales-agent', [OwnerController::class, 'viewOwner'])->name('owner#view');
+Route::get('/sales-agent', [OwnerController::class, 'owner'])->name('owner#view');
+
+Route::get('/view-owner/{owner_pid}', [OwnerController::class, 'viewOwner'])->name('owner#view_owner');
+
 
 // Contact Listing Route
 Route::get('/contact-listing', [ContactController::class, 'contacts'])->name('contact-listing');

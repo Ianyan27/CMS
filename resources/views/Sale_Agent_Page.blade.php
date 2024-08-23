@@ -95,8 +95,13 @@
                         <td> {{ $owners->total_in_progress }} </td>
                         <td> {{ $owners->total_hubspot_sync }} </td>
                         <td>  
-                            <i><a href="#">Edit</a></i>
-                            <i><a href="#">Delete</a></i>
+                            <a href=" {{ route('owner#view_owner', $owners->owner_pid) }} " class="btn hover-action"
+                                data-toggle="tooltip" title="View">
+                                <i class="fa-solid fa-eye "></i>
+                            </a>
+                            <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
                         </td>
                     </tr>
                 @endforeach
