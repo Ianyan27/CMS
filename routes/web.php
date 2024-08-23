@@ -25,8 +25,8 @@ Route::post('/save-user', [UserController::class, 'saveUser'])->name('save-user'
 
 // Sales Agent Route
 Route::get('/sales-agent', [OwnerController::class, 'owner'])->name('owner#view');
-
 Route::get('/view-owner/{owner_pid}', [OwnerController::class, 'viewOwner'])->name('owner#view_owner');
+Route::get('/edit-owner/{owner_pid}', [OwnerController::class, 'updateOwner'])->name('owner#update');
 
 
 // Contact Listing Route

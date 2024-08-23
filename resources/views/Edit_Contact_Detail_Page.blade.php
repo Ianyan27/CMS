@@ -127,7 +127,7 @@
             <div class="activities">
                 @foreach ($engagements->groupBy(function ($date) {
             return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
-        }) as $month => $activitiesInMonth)
+            }) as $month => $activitiesInMonth)
                     <div class="activity-list">
                         <div class="activity-date my-3 ml-3">
                             <span class="text-muted">{{ $month }}</span>
