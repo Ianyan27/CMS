@@ -10,7 +10,7 @@
     <div class="row border-educ rounded h-auto">
         <div class="col-md-5 border-right" id="contact-detail">
             <div class="table-title d-flex justify-content-between align-items-center my-3">
-                <h2 class="mt-2 ml-3 headings">Contact Detail</h2>
+                <h2 class="mt-2 headings">Contact Detail</h2>
                 <a href="{{ route('contact#edit', $editContact->contact_pid) }}" class="btn hover-action mx-1"
                     data-toggle="modal" data-target="#editContactModal">
                     <i class="fa-solid fa-pen-to-square"></i>
@@ -127,7 +127,7 @@
             <div class="activities">
                 @foreach ($engagements->groupBy(function ($date) {
             return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
-        }) as $month => $activitiesInMonth)
+            }) as $month => $activitiesInMonth)
                     <div class="activity-list">
                         <div class="activity-date my-3 ml-3">
                             <span class="text-muted">{{ $month }}</span>

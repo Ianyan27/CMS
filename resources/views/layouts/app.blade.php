@@ -44,7 +44,7 @@
                     </li> --}}
                     <li class="nav-item dashboard-link">
                         <a class="nav-link {{ Route::currentRouteName() == 'user-list' ? 'active-link' : '' }}"
-                            href="{{ route('user-list') }}">
+                            href="{{ route('view-user') }}">
                             <i class="fa-solid fa-user"></i><span>Users</span>
                         </a>
                     </li>                    

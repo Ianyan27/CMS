@@ -38,7 +38,7 @@
                         <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-role" 
                             onclick="sortTable('role', 'desc'); toggleSort('sortUp-role', 'sortDown-role')" style="display: none;"></i>
                     </th>                
-                    <th scope="col">Profile </i></th>
+                    <th scope="col">Profile </i></th> {{-- Not needed for now--}}
                     <th scope="col">BU</i></th>
                     <th scope="col">Country</th>
                     <th scope="col">Status </i></th>
