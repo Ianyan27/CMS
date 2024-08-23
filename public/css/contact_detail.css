@@ -43,6 +43,7 @@
      /* Change to desired input text color */
  }
 
+ #editContactModal .modal-title,
  .updateActivityModal .modal-title,
  #addActivityModal .modal-title {
      color: #91264c;
@@ -50,6 +51,7 @@
  }
 
  /* Apply gradient background to the modal header */
+ #editContactModal .modal-header,
  .updateActivityModal .modal-header,
  #addActivityModal .modal-header {
      height: 90px;
@@ -77,6 +79,8 @@
  }
 
  /* remove the border bottom */
+ #editContactModal .modal-header,
+ #editContactModal .modal-footer,
  .updateActivityModal .modal-header,
  .updateActivityModal .modal-footer,
  #addActivityModal .modal-header,
