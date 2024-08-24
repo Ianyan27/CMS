@@ -439,3 +439,15 @@ th, label{
     margin-top: 20px;
     padding: 10px 0; 
 }
+
+/* Image */
+#user-image {
+    height: 150px; /* Adjust the height as needed */
+    width: 150px;  /* Match the width to the height to make it round */
+    object-fit: cover;
+    border-radius: 50%; /* Makes the image round */
+    border: 2px solid #ccc; /* Optional: add a border to the image */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}

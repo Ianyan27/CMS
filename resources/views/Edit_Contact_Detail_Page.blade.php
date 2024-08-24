@@ -5,6 +5,37 @@
 @extends('layouts.Edit_Contact_Modal')
 @extends('layouts.Add_Activity_Modal')
 @section('content')
+@if (session('success'))
+    <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
+    <button id="successModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal" style="display: none;">
+        Open Modal
+    </button>
+    <!-- Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">Success</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ session('success') }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Script to trigger the modal -->
+    <script type="text/javascript">
+        window.onload = function() {
+            document.getElementById('successModalBtn').click();
+        };
+    </script>
+@endif
     {{-- css will edit to css file soon --}}
     <link rel="stylesheet" href="{{ URL::asset('css/contact_detail.css') }}">
     <div class="row border-educ rounded h-auto">
@@ -109,7 +140,7 @@
                 <div class="d-flex align-items-center">
                     <input type="search" class="form-control fonts mr-1" placeholder="Search..." id="search-input"
                         aria-label="Search">
-                    <button class="btn btn-secondary bg-educ mx-1" type="button" id="search-button">
+                    <button class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
                 </div>

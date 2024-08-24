@@ -5,6 +5,7 @@ use App\Models\Contact;
 use App\Models\ContactArchive;
 use App\Models\ContactDiscard;
 use App\Models\Owner;
+use Illuminate\Http\Request;
 
 class OwnerController extends Controller{
 
@@ -38,10 +39,16 @@ class OwnerController extends Controller{
         $editOwner->save();
         
         // Get the contacts
-        $ownerContacts = Contact::where('fk_contacts__owner_pid', $owner_pid)->get();
+        $ownerContacts = Contact::where(
+            'fk_contacts__owner_pid', $owner_pid
+            )->get();
         
-        $ownerArchive = ContactArchive::where('fk_contact_archives__owner_pid', $owner_pid)->get();
-        $ownerDiscard = ContactDiscard::where('fk_contact_discards__owner_pid', $owner_pid)->get();
+        $ownerArchive = ContactArchive::where(
+            'fk_contact_archives__owner_pid', $owner_pid
+            )->get();
+        $ownerDiscard = ContactDiscard::where(
+            'fk_contact_discards__owner_pid', $owner_pid
+            )->get();
         
         // Pass the data to the view
         return view('Edit_Owner_Detail_Page', [
@@ -55,4 +62,15 @@ class OwnerController extends Controller{
         ]);
     }
     
+    public function updateOwner(Request $request, $owner_pid){
+
+        $owner = Owner::find($owner_pid);
+
+        $owner->update([
+            $owner->owner_business_unit = $request->input('business_unit'),
+            $owner->country = $request->input('country')
+        ]);
+
+        return redirect()->route('owner#view_owner',['owner_pid'=>$owner_pid])->with('success', 'Owner updated successfully.');
+    }
 }
