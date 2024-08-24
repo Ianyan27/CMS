@@ -74,8 +74,7 @@
                     <select id="platform" class=" w-100">
                         <option value="linkedin">LinkedIn</option>
                         <option value="facebook">Facebook</option>
-                        <option value="twitter">Twitter</option>
-                        <option value="instagram">Instagram</option>
+                        <option value="twitter">Raw CSV</option>
                     </select>
                 </div>
 
@@ -85,8 +84,8 @@
                             class="d-flex justify-content-center align-items-center">
                             <div class="mx-5">
                                 <h4 class="mb-4">Drag and drop your files</h4>
-                                <p class="text-muted mb-4" title="Only .csv is suppoted">File formats we support <i
-                                        class="fas fa-info-circle"></i></p>
+                                <p class="text-muted mb-4" title="The uploaded file must be a file of type: csv">File
+                                    formats we support <i class="fas fa-info-circle"></i></p>
                             </div>
                             @csrf
                             <div>
@@ -141,7 +140,6 @@
         const errorMessage = document.getElementById('error-message');
 
 
-
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
             dropZone.classList.add('dragover');
@@ -192,19 +190,23 @@
                 })
                 .then(response => {
                     if (!response.ok) {
-                        if (response.status === 500) {
-                            throw new Error('Internal Server Error: Please try again later.');
-                        } else if (error.status === 422) {
-                            const errors = error.errors;
-                            let errorText = 'Validation failed for the uploaded file:<br>';
-                            for (const [key, errorMessages] of Object.entries(errors)) {
-                                errorText += errorMessages.join('<br>') + '<br>';
+                        return response.json().then(errorData => {
+                            // Handle 500 error with custom message from the server
+                            if (response.status === 500) {
+                                throw new Error(errorData.message || 'Internal Server Error');
                             }
-                            errorMessage.innerHTML = errorText;
-                        } else {
-                            errorMessage.textContent = error.message;
-                        }
-                        throw new Error('Upload failed');
+                            // Handle 422 validation errors
+                            if (response.status === 422) {
+                                const errors = errorData.errors;
+                                let errorText = '';
+                                for (const [key, errorMessages] of Object.entries(errors)) {
+                                    errorText += errorMessages;
+                                }
+                                errorMessage.innerHTML = errorText;
+                                throw new Error(errorText || 'Validation Error');
+                            }
+                            throw new Error(errorData.message || 'Upload failed');
+                        });
                     }
                     // Check if the response is a CSV file
                     const contentDisposition = response.headers.get('Content-Disposition');
@@ -228,17 +230,23 @@
                         let total_count = valid_count + invalid_count + duplicate_count;
 
                         setTimeout(() => {
-                            if (data.data.invalid_count > 0) {
-                            let download_invalid_link = data.   data.file_links.invalid_rows;
-                            showDownloadPrompt(valid_count, invalid_count, duplicate_count, total_count,
-                                download_invalid_link);
+                            if (invalid_count > 0 || duplicate_count > 0) {
 
-                        } else {
-                            showResult(valid_count, invalid_count, duplicate_count, total_count);
-                        }
+                                const {
+                                    invalid_rows,
+                                    duplicate_rows
+                                } = data.data.file_links;
+
+                                showDownloadPrompt(valid_count, invalid_count, duplicate_count,
+                                    total_count,
+                                    invalid_rows, duplicate_rows, );
+
+                            } else {
+                                showResult(valid_count, invalid_count, duplicate_count, total_count);
+                            }
                         }, 800);
 
-                       
+
 
 
                         progressMessage.classList.remove('d-none');
@@ -247,6 +255,7 @@
                     }
                 })
                 .catch(error => {
+
                     progressBar.style.width = '0%';
                     progressMessage.classList.add('d-none');
                     errorMessage.textContent = error.message;
@@ -285,54 +294,70 @@
             });
         }
 
-        //function showDownloadPrompt(blobData) {
-        function showDownloadPrompt(valid_count, invalid_count, duplicate_count, total_count, download_invalid_link) {
+        //show download promt
+        function showDownloadPrompt(valid_count, invalid_count, duplicate_count, total_count, invalid_rows_link,
+            duplicate_rows_link) {
             // Create the modal element
             const downloadPrompt = document.createElement('div');
+
             downloadPrompt.style.position = 'fixed';
             downloadPrompt.style.top = '50%';
             downloadPrompt.style.left = '50%';
             downloadPrompt.style.transform = 'translate(-50%, -50%)';
             downloadPrompt.style.backgroundColor = '#fff';
-            downloadPrompt.style.padding = '20px';
+            
             downloadPrompt.style.boxShadow = '0px 0px 10px rgba(0, 0, 0, 0.4)';
             downloadPrompt.style.zIndex = '1000';
-
-            downloadPrompt.innerHTML = `
-        <h5>Would you like to download the invalid records?</h5>
-        <ul>
+            downloadPrompt.style.borderRadius = '8px';
+            downloadPrompt.classList.add = 'modal-header'
+           // downloadPrompt.style.width = '350px';
+            // Add the logo image and text in a flex container
+            const logoUrl = "{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}";
+            const headerContent = `
+           <div style="
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 15px;
+            
+            background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+            border-radius: 8px 8px 0 0;
+        "   class="d-flex justify-content-center align-items-center">
+            <p style=" margin-right: 30px;" class="headings">Upload complete!</p>
+            <img src="${logoUrl}" alt="Company Logo" style="height: 30px;">
+        </div>
+    `;
+    const bodyContent=`
+    <div style="padding : 20px" class="fonts">
+        <ul style="padding-left: 20px;">
             <li>Total Rows: ${total_count}</li>
             <li>Imported Rows: ${valid_count}</li> 
-            <li>Invalid Rows: ${invalid_count}</li> 
-            <li>Duplicate Rows: ${duplicate_count}</li>    
+            <li>Invalid Rows: ${invalid_count}
+                ${invalid_rows_link ? `<a href="${invalid_rows_link}" id="download-invalid-btn" style="color: #007bff; text-decoration: underline;">Download</a>` : ''}
+            </li> 
+            <li>Duplicate Rows: ${duplicate_count}
+                ${duplicate_rows_link ? `<a href="${duplicate_rows_link}" id="download-duplicate-btn" style="color: #007bff; text-decoration: underline;">Download</a>` : ''}
+            </li>    
         </ul>
         <div class="text-end">
-       
-        <button id="cancel-btn" class="btn">Cancel</button>
-         <a  id="download-btn" class="btn bg-educ color-white">Download</a>
-         </div>
+            <button id="cancel-btn" class="btn" style="background-color: #6c757d; color: white; padding: 5px 10px; border-radius: 4px;">Close</button>
+        </div>
+    </div>    
     `;
+
+            downloadPrompt.innerHTML = `
+        ${headerContent}
+        ${bodyContent}
+       
+        
+    `;
+
 
             // Append the modal to the body
             document.body.appendChild(downloadPrompt);
 
-            // Handle download button click
-            document.getElementById('download-btn').addEventListener('click', () => {
-                // const url = window.URL.createObjectURL(blobData);
-                // const a = document.createElement('a');
-                // a.href = url;
-                // a.download = 'invalid_emails.csv'; // Set the file name
-                // document.body.appendChild(a);
-                // a.click();
-                // a.remove();
-                // window.URL.revokeObjectURL(url);
-                console.log(download_invalid_link);
-                
-                window.location.href = download_invalid_link;
-
-                // Remove the modal after download
-                downloadPrompt.remove();
-            });
+            // Show the modal
+            downloadPrompt.style.display = 'block';
 
             // Handle cancel button click
             document.getElementById('cancel-btn').addEventListener('click', () => {

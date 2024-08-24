@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,9 +14,11 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!-- added bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ URL::asset('css/admin_style.css') }}">
 </head>
+
 <body class="d-flex flex-column">
     <div class="container-fluid flex-grow-1">
         <div class="row shadow-sm py-3">
@@ -43,13 +46,13 @@
                         </a>
                     </li> --}}
                     <li class="nav-item dashboard-link">
-                        <a class="nav-link {{ Route::currentRouteName() == 'user-list' ? 'active-link' : '' }}"
+                        <a class="nav-link {{ Route::currentRouteName() == 'view-user' ? 'active-link' : '' }}"
                             href="{{ route('view-user') }}">
                             <i class="fa-solid fa-user"></i><span>Users</span>
                         </a>
-                    </li>                    
+                    </li>
                     <li class="nav-item dashboard-link">
-                        <a class="nav-link {{ Route::currentRouteName() == 'sales-agent' ? 'active-link' : '' }}"
+                        <a class="nav-link {{ Route::currentRouteName() == 'owner#view' ? 'active-link' : '' }}"
                             href="{{ route('owner#view') }}">
                             <i class="fa-solid fa-universal-access"></i></i><span>Owner</span>
                         </a>
@@ -86,4 +89,5 @@
     <script src="{{ URL::asset('js/filter_status.js') }}"></script>
 
 </body>
+
 </html>
