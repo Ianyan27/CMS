@@ -24,70 +24,96 @@
             <thead class="font-educ text-left">
                 <tr>
                     <th scope="col">No #</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Email</th>
+                    <th scope="col" id="name-header">Name
+                        <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name"
+                            onclick="sortTable('name', 'asc'); toggleSort('sortDown-name', 'sortUp-name')"></i>
+                        <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name"
+                            onclick="sortTable('name', 'desc'); toggleSort('sortUp-name', 'sortDown-name')"
+                            style="display: none;"></i>
+                    </th>
+                    <th scope="col" id="email-header">Email
+                        <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-email"
+                            onclick="sortTable('email', 'asc'); toggleSort('sortDown-email', 'sortUp-email')"></i>
+                        <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-email"
+                            onclick="sortTable('email', 'desc'); toggleSort('sortUp-email', 'sortDown-email')"
+                            style="display: none;"></i>
+                    </th>
                     <th scope="col">Role</th>
                     <th scope="col">BU</th>
                     <th scope="col">Country</th>
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
-            <tbody class="text-left bg-row">
-                @foreach($userData as $user)
+            <tbody class="text-left bg-row fonts">
+                @forelse($userData as $user)
                 <tr>
                     <td>{{ $user->id }}</td>
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
                     <td>{{ $user->role }}</td>
                     <td>Delivery Management</td>
-                    <td>Myanmmar</td>
+                    <td>Myanmar</td>
                     <td>
                         <!-- Trigger Edit Modal -->
-                        <button type="button" class="btn hover-action" data-toggle="modal" data-target="#editUserModal{{ $user->id }}">
-                            <i class="fa-solid fa-eye "></i>
-                        </button>
+                        <a class="btn hover-action" data-toggle="modal" data-target="#editUserModal{{ $user->id }}">
+                            <i class="fa-solid fa-eye"></i>
+                        </a>
                         <!-- Trigger Delete Modal -->
-                        <button type="button" class="btn hover-action" data-toggle="modal" data-target="#exampleModal">
+                        <a style="min-height: 24px;" class="btn hover-action" data-toggle="modal" data-target="#exampleModal">
                             <i class="fa-solid fa-trash"></i>
-                        </button>
+                        </a>
                     </td>
                 </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="8" class="text-center">No Contacts Found.</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>        
     </div>
     <!-- Edit User Modal -->
     <div class="modal fade" id="editUserModal{{ $user->id }}" tabindex="-1" aria-labelledby="editUserModalLabel{{ $user->id }}" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editUserModalLabel{{ $user->id }}">Edit User</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                <div class="modal-header d-flex justify-content-between align-items-center">
+                    <h5 class="modal-title" id="editUserModalLabel{{ $user->id }}">
+                        <strong>Edit User</strong>
+                    </h5>
+                    <img src="{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}" alt="Company Logo" style="height: 30px;">
                 </div>
                 <div class="modal-body">
                     <form action="{{ route('user#update-user', $user->id) }}" method="POST">
                         @csrf
-                        <input type="hidden" name="userId" value="{{ $user->id }}">
-                        <div class="form-group">
-                            <label for="editName{{ $user->id }}">Name</label>
-                            <input type="text" class="form-control" id="editName{{ $user->id }}" name="name" value="{{ $user->name }}" required>
+                        <div class="row">
+                            <!-- Left Column -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="font-educ" for="editName{{ $user->id }}">Name</label>
+                                    <input type="text" class="form-control fonts" id="editName{{ $user->id }}" name="name" value="{{ $user->name }}" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-educ" for="editEmail{{ $user->id }}">Email</label>
+                                    <input type="email" class="form-control fonts" id="editEmail{{ $user->id }}" name="email" value="{{ $user->email }}" readonly>
+                                </div>
+                            </div>
+                            <!-- Right Column -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="font-educ" for="editRole{{ $user->id }}">Role</label>
+                                    <select name="role" id="editRole{{ $user->id }}" class="form-control fonts" required>
+                                        <option value="User" {{ $user->role == 'User' ? 'selected' : '' }}>User</option>
+                                        <option value="Sales_Agent" {{ $user->role == 'Sales_Agent' ? 'selected' : '' }}>Sales Agent</option>
+                                        <option value="BUH" {{ $user->role == 'BUH' ? 'selected' : '' }}>Business Unit Head</option>
+                                        <!-- Add more options as needed -->
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="editEmail{{ $user->id }}">Email</label>
-                            <input type="email" class="form-control" id="editEmail{{ $user->id }}" name="email" value="{{ $user->email }}" readonly>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn" style="background: #91264c; color:white;">Save Changes</button>
                         </div>
-                        <div class="form-group">
-                            <label for="editRole{{ $user->id }}">Role</label>
-                            <select name="role" id="editRole{{ $user->id }}" class="form-control" required>
-                                <option value="User" {{ $user->role == 'User' ? 'selected' : '' }}>User</option>
-                                <option value="Sales_Agent" {{ $user->role == 'Sales_Agent' ? 'selected' : '' }}>Sales Agent</option>
-                                <option value="BUH" {{ $user->role == 'BUH' ? 'selected' : '' }}>Business Unit Head</option>
-                                <!-- Add more options as needed -->
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
                     </form>
                 </div>
             </div>
@@ -113,7 +139,6 @@
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
                         </div>
-
                         <div class="form-group">
                             <label for="email">Email</label>
                             <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required>
@@ -121,7 +146,6 @@
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
                         </div>
-
                         <div class="form-group">
                             <label for="password">Password</label>
                             <input type="password" class="form-control" id="password" name="password" required>
@@ -129,12 +153,10 @@
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
                         </div>
-
                         <div class="form-group">
                             <label for="password_confirmation">Confirm Password</label>
                             <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
                         </div>
-
                         <div class="form-group">
                             <input type="hidden" name="role" id="role" class="form-control" value="User" readonly>
                         </div>

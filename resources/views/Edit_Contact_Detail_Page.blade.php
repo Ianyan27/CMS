@@ -137,13 +137,6 @@
         <div class="col-md-7 px-3" id="activity-container">
             <div class="d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 ml-2 headings">Activities Notifications</h2>
-                <div class="d-flex align-items-center">
-                    <input type="search" class="form-control fonts mr-1" placeholder="Search..." id="search-input"
-                        aria-label="Search">
-                    <button class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
-                </div>
             </div>
             <!-- Filter Buttons -->
             <div class="btn-group mb-3" role="group" aria-label="Activity Filter Buttons">
@@ -218,14 +211,12 @@
                                 data-toggle="modal" data-target="#updateActivityModal-{{ $engagement->engagement_pid }}">
                                 <i class="btn hover-action fa-solid fa-pen-to-square"></i>
                             </a>
-
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ URL::asset('js/contact_detail.js') }}"></script>
     <script src="{{ URL::asset('js/status_color.js') }}"></script>

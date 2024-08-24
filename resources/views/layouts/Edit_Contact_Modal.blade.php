@@ -46,7 +46,7 @@ aria-hidden="true">
                                 <label class="font-educ" for="contact-number">Contact Number</label>
                             </div>
                             <div>
-                                <input type="text" class="form-control fonts mb-2" id="contact-number"
+                                <input type="text" class="form-control fonts" id="contact-number"
                                     name="contact_number" value="{{ $editContact->contact_number }}" required>
                             </div>
                         </div>
@@ -55,7 +55,7 @@ aria-hidden="true">
                                 <label class="font-educ" for="contact-qualification">Qualification</label>
                             </div>
                             <div>
-                                <input type="text" class="form-control fonts mb-2" id="contact-qualification"
+                                <input type="text" class="form-control fonts" id="contact-qualification"
                                     value="{{ $editContact->qualification }}" name="qualification" required>
                             </div>
                         </div>
