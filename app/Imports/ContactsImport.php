@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\Validator;
 class ContactsImport implements ToModel, WithHeadingRow
 {
     protected $columnMap = [
-        'name' => ['name', 'full_name', 'contact_name', 'lead_full_name', 'Lead Full Name'],
-        'email' => ['email', 'email_address', 'contact_email'],
-        'contact_number' => ['contact_number', 'phone_number', 'mobile', 'phone', 'contact_no', 'Contact No'],
+        'name' => ['name', 'full_name', 'contact_name', 'lead_full_name', 'Lead Full Name','first_name'],
+        'email' => ['email','Email', 'email_address', 'contact_email'],
+        'contact_number' => ['contact_number', 'phone_number', 'mobile', 'phone', 'contact_no', 'Contact No','Contact Number (include country code)'],
         'address' => ['address', 'contact_address', 'location', 'lead_location_raw'],
         'country' => ['country', 'nation', 'lead_location_country_name'],
         'qualification' => ['qualification', 'degree', 'education'],

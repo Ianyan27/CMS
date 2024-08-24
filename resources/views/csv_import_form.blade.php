@@ -77,10 +77,11 @@
                         <select id="platform" class=" w-100" name="platform" required>
                             <option value="" selected disabled>Select platform</option>
                             <option value="linkedin">LinkedIn</option>
-                            <option value="facebook">Facebook</option>
+                            <option value="facebook">Apollo</option>
                             <option value="raw">Raw CSV</option>
                         </select>
-                        <button id="raw-btn-container" class="btn bg-educ color-white mx-2 d-none" style="width: 20%">Get
+                        <button id="raw-btn-container" class="btn bg-educ color-white mx-2 d-none" style="width: 20%"
+                            onclick="window.location.href='{{ route('getCsv') }}'">Get
                             CSV Format</button>
                     </div>
                     <div class="card text-center mb-4">
@@ -127,8 +128,8 @@
             </div>
         </div>
     </div>
-    </div>
-    </div>
+
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         //-----------declaring----------------//
@@ -209,7 +210,7 @@
             }
         }
 
-   
+
 
         //----------submit-------------//
         submitBtn.addEventListener('click', (e) => {
@@ -278,20 +279,16 @@
                         let total_count = valid_count + invalid_count + duplicate_count;
 
                         setTimeout(() => {
-                            if (invalid_count > 0 || duplicate_count > 0) {
 
-                                const {
-                                    invalid_rows,
-                                    duplicate_rows
-                                } = data.data.file_links;
 
-                                showDownloadPrompt(valid_count, invalid_count, duplicate_count,
-                                    total_count,
-                                    invalid_rows, duplicate_rows, );
+                            const {
+                                invalid_rows,
+                                duplicate_rows
+                            } = data.data.file_links;
 
-                            } else {
-                                showResult(valid_count, invalid_count, duplicate_count, total_count);
-                            }
+                            showDownloadPrompt(valid_count, invalid_count, duplicate_count,
+                                total_count,
+                                invalid_rows, duplicate_rows, );
                         }, 800);
 
 
@@ -311,36 +308,7 @@
                 });
         });
 
-        function showResult(valid_count, invalid_count, duplicate_count, total_count) {
-            const result = document.createElement('div');
-            result.style.position = 'fixed';
-            result.style.top = '50%';
-            result.style.left = '50%';
-            result.style.transform = 'translate(-50%, -50%)';
-            result.style.backgroundColor = '#fff';
-            result.style.padding = '20px';
-            result.style.boxShadow = '0px 0px 10px rgba(0, 0, 0, 0.4)';
-            result.style.zIndex = '1000';
 
-            result.innerHTML = `
-        <h5>Upload complete!</h5>
-        <ul>
-            <li>Total Rows: ${total_count}</li>
-            <li>Imported Rows: ${valid_count}</li> 
-            <li>Invalid Rows: ${invalid_count}</li> 
-            <li>Duplicate Rows: ${duplicate_count}</li>    
-        </ul>
-          <div class="text-end">
-        <button id="cancel-btn" class="btn bg-educ color-white">Close</button>
-        </div>
-    `;
-            // Append the modal to the body
-            document.body.appendChild(result);
-            // Handle cancel button click
-            document.getElementById('cancel-btn').addEventListener('click', () => {
-                result.remove();
-            });
-        }
 
         //show download promt
         function showDownloadPrompt(valid_count, invalid_count, duplicate_count, total_count, invalid_rows_link,
@@ -348,57 +316,89 @@
             // Create the modal element
             const downloadPrompt = document.createElement('div');
 
-            downloadPrompt.style.position = 'fixed';
-            downloadPrompt.style.top = '50%';
-            downloadPrompt.style.left = '50%';
-            downloadPrompt.style.transform = 'translate(-50%, -50%)';
-            downloadPrompt.style.backgroundColor = '#fff';
+            //         // downloadPrompt.style.position = 'fixed';
+            //         // downloadPrompt.style.top = '50%';
+            //         // downloadPrompt.style.left = '50%';
+            //         // downloadPrompt.style.transform = 'translate(-50%, -50%)';
+            //         downloadPrompt.style.backgroundColor = '#fff';
 
-            downloadPrompt.style.boxShadow = '0px 0px 10px rgba(0, 0, 0, 0.4)';
-            downloadPrompt.style.zIndex = '1000';
-            downloadPrompt.style.borderRadius = '8px';
-            downloadPrompt.classList.add = 'modal-header'
-            // downloadPrompt.style.width = '350px';
-            // Add the logo image and text in a flex container
-            const logoUrl = "{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}";
-            const headerContent = `
-           <div style="
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 15px;
-            
-            background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
-            border-radius: 8px 8px 0 0;
-        "   class="d-flex justify-content-center align-items-center">
-            <p style=" margin-right: 30px;" class="headings">Upload complete!</p>
-            <img src="${logoUrl}" alt="Company Logo" style="height: 30px;">
-        </div>
-    `;
-            const bodyContent = `
-    <div style="padding : 20px" class="fonts">
-        <ul style="padding-left: 20px;">
-            <li>Total Rows: ${total_count}</li>
-            <li>Imported Rows: ${valid_count}</li> 
-            <li>Invalid Rows: ${invalid_count}
-                ${invalid_rows_link ? `<a href="${invalid_rows_link}" id="download-invalid-btn" style="color: #007bff; text-decoration: underline;">Download</a>` : ''}
-            </li> 
-            <li>Duplicate Rows: ${duplicate_count}
-                ${duplicate_rows_link ? `<a href="${duplicate_rows_link}" id="download-duplicate-btn" style="color: #007bff; text-decoration: underline;">Download</a>` : ''}
-            </li>    
-        </ul>
-        <div class="text-end">
-            <button id="cancel-btn" class="btn" style="background-color: #6c757d; color: white; padding: 5px 10px; border-radius: 4px;">Close</button>
-        </div>
-    </div>    
-    `;
+            //         // downloadPrompt.style.boxShadow = '0px 0px 10px rgba(0, 0, 0, 0.4)';
+            //         // downloadPrompt.style.zIndex = '1000';
+            //         // downloadPrompt.style.borderRadius = '8px';
+            //         downloadPrompt.classList.add = 'modal-header';
+            //         downloadPrompt.classList.add = 'modal fade';
+            //         // downloadPrompt.style.width = '350px';
+            //         // Add the logo image and text in a flex container
+            //         const logoUrl = "{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}";
+            //         const headerContent = `
+        //        <div style="
+        //         display: flex; 
+        //         justify-content: space-between; 
+        //         align-items: center; 
+        //         padding: 15px;
 
-            downloadPrompt.innerHTML = `
-        ${headerContent}
-        ${bodyContent}
-       
-        
-    `;
+        //         background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+        //         border-radius: 8px 8px 0 0;
+        //     "   class="d-flex justify-content-center align-items-center">
+        //         <p style=" margin-right: 30px;" class="headings">Upload complete!</p>
+        //         <img src="${logoUrl}" alt="Company Logo" style="height: 30px;">
+        //     </div>
+        // `;
+            //         const bodyContent = `
+        // <div style="padding : 20px" class="fonts">
+        //     <ul style="padding-left: 20px;">
+        //         <li>Total Rows: ${total_count}</li>
+        //         <li>Imported Rows: ${valid_count}</li> 
+        //         <li>Invalid Rows: ${invalid_count}
+        //             ${invalid_rows_link ? `<a href="${invalid_rows_link}" id="download-invalid-btn" style="color: #007bff; text-decoration: underline;">Download</a>` : ''}
+        //         </li> 
+        //         <li>Duplicate Rows: ${duplicate_count}
+        //             ${duplicate_rows_link ? `<a href="${duplicate_rows_link}" id="download-duplicate-btn" style="color: #007bff; text-decoration: underline;">Download</a>` : ''}
+        //         </li>    
+        //     </ul>
+        //     <div class="text-end">
+        //         <button id="cancel-btn" class="btn" style="background-color: #6c757d; color: white; padding: 5px 10px; border-radius: 4px;">Close</button>
+        //     </div>
+        // </div>    
+        // `;
+            const bodyContent =
+                `
+                <div class="modal fade" id="downloadPromptModal" tabindex="-1" aria-labelledby="downloadPromptModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between align-items-center">
+                <h5 class="modal-title" id="downloadPromptModalLabel">
+                    <strong>Upload Complete!</strong>
+                </h5>
+                <!-- Adding the logo on the right side -->
+                <img src="{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}" alt="Company Logo" style="height: 30px;">
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <ul style="padding-left: 20px;">
+                            <li>Total Rows:${total_count}</li>
+                            <li>Imported Rows: ${valid_count}</li>
+                            <li>Invalid Rows: ${invalid_count}
+                               ${invalid_rows_link ? `<a href="${invalid_rows_link}" id="download-invalid-btn" style="color: #007bff; text-decoration: underline;">Download</a>` : ''}
+                            </li>
+                            <li>Duplicate Rows: ${duplicate_count}
+                               ${duplicate_rows_link ? `<a href="${duplicate_rows_link}" id="download-duplicate-btn" style="color: #007bff; text-decoration: underline;">Download</a>` : ''}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-end">
+                        <button id="cancel-btn" class="btn" style="background-color: #6c757d; color: white; padding: 5px 10px; border-radius: 4px;">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            `
+            downloadPrompt.innerHTML = `${bodyContent}`;
 
 
             // Append the modal to the body

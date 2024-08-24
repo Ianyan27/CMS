@@ -4,6 +4,7 @@ use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\ContactController;
 
 use App\Http\Controllers\ContactsImportController;
+use App\Http\Controllers\CSVDownloadController;
 use App\Http\Controllers\DiscardController;
 use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\UserController;
@@ -82,3 +83,6 @@ Route::post('/import', [ContactsImportController::class, 'import'])->name('impor
 Route::get('/editcontactdetail', function () {
     return view('Edit_Contact_Detail_Page');
 })->name('editcontactdetail');
+
+//get csv format
+Route::get('/getCsv', [CSVDownloadController::class, 'downloadCSV'])->name('getCsv');
