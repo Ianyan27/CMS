@@ -38,10 +38,16 @@ class OwnerController extends Controller{
         $editOwner->save();
         
         // Get the contacts
-        $ownerContacts = Contact::where('fk_contacts__owner_pid', $owner_pid)->get();
+        $ownerContacts = Contact::where(
+            'fk_contacts__owner_pid', $owner_pid
+            )->get();
         
-        $ownerArchive = ContactArchive::where('fk_contact_archives__owner_pid', $owner_pid)->get();
-        $ownerDiscard = ContactDiscard::where('fk_contact_discards__owner_pid', $owner_pid)->get();
+        $ownerArchive = ContactArchive::where(
+            'fk_contact_archives__owner_pid', $owner_pid
+            )->get();
+        $ownerDiscard = ContactDiscard::where(
+            'fk_contact_discards__owner_pid', $owner_pid
+            )->get();
         
         // Pass the data to the view
         return view('Edit_Owner_Detail_Page', [
