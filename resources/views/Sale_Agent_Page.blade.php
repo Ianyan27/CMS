@@ -80,9 +80,9 @@
                                 onclick="sortByColumn('country', 'desc'); toggleSort('sortUp-country', 'sortDown-country')"
                                 style="display: none;"></i>
                         </th>
-                        <th scope="col">Total In Progress</th>
+                        <th scope="col">Total Assign Contacts</th>
                         <th scope="col">Total Hubspot Sync Contacts</th>
-                        <th scope="col">View List/Edit</th>
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="text-lef bg-row">
