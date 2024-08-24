@@ -66,22 +66,25 @@
             background-color: #f2e6ec;
         }
     </style>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-sm-12">
-                <label for="platform" class="block text-gray-700 font-bold mb-2">Select platform</label>
-                <div class=" w-100 mb-4" style="width: 100%">
-                    <select id="platform" class=" w-100">
-                        <option value="linkedin">LinkedIn</option>
-                        <option value="facebook">Facebook</option>
-                        <option value="twitter">Raw CSV</option>
-                    </select>
-                </div>
 
-                <div class="card text-center mb-4">
-                    <div class="card-body bg-silver" id="dropZone">
-                        <form action="{{ route('import') }}" method="POST" enctype="multipart/form-data"
-                            class="d-flex justify-content-center align-items-center">
+    <div class="container">
+        <div class="row ">
+            <div class="col-sm-12">
+                <form action="{{ route('import') }}" method="POST" enctype="multipart/form-data">
+
+                    <label for="platform" class="block text-gray-700 font-bold mb-2">Select platform</label>
+                    <div class=" w-100 mb-4 d-flex" style="width: 100%">
+                        <select id="platform" class=" w-100" name="platform" required>
+                            <option value="" selected disabled>Select platform</option>
+                            <option value="linkedin">LinkedIn</option>
+                            <option value="facebook">Facebook</option>
+                            <option value="raw">Raw CSV</option>
+                        </select>
+                        <button id="raw-btn-container" class="btn bg-educ color-white mx-2 d-none" style="width: 20%">Get
+                            CSV Format</button>
+                    </div>
+                    <div class="card text-center mb-4">
+                        <div class="card-body bg-silver  justify-content-center align-items-center" id="dropZone">
                             <div class="mx-5">
                                 <h4 class="mb-4">Drag and drop your files</h4>
                                 <p class="text-muted mb-4" title="The uploaded file must be a file of type: csv">File
@@ -95,42 +98,43 @@
                             <div>
                                 <label for="fileInput" class="btn bg-educ color-white mt-4">Import Manually</label>
                             </div>
-                        </form>
+                </form>
+            </div>
+        </div>
+
+        <div class="card d-none" id="file-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <img src="../images/csv.png" alt="" style="height:4rem">
+                        <p id="file-name" class="text-muted d-none"></p>
                     </div>
-                </div>
-
-                <div class="card d-none" id="file-card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <img src="../images/csv.png" alt="" style="height:4rem">
-                                <p id="file-name" class="text-muted d-none"></p>
-                            </div>
-                            <div class="w-50">
-                                <div class="progress" id="progressContainer" role="progressbar" aria-valuenow="0"
-                                    aria-valuemin="0" aria-valuemax="100">
-                                    <div class="progress-bar bg-educ" id="progressBar" style="width: 0%;"></div>
-                                </div>
-                                <p id="progress-message" class="text-muted d-none mt-2"></p>
-
-                                <p id="error-message" class="text-danger d-none mt-2"></p>
-                            </div>
-                            <div>
-                                <button type="submit" id="submit-btn" class="btn bg-educ color-white d-none"
-                                    style="margin-left: auto">Submit</button>
-                            </div>
+                    <div class="w-50">
+                        <div class="progress" id="progressContainer" role="progressbar" aria-valuenow="0" aria-valuemin="0"
+                            aria-valuemax="100">
+                            <div class="progress-bar bg-educ" id="progressBar" style="width: 0%;"></div>
                         </div>
+                        <p id="progress-message" class="text-muted d-none mt-2"></p>
+
+                        <p id="error-message" class="text-danger d-none mt-2"></p>
+                    </div>
+                    <div>
+                        <input type="submit" id="submit-btn" class="btn bg-educ color-white d-none"
+                            style="margin-left: auto">
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    </div>
+    </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        //-----------declaring----------------//
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
         const uploadForm = document.getElementById('uploadForm');
-
         const submitBtn = document.getElementById('submit-btn');
         const fileName = document.getElementById('file-name');
         const card = document.getElementById('file-card');
@@ -140,6 +144,8 @@
         const errorMessage = document.getElementById('error-message');
 
 
+
+        //----------Drag and drop--------------//
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
             dropZone.classList.add('dragover');
@@ -156,25 +162,67 @@
             }
         });
 
+        //-----------form field validation----------//
         fileInput.addEventListener('change', handleFiles);
+        document.getElementById('platform').addEventListener('change', handlePlatformChange);
 
         function handleFiles() {
             const fileNameText = fileInput.files[0].name;
-            fileName.textContent = `${fileNameText}`;
+            fileName.textContent = fileNameText;
             fileName.classList.remove('d-none');
-            submitBtn.classList.remove('d-none');
             card.classList.remove('d-none');
             errorMessage.classList.add('d-none');
             progressContainer.classList.add('d-none');
             progressMessage.classList.add('d-none');
+
+            checkIfReadyToSubmit();
         }
 
+        function handlePlatformChange() {
+            const platform = document.getElementById('platform').value;
+            const rawBtnContainer = document.getElementById('raw-btn-container');
+
+            checkIfReadyToSubmit();
+
+            // Toggle the raw button container based on the platform selection
+            if (platform === 'raw') {
+                rawBtnContainer.classList.remove('d-none');
+            } else {
+                rawBtnContainer.classList.add('d-none');
+            }
+        }
+
+        function checkIfReadyToSubmit() {
+            const platform = document.getElementById('platform');
+            const submitBtn = document.getElementById('submit-btn');
+
+            // Show submit button if a valid platform is selected and a file is uploaded
+            if (platform && platform.checkValidity() && fileInput.files.length > 0) {
+                submitBtn.classList.remove('d-none');
+            } else {
+                submitBtn.classList.add('d-none');
+
+                // Report validity if the platform exists but isn't valid
+                if (platform) {
+                    platform.reportValidity();
+                }
+            }
+        }
+
+   
+
+        //----------submit-------------//
         submitBtn.addEventListener('click', (e) => {
+
+
             e.preventDefault();
-            submitBtn.classList.add('d-none');
-            progressContainer.classList.remove('d-none')
+            //create form data
             const formData = new FormData();
             formData.append('csv_file', fileInput.files[0]);
+            formData.append('platform', document.getElementById('platform').value);
+
+            submitBtn.classList.add('d-none');
+            progressContainer.classList.remove('d-none')
             progressBar.style.width = '0%';
             progressMessage.textContent = 'Uploading...';
             progressMessage.classList.remove('d-none');
@@ -305,12 +353,12 @@
             downloadPrompt.style.left = '50%';
             downloadPrompt.style.transform = 'translate(-50%, -50%)';
             downloadPrompt.style.backgroundColor = '#fff';
-            
+
             downloadPrompt.style.boxShadow = '0px 0px 10px rgba(0, 0, 0, 0.4)';
             downloadPrompt.style.zIndex = '1000';
             downloadPrompt.style.borderRadius = '8px';
             downloadPrompt.classList.add = 'modal-header'
-           // downloadPrompt.style.width = '350px';
+            // downloadPrompt.style.width = '350px';
             // Add the logo image and text in a flex container
             const logoUrl = "{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}";
             const headerContent = `
@@ -327,7 +375,7 @@
             <img src="${logoUrl}" alt="Company Logo" style="height: 30px;">
         </div>
     `;
-    const bodyContent=`
+            const bodyContent = `
     <div style="padding : 20px" class="fonts">
         <ul style="padding-left: 20px;">
             <li>Total Rows: ${total_count}</li>
