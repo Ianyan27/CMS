@@ -56,7 +56,7 @@
             </button>
         </div>
     </div>
-    <div class="container-max-height">
+    <div class="table-container">
         <table class=" table table-hover mt-2" id="contacts-table">
             <thead class="text-left font-educ">
                 <tr>
@@ -147,7 +147,7 @@
                             <td>
                                 <a href=" {{ route('contact#view', $contact->contact_pid) }} " class="btn hover-action"
                                     data-toggle="tooltip" title="View">
-                                    <i class="fa-solid fa-eye "></i>
+                                    <i class="fa-solid fa-eye"></i>
                                 </a>
                                 <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
                                     <i class="fa-solid fa-pen-to-square"></i>
@@ -263,11 +263,8 @@
                         <td>
                             <a href="{{ route('discard#view', ['contact_discard_pid' => $discard->contact_discard_pid]) }}"
                                 class="btn hover-action" data-toggle="tooltip" title="View">
-                                <i class="fa-solid fa-eye" style="font-size: 1.5rem"></i>
+                                <i class="fa-solid fa-eye"></i>
                             </a>
-                            {{-- <a href="#" class="btn hover-action" data-toggle="tooltip" title="Edit">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </a> --}}
                             </td>
                         </tr>
                     @endforeach

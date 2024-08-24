@@ -1,9 +1,7 @@
 @section('title', 'Edit Contact Detail Page')
 
 @extends('layouts.app')
-@extends('layouts.Update_Activity_Modal')
 @extends('layouts.Edit_Discard_Modal')
-@extends('layouts.Add_Activity_Discard_Modal')
 @section('content')
 @if (session('success'))
     <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
@@ -131,11 +129,9 @@
             <div class="d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 ml-2 headings">Activities Notifications</h2>
                 <div class="d-flex align-items-center">
-                    <input type="search" class="form-control fonts mr-1" placeholder="Search..." id="search-input"
-                        aria-label="Search">
-                    <button class="btn btn-secondary bg-educ mx-1" type="button" id="search-button">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
+                    <a class="btn hover-action font" href=" {{ route('contact-listing') }} ">
+                        <i class="fa-solid fa-left-long"></i>
+                    </a>
                 </div>
         </div>
         <!-- Filter Buttons -->
@@ -181,7 +177,7 @@
         <div class="d-flex align-items-center mr-2 mb-2">
             <!-- Button to trigger the modal -->
             <button class="btn hover-action add-activity-button" data-toggle="modal" data-target="#addDiscardActivityModal">
-                <i style="font-size: 22px;" class="fa-solid fa-square-plus p-1"></i>
+                <i class="fa-solid fa-square-plus p-1"></i>
             </button>
         </div>
     </div>

@@ -75,7 +75,6 @@
                                             </div> <!-- Display filenames here -->
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                             <div class="row">
@@ -98,7 +97,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
         <script>
             document.getElementById('activity-attachment-{{ $engagement->engagement_pid }}').addEventListener('change',

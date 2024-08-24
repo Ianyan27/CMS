@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,13 +11,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
         rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <!-- added bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ URL::asset('css/admin_style.css') }}">
 </head>
-
 <body class="d-flex flex-column">
     <div class="container-fluid flex-grow-1">
         <div class="row shadow-sm py-3">
@@ -30,9 +27,7 @@
             </div>
             <div class="col-md-6 d-flex justify-content-end align-items-center">
                 <div class="profile d-flex align-items-center">
-                    <img src="{{ url('/images/Screenshot 2024-05-15 085107.png') }}" alt="Profile Picture"
-                        class="rounded-circle img-fluid" style="max-height: 40px; margin-right: 10px;">
-                    <div class="name">Signout</div>
+                    <div class="name btn btn-danger">Signout</div>
                 </div>
             </div>
         </div>
@@ -82,12 +77,10 @@
     <script src="https://kit.fontawesome.com/4d2a01d4ef.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="{{ URL::asset('js/search_email.js') }}"></script>
     <script src="{{ URL::asset('js/sort.js') }}"></script>
     <script src="{{ URL::asset('js/filter_status.js') }}"></script>
-
 </body>
 
 </html>

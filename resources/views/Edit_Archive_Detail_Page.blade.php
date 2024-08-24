@@ -1,9 +1,8 @@
 @section('title', 'Edit Contact Detail Page')
 
 @extends('layouts.app')
-@extends('layouts.Update_Activity_Modal')
+
 @extends('layouts.Edit_Archive_Modal')
-@extends('layouts.Add_Activity_Archive_Modal')
 @section('content')
 @if (session('success'))
     <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->

@@ -104,7 +104,7 @@ class ContactController extends Controller
         $engagement->fk_engagements__contact_pid = $request->input('contact_pid');
         $engagement->save();
 
-        return redirect()->route('contact#view', ['contact_pid' => $contact_pid]);
+        return redirect()->route('contact#view', ['contact_pid' => $contact_pid])->with('success', 'Activity added successfully.');
     }
 
     public function editActivity($fk_engagements__contact_pid, $activity_id)
