@@ -1,45 +1,75 @@
 @section('title', "View Owner Details")
 
 @extends('layouts.app')
-
+@extends('layouts.Edit_Owner_Modal')
 @section('content')
+@if (session('success'))
+    <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
+    <button id="successModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal" style="display: none;">
+        Open Modal
+    </button>
+    <!-- Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">Success</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ session('success') }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Script to trigger the modal -->
+    <script type="text/javascript">
+        window.onload = function() {
+            document.getElementById('successModalBtn').click();
+        };
+    </script>
+@endif
 <link rel="stylesheet" href="{{ URL::asset('css/contact_detail.css') }}">
-    <div class="row border-educ rounded h-auto">
+    <div class="row border-educ rounded mb-3" style="min-height: 375px;">
         <div class="col-md-5 border-right" id="contact-detail">
             <div class="table-title d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 ml-3 headings">Sale Agent Detail</h2>
                 <a href="{{ route('owner#update', $editOwner->owner_pid) }}" class="btn hover-action mx-1"
-                    data-toggle="modal" data-target="#editContactModal">
+                    data-toggle="modal" data-target="#editOwnerModal">
                     <i class="fa-solid fa-pen-to-square"></i>
                 </a>
             </div>
-            <div class="row mx-1">
-                <div class="col-md-6">
+            <div class="row mx-1 mb-1 d-flex align-items-center">
+                <div class="col-md-6 d-flex justify-content-center">
                     <div class="form-group">
-                        <label class="font-educ" for="name">Img</label>
+                        <img src="{{ asset('images/user-1.jpg') }}" alt="User Image" id="user-image">
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="form-group">
+                    <div class="form-group mb-3">
                         <label class="font-educ" for="contact-number">Hubspot Id</label>
                         <input type="text" class="form-control fonts" id="contact_number"
-                            value= " {{ $editOwner->owner_hubspot_id }} " readonly>
+                               value="{{ $editOwner->owner_hubspot_id }}" readonly>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mb-3">
                         <label class="font-educ" for="country">Country</label>
-                        <input type="text" class="form-control fonts" id="country" value=" {{ $editOwner->country }} "
-                            readonly>
+                        <input type="text" class="form-control fonts" id="country" value="{{ $editOwner->country }}" readonly>
                     </div>
                 </div>
-            </div>
-            <div class="row mx-1">
+            </div>            
+            <div class="row mx-1 mb-1">
                 <div class="col-md-6">
-                    <div class="form-group">
+                    <div class="form-group mb-3">
                         <label class="font-educ" for="skills">Name</label>
                         <input type="text" class="form-control fonts" id="skills" value="{{ $editOwner->owner_name }}"
                             readonly>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mb-3">
                         <label class="font-educ" for="email">Email</label>
                         <input type="email" class="form-control fonts" id="email" value=" {{ $editOwner->owner_email_id }} "
                             readonly>
@@ -60,14 +90,14 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <div class="d-flex justify-content-center btn-group mb-3 row-border-bottom" role="group" aria-label="Sales Engagement Buttons">
-                        <button type="button" class="btn activity-button font-educ mx-2" onclick="showSection('totalContactsSection')">
+                    <div class="d-flex justify-content-center btn-group mb-3" role="group" aria-label="Sales Engagement Buttons">
+                        <button type="button" class="btn activity-button mx-2" data onclick="showSection('totalContactsSection')">
                             Total Contacts Allocated
                         </button>
-                        <button type="button" class="btn activity-button font-educ mx-2" onclick="showSection('hubspotContactsSection')">
+                        <button type="button" class="btn activity-button mx-2" onclick="showSection('hubspotContactsSection')">
                             Total Sync HubSpot Contact
                         </button>
-                        <button type="button" class="btn activity-button font-educ mx-2" onclick="showSection('engagingContactsSection')">
+                        <button type="button" class="btn activity-button mx-2" onclick="showSection('engagingContactsSection')">
                             Current Engaging Contact
                         </button>
                     </div>
@@ -94,7 +124,7 @@
             </div>
         </div>
     </div>
-    <div class="container-max-height">
+    <div class="">
         <link rel="stylesheet" href="{{ URL::asset('css/contact_listing.css') }}">
         <div class="table-title d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
@@ -116,7 +146,7 @@
                 </button>
             </div>
         </div>
-        <div class="container-max-height">
+        <div class="">
             <table class=" table table-hover mt-2" id="ownerContacts-table">
                 <thead class="text-left font-educ">
                     <tr>
@@ -162,7 +192,6 @@
                                     </div>
                                 </div>
                             </th>
-                            <th scope="col">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="text-left bg-row fonts">
@@ -204,15 +233,6 @@
                                         @endif
                                     </span>
                                 </td>
-                                <td>
-                                    <a href=" {{ route('contact#view', $contact->contact_pid) }} " class="btn hover-action"
-                                        data-toggle="tooltip" title="View">
-                                        <i class="fa-solid fa-eye "></i>
-                                    </a>
-                                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </a>
-                                </td>
                             </tr>
                         @empty
                             <tr>
@@ -222,7 +242,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="container-max-height">
+            <div class="">
                 <table class="table table-hover mt-2" id="archive-table">
                     <thead class="text-left font-educ">
                         <tr class="text-left">
@@ -279,7 +299,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="container-max-height">
+            <div class="">
                 <table class="table table-hover mt-2" id="discard-table">
                     <thead class="font-educ text-left">
                         <tr class="font-educ text-left">
@@ -295,7 +315,6 @@
                                     <i class="fa-solid fa-info-circle text-muted"></i>
                                 </span>
                             </th>
-                            <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody class="text-left bg-row">
@@ -313,21 +332,12 @@
                                 <td>
                                     <span class="status-indicator"
                                         style="background-color:
-                                @if ($discard['status'] === 'Discard') #FF7F86; color: #BD000C; @endif
-                                ">
-                                @if ($discard['status'] === 'Discard')
-                                    Discard
-                                @endif
-                                </span>
-                            </td>
-                            <td>
-                                <a href="{{ route('discard#view', ['contact_discard_pid' => $discard->contact_discard_pid]) }}"
-                                    class="btn hover-action" data-toggle="tooltip" title="View">
-                                    <i class="fa-solid fa-eye" style="font-size: 1.5rem"></i>
-                                </a>
-                                {{-- <a href="#" class="btn hover-action" data-toggle="tooltip" title="Edit">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </a> --}}
+                                    @if ($discard['status'] === 'Discard') #FF7F86; color: #BD000C; @endif
+                                    ">
+                                    @if ($discard['status'] === 'Discard')
+                                        Discard
+                                    @endif
+                                    </span>
                                 </td>
                             </tr>
                         @endforeach

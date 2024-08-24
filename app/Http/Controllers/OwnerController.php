@@ -5,6 +5,7 @@ use App\Models\Contact;
 use App\Models\ContactArchive;
 use App\Models\ContactDiscard;
 use App\Models\Owner;
+use Illuminate\Http\Request;
 
 class OwnerController extends Controller{
 
@@ -61,4 +62,15 @@ class OwnerController extends Controller{
         ]);
     }
     
+    public function updateOwner(Request $request, $owner_pid){
+
+        $owner = Owner::find($owner_pid);
+
+        $owner->update([
+            $owner->owner_business_unit = $request->input('business_unit'),
+            $owner->country = $request->input('country')
+        ]);
+
+        return redirect()->route('owner#view_owner',['owner_pid'=>$owner_pid])->with('success', 'Owner updated successfully.');
+    }
 }
