@@ -15,9 +15,6 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="successModalLabel">Success</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>
                 <div class="modal-body">
                     {{ session('success') }}
@@ -129,13 +126,10 @@
         <div class="col-md-7 px-3" id="activity-container">
             <div class="d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 ml-2 headings">Activities Notifications</h2>
-                <div class="d-flex align-items-center">
-                    <input type="search" class="form-control fonts mr-1" placeholder="Search..." id="search-input"
-                        aria-label="Search">
-                    <button class="btn btn-secondary bg-educ mx-1" type="button" id="search-button">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
-                </div>
+                <a class="btn hover-action font" href=" {{ route('contact-listing') }} ">
+                    <i class="fa-solid fa-left-long"></i>
+                </a>
+            </div>
         </div>
         <!-- Filter Buttons -->
         <div class="btn-group mb-3" role="group" aria-label="Activity Filter Buttons">
@@ -176,12 +170,6 @@
     <div class="table-title d-flex justify-content-between align-items-center mt-5">
         <div class="d-flex align-items-center">
             <h2 class="ml-2 mb-1 headings">Activity Taken</h2>
-        </div>
-        <div class="d-flex align-items-center mr-2 mb-2">
-            <!-- Button to trigger the modal -->
-            <button class="btn hover-action add-activity-button" data-toggle="modal" data-target="#addDiscardActivityModal">
-                <i style="font-size: 22px;" class="fa-solid fa-square-plus p-1"></i>
-            </button>
         </div>
     </div>
     <!-- Table -->

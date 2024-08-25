@@ -17,6 +17,7 @@ body {
 }
 
 .container-max-height{
+    min-height: 700px;
     max-height: 730px;
 }
 
@@ -385,6 +386,10 @@ th, label{
 .discard-table {
     background-color: #FF7f86;
     color: #BD000C;
+}
+
+#archive, #discard{
+    display:none;
 }
 
 /* File Info & Button */
