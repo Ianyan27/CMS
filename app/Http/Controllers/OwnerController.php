@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class OwnerController extends Controller{
 
     public function owner(){
-        $owner = Owner::paginate(10);
+        $owner = Owner::paginate(2);
         return view('Sale_Agent_Page', [
             'owner'=>$owner
         ]);

@@ -8,8 +8,10 @@ use Illuminate\Http\Request;
 class UserController extends Controller{
 
     public function viewUser(Request $request){
-        $userData = User::all();
-        return view('User_List_Page_Copy', ['userData'=>$userData]);
+        $userData = User::paginate(10);
+        return view('User_List_Page', [
+            'userData'=>$userData
+        ]);
     }
 
     public function saveUser(Request $request){
@@ -44,5 +46,10 @@ class UserController extends Controller{
         $updateUser->save();
 
     return redirect()->route('view-user')->with('success', 'User updated successfully');
+    }
+
+    public function deleteUser($id){
+        User::where('id', $id)->delete();
+        return redirect()->route('view-user')->with('success', 'User Deleted Successfully');
     }
 }

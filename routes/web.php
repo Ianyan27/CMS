@@ -21,6 +21,7 @@ Route::get('/dashboard', function () {
 Route::get('/', [UserController::class, 'viewUser'])->name('view-user');
 Route::get('/edit-user/{id}', [UserController::class, 'editUser'])->name('user#edit-user');
 Route::post('/update-user/{id}', [UserController::class, 'updateUser'])->name('user#update-user');
+Route::delete('/delete_user/{id}', [UserController::class, 'deleteUser'])->name('user#delete-user');
 //Create User
 Route::post('/save-user', [UserController::class, 'saveUser'])->name('save-user');
 

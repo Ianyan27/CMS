@@ -27,8 +27,7 @@ class ContactController extends Controller
         ]);
     }
 
-    public function viewContact($contact_pid)
-    {
+    public function viewContact($contact_pid){
         /* Retrieve the contact record with the specified 'contact_pid' and pass
          it to the 'Edit_Contact_Detail_Page' view for editing. */
         $editContact = Contact::where('contact_pid', $contact_pid)->first();
@@ -70,9 +69,12 @@ class ContactController extends Controller
             'skills' => $request->input('skills'),
             'status' => $request->input('status')
         ]);
-
         // Redirect with a success message
-        return redirect()->route('contact#view', ['contact_pid' => $contact_pid])->with('success', 'Contact updated successfully.');
+        return redirect()->route('contact#view', [
+            'contact_pid' => $contact_pid
+        ])->with(
+            'success', 'Contact updated successfully.'
+        );
     }
 
     public function saveActivity(Request $request, $contact_pid)

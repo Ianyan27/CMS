@@ -18,11 +18,11 @@ body {
 
 .container-max-height{
     max-height: 730px;
-    overflow-y: auto;
 }
 
 .table-container{
-    max-height: 550px; 
+    min-height: 450px;
+    max-height: 550px;
     overflow-y: auto;
 }
 
@@ -230,13 +230,19 @@ tbody {
 
 /* Icons */
 
-.fa-circle-question, 
+.fa-magnifying-class, 
 .fa-pen-to-square, 
-.fa-eye, .fa-trash, 
-.file-button{
+.fa-eye, 
+.file-button,
+td .fa-trash{
     font-size: 1rem;
+    height: 16px;
+    width: 18px;
 }
 
+.fa-square-plus{
+    font-size: 1.15rem;
+}
 
 .fa-user, 
 .fa-universal-access, 

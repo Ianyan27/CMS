@@ -27,7 +27,7 @@
             </div>
             <div class="col-md-6 d-flex justify-content-end align-items-center">
                 <div class="profile d-flex align-items-center">
-                    <div class="name btn btn-danger">Signout</div>
+                    <div class="btn hover-action">Signout</div>
                 </div>
             </div>
         </div>

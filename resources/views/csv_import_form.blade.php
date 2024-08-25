@@ -67,11 +67,10 @@
         }
     </style>
 
-    <div class="container">
+    <div style="min-height: 720px;" class="container-max-height">
         <div class="row ">
             <div class="col-sm-12">
                 <form action="{{ route('import') }}" method="POST" enctype="multipart/form-data">
-
                     <label for="platform" class="block text-gray-700 font-bold mb-2">Select platform</label>
                     <div class=" w-100 mb-4 d-flex" style="width: 100%">
                         <select id="platform" class=" w-100" name="platform" required>
@@ -80,7 +79,7 @@
                             <option value="facebook">Apollo</option>
                             <option value="raw">Raw CSV</option>
                         </select>
-                        <button id="raw-btn-container" class="btn bg-educ color-white mx-2 d-none" style="width: 20%"
+                        <button id="raw-btn-container" class="btn hover-action mx-2 d-none" style="width: 20%"
                             onclick="window.location.href='{{ route('getCsv') }}'">Get
                             CSV Format</button>
                     </div>
@@ -94,20 +93,20 @@
                             @csrf
                             <div>
                                 <input accept=".csv" type="file" name="csv_file" required id="fileInput" class="d-none">
-
                             </div>
                             <div>
-                                <label for="fileInput" class="btn bg-educ color-white mt-4">Import Manually</label>
+                                <label for="fileInput" class="btn hover-action mt-4">Import Manually</label>
                             </div>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
-
         <div class="card d-none" id="file-card">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <img src="../images/csv.png" alt="" style="height:4rem">
+                        <img src="../images/csv.png" alt="" style="height:4rem;">
                         <p id="file-name" class="text-muted d-none"></p>
                     </div>
                     <div class="w-50">
@@ -120,16 +119,13 @@
                         <p id="error-message" class="text-danger d-none mt-2"></p>
                     </div>
                     <div>
-                        <input type="submit" id="submit-btn" class="btn bg-educ color-white d-none"
+                        <input type="submit" id="submit-btn" class="btn hover-action d-none"
                             style="margin-left: auto">
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         //-----------declaring----------------//
