@@ -129,7 +129,6 @@
                 <a class="btn hover-action font" href=" {{ route('contact-listing') }} ">
                     <i class="fa-solid fa-left-long"></i>
                 </a>
-            </div>
         </div>
         <!-- Filter Buttons -->
         <div class="btn-group mb-3" role="group" aria-label="Activity Filter Buttons">
@@ -187,14 +186,14 @@
         <tbody class="text-left bg-row">
             @foreach ($engagementArchive as $engagement)
                 <tr>
-                    <td> {{ $engagement->engagement_discard_pid }} </td>
+                    <td> {{ $engagement->engagement_archive_pid }} </td>
                     <td> {{ $engagement->date }} </td>
                     <td> {{ $engagement->activity_name }} </td>
                     <td> {{ $engagement->details }} </td>
                     <td> {{ $engagement->attachments }} </td>
                     <td>
-                        {{-- <a href=" {{route('contact#update_activity', $engagement->fk_engagements__contact_pid)}}" data-toggle="modal" data-target="#updateActivityModal"> --}}
-                            <i  class=" btn hover-action fa-solid fa-pen-to-square" ></i>
+                        <a class="btn hover-action" href="#" data-toggle="modal" data-target="#updateActivityModal">
+                            <i  class="fa-solid fa-pen-to-square" ></i>
                         </a>
                     </td>
                 </tr>

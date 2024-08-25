@@ -128,7 +128,6 @@
                 <a class="btn hover-action font" href=" {{ route('contact-listing') }} ">
                     <i class="fa-solid fa-left-long"></i>
                 </a>
-            </div>
         </div>
         <!-- Filter Buttons -->
         <div class="btn-group mb-3" role="group" aria-label="Activity Filter Buttons">
