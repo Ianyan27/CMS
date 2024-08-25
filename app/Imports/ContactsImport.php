@@ -10,13 +10,15 @@ use Illuminate\Support\Facades\Validator;
 class ContactsImport implements ToModel, WithHeadingRow
 {
     protected $columnMap = [
-        'name' => ['name', 'full_name', 'contact_name', 'lead_full_name', 'Lead Full Name','first_name'],
-        'email' => ['email','Email', 'email_address', 'contact_email'],
-        'contact_number' => ['contact_number', 'phone_number', 'mobile', 'phone', 'contact_no', 'Contact No','Contact Number (include country code)'],
+        'name' => ['name', 'full_name', 'contact_name', 'lead_full_name', 'Lead Full Name'],
+        'first_name' => ['first_name', 'first', 'fname'],
+        'last_name' => ['last_name', 'last', 'lname'],
+        'email' => ['email', 'Email', 'email_address', 'contact_email'],
+        'contact_number' => ['contact_number', 'phone_number', 'mobile', 'phone', 'contact_no', 'Contact No', 'contact_number_include_country_code'],
         'address' => ['address', 'contact_address', 'location', 'lead_location_raw'],
-        'country' => ['country', 'nation', 'lead_location_country_name'],
+        'country' => ['country', 'nation', 'lead_location_country_name', 'countryregion'],
         'qualification' => ['qualification', 'degree', 'education'],
-        'job_role' => ['job_role', 'position', 'role', 'lead_job_title'],
+        'job_role' => ['job_role', 'position', 'role', 'lead_job_title', 'Job Title', 'job_title'],
         'company_name' => ['company_name', 'company', 'organization'],
         'skills' => ['skills', 'expertise', 'competencies'],
         'social_profile' => ['social_profile', 'linkedin', 'twitter', 'lead_linkedin_url'],
@@ -42,9 +44,20 @@ class ContactsImport implements ToModel, WithHeadingRow
                 }
             }
         }
-        // Ensure that required fields like 'email' are present in the data array
+
+        // Combine first_name and last_name into name
+        if (isset($data['first_name']) && isset($data['last_name'])) {
+            $data['name'] = $data['first_name'] . ' ' . $data['last_name'];
+        }
+
+        // Ensure that required fields like 'email' and 'name' are present in the data array
         if (empty($data['email'])) {
             $this->invalidRows[] = array_merge($row, ['validation_errors' => ['Email field is missing or not recognized']]);
+            return null; // Skip this row
+        }
+
+        if (empty($data['name'])) {
+            $this->invalidRows[] = array_merge($row, ['validation_errors' => ['Name field is missing or not recognized']]);
             return null; // Skip this row
         }
 
