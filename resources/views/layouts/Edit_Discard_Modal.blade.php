@@ -84,7 +84,7 @@ aria-hidden="true">
                         </div>
                         <div class="form-group">
                             <label class="font-educ" for="contact-status">Status</label>
-                            <select class="form-control fonts" id="contact-status" name="status" disabled>
+                            <select class="form-control fonts" id="contact-status" name="status" required>
                                 <option value="InProgress" {{ $editDiscard->status === 'InProgress' ? 'selected' : '' }}>
                                     In Progress
                                 </option>

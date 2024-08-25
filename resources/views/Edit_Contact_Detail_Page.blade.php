@@ -16,9 +16,6 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="successModalLabel">Success</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>
                 <div class="modal-body">
                     {{ session('success') }}
@@ -137,6 +134,9 @@
         <div class="col-md-7 px-3" id="activity-container">
             <div class="d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 ml-2 headings">Activities Notifications</h2>
+                <a class="btn hover-action font" href=" {{ route('contact-listing') }} ">
+                    <i class="fa-solid fa-left-long"></i>
+                </a>
             </div>
             <!-- Filter Buttons -->
             <div class="btn-group mb-3" role="group" aria-label="Activity Filter Buttons">
@@ -195,28 +195,28 @@
                     <th scope="col">Type</th>
                     <th scope="col">Description</th>
                     <th scope="col">Attachment</th>
-                    <th scope="col">Action</th>
+                    <th scope="col" class="text-center">Action</th>
                 </tr>
             </thead>
             <tbody class="text-left bg-row">
                 @foreach ($engagements as $engagement)
                     <tr>
-                        <td> {{ $engagement->engagement_pid }} </td>
-                        <td> {{ $engagement->date }} </td>
-                        <td> {{ $engagement->activity_name }} </td>
-                        <td> {{ $engagement->details }} </td>
-                        <td> {{ $engagement->attachments }} </td>
-                        <td>
+                        <td>{{ $engagement->engagement_pid }}</td>
+                        <td>{{ $engagement->date }}</td>
+                        <td>{{ $engagement->activity_name }}</td>
+                        <td>{{ $engagement->details }}</td>
+                        <td>{{ $engagement->attachments }}</td>
+                        <td class="text-center">
                             <a href="{{ route('contact#update_activity', ['contact_id' => $engagement->fk_engagements__contact_pid, 'activity_id' => $engagement->engagement_pid]) }}"
-                                data-toggle="modal" data-target="#updateActivityModal-{{ $engagement->engagement_pid }}">
-                                <i class="btn hover-action fa-solid fa-pen-to-square"></i>
+                               data-toggle="modal" data-target="#updateActivityModal-{{ $engagement->engagement_pid }}" class="btn hover-action">
+                                <i class="fa-solid fa-pen-to-square"></i>
                             </a>
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
-    </div>
+    </div>    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ URL::asset('js/contact_detail.js') }}"></script>
     <script src="{{ URL::asset('js/status_color.js') }}"></script>

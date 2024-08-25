@@ -45,10 +45,10 @@
     <div class="container-max-height">
         <div class="table-title d-flex justify-content-between align-items-center mb-3">
             <h2 class="ml-3 mb-2 font-educ"><strong>Sales Agents</strong></h2>
-            <div class="d-flex align-items-center">
-                <button class="btn hover-action add-sales-agent-button mr-3" data-toggle="modal"
+            <div class="d-flex align-items-center mr-3">
+                <button class="btn hover-action add-sales-agent-button" data-toggle="modal"
                     data-target="#addSalesAgentModal">
-                    <i style="font-size: 22px;" class="fa-solid fa-square-plus p-1"></i>
+                    <i class="fa-solid fa-square-plus"></i>
                 </button>
             </div>
         </div>
@@ -80,7 +80,7 @@
                                 onclick="sortByColumn('country', 'desc'); toggleSort('sortUp-country', 'sortDown-country')"
                                 style="display: none;"></i>
                         </th>
-                        <th scope="col">Total Assign Contacts</th>
+                        <th scope="col">Total In Progress</th>
                         <th scope="col">Total Hubspot Sync Contacts</th>
                         <th scope="col">Actions</th>
                     </tr>
@@ -112,46 +112,46 @@
         <div aria-label="Page navigation example " class="paginationContainer">
             <ul class="pagination justify-content-center">
                 <!-- Previous Button -->
-                <li class="page-item ">
-                    <a class="page-link font-educ" href="#" aria-label="Previous">&#60;</a>
+                <li class="page-item {{ $owner->onFirstPage() ? 'disabled' : '' }}">
+                    <a class="page-link font-educ" href="{{ $owner->previousPageUrl() }}"
+                        aria-label="Previous">&#60;</a>
                 </li>
-
                 <!-- First Page Button -->
-                {{-- @if ($contacts->currentPage() > 3) --}}
-                <li class="page-item">
-                    <a class="page-link font-educ" href="#">1</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link font-educ" href="#">2</a>
-                </li>
-                <li class="page-item disabled">
-                    <span class="page-link">...</span>
-                </li>
-                {{-- @endif --}}
-
+                @if ($owner->currentPage() > 3)
+                    <li class="page-item">
+                        <a class="page-link font-educ" href="{{ $owner->url(1) }}">1</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link font-educ" href="{{ $owner->url(2) }}">2</a>
+                    </li>
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                @endif
                 <!-- Middle Page Buttons -->
-                {{-- @for ($i = max($contacts->currentPage() - 1, 1); $i <= min($contacts->currentPage() + 1, $contacts->lastPage()); $i++) --}}
-                <li class="page-item">
-                    <a class="page-link font-educ" href="#"></a>
-                </li>
-                {{-- @endfor --}}
-
+                @for ($i = max($owner->currentPage() - 1, 1); $i <= min($owner->currentPage() + 1, $owner->lastPage()); $i++)
+                    <li class="page-item {{ $i == $owner->currentPage() ? 'active' : '' }}">
+                        <a class="page-link font-educ {{ $i == $owner->currentPage() ? 'active-bg' : '' }}"
+                            href="{{ $owner->url($i) }}">{{ $i }}</a>
+                    </li>
+                @endfor
                 <!-- Last Page Button -->
-                {{-- @if ($contacts->currentPage() < $contacts->lastPage() - 2) --}}
-                <li class="page-item disabled">
-                    <span class="page-link">...</span>
-                </li>
-                <li class="page-item">
-                    <a class="page-link font-educ" href="#"></a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link font-educ" href="#"></a>
-                </li>
-                {{-- @endif --}}
-
+                @if ($owner->currentPage() < $owner->lastPage() - 2)
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link font-educ"
+                            href="{{ $owner->url($owner->lastPage() - 1) }}">{{ $owner->lastPage() - 1 }}</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link font-educ"
+                            href="{{ $owner->url($owner->lastPage()) }}">{{ $owner->lastPage() }}</a>
+                    </li>
+                @endif
                 <!-- Next Button -->
-                <li class="page-item">
-                    <a class="page-link font-educ" href="#" aria-label="Next">&#62;</a>
+                <li class="page-item {{ !$owner->hasMorePages() ? 'disabled' : '' }}">
+                    <a class="page-link font-educ" href="{{ $owner->nextPageUrl() }}" aria-label="Next">&#62;</a>
                 </li>
             </ul>
         </div>

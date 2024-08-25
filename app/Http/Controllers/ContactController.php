@@ -6,6 +6,8 @@ use App\Models\Contact;
 use App\Models\ContactArchive;
 use App\Models\ContactDiscard;
 use App\Models\Engagement;
+use App\Models\EngagementArchive;
+use App\Models\EngagementDiscard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -27,8 +29,7 @@ class ContactController extends Controller
         ]);
     }
 
-    public function viewContact($contact_pid)
-    {
+    public function viewContact($contact_pid){
         /* Retrieve the contact record with the specified 'contact_pid' and pass
          it to the 'Edit_Contact_Detail_Page' view for editing. */
         $editContact = Contact::where('contact_pid', $contact_pid)->first();
@@ -43,21 +44,52 @@ class ContactController extends Controller
 
     public function updateContact(Request $request, $contact_pid)
     {
-        // Determine if the contact exists in the original table
+        // Find the contact based on the contact_pid
         $contact = Contact::find($contact_pid);
+
+        // Check if the contact exists
+        if (!$contact) {
+            return redirect()->route('contact-listing')->with('error', 'Contact not found.');
+        }
+
         // Handle the "Archive" and "Discard" status cases
         if (in_array($request->input('status'), ['Archive', 'Discard'])) {
             // Determine the target model based on the status
-            $targetModel = $request->input('status') === 'Archive' ? new ContactArchive() : new ContactDiscard();
+            $targetContactModel = $request->input('status') === 'Archive' ? new ContactArchive() : new ContactDiscard();
             // Copy the contact data to the new table
-            $targetModel->fill($contact->toArray());
-            $targetModel->status = $request->input('status'); // Explicitly set the status
-            $targetModel->save();
+            $targetContactModel->fill($contact->toArray());
+            $targetContactModel->status = $request->input('status'); // Explicitly set the status
+            $targetContactModel->save();
+
+            $contactArchiveId = $targetContactModel->contact_archive_pid;
+            $contactDiscardId = $targetContactModel->contact_discard_pid;
+            // Move related activities
+            $activities = Engagement::where('fk_engagements__contact_pid', $contact_pid)->get();
+            $targetActivityModel = $request->input('status') === 'Archive' ? new EngagementArchive() : new EngagementDiscard();
+
+            foreach ($activities as $activity) {
+                $newActivity = $targetActivityModel->newInstance(); // Create a new instance for each activity
+                $newActivity->fill($activity->toArray());
+                
+                // Set the foreign key to reference the newly created contact
+                if ($request->input('status') === 'Archive') {
+                    $newActivity->fk_engagement_archives__contact_archive_pid = $contactArchiveId;
+                } else {
+                    $newActivity->fk_engagement_discards__contact_discard_pid = $contactDiscardId;
+                }
+            
+                $newActivity->save();
+            }
+
             // Delete the contact from the current table
             $contact->delete();
+            // Delete the engagement activities from the current table
+            Engagement::where('fk_engagements__contact_pid', $contact_pid)->delete();
+
             // Redirect with a success message
-            return redirect()->route('contact-listing')->with('success', 'Contact moved to ' . $request->input('status') . ' successfully.');
+            return redirect()->route('contact-listing')->with('success', 'Contact and activities moved to ' . $request->input('status') . ' successfully.');
         }
+
         // If status is not "Archive" or "Discard", update the contact normally
         $contact->update([
             'name' => $request->input('name'),
@@ -72,8 +104,13 @@ class ContactController extends Controller
         ]);
 
         // Redirect with a success message
-        return redirect()->route('contact#view', ['contact_pid' => $contact_pid])->with('success', 'Contact updated successfully.');
+        return redirect()->route('contact#view', [
+            'contact_pid' => $contact_pid
+        ])->with('success', 'Contact updated successfully.');
     }
+
+
+
 
     public function saveActivity(Request $request, $contact_pid)
     {

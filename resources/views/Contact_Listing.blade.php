@@ -56,7 +56,7 @@
             </button>
         </div>
     </div>
-    <div class="table-container">
+    <div class="table-container" id="contacts">
         <table class=" table table-hover mt-2" id="contacts-table">
             <thead class="text-left font-educ">
                 <tr>
@@ -162,7 +162,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="container-max-height">
+        <div class="table-container" id="archive">
             <table class="table table-hover mt-2" id="archive-table">
                 <thead class="text-left font-educ">
                     <tr class="text-left">
@@ -219,7 +219,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="container-max-height">
+        <div class="table-container" id="discard">
             <table class="table table-hover mt-2" id="discard-table">
                 <thead class="font-educ text-left">
                     <tr class="font-educ text-left">
@@ -319,25 +319,37 @@
         </div>
     </div>
     <script>
-        $(document).ready(function() {
-            $('#archive-table').hide();
-            $('#discard-table').hide();
-            $('#show-contacts').click(function() {
-                $('#contacts-table').show();
-                $('#archive-table').hide();
-                $('#discard-table').hide();
-            });
-            $('#show-archive').click(function() {
-                $('#contacts-table').hide();
-                $('#archive-table').show();
-                $('#discard-table').hide();
-            });
+        const showContactsBtn = document.getElementById('show-contacts');
+        const showArchiveBtn = document.getElementById('show-archive');
+        const showDiscardBtn = document.getElementById('show-discard');
+        
+        const contactsContainer = document.getElementById('contacts');
+        const archiveContainer = document.getElementById('archive');
+        const discardContainer = document.getElementById('discard');
+        
+        // Function to hide all tables
+        function hideAllTables() {
+            contactsContainer.style.display = 'none';
+            archiveContainer.style.display = 'none';
+            discardContainer.style.display = 'none';
+        }
 
-            $('#show-discard').click(function() {
-                $('#contacts-table').hide();
-                $('#archive-table').hide();
-                $('#discard-table').show();
-            });
+        // Show Contacts Table (default)
+        showContactsBtn.addEventListener('click', function() {
+            hideAllTables();
+            contactsContainer.style.display = 'block';
+        });
+
+        // Show Archive Table
+        showArchiveBtn.addEventListener('click', function() {
+            hideAllTables();
+            archiveContainer.style.display = 'block';
+        });
+
+        // Show Discard Table
+        showDiscardBtn.addEventListener('click', function() {
+            hideAllTables();
+            discardContainer.style.display = 'block';
         });
     </script>
 @endsection
