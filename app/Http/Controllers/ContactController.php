@@ -55,15 +55,14 @@ class ContactController extends Controller
         // Handle the "Archive" and "Discard" status cases
         if (in_array($request->input('status'), ['Archive', 'Discard'])) {
             // Determine the target model based on the status
-            $targetContactModel = $request->input('status') === 'Archive' ? new ContactArchive() : new ContactDiscard();   
+            $targetContactModel = $request->input('status') === 'Archive' ? new ContactArchive() : new ContactDiscard();
             // Copy the contact data to the new table
             $targetContactModel->fill($contact->toArray());
             $targetContactModel->status = $request->input('status'); // Explicitly set the status
             $targetContactModel->save();
 
-            // Get the ID of the newly created contact in the archive/discard table
-            $targetContactId = $request->input('status') === 'Archive' ? $targetContactModel->contact_archive_pid : $targetContactModel->contact_discard_pid;
-
+            $contactArchiveId = $targetContactModel->contact_archive_pid;
+            $contactDiscardId = $targetContactModel->contact_discard_pid;
             // Move related activities
             $activities = Engagement::where('fk_engagements__contact_pid', $contact_pid)->get();
             $targetActivityModel = $request->input('status') === 'Archive' ? new EngagementArchive() : new EngagementDiscard();
@@ -71,14 +70,14 @@ class ContactController extends Controller
             foreach ($activities as $activity) {
                 $newActivity = $targetActivityModel->newInstance(); // Create a new instance for each activity
                 $newActivity->fill($activity->toArray());
-
+                
                 // Set the foreign key to reference the newly created contact
                 if ($request->input('status') === 'Archive') {
-                    $newActivity->fk_engagement_archives__contact_archive_pid = $targetContactId;
+                    $newActivity->fk_engagement_archives__contact_archive_pid = $contactArchiveId;
                 } else {
-                    $newActivity->fk_engagement_discards__contact_discard_pid = $targetContactId;
+                    $newActivity->fk_engagement_discards__contact_discard_pid = $contactDiscardId;
                 }
-
+            
                 $newActivity->save();
             }
 
