@@ -184,7 +184,7 @@
                             <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" value="creatingtestaccount" readonly>
                         </div>
                         <div class="form-group">
-                            <input type="hidden" name="role" id="role" class="form-control" value="User" readonly>
+                            <input type="hidden" name="role" id="role" class="form-control" value="Sales_Agent" readonly>
                         </div>
                         <button type="submit" class="btn btn-primary">Create User</button>
                     </form>

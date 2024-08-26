@@ -27,6 +27,22 @@ body {
     overflow-y: auto;
 }
 
+.owner-container{
+    min-height: 350px;
+    max-height: 450px;
+}
+
+.owner-container div{
+    max-height: 420px;
+}
+
+.owner-contacts-container{
+    min-height: 500px;
+    max-height: 650px;
+    height: 550px;
+    overflow-y: auto;
+}
+
 .container-fluid {
     flex-grow: 1;
 }
@@ -64,6 +80,14 @@ body {
 @media screen and (max-width: 768px) {
     .content-width {
         width: 100%; /* Full width for mobile devices */
+    }
+    .owner-container{
+        min-height: 350px;
+        max-height: 400px;
+    }
+    .owner-contacts-container{
+        min-height: 450px;
+        max-height: 600px;
     }
 }
 

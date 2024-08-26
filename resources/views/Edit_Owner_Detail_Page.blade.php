@@ -32,7 +32,7 @@
     </script>
 @endif
 <link rel="stylesheet" href="{{ URL::asset('css/contact_detail.css') }}">
-    <div class="row border-educ rounded mb-3" style="min-height: 375px;">
+    <div class="row border-educ rounded mb-3 owner-container">
         <div class="col-md-5 border-right" id="contact-detail">
             <div class="table-title d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 ml-3 headings">Sale Agent Detail</h2>
@@ -121,7 +121,7 @@
             </div>
         </div>
     </div>
-    <div class="">
+    <div class="owner-contacts-container">
         <link rel="stylesheet" href="{{ URL::asset('css/contact_listing.css') }}">
         <div class="table-title d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
@@ -165,6 +165,11 @@
                         <th scope="col">Contact
                         </th>
                         <th scope="col">Country
+                            <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-country"
+                                onclick="sortTable('country', 'asc'); toggleSort('sortDown-country', 'sortUp-country')"></i>
+                            <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-country"
+                                onclick="sortTable('country', 'desc'); toggleSort('sortUp-country', 'sortDown-country')"
+                                style="display: none;"></i>
                         </th>
                         <th class=" position-relative" scope="col">
                             Status
@@ -254,9 +259,6 @@
                                     title="Status of the contact: Active, Discarded, New, In Progress, Archived">
                                     <i class="fa-solid fa-info-circle text-muted"></i>
                                 </span>
-                            </th>
-                            <th scope="col">Actions
-            
                             </th>
                         </tr>
                     </thead>

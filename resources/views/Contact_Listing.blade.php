@@ -78,6 +78,11 @@
                     <th scope="col">Contact
                     </th>
                     <th scope="col">Country
+                        <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-country"
+                            onclick="sortTable('country', 'asc'); toggleSort('sortDown-country', 'sortUp-country')"></i>
+                        <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-country"
+                            onclick="sortTable('country', 'desc'); toggleSort('sortUp-country', 'sortDown-country')"
+                            style="display: none;"></i>
                     </th>
                     <th class=" position-relative" scope="col">
                         Status

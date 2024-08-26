@@ -32,6 +32,8 @@ function sortTable(columnName, order) {
                 columnIndex = 2; // Indes for the 'Email' column
             }else if(columnName === 'role' || columnName === 'country') {
                 columnIndex = 3; // Index for the 'Role' column
+            } else if(columnName === 'country'){
+                columnIndex = 4;
             }
             
             // Compare the two elements in the column to see if they should switch

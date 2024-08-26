@@ -26,9 +26,10 @@
                 </div>
             </div>
             <div class="col-md-6 d-flex justify-content-end align-items-center">
-                <div class="profile d-flex align-items-center">
-                    <div class="btn hover-action">Signout</div>
-                </div>
+                <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                    @csrf
+                    <button type="submit" class="btn hover-action">Signout</button>
+                </form>
             </div>
         </div>
         <div class="row my-4 content-height">
@@ -40,30 +41,41 @@
                             <i class="fa-solid fa-table-columns mr-3"></i>Dashboard
                         </a>
                     </li> --}}
-                    <li class="nav-item dashboard-link">
-                        <a class="nav-link {{ Route::currentRouteName() == 'view-user' ? 'active-link' : '' }}"
-                            href="{{ route('view-user') }}">
-                            <i class="fa-solid fa-user"></i><span>Users</span>
-                        </a>
-                    </li>
-                    <li class="nav-item dashboard-link">
-                        <a class="nav-link {{ Route::currentRouteName() == 'owner#view' ? 'active-link' : '' }}"
-                            href="{{ route('owner#view') }}">
-                            <i class="fa-solid fa-universal-access"></i></i><span>Owner</span>
-                        </a>
-                    </li>
-                    <li class="nav-item dashboard-link">
-                        <a class="nav-link {{ Route::currentRouteName() == 'importcsv' ? 'active-link' : '' }}"
-                            href="{{ route('importcsv') }}">
-                            <i class="fa-solid fa-file-arrow-up"></i><span>Upload Files</span>
-                        </a>
-                    </li>
-                    <li class="nav-item dashboard-link">
-                        <a class="nav-link {{ Route::currentRouteName() == 'contact-listing' ? 'active-link' : '' }}"
-                            href="{{ route('contact-listing') }}">
-                            <i class="fa-solid fa-address-book"></i><span>Contact Listing</span>
-                        </a>
-                    </li>
+                    <ul class="navbar-nav">
+                        @if (Auth::check() && Auth::user()->role == 'Admin')
+                            <li class="nav-item dashboard-link">
+                                <a class="nav-link {{ Route::currentRouteName() == 'view-user' ? 'active-link' : '' }}"
+                                    href="{{ route('view-user') }}">
+                                    <i class="fa-solid fa-user"></i><span>Users</span>
+                                </a>
+                            </li>
+                        @endif
+                    
+                        @if (Auth::check() && Auth::user()->role == 'BUH')
+                            <li class="nav-item dashboard-link">
+                                <a class="nav-link {{ Route::currentRouteName() == 'owner#view' ? 'active-link' : '' }}"
+                                    href="{{ route('owner#view') }}">
+                                    <i class="fa-solid fa-universal-access"></i><span>Owner</span>
+                                </a>
+                            </li>
+                            <li class="nav-item dashboard-link">
+                                <a class="nav-link {{ Route::currentRouteName() == 'importcsv' ? 'active-link' : '' }}"
+                                    href="{{ route('importcsv') }}">
+                                    <i class="fa-solid fa-file-arrow-up"></i><span>Upload Files</span>
+                                </a>
+                            </li>
+                        @endif
+                    
+                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+                            <li class="nav-item dashboard-link">
+                                <a class="nav-link {{ Route::currentRouteName() == 'contact-listing' ? 'active-link' : '' }}"
+                                    href="{{ route('contact-listing') }}">
+                                    <i class="fa-solid fa-address-book"></i><span>Contact Listing</span>
+                                </a>
+                            </li>
+                        @endif
+                    </ul>
+                    
                 </ul>
             </div>
             <div class="col-11 px-4 min-height content-width">
