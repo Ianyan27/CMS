@@ -3,7 +3,7 @@
 @extends('layouts.app')
 
 @section('content')
-
+    {{-- 
     <style>
         .dropdown-menu {
             border-radius: 10px;
@@ -40,21 +40,20 @@
         .dropdown-toggle::after {
             display: none;
         }
-    </style>
+    </style> --}}
 
     <div class="container-max-height">
         <div class="table-title d-flex justify-content-between align-items-center mb-3">
             <h2 class="ml-3 mb-2 font-educ"><strong>Sales Agents</strong></h2>
             <div class="d-flex align-items-center mr-3">
-                <button class="btn hover-action add-sales-agent-button" data-toggle="modal"
-                    data-target="#addSalesAgentModal">
+                <button class="btn hover-action add-sales-agent-button" data-toggle="modal" data-target="#addSalesAgentModal">
                     <i class="fa-solid fa-square-plus"></i>
                 </button>
             </div>
         </div>
         <!-- Search Bar Section -->
         <div class="search-box d-flex align-items-center mb-2" style="max-width: 350px;">
-            <input type="search" class="form-control mr-1" placeholder="Search" id="search-input" aria-label="Search">
+            <input type="search" class="form-control mr-1" placeholder="Search ID" id="search-input" aria-label="Search">
             <button class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </button>
@@ -113,8 +112,7 @@
             <ul class="pagination justify-content-center">
                 <!-- Previous Button -->
                 <li class="page-item {{ $owner->onFirstPage() ? 'disabled' : '' }}">
-                    <a class="page-link font-educ" href="{{ $owner->previousPageUrl() }}"
-                        aria-label="Previous">&#60;</a>
+                    <a class="page-link font-educ" href="{{ $owner->previousPageUrl() }}" aria-label="Previous">&#60;</a>
                 </li>
                 <!-- First Page Button -->
                 @if ($owner->currentPage() > 3)
