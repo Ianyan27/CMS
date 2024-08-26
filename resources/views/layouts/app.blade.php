@@ -42,7 +42,7 @@
                         </a>
                     </li> --}}
                     <ul class="navbar-nav">
-                        @if (Auth::check() && Auth::user()->role == 'Admin')
+                        @if (Auth::check() && Auth::user()->role == 'Admin' || Auth::check() && Auth::user()->role == 'BUH')
                             <li class="nav-item dashboard-link">
                                 <a class="nav-link {{ Route::currentRouteName() == 'view-user' ? 'active-link' : '' }}"
                                     href="{{ route('view-user') }}">

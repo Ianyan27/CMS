@@ -27,8 +27,6 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/view-user', function() {
             return redirect()->route('view-user');
         } else if (Auth::user()->role == 'BUH'){
             return redirect()->route('view-user');
-        } else if (Auth::user()->role == 'User'){
-            return redirect()->route('view-user');
         }
     }
     return redirect()->route('login')->withErrors(['role' => 'Unauthorized access.']);
@@ -91,6 +89,11 @@ Route::group(['prefix' => 'Sales_Agent'], function(){
     Route::post('/save_discard_activity/{contact_discard_pid}', [
         DiscardController::class, 'saveDiscardActivity'
         ])->name('discard#save_discard_activity');
+    // Edit Contact Detail Route
+    Route::get('/editcontactdetail', function () {
+        return view('Edit_Contact_Detail_Page');
+        
+    })->name('editcontactdetail');
 });
 
 Route::group(['prefix' => 'BUH'], function (){
@@ -100,12 +103,6 @@ Route::group(['prefix' => 'BUH'], function (){
         return view('csv_import_form');
     })->name('importcsv');
     Route::post('/import', [ContactsImportController::class, 'import'])->name('import');
-
-    // Edit Contact Detail Route
-    Route::get('/editcontactdetail', function () {
-        return view('Edit_Contact_Detail_Page');
-        
-    })->name('editcontactdetail');
     //get csv format
     Route::get('/getCsv', [CSVDownloadController::class, 'downloadCSV'])->name('getCsv'); 
 });
