@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('contacts', function (Blueprint $table) {
             $table->id('contact_pid');
             $table->foreignId('fk_contacts__owner_pid')->nullable()->constrained('owners', 'owner_pid')->onDelete('cascade');
-
             $table->dateTime('date_of_allocation')->nullable();
             $table->string('name');
             $table->string('email')->unique();

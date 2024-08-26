@@ -84,7 +84,9 @@
  .updateActivityModal .modal-header,
  .updateActivityModal .modal-footer,
  #addActivityModal .modal-header,
- #addActivityModal .modal-footer {
+ #addActivityModal .modal-footer 
+ .editUserModal .modal-header,
+ .editUserModal .modal-footer{
      border-bottom: none;
      border-top: none;
  }

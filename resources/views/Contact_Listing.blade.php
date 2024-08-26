@@ -108,6 +108,7 @@
                             </div>
                         </th>
                         <th scope="col">Actions</th>
+                        <th scope="col">Aging</th>
                     </tr>
                 </thead>
                 <tbody class="text-left bg-row fonts">
@@ -157,6 +158,9 @@
                                 <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
+                            </td>
+                            <td>
+                                {{ $contact['contact_aging'] }}
                             </td>
                         </tr>
                     @empty
