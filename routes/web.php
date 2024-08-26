@@ -9,6 +9,7 @@ use App\Http\Controllers\CSVDownloadController;
 use App\Http\Controllers\DiscardController;
 use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\HubspotContactController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -107,5 +108,9 @@ Route::group(['prefix' => 'BUH'], function (){
         
     })->name('editcontactdetail');
     //get csv format
-    Route::get('/getCsv', [CSVDownloadController::class, 'downloadCSV'])->name('getCsv'); 
+    Route::get('/getCsv', [CSVDownloadController::class, 'downloadCSV'])->name('getCsv');
+    
+    Route::get('/hubspotContact', [ContactController::class, 'hubspotContacts'])->name('hubspot.contacts');
+    Route::post('/submit-hubspot-contacts', [HubspotContactController::class, 'submitHubspotContacts'])->name('submitHubspotContacts');
+
 });

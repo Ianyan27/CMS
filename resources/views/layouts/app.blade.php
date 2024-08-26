@@ -64,6 +64,9 @@
                                     <i class="fa-solid fa-file-arrow-up"></i><span>Upload Files</span>
                                 </a>
                             </li>
+                            <li class="nav-item {{ Route::currentRouteName() == 'hubspot.contacts' ? 'active-link' : '' }}">
+                                <a class="nav-link" href="{{ route('hubspot.contacts') }}">HubSpot Contacts</a>
+                            </li>
                         @endif
                     
                         @if (Auth::check() && Auth::user()->role == 'Sales_Agent')

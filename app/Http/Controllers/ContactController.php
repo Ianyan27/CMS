@@ -207,4 +207,29 @@ class ContactController extends Controller
         return redirect()->route('contact#view', ['contact_pid' => $contact_pid])
             ->with('success', 'Activity updated successfully.');
     }
+
+    public function hubspotContacts()
+    {
+        // Get HubSpot contacts 
+        $hubspotContacts = Contact::where('status', 'HubSpot Contact')
+            ->paginate(50);
+
+        // Get HubSpot contacts where datetime_of_hubspot_sync is null
+        $hubspotContactsNoSync = Contact::where('status', 'HubSpot Contact')
+            ->whereNull('datetime_of_hubspot_sync')
+            ->paginate(50);
+    
+        // Get HubSpot contacts where datetime_of_hubspot_sync has a value
+        $hubspotContactsSynced = Contact::where('status', 'HubSpot Contact')
+            ->whereNotNull('datetime_of_hubspot_sync')
+            ->paginate(50);
+    
+        // Pass data to view
+        return view('Hubspot_Contact_Listing', [
+            'hubspotContacts'=>$hubspotContacts,
+            'hubspotContactsNoSync' => $hubspotContactsNoSync,
+            'hubspotContactsSynced' => $hubspotContactsSynced
+        ]);
+    }
+
 }
