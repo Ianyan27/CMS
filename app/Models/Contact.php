@@ -24,7 +24,6 @@ class Contact extends Model
         'social_profile',
         'status',
         'source',
-        'contact_aging',
         'datetime_of_hubspot_sync'
     ];
 
