@@ -23,7 +23,7 @@
             background-size: 1rem;
         }
 
-        select:focus {
+        select:hover {
             border-color: #c58ca8;
             box-shadow: 0 0 0 2px rgba(197, 140, 168, 0.5);
             /* Add shadow similar to focus state */
