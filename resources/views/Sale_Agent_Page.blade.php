@@ -57,8 +57,8 @@
         </div>
         <!-- Search Bar Section -->
         <div class="search-box d-flex align-items-center mb-2" style="max-width: 350px;">
-            <input type="search" class="form-control mr-1" placeholder="Search ID" id="search-input" aria-label="Search">
-            <button class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search">
+            <input type="search" class="form-control mr-1" placeholder="Search ID" id="search-id" aria-label="Search">
+            <button class="btn hover-action mx-1" type="button" data-toggle="tooltip" title="Search">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </button>
         </div>
@@ -88,20 +88,19 @@
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="text-lef bg-row">
+                <tbody class="text-left bg-row">
                     @foreach ($owner as $owners)
                         <tr>
-                            <td> {{ $owners->owner_pid }} </td>
-                            <td> {{ $owners->owner_name }} </td>
-                            <td> {{ $owners->owner_hubspot_id }} </td>
-                            <td> {{ $owners->owner_business_unit }} </td>
-                            <td> {{ $owners->country }} </td>
-                            <td> {{ $owners->total_in_progress }} </td>
-                            <td> {{ $owners->total_hubspot_sync }} </td>
+                            <td>{{ $owners->owner_pid }}</td>
+                            <td>{{ $owners->owner_name }}</td>
+                            <td>{{ $owners->owner_hubspot_id }}</td>
+                            <td>{{ $owners->owner_business_unit }}</td>
+                            <td>{{ $owners->country }}</td>
+                            <td>{{ $owners->total_in_progress }}</td>
+                            <td>{{ $owners->total_hubspot_sync }}</td>
                             <td>
-                                <a href=" {{ route('owner#view_owner', $owners->owner_pid) }} " class="btn hover-action"
-                                    data-toggle="tooltip" title="View">
-                                    <i class="fa-solid fa-eye "></i>
+                                <a href="{{ route('owner#view-owner', $owners->owner_pid) }}" class="btn hover-action" data-toggle="tooltip" title="View">
+                                    <i class="fa-solid fa-eye"></i>
                                 </a>
                                 <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
                                     <i class="fa-solid fa-pen-to-square"></i>
@@ -158,8 +157,25 @@
             </ul>
         </div>
     </div>
-
     </div>
+    <script>
+        document.getElementById('search-id').addEventListener('keyup', function() {
+    var input = this.value.toLowerCase();
+    var rows = document.querySelectorAll('#sales-agents-table tbody tr');
+
+    rows.forEach(function(row) {
+        var idCell = row.querySelector('td:first-child'); // Target the first column (ID)
+        var idText = idCell.textContent || idCell.innerText;
+
+        if (idText.toLowerCase().includes(input)) {
+            row.style.display = ''; // Show the row if it matches the search input
+        } else {
+            row.style.display = 'none'; // Hide the row if it doesn't match
+        }
+    });
+});
+
+    </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {

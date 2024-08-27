@@ -88,26 +88,27 @@
                         Status
                         <i style="cursor: pointer;" class="fa-solid fa-filter" id="filterIcon" onclick="toggleFilter()"></i>
                         <!-- Filter Container -->
-                        <div id="filterContainer" class="filter-popup container rounded-bottom" style="display: none;">
-                            <div class="row">
-                                <div class="filter-option">
-                                    <input class="ml-3" type="checkbox" id="new" name="status" value="New"
-                                        onclick="applyFilter()">
-                                    <label for="new" style= "color: #318FFC;">New</label>
-                                </div>
-                                <div class="filter-option">
-                                    <input class="ml-3" type="checkbox" id="inProgress" name="status" value="InProgress"
-                                        onclick="applyFilter()">
-                                    <label for="inProgress" style="color: #FF8300;">In Progress</label>
-                                </div>
-                                <div class="filter-option">
-                                    <input class="ml-3" type="checkbox" id="hubspot" name="status" value="HubSpot Contact"
-                                        onclick="applyFilter()">
-                                    <label for="hubspot" style="color: #FF5C35;">HubSpot</label>
+                            <div id="filterContainer" class="filter-popup container rounded-bottom" style="display: none;">
+                                <div class="row">
+                                    <div class="filter-option">
+                                        <input class="ml-3" type="checkbox" id="new" name="status" value="New"
+                                            onclick="applyFilter()">
+                                        <label for="new" style= "color: #318FFC;">New</label>
+                                    </div>
+                                    <div class="filter-option">
+                                        <input class="ml-3" type="checkbox" id="inProgress" name="status" value="InProgress"
+                                            onclick="applyFilter()">
+                                        <label for="inProgress" style="color: #FF8300;">In Progress</label>
+                                    </div>
+                                    <div class="filter-option">
+                                        <input class="ml-3" type="checkbox" id="hubspot" name="status" value="HubSpot Contact"
+                                            onclick="applyFilter()">
+                                        <label for="hubspot" style="color: #FF5C35;">HubSpot</label>
+                                    </div>
                                 </div>
                             </div>
                         </th>
-                        <th scope="col">Actions</th>
+                        <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody class="text-left bg-row fonts">
@@ -154,9 +155,6 @@
                                     data-toggle="tooltip" title="View">
                                     <i class="fa-solid fa-eye"></i>
                                 </a>
-                                <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </a>
                             </td>
                         </tr>
                     @empty
@@ -183,7 +181,7 @@
                                 <i class="fa-solid fa-info-circle text-muted"></i>
                             </span>
                         </th>
-                        <th scope="col">Actions
+                        <th scope="col">Action
         
                         </th>
                     </tr>
@@ -215,9 +213,6 @@
                                     data-toggle="tooltip" title="View">
                                     <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
                                 </a>
-                                <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </a>
                             </td>
                         </tr>
                     @endforeach
@@ -240,7 +235,7 @@
                                 <i class="fa-solid fa-info-circle text-muted"></i>
                             </span>
                         </td>
-                        <td scope="col">Action</td>
+                        <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody class="text-left bg-row">
