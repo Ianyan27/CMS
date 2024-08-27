@@ -84,6 +84,9 @@
         <div class="col-md-7 px-3">
             <div class="d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 ml-2 headings">Sales Engagement</h2>
+                <a class="btn hover-action font" href=" {{ route('owner#view') }} ">
+                    <i class="fa-solid fa-left-long"></i>
+                </a>
             </div>
             <div class="row">
                 <div class="col">
