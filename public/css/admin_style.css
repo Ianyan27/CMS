@@ -195,13 +195,6 @@ tbody {
     border-right: 3px solid #91264c;
 }
 
-.active-link {
-    border-right: 5px solid #91264c;
-}
-
-.active-link:hover{
-    border-right: none;
-}
 
 .nav-item i {
     width: 40px;
@@ -210,7 +203,14 @@ tbody {
 .nav-item .nav-link span{
     color: black;
 }
+.nav-item:hover {
+    background-color: #91264c;
+}
 
+.nav-item:hover .nav-link span,
+.nav-item:hover .nav-link i {
+    color: white; /* This turns both the text and the icon white */
+}
 /* Hover Effects */
 .hover-action {
     border: 1px solid #91264c;
