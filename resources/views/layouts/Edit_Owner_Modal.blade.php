@@ -9,7 +9,7 @@
                 <img src="{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}" alt="Company Logo" style="height: 30px;">
             </div>
             <div class="modal-body">
-                <form action="{{ route('owner#update_owner', $editOwner->owner_pid) }}" method="POST" id="editOwnerForm">
+                <form action="{{ route('owner#update-owner', $editOwner->owner_pid) }}" method="POST" id="editOwnerForm">
                     @csrf
                     <div class="row">
                         <!-- Left Column -->

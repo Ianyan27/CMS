@@ -66,13 +66,15 @@
                                     <i class="fa-solid fa-file-arrow-up"></i><span>Upload Files</span>
                                 </a>
                             </li>
-                            <li
-                                class="nav-item {{ Route::currentRouteName() == 'hubspot.contacts' ? 'active-link' : '' }}">
-                                <a class="nav-link" href="{{ route('hubspot.contacts') }}">HubSpot Contacts</a>
+                            <li class="nav-item dashboard-link">
+                                <a class="nav-link {{ Route::currentRouteName() == 'hubspot.contacts' ? 'active-link' : '' }}" 
+                                href="{{ route('importcsv') }}">
+                                    <i class="fa-brands fa-hubspot"></i><span>Hubspot Contacts</span>
+                                </a>
                             </li>
                         @endif
 
-                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent' || (Auth::check() && Auth::user()->role == 'BUH'))
                             <li class="nav-item dashboard-link">
                                 <a class="nav-link {{ Route::currentRouteName() == 'contact-listing' ? 'active-link' : '' }}"
                                     href="{{ route('contact-listing') }}">

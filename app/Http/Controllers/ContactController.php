@@ -31,7 +31,7 @@ class ContactController extends Controller
         ]);
     }
 
-    public function contacts_by_owner()
+    public function contactsByOwner()
     {
         // Get the logged-in user (sales agent)
         $user = Auth::user();

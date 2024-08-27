@@ -15,7 +15,7 @@
                     <!-- Modal Body -->
                     <div class="modal-body">
                         <form
-                            action="{{ route('contact#save_update_activity', ['contact_pid' => $engagement->fk_engagements__contact_pid, 'activity_id' => $engagement->engagement_pid]) }}"
+                            action="{{ route('contact#save-update-activity', ['contact_pid' => $engagement->fk_engagements__contact_pid, 'activity_id' => $engagement->engagement_pid]) }}"
                             method="POST" id="addActivityForm" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="contact_pid"

@@ -12,7 +12,7 @@ aria-hidden="true">
                 style="height: 30px;">
         </div>
         <div class="modal-body">
-            <form action=" {{ route('contact#update_contact', $editContact->contact_pid) }}" method="POST"
+            <form action=" {{ route('contact#update-contact', $editContact->contact_pid) }}" method="POST"
                 id="editContactForm">
                 @csrf
                 <div class="row">

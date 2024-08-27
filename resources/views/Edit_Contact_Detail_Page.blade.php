@@ -207,7 +207,7 @@
                         <td>{{ $engagement->details }}</td>
                         <td>{{ $engagement->attachments }}</td>
                         <td class="text-center">
-                            <a href="{{ route('contact#update_activity', ['contact_id' => $engagement->fk_engagements__contact_pid, 'activity_id' => $engagement->engagement_pid]) }}"
+                            <a href="{{ route('contact#update-activity', ['contact_id' => $engagement->fk_engagements__contact_pid, 'activity_id' => $engagement->engagement_pid]) }}"
                                data-toggle="modal" data-target="#updateActivityModal-{{ $engagement->engagement_pid }}" class="btn hover-action">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>

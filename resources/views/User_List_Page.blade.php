@@ -113,7 +113,7 @@
                                             <label class="font-educ" for="editRole{{ $user->id }}">Role</label>
                                             <select name="role" id="editRole{{ $user->id }}"
                                                 class="form-control fonts" required>
-                                                <option value="User" {{ $user->role == 'User' ? 'selected' : '' }}>User
+                                                <option value="User" {{ $user->role == 'Admin' ? 'selected' : '' }}>Admin
                                                 </option>
                                                 <option value="Sales_Agent"
                                                     {{ $user->role == 'Sales_Agent' ? 'selected' : '' }}>Sales Agent
@@ -174,7 +174,7 @@
                         <h5 class="modal-title" id="addUserModalLabel" style="color: #91264c;">Create New User</h5>
                     </div>
                     <div class="modal-body" style="color: #91264c">
-                        <form action="{{ route('save-user') }}" method="POST">
+                        <form action="{{ route('user#save-user') }}" method="POST">
                             @csrf
                             <div class="form-group">
                                 <label for="name">Name</label>
@@ -193,16 +193,14 @@
                                 @enderror
                             </div>
                             <div class="form-group">
-                                <label for="password">Password</label>
-                                <input type="password" class="form-control" id="password" name="password"
+                                <input type="hidden" class="form-control" id="password" name="password"
                                     value="creatingtestaccount" readonly>
                                 @error('password')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>
                             <div class="form-group">
-                                <label for="password_confirmation">Confirm Password</label>
-                                <input type="password" class="form-control" id="password_confirmation"
+                                <input type="hidden" class="form-control" id="password_confirmation"
                                     name="password_confirmation" value="creatingtestaccount" readonly>
                             </div>
                             <div class="form-group">

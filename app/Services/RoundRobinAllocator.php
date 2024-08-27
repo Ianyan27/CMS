@@ -14,96 +14,78 @@ class RoundRobinAllocator
         try {
             // Get all owners from the database
             $owners = Owner::all();
-            $ownerCount = $owners->count();
+            Log::info('Total owners retrieved:', ['count' => $owners->count()]);
 
-            if ($ownerCount === 0) {
+            if ($owners->isEmpty()) {
                 throw new \Exception("No owners found for allocation.");
             }
 
             // Get unassigned contacts
             $contacts = Contact::whereNull('fk_contacts__owner_pid')->get();
+            Log::info('Total unassigned contacts:', ['count' => $contacts->count()]);
 
-            // Determine direction based on the last 5 assigned contacts
-            $lastContacts = Contact::whereNotNull('fk_contacts__owner_pid')
-                ->limit(5)
-                ->pluck('fk_contacts__owner_pid');
+            // Get the last assigned owner_pid
+            $lastAssignedOwner = Contact::whereNotNull('fk_contacts__owner_pid')
+                ->orderBy('date_of_allocation', 'desc')
+                ->first();
+            Log::info('Last assigned owner_pid:', ['owner_pid' => $lastAssignedOwner ? $lastAssignedOwner->fk_contacts__owner_pid : 'None']);
 
-            $forward = $this->determineDirection($lastContacts, $ownerCount);
-
-            // Initialize ownerIndex based on direction
-            $ownerIndex = $forward ? 0 : $ownerCount - 1;
+            $nextOwnerPid = $this->determineNextOwnerPid($lastAssignedOwner, $owners);
+            Log::info('Starting allocation with owner_pid:', ['next_owner_pid' => $nextOwnerPid]);
 
             foreach ($contacts as $contact) {
-                // Get the owner based on the current direction
-                $owner = $owners[$ownerIndex];
+                // Find the owner with the calculated next owner_pid
+                $owner = $owners->firstWhere('owner_pid', $nextOwnerPid);
 
-                // Assign the contact to this owner
-                $contact->fk_contacts__owner_pid = $owner->owner_pid;
-                $contact->date_of_allocation = Carbon::now();
-                $contact->save();
+                if ($owner) {
+                    // Assign the contact to this owner
+                    $contact->fk_contacts__owner_pid = $owner->owner_pid;
+                    $contact->date_of_allocation = Carbon::now();
+                    $contact->save();
 
-                // Update the `total_in_progress` count for the assigned owner
-                $owner->total_in_progress = Contact::where('fk_contacts__owner_pid', $owner->owner_pid)->count();
-                $owner->save();
+                    Log::info('Assigned contact to owner:', [
+                        'contact_id' => $contact->id,
+                        'owner_pid' => $owner->owner_pid,
+                    ]);
 
-                // Update the owner index based on the direction
-                if ($forward) {
-                    $ownerIndex++;
-                    if ($ownerIndex >= $ownerCount) {
-                        $ownerIndex = $ownerCount - 1;
-                        $forward = false; // Change direction to backward
-                    }
-                } else {
-                    $ownerIndex--;
-                    if ($ownerIndex < 0) {
-                        $ownerIndex = 0;
-                        $forward = true; // Change direction to forward
-                    }
+                    // Update the `total_in_progress` count for the assigned owner
+                    $owner->total_in_progress = Contact::where('fk_contacts__owner_pid', $owner->owner_pid)->count();
+                    $owner->save();
+
+                    // Calculate the next owner_pid for the next iteration
+                    $nextOwnerPid = $this->getNextOwnerPid($nextOwnerPid);
+                    Log::info('Next owner_pid calculated:', ['next_owner_pid' => $nextOwnerPid]);
                 }
             }
+
+            Log::info('Contact allocation process completed successfully.');
         } catch (\Exception $e) {
             Log::error('Allocation error: ' . $e->getMessage());
-            throw $e; // Rethrow the exception to let Laravel handle it
+            throw $e;
         }
     }
 
-    private function determineDirection($lastContacts, $ownerCount)
+    private function determineNextOwnerPid($lastAssignedOwner, $owners)
     {
-        // Log the last 5 contacts that were assigned
-        Log::debug('Last 5 assigned contacts:', $lastContacts->toArray());
-
-        if ($lastContacts->isEmpty()) {
-            Log::debug('No previous contacts found. Defaulting to forward direction.');
-            // If no previous contacts are found, default to forward
-            return true;
+        if (!$lastAssignedOwner || $lastAssignedOwner->fk_contacts__owner_pid == 1) {
+            // If no contacts have been assigned yet, start with owner_pid 1
+            Log::info('No previous owner found. Starting with owner_pid 1.');
+            return 1;
         }
 
-        $ascending = $lastContacts->every(function ($value, $key) use ($lastContacts) {
-            return $key === 0 || $value >= $lastContacts[$key - 1];
-        });
+        $lastOwnerPid = $lastAssignedOwner->fk_contacts__owner_pid;
+        Log::info('Determining next owner_pid based on last owner_pid:', ['last_owner_pid' => $lastOwnerPid]);
 
-        $descending = $lastContacts->every(function ($value, $key) use ($lastContacts) {
-            return $key === 0 || $value <= $lastContacts[$key - 1];
-        });
+        // Determine the next owner_pid based on the last one
+        return $this->getNextOwnerPid($lastOwnerPid);
+    }
 
-        // Log the results of the ascending and descending checks
-        Log::debug('Ascending check result:', ['ascending' => $ascending]);
-        Log::debug('Descending check result:', ['descending' => $descending]);
+    private function getNextOwnerPid($currentOwnerPid)
+    {
+        // Increment the owner_pid, and wrap it to 1 if it exceeds 10
+        $nextOwnerPid = ($currentOwnerPid % 10) + 1;
+        Log::info('Calculated next owner_pid:', ['currentOwnerPid' => $currentOwnerPid, 'nextOwnerPid' => $nextOwnerPid]);
 
-        // If previous assignments were ascending, we should reverse direction
-        if ($ascending) {
-            Log::debug('Contacts were assigned in ascending order. Changing direction to backward.');
-            return false; // Start from the last owner and go backward
-        }
-
-        // If previous assignments were descending, we should reverse direction
-        if ($descending) {
-            Log::debug('Contacts were assigned in descending order. Changing direction to forward.');
-            return true; // Start from the first owner and go forward
-        }
-
-        // If neither, maintain current direction based on the last known direction
-        Log::debug('Direction is unclear. Defaulting to forward.');
-        return true; // Default to forward if direction is unclear
+        return $nextOwnerPid;
     }
 }
