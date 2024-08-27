@@ -11,6 +11,7 @@ use App\Models\EngagementDiscard;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ContactController extends Controller
@@ -30,7 +31,26 @@ class ContactController extends Controller
         ]);
     }
 
-    public function viewContact($contact_pid){
+    public function contacts_by_owner()
+    {
+        // Get the logged-in user (sales agent)
+        $user = Auth::user();
+
+        // Get contacts related to this sales agent
+        $contacts = Contact::where('fk_contacts__owner_pid', $user->id)->paginate(50);
+        $contactArchive = ContactArchive::where('fk_contact_archives__owner_pid', $user->id)->paginate(50);
+        $contactDiscard = ContactDiscard::where('fk_contact_discards__owner_pid', $user->id)->paginate(50);
+
+        // Pass the data to the view
+        return view('Contact_Listing_By_Owner', [
+            'contacts' => $contacts,
+            'contactArchive' => $contactArchive,
+            'contactDiscard' => $contactDiscard
+        ]);
+    }
+
+    public function viewContact($contact_pid)
+    {
         /* Retrieve the contact record with the specified 'contact_pid' and pass
          it to the 'Edit_Contact_Detail_Page' view for editing. */
         $editContact = Contact::where('contact_pid', $contact_pid)->first();
@@ -70,14 +90,14 @@ class ContactController extends Controller
             foreach ($activities as $activity) {
                 $newActivity = $targetActivityModel->newInstance(); // Create a new instance for each activity
                 $newActivity->fill($activity->toArray());
-                
+
                 // Set the foreign key to reference the newly created contact
                 if ($request->input('status') === 'Archive') {
                     $newActivity->fk_engagement_archives__contact_archive_pid = $contactArchiveId;
                 } else {
                     $newActivity->fk_engagement_discards__contact_discard_pid = $contactDiscardId;
                 }
-            
+
                 $newActivity->save();
             }
 
