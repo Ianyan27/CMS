@@ -42,7 +42,7 @@ class ContactController extends Controller
         $contactDiscard = ContactDiscard::where('fk_contact_discards__owner_pid', $user->id)->paginate(50);
 
         // Pass the data to the view
-        return view('Contact_Listing_By_Owner', [
+        return view('Contact_Listing', [
             'contacts' => $contacts,
             'contactArchive' => $contactArchive,
             'contactDiscard' => $contactDiscard
@@ -63,7 +63,8 @@ class ContactController extends Controller
         ]);
     }
 
-    public function updateContact(Request $request, $contact_pid){
+    public function updateContact(Request $request, $contact_pid)
+    {
         // Find the contact based on the contact_pid
         $contact = Contact::find($contact_pid);
 
@@ -71,7 +72,7 @@ class ContactController extends Controller
         if (!$contact) {
             return redirect()->route('contact-listing')->with('error', 'Contact not found.');
         }
-        
+
         // Handle the "Archive" and "Discard" status cases
         if (in_array($request->input('status'), ['Archive', 'Discard'])) {
             // Determine the target model based on the status
@@ -236,18 +237,17 @@ class ContactController extends Controller
         $hubspotContactsNoSync = Contact::where('status', 'HubSpot Contact')
             ->whereNull('datetime_of_hubspot_sync')
             ->paginate(50);
-    
+
         // Get HubSpot contacts where datetime_of_hubspot_sync has a value
         $hubspotContactsSynced = Contact::where('status', 'HubSpot Contact')
             ->whereNotNull('datetime_of_hubspot_sync')
             ->paginate(50);
-    
+
         // Pass data to view
         return view('Hubspot_Contact_Listing', [
-            'hubspotContacts'=>$hubspotContacts,
+            'hubspotContacts' => $hubspotContacts,
             'hubspotContactsNoSync' => $hubspotContactsNoSync,
             'hubspotContactsSynced' => $hubspotContactsSynced
         ]);
     }
-
 }
