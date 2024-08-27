@@ -44,23 +44,23 @@
     </style> --}}
 
     <link rel="stylesheet" href="{{ URL::asset('css/contact-detail.css') }}">
-
-
     <div class="container-max-height">
         <div class="table-title d-flex justify-content-between align-items-center mb-3">
-            <h2 class="ml-3 mb-2 font-educ"><strong>Sales Agents</strong></h2>
+            <div class="d-flex align-items-center">
+                <h2 class="mx-3 mb-2 font-educ"><strong>Sales Agents</strong></h2>
+                <!-- Search Bar Section -->
+                <div class="search-box d-flex align-items-center ml-3" style="max-width: 350px;">
+                    <input type="search" class="form-control mr-1" placeholder="Search ID" id="search-id" aria-label="Search">
+                    <button class="btn hover-action mx-1" type="button" data-toggle="tooltip" title="Search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+            </div>
             <div class="d-flex align-items-center mr-3">
                 <button class="btn hover-action add-sales-agent-button" data-toggle="modal" data-target="#addSalesAgentModal">
                     <i class="fa-solid fa-square-plus"></i>
                 </button>
             </div>
-        </div>
-        <!-- Search Bar Section -->
-        <div class="search-box d-flex align-items-center mb-2" style="max-width: 350px;">
-            <input type="search" class="form-control mr-1" placeholder="Search ID" id="search-id" aria-label="Search">
-            <button class="btn hover-action mx-1" type="button" data-toggle="tooltip" title="Search">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </button>
         </div>
         <div class="table-container">
             <table id="sales-agents-table" class="table table-hover mt-2">
@@ -85,7 +85,7 @@
                         </th>
                         <th scope="col">Total In Progress</th>
                         <th scope="col">Total Hubspot Sync Contacts</th>
-                        <th scope="col">Actions</th>
+                        <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody class="text-left bg-row">
@@ -101,9 +101,6 @@
                             <td>
                                 <a href="{{ route('owner#view-owner', $owners->owner_pid) }}" class="btn hover-action" data-toggle="tooltip" title="View">
                                     <i class="fa-solid fa-eye"></i>
-                                </a>
-                                <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
-                                    <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
                             </td>
                         </tr>

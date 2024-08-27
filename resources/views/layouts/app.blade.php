@@ -27,6 +27,7 @@
                         class="img-fluid" style="max-height: 50px;">
                 </div>
             </div>
+
             <div class="col-md-6 d-flex justify-content-end align-items-center">
                 <form action="{{ route('logout') }}" method="POST" class="d-inline">
                     @csrf
@@ -67,14 +68,14 @@
                                 </a>
                             </li>
                             <li class="nav-item dashboard-link">
-                                <a class="nav-link {{ Route::currentRouteName() == 'hubspot.contacts' ? 'active-link' : '' }}" 
-                                href="{{ route('hubspot.contacts') }}">
+                                <a class="nav-link {{ Route::currentRouteName() == 'hubspot.contacts' ? 'active-link' : '' }}"
+                                    href="{{ route('hubspot.contacts') }}">
                                     <i class="fa-brands fa-hubspot"></i><span>Hubspot Contacts</span>
                                 </a>
                             </li>
                         @endif
 
-                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent' || (Auth::check() && Auth::user()->role == 'BUH'))
+                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
                             <li class="nav-item dashboard-link">
                                 <a class="nav-link {{ Route::currentRouteName() == 'contact-listing' ? 'active-link' : '' }}"
                                     href="{{ route('contact-listing') }}">
