@@ -5,7 +5,7 @@
 @section('content')
     <div class="container-max-height">
         <link rel="stylesheet" href="{{ URL::asset('css/contact_listing.css') }}">
-        <form id="hubspotContactsForm" method="POST" action="{{ route('submitHubspotContacts') }}">
+        <form id="hubspotContactsForm">
             @csrf
             <div class="table-title d-flex justify-content-between align-items-center mb-4">
                 <h5 class="mr-3 my-2 headings">HubSpot Contact Listing</h5>
@@ -21,14 +21,11 @@
                     </button>
                 </div>
                 <div class="d-flex">
-
-                    <button type="submit" class="btn hover-action ml-auto">
+                    <button type="button" class="btn hover-action ml-auto" id="submitContacts">
                         Submit Selected Contacts
                     </button>
                 </div>
             </div>
-
-
 
             <!-- Table for All HubSpot Contacts -->
             <div class="table-container" id="all-contacts">
@@ -44,13 +41,13 @@
                     </thead>
                     <tbody class="text-left bg-row fonts">
                         @foreach ($hubspotContacts as $contact)
-                            <tr>
+                            <tr data-contact-id="{{ $contact->contact_pid }}">
                                 <td><input type="checkbox" name="selectedContacts[]" value="{{ $contact->contact_pid }}">
                                 </td>
                                 <td>{{ $contact->name }}</td>
                                 <td>{{ $contact->email }}</td>
                                 <td>{{ $contact->phone }}</td>
-                                <td>{{ $contact->datetime_of_hubspot_sync }}</td>
+                                <td class="sync-datetime">{{ $contact->datetime_of_hubspot_sync }}</td>
                             </tr>
                         @endforeach
                         @if (count($hubspotContacts) == 0)
@@ -76,13 +73,13 @@
                     </thead>
                     <tbody class="text-left bg-row fonts">
                         @foreach ($hubspotContactsNoSync as $contact)
-                            <tr>
+                            <tr data-contact-id="{{ $contact->contact_pid }}">
                                 <td><input type="checkbox" name="selectedContacts[]" value="{{ $contact->contact_pid }}">
                                 </td>
                                 <td>{{ $contact->name }}</td>
                                 <td>{{ $contact->email }}</td>
                                 <td>{{ $contact->phone }}</td>
-                                <td>{{ $contact->datetime_of_hubspot_sync }}</td>
+                                <td class="sync-datetime">{{ $contact->datetime_of_hubspot_sync }}</td>
                             </tr>
                         @endforeach
                         @if (count($hubspotContactsNoSync) == 0)
@@ -108,13 +105,13 @@
                     </thead>
                     <tbody class="text-left bg-row fonts">
                         @foreach ($hubspotContactsSynced as $contact)
-                            <tr>
+                            <tr data-contact-id="{{ $contact->contact_pid }}">
                                 <td><input type="checkbox" name="selectedContacts[]" value="{{ $contact->contact_pid }}">
                                 </td>
                                 <td>{{ $contact->name }}</td>
                                 <td>{{ $contact->email }}</td>
                                 <td>{{ $contact->phone }}</td>
-                                <td>{{ $contact->datetime_of_hubspot_sync }}</td>
+                                <td class="sync-datetime">{{ $contact->datetime_of_hubspot_sync }}</td>
                             </tr>
                         @endforeach
                         @if (count($hubspotContactsSynced) == 0)
@@ -125,7 +122,6 @@
                     </tbody>
                 </table>
             </div>
-
 
         </form>
 
@@ -214,5 +210,56 @@
             hideAllTables();
             syncedContainer.style.display = 'block';
         });
+
+        document.getElementById('submitContacts').addEventListener('click', function() {
+    const form = document.getElementById('hubspotContactsForm');
+    const formData = new FormData(form);
+
+    fetch('{{ route('submitHubspotContacts') }}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': formData.get('_token'),
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Create the prompt element
+            const downloadPrompt = document.createElement('div');
+
+            downloadPrompt.style.position = 'fixed';
+            downloadPrompt.style.top = '50%';
+            downloadPrompt.style.left = '50%';
+            downloadPrompt.style.transform = 'translate(-50%, -50%)';
+            downloadPrompt.style.backgroundColor = '#fff';
+            downloadPrompt.style.padding = '20px';
+            downloadPrompt.style.boxShadow = '0px 0px 10px rgba(0, 0, 0, 0.4)';
+            downloadPrompt.style.zIndex = '1000';
+            downloadPrompt.style.borderRadius = '8px';
+            downloadPrompt.style.textAlign = 'center';
+
+            if (data.success) {
+                downloadPrompt.innerHTML = `${data.message}`;
+            } else {
+                downloadPrompt.innerHTML = `${data.message}`;
+            }
+
+            document.body.appendChild(downloadPrompt);
+
+            // Automatically remove the prompt after a few seconds
+            setTimeout(() => {
+                if (data.success) {
+                    window.location.reload(); // Refresh the page
+                } else {
+                    downloadPrompt.remove(); // Remove the prompt after showing the error
+                }
+            }, 2000); // Adjust the time as needed
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while submitting contacts.');
+        });
+});
     </script>
 @endsection
