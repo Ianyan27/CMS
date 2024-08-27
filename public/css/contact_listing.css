@@ -2,3 +2,13 @@
     min-height: 65vh;
 }
 
+.hubspot-btn
+{
+    background-color: #ff9c84;
+    border-radius: 15px;
+}
+
+.hubspot-btn:hover {
+    background-color: #ff7a59;
+    color: #ffffff;
+}

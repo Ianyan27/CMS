@@ -13,16 +13,16 @@
                     <button class="btn mx-3" id="show-all">
                         All Contacts
                     </button>
-                    <button class="btn mx-3" id="show-no-sync">
-                        No Sync Contacts
+                    <button class="archive-table btn mx-3" id="show-no-sync">
+                        Unsynced Contacts
                     </button>
-                    <button class="btn mx-3" id="show-synced">
+                    <button class="hubspot-btn btn mx-3" id="show-synced">
                         Synced Contacts
                     </button>
                 </div>
                 <div class="d-flex">
                     <button type="button" class="btn hover-action ml-auto" id="submitContacts">
-                        Submit Selected Contacts
+                        Sync to HubSpot
                     </button>
                 </div>
             </div>
