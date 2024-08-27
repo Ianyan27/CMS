@@ -17,13 +17,16 @@ use Illuminate\Support\Facades\Storage;
 class ContactController extends Controller
 {
 
-    public function contacts()
-    {
-        // Get contacts from model
-        $contacts = Contact::paginate(50);
-        $contactArchive = ContactArchive::paginate(50);
-        $contactDiscard = ContactDiscard::paginate(50);
-        // Pass data to view
+    public function index(){
+        // Get the logged-in user (sales agent)
+        $user = Auth::user();
+
+        // Get contacts related to this sales agent
+        $contacts = Contact::where('fk_contacts__owner_pid', $user->id)->paginate(50);
+        $contactArchive = ContactArchive::where('fk_contact_archives__owner_pid', $user->id)->paginate(50);
+        $contactDiscard = ContactDiscard::where('fk_contact_discards__owner_pid', $user->id)->paginate(50);
+
+        // Pass the data to the view
         return view('Contact_Listing', [
             'contacts' => $contacts,
             'contactArchive' => $contactArchive,
@@ -31,8 +34,7 @@ class ContactController extends Controller
         ]);
     }
 
-    public function contactsByOwner()
-    {
+    public function contactsByOwner(){
         // Get the logged-in user (sales agent)
         $user = Auth::user();
 

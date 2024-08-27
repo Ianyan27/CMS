@@ -6,7 +6,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BUHController;
 use App\Http\Controllers\ContactController;
 
-use App\Http\Controllers\ContactsImportController;
 use App\Http\Controllers\CSVDownloadController;
 use App\Http\Controllers\DiscardController;
 use App\Http\Controllers\OwnerController;
@@ -26,7 +25,7 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/view-user', function () {
 
     if (Auth::check()) {
         if (Auth::user()->role == 'Sales_Agent') {
-            return redirect()->route('contact-listing');
+            return redirect()->route('sales-agent#index');
         } elseif (Auth::user()->role == 'Admin') {
             return redirect()->route('admin#index');
         } else if (Auth::user()->role == 'BUH') {
@@ -36,7 +35,7 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/view-user', function () {
     return redirect()->route('login')->withErrors(['role' => 'Unauthorized access.']);
 });
 
-Route::group(['prefix' => 'Admin'], function () {
+Route::group(['prefix' => 'admin'], function () {
     Route::get('/', [AdminController::class, 'index'])->name('admin#index');
     Route::get('/view-user', [AdminController::class, 'viewUser'])->name('user#view-user');
     Route::get('/edit-user/{id}', [AdminController::class, 'editUser'])->name('user#edit-user');
@@ -44,8 +43,8 @@ Route::group(['prefix' => 'Admin'], function () {
     Route::delete('/delete-user/{id}', [AdminController::class, 'deleteUser'])->name('user#delete-user');
     Route::post('/save-user', [AdminController::class, 'saveUser'])->name('user#save-user');
 });
-Route::group(['prefix' => 'Sales_Agent'], function () {
-    Route::get('/', [ContactController::class, 'contactsByOwner'])->name('contact-listing');
+Route::group(['prefix' => 'sales-agent'], function () {
+    Route::get('/', [ContactController::class, 'index'])->name('sales-agent#index');
     Route::get('/contact-listing', [ContactController::class, 'contactsByOwner'])->name('contact-listing');
     Route::get('view-contact/{contact_pid}', [ContactController::class, 'viewContact'])->name('contact#view');
     Route::get('/edit-contact/{contact_pid}', [ContactController::class, 'editContact'])->name('contact#edit');
@@ -66,10 +65,9 @@ Route::group(['prefix' => 'Sales_Agent'], function () {
     ])->name('discard#save-discard-activity');
 });
 
-Route::group(['prefix' => 'BUH'], function () {
+Route::group(['prefix' => 'buh'], function () {
     Route::get('/', [BUHController::class, 'index'])->name('buh#index');
     Route::get('/view-user', [UserController::class, 'viewUser'])->name('view-user');
-    // Import Copy Route
     Route::get('/import-csv', function () {
         return view('csv_import_form');
     })->name('importcsv');
