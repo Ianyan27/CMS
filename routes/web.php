@@ -27,7 +27,7 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/view-user', function () {
         } elseif (Auth::user()->role == 'Admin') {
             return redirect()->route('view-user');
         } else if (Auth::user()->role == 'BUH') {
-             return redirect()->route('view-user');
+            return redirect()->route('view-user');
         }
     }
     return redirect()->route('login')->withErrors(['role' => 'Unauthorized access.']);
