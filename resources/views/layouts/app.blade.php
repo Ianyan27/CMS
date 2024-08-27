@@ -68,7 +68,7 @@
                             </li>
                             <li class="nav-item dashboard-link">
                                 <a class="nav-link {{ Route::currentRouteName() == 'hubspot.contacts' ? 'active-link' : '' }}" 
-                                href="{{ route('importcsv') }}">
+                                href="{{ route('hubspot.contacts') }}">
                                     <i class="fa-brands fa-hubspot"></i><span>Hubspot Contacts</span>
                                 </a>
                             </li>
