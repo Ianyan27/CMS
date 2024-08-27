@@ -47,17 +47,10 @@
                     <ul class="navbar-nav">
                         @if ((Auth::check() && Auth::user()->role == 'Admin') || (Auth::check() && Auth::user()->role == 'BUH'))
                             <li class="nav-item dashboard-link">
-                                @if (Auth::user()->role == 'BUH')
-                                    <a class="nav-link {{ Route::currentRouteName() == 'view-user-buh' ? 'active-link' : '' }}"
-                                        href="{{ route('view-user-buh') }}">
-                                        <i class="fa-solid fa-user"></i><span>Users</span>
-                                    </a>
-                                @else
-                                    <a class="nav-link {{ Route::currentRouteName() == 'view-user' ? 'active-link' : '' }}"
-                                        href="{{ route('view-user') }}">
-                                        <i class="fa-solid fa-user"></i><span>Users</span>
-                                    </a>
-                                @endif
+                                <a class="nav-link {{ Route::currentRouteName() == 'view-user' ? 'active-link' : '' }}"
+                                    href="{{ route('view-user') }}">
+                                    <i class="fa-solid fa-user"></i><span>Users</span>
+                                </a>
                             </li>
                         @endif
 
@@ -75,8 +68,8 @@
                                 </a>
                             </li>
                             <li class="nav-item dashboard-link">
-                                <a class="nav-link {{ Route::currentRouteName() == 'hubspot.contacts' ? 'active-link' : '' }}" 
-                                href="{{ route('hubspot.contacts') }}">
+                                <a class="nav-link {{ Route::currentRouteName() == 'hubspot.contacts' ? 'active-link' : '' }}"
+                                    href="{{ route('hubspot.contacts') }}">
                                     <i class="fa-brands fa-hubspot"></i><span>Hubspot Contacts</span>
                                 </a>
                             </li>
