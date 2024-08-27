@@ -35,68 +35,62 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/view-user', function () {
 
 Route::group(['prefix' => 'Admin'], function () {
     Route::get('/', [UserController::class, 'viewUser'])->name('view-user');
-    Route::get('/view-user', [UserController::class, 'viewUser'])->name('view-user');
+    Route::get('/view-user', [UserController::class, 'viewUser'])->name('user#view-user');
     Route::get('/edit-user/{id}', [UserController::class, 'editUser'])->name('user#edit-user');
     Route::post('/update-user/{id}', [UserController::class, 'updateUser'])->name('user#update-user');
     Route::delete('/delete-user/{id}', [UserController::class, 'deleteUser'])->name('user#delete-user');
-    Route::post('/save-user', [UserController::class, 'saveUser'])->name('save-user');
+    Route::post('/save-user', [UserController::class, 'saveUser'])->name('user#save-user');
 });
 
 Route::group(['prefix' => 'Sales_Agent'], function () {
-    Route::get('/', [OwnerController::class, 'owner'])->name('owner#view');
-    // Sales Agent Route
-    Route::get('/sales-agent', [OwnerController::class, 'owner'])->name('owner#view');
-    Route::get('/view-owner/{owner_pid}', [OwnerController::class, 'viewOwner'])->name('owner#view_owner');
-    Route::get('/edit-owner/{owner_pid}', [OwnerController::class, 'editOwner'])->name('owner#update');
-    Route::post('/update-owner/{owner_pid}', [OwnerController::class, 'updateOwner'])->name('owner#update_owner');
-
+    Route::get('/', [ContactController::class, 'contactsByOwner'])->name('contact-listing');
     // Contact Route
-    Route::get('/contact-listing', [ContactController::class, 'contacts_by_owner'])->name('contact-listing');
+    Route::get('/contact-listing', [ContactController::class, 'contactsByOwner'])->name('contact-listing');
 
     // View Contact Route
-    Route::get('view_contact/{contact_pid}', [ContactController::class, 'viewContact'])->name('contact#view');
+    Route::get('view-contact/{contact_pid}', [ContactController::class, 'viewContact'])->name('contact#view');
 
     // Edit Contact Route
-    Route::get('/edit_contact/{contact_pid}', [ContactController::class, 'editContact'])->name('contact#edit');
+    Route::get('/edit-contact/{contact_pid}', [ContactController::class, 'editContact'])->name('contact#edit');
 
     // Update Contact Route
-    Route::post('/save_contact/{contact_pid}', [ContactController::class, 'updateContact'])->name('contact#update_contact');
+    Route::post('/save-contact/{contact_pid}', [ContactController::class, 'updateContact'])->name('contact#update-contact');
 
     // Archive Route
-    Route::get('/edit_archive/{contact_archive_pid}', [ArchiveController::class, 'editArchive'])->name('archive#edit');
+    Route::get('/edit-archive/{contact_archive_pid}', [ArchiveController::class, 'editArchive'])->name('archive#edit');
 
     // View Archive Route
-    Route::get('/view_archive/{contact_archive_pid}', [ArchiveController::class, 'viewArchive'])->name('archive#view');
-    Route::post('save_archive/{contact_archive_pid}', [ArchiveController::class, 'updateArchive'])->name('archive#update_archive');
+    Route::get('/view-archive/{contact_archive_pid}', [ArchiveController::class, 'viewArchive'])->name('archive#view');
+    Route::post('save-archive/{contact_archive_pid}', [ArchiveController::class, 'updateArchive'])->name('archive#update-archive');
 
     //Discard Route
-    Route::get('/edit_discard/{contact_discard_pid}', [DiscardController::class, 'editDiscard'])->name('discard#edit');
+    Route::get('/edit-discard/{contact_discard_pid}', [DiscardController::class, 'editDiscard'])->name('discard#edit');
 
     //View Discard Route
-    Route::get('/view_discard/{contact_discard_pid}', [DiscardController::class, 'viewDiscard'])->name('discard#view');
-    Route::post('/save_discard/{contact_discard_pid}', [DiscardController::class, 'updateDiscard'])->name('discard#update_discard');
+    Route::get('/view-discard/{contact_discard_pid}', [DiscardController::class, 'viewDiscard'])->name('discard#view');
+    Route::post('/save-discard/{contact_discard_pid}', [DiscardController::class, 'updateDiscard'])->name('discard#update-discard');
 
     // Save Activity Route
-    Route::post('/save_activity/{contact_pid}', [ContactController::class, 'saveActivity'])->name('contact#save_activity');
+    Route::post('/save-activity/{contact_pid}', [ContactController::class, 'saveActivity'])->name('contact#save-activity');
 
     // Edit Activity Route
-    Route::get('/edit_activity/{contact_id}/{activity_id}', [ContactController::class, 'editActivity'])->name('contact#update_activity');
+    Route::get('/edit-activity/{contact_id}/{activity_id}', [ContactController::class, 'editActivity'])->name('contact#update-activity');
 
     // Update Activity Route
     Route::post('/contact/{contact_pid}/activity/{activity_id}/update', [ContactController::class, 'saveUpdateActivity'])
-        ->name('contact#save_update_activity');
+        ->name('contact#save-update-activity');
 
     // Save Discard Activity Route
-    Route::post('/save_discard_activity/{contact_discard_pid}', [
+    Route::post('/save-discard-activity/{contact_discard_pid}', [
         DiscardController::class,
         'saveDiscardActivity'
-    ])->name('discard#save_discard_activity');
+    ])->name('discard#save-discard-activity');
 });
 
 Route::group(['prefix' => 'BUH'], function () {
     Route::get('/', [ContactsImportController::class, 'import'])->name('import');
     // Import Copy Route
-    Route::get('/importcsv', function () {
+    Route::get('/import-csv', function () {
         return view('csv_import_form');
     })->name('importcsv');
     Route::post('/import', [ContactsImportController::class, 'import'])->name('import');
@@ -109,4 +103,9 @@ Route::group(['prefix' => 'BUH'], function () {
     Route::get('/getCsv', [CSVDownloadController::class, 'downloadCSV'])->name('getCsv');
     Route::get('/hubspotContact', [ContactController::class, 'hubspotContacts'])->name('hubspot.contacts');
     Route::post('/submit-hubspot-contacts', [HubspotContactController::class, 'submitHubspotContacts'])->name('submitHubspotContacts');
+    // Sales Agent Route
+    Route::get('/owner', [OwnerController::class, 'owner'])->name('owner#view');
+    Route::get('/view-owner/{owner_pid}', [OwnerController::class, 'viewOwner'])->name('owner#view-owner');
+    Route::get('/edit-owner/{owner_pid}', [OwnerController::class, 'editOwner'])->name('owner#update');
+    Route::post('/update-owner/{owner_pid}', [OwnerController::class, 'updateOwner'])->name('owner#update-owner');
 });

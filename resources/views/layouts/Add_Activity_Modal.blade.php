@@ -12,7 +12,7 @@ aria-hidden="true">
                     style="height: 30px;">
             </div>
             <div class="modal-body">
-                <form action=" {{ route('contact#save_activity', $editContact->contact_pid) }} " method="POST"
+                <form action=" {{ route('contact#save-activity', $editContact->contact_pid) }} " method="POST"
                     id="addActivityForm" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="contact_pid" value=" {{ $editContact->contact_pid }} " readonly>
