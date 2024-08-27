@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,42 +13,44 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ URL::asset('css/admin_style.css') }}">
 </head>
-
-<body>
-    <div class="container-fluid">
-        <div class="row shadow-sm py-3">
-            <div class="col-md-6 d-flex align-items-center">
-                <div class="logo">
-                    <img src="{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}" alt="Logo"
-                        class="img-fluid" style="max-height: 50px;">
-                </div>
+<div class="container-fluid d-flex flex-column" style="min-height: 100vh; padding: 0; overflow-x: hidden;">
+    <div class="row shadow-sm py-3" style="margin: 0;">
+        <div class="col-md-6 d-flex align-items-center">
+            <div class="logo">
+                <img src="{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}" alt="Logo" class="img-fluid" style="max-height: 50px;">
             </div>
         </div>
-        <div class="container-fluid">
-            <!-- Your existing content -->
-            <div class="d-flex justify-content-center align-items-center">
-                <div class="text-center p-5" style="background-color: #F2F2F2; border-radius:10px">
-                    <!-- Company Logo -->
-                    <img src="{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}" alt="Company Logo" class="mb-4"
-                        style="max-width: 150px;">
-                    <!-- Welcome Message -->
-                    <h5 class="mb-4"><strong>Welcome to eduCLaaS CMS system</strong></h5>
-                    <!-- Sign in with Microsoft Button -->
-                    <a href="#" class="btn d-flex align-items-center justify-content-center" data-toggle="modal" data-target="#loginModal"
-                        style="background-color: #91264c; color: white; padding: 0.75rem 1.5rem; border-radius: 5px;">
-                        <img src="{{ url('/images/image.png') }}" style="width: 30px; height:30px" alt="Microsoft Logo" class="mr-2">
-                        Sign in with Microsoft
-                    </a>
-                </div>
-            </div>
+    </div>
+    <div class="container-fluid d-flex justify-content-center align-items-center flex-grow-1" style="padding: 0;">
+        <div class="text-center p-5 border-educ" style="background-color: white; border-radius: 10px;">
+            <i style="
+                color:#91264c;
+                font-size: 5rem; 
+                background-color: #f0f0f0; 
+                padding: 1rem; 
+                border-radius: 50%; 
+                height: 120px; 
+                width: 120px; 
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);"
+                class="fa-solid fa-user mb-3">
+            </i>
+            <h5 class="mb-4"><strong>Hi There! Welcome to Educlass CMS System</strong></h5>
+            <p class="text-muted">To keep Connected, consider sign-in using your official Microsoft account</p>
+            <!-- Sign in with Microsoft Button -->
+            <a href="#" class="btn d-flex align-items-center justify-content-center" data-toggle="modal" data-target="#loginModal"
+                style="background-color: #91264c; color: white; padding: 0.75rem 1.5rem; border-radius: 5px;">
+                <img src="{{ url('/images/image.png') }}" style="width: 30px; height: 30px;" alt="Microsoft Logo" class="mr-2">
+                Sign in with Microsoft
+            </a>
         </div>
-    </div>    
-    <footer class="bg-educ color-white text-center py-3 mt-auto">
+    </div>
+    <footer class="bg-educ color-white text-center py-3" style="width: 100%; margin: 0;">
         © 2024 eduCLaaS Pte Ltd. All rights reserved.
     </footer>
+</div>
     <!-- Login Modal -->
     <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="loginModalLabel">Microsoft Login</h5>

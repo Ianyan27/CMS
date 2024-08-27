@@ -4,7 +4,6 @@
 
 @section('content')
     <div class="container-max-height">
-        <link rel="stylesheet" href="{{ URL::asset('css/contact_listing.css') }}">
         <form id="hubspotContactsForm">
             @csrf
             <div class="table-title d-flex justify-content-between align-items-center mb-4">

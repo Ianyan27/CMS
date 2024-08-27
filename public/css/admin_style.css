@@ -122,14 +122,13 @@ tbody {
     background-color: white;
 }
 
+.right-shadow {
+    box-shadow: .125rem 0 .25rem rgba(0, 0, 0, .075); /* Shadow on the right side */
+}
+
 /* Borders */
 .border-educ {
     border: 1px solid #91264c;
-}
-
-.border-right-educ {
-    border-right: 1px solid #DCDCDC;
-    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
 }
 
 .border-right {

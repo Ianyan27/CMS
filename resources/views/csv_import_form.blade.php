@@ -11,7 +11,7 @@
             padding: 0.5rem;
             border: 1px solid #c58ca8;
             /* Similar color to the one in the image */
-            border-radius: 50px;
+            border-radius: 0.5rem;
             outline: none;
             color: #660634;
             /* Text color similar to the border */
@@ -27,11 +27,6 @@
             border-color: #c58ca8;
             box-shadow: 0 0 0 2px rgba(197, 140, 168, 0.5);
             /* Add shadow similar to focus state */
-        }
-
-        .card-custom {
-            border: 1px solid #c58ca8;
-            border-radius: 0.5rem;
         }
 
         .progress-bar-custom {
@@ -54,7 +49,7 @@
         }
 
         .drop-zone {
-            border: 2px dashed #c58ca8;
+            border: 1px dashed gray;
             border-radius: 0.5rem;
             padding: 1.5rem;
             text-align: center;
@@ -65,6 +60,10 @@
         .drop-zone.dragover {
             background-color: #f2e6ec;
         }
+
+        select, option{
+            padding-left: 15px;
+        }
     </style>
 
     <div style="min-height: 720px;" class="container-max-height">
@@ -73,7 +72,7 @@
                 <form action="{{ route('import') }}" method="POST" enctype="multipart/form-data">
 
                     <div class=" w-100 mb-4 d-flex" style="width: 100%">
-                        <select id="platform" class=" w-100" name="platform" required>
+                        <select id="platform" class="w-100 platforms" name="platform" required>
                             <option value="" selected disabled>Select platform</option>
                             <option value="linkedin">LinkedIn</option>
                             <option value="facebook">Apollo</option>
@@ -83,11 +82,11 @@
                             onclick="window.location.href='{{ route('get-csv') }}'">Get
                             CSV Format</button>
                     </div>
-                    <div class="card text-center mb-4">
-                        <div class="card-body bg-silver  justify-content-center align-items-center" id="dropZone">
+                    <div class="text-center mb-4">
+                        <div class="card-body justify-content-center align-items-center drop-zone" id="dropZone">
                             <div class="mx-5">
-                                <h4 class="mb-4">Drag and drop your files</h4>
-                                <p class="text-muted mb-4" title="The uploaded file must be a file of type: csv">File
+                                <h5 class="mb-4 font-educ">Drag and drop your files</h5>
+                                <p class="mb-4" title="The uploaded file must be a file of type: csv">File
                                     formats we support <i class="fas fa-info-circle"></i></p>
                             </div>
                             @csrf
