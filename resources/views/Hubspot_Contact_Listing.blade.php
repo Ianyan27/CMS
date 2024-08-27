@@ -10,72 +10,41 @@
             <div class="table-title d-flex justify-content-between align-items-center mb-4">
                 <h5 class="mr-3 my-2 headings">HubSpot Contact Listing</h5>
                 <div class="d-flex">
-                    <button class="btn mx-3" id="show-all">
-                        All Contacts
-                    </button>
+                    
                     <button class="archive-table btn mx-3" id="show-no-sync">
-                        Unsynced Contacts
+                        View Unsynced
                     </button>
                     <button class="hubspot-btn btn mx-3" id="show-synced">
-                        Synced Contacts
+                        View Synced
                     </button>
                 </div>
                 <div class="d-flex">
                     <button type="button" class="btn hover-action ml-auto" id="submitContacts">
-                        Sync to HubSpot
+                        <i class="fa-brands fa-hubspot" style="margin: 0"></i><span>Batch Sync</span>
                     </button>
                 </div>
             </div>
 
-            <!-- Table for All HubSpot Contacts -->
-            <div class="table-container" id="all-contacts">
-                <table class="table table-hover mt-2">
-                    <thead class="text-left font-educ">
-                        <tr>
-                            <th>Select</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Last Synced</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-left bg-row fonts">
-                        @foreach ($hubspotContacts as $contact)
-                            <tr data-contact-id="{{ $contact->contact_pid }}">
-                                <td><input type="checkbox" name="selectedContacts[]" value="{{ $contact->contact_pid }}">
-                                </td>
-                                <td>{{ $contact->name }}</td>
-                                <td>{{ $contact->email }}</td>
-                                <td>{{ $contact->phone }}</td>
-                                <td class="sync-datetime">{{ $contact->datetime_of_hubspot_sync }}</td>
-                            </tr>
-                        @endforeach
-                        @if (count($hubspotContacts) == 0)
-                            <tr>
-                                <td colspan="5" class="text-center">No contacts found.</td>
-                            </tr>
-                        @endif
-                    </tbody>
-                </table>
-            </div>
+            
 
             <!-- Table for No Sync Contacts -->
-            <div class="table-container" id="no-sync" style="display:none;">
+            <div class="table-container" id="no-sync" style="">
                 <table class="table table-hover mt-2">
                     <thead class="text-left font-educ">
                         <tr>
-                            <th>Select</th>
+                            <th></th>
+                            <th>No#</th> <!-- Index column header -->
                             <th>Name</th>
                             <th>Email</th>
                             <th>Phone</th>
-                            <th>Last Synced</th>
                         </tr>
                     </thead>
                     <tbody class="text-left bg-row fonts">
-                        @foreach ($hubspotContactsNoSync as $contact)
+                        @foreach ($hubspotContactsNoSync as $index => $contact)
                             <tr data-contact-id="{{ $contact->contact_pid }}">
-                                <td><input type="checkbox" name="selectedContacts[]" value="{{ $contact->contact_pid }}">
-                                </td>
+                                
+                                <td><input type="checkbox" name="selectedContacts[]" value="{{ $contact->contact_pid }}"></td>
+                                <td>{{ $index + 1 }}</td> <!-- Index value -->
                                 <td>{{ $contact->name }}</td>
                                 <td>{{ $contact->email }}</td>
                                 <td>{{ $contact->phone }}</td>
@@ -90,24 +59,23 @@
                     </tbody>
                 </table>
             </div>
+            
 
-            <!-- Table for Synced Contacts -->
             <div class="table-container" id="synced" style="display:none;">
                 <table class="table table-hover mt-2">
                     <thead class="text-left font-educ">
                         <tr>
-                            <th>Select</th>
+                            <th>No#</th> <!-- Index column header -->
                             <th>Name</th>
                             <th>Email</th>
                             <th>Phone</th>
-                            <th>Last Synced</th>
+                            <th>Synced Time</th>
                         </tr>
                     </thead>
                     <tbody class="text-left bg-row fonts">
-                        @foreach ($hubspotContactsSynced as $contact)
+                        @foreach ($hubspotContactsSynced as $index => $contact)
                             <tr data-contact-id="{{ $contact->contact_pid }}">
-                                <td><input type="checkbox" name="selectedContacts[]" value="{{ $contact->contact_pid }}">
-                                </td>
+                                <td>{{ $index + 1 }}</td> <!-- Index value -->
                                 <td>{{ $contact->name }}</td>
                                 <td>{{ $contact->email }}</td>
                                 <td>{{ $contact->phone }}</td>
@@ -122,6 +90,7 @@
                     </tbody>
                 </table>
             </div>
+            
 
         </form>
 
@@ -175,27 +144,19 @@
     </div>
 
     <script>
-        const showAllBtn = document.getElementById('show-all');
         const showNoSyncBtn = document.getElementById('show-no-sync');
         const showSyncedBtn = document.getElementById('show-synced');
 
-        const allContactsContainer = document.getElementById('all-contacts');
         const noSyncContainer = document.getElementById('no-sync');
         const syncedContainer = document.getElementById('synced');
 
         // Function to hide all tables
         function hideAllTables() {
-            allContactsContainer.style.display = 'none';
             noSyncContainer.style.display = 'none';
             syncedContainer.style.display = 'none';
         }
 
-        // Show All Contacts Table (default)
-        showAllBtn.addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent form submission
-            hideAllTables();
-            allContactsContainer.style.display = 'block';
-        });
+      
 
         // Show No Sync Contacts Table
         showNoSyncBtn.addEventListener('click', function(event) {
