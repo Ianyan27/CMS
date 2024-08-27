@@ -39,7 +39,7 @@
     <div class="table-title d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
             <h5 class="mr-3 my-2 headings">Contact Listing</h5>
-            <button style="border-radius: 15px;" class="btn hover-action mx-3" id="show-contacts">
+            <button class="btn hover-action mx-3" id="show-contacts">
                 Interested Contacts
             </button>
             <button class="archive-table btn mx-3" id="show-archive">

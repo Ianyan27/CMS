@@ -178,6 +178,10 @@ tbody {
     border-color: #91264c;
 }
 
+.hubspot-btn{
+    background-color: #ff9c84;
+}
+
 /* Dashboard & Navigation */
 .dashboard {
     background-color: white;
@@ -194,6 +198,10 @@ tbody {
     border-right: 3px solid #91264c;
 }
 
+.hubspot-btn:hover {
+    background-color: #ff7a59;
+    color: #ffffff;
+}
 
 .nav-item i {
     width: 40px;
@@ -401,10 +409,9 @@ th, label{
     padding-bottom: 25px;
 }
 
-.archive-table, .discard-table {
+.archive-table {
     background-color: #E2E3E5;
     color: #303030;
-    border-radius: 15px;
 }
 
 .discard-table {
