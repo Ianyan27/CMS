@@ -111,16 +111,24 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="font-educ" for="editRole{{ $user->id }}">Role</label>
-                                            <select name="role" id="editRole{{ $user->id }}"
-                                                class="form-control fonts" required>
-                                                <option value="User" {{ $user->role == 'Admin' ? 'selected' : '' }}>Admin
-                                                </option>
-                                                <option value="Sales_Agent"
-                                                    {{ $user->role == 'Sales_Agent' ? 'selected' : '' }}>Sales Agent
-                                                </option>
-                                                <option value="BUH" {{ $user->role == 'BUH' ? 'selected' : '' }}>
-                                                    Business Unit Head</option>
-                                                <!-- Add more options as needed -->
+                                            <select name="role" id="editRole{{ $user->id }}" class="form-control fonts" required>
+                                                @if (Auth::user()->role == 'Admin')
+                                                    <!-- Admin can view and select all roles -->
+                                                    <option value="Admin" {{ 
+                                                    $user->role == 'Admin' ? 'selected' : '' 
+                                                    }}>Admin</option>
+                                                    <option value="Sales_Agent" {{ 
+                                                    $user->role == 'Sales_Agent' ? 'selected' : '' 
+                                                    }}>Sales Agent</option>
+                                                    <option value="BUH" {{ 
+                                                    $user->role == 'BUH' ? 'selected' : '' 
+                                                    }}>Business Unit Head</option>
+                                                @elseif (Auth::user()->role == 'BUH')
+                                                    <!-- BUH can only view and select Sales Agent -->
+                                                    <option value="Sales_Agent" {{ 
+                                                    $user->role == 'Sales_Agent' ? 'selected' : ''
+                                                    }}>Sales Agent</option>
+                                                @endif
                                             </select>
                                         </div>
                                     </div>

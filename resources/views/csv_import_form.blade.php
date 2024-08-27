@@ -80,7 +80,7 @@
                             <option value="raw">Raw CSV</option>
                         </select>
                         <button id="raw-btn-container" class="btn hover-action mx-2 d-none" style="width: 20%"
-                            onclick="window.location.href='{{ route('getCsv') }}'">Get
+                            onclick="window.location.href='{{ route('get-csv') }}'">Get
                             CSV Format</button>
                     </div>
                     <div class="card text-center mb-4">
