@@ -27,7 +27,7 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/view-user', function () {
         } elseif (Auth::user()->role == 'Admin') {
             return redirect()->route('view-user');
         } else if (Auth::user()->role == 'BUH') {
-            return redirect()->route('view-user');
+             return redirect()->route('view-user');
         }
     }
     return redirect()->route('login')->withErrors(['role' => 'Unauthorized access.']);
@@ -107,4 +107,6 @@ Route::group(['prefix' => 'BUH'], function () {
     })->name('editcontactdetail');
     //get csv format
     Route::get('/getCsv', [CSVDownloadController::class, 'downloadCSV'])->name('getCsv');
+    Route::get('/hubspotContact', [ContactController::class, 'hubspotContacts'])->name('hubspot.contacts');
+    Route::post('/submit-hubspot-contacts', [HubspotContactController::class, 'submitHubspotContacts'])->name('submitHubspotContacts');
 });
