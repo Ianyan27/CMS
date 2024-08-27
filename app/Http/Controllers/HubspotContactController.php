@@ -48,7 +48,13 @@ class HubspotContactController extends Controller
             ]);
 
             // Check the response from HubSpot
-            if ($response->getStatusCode() == 200) { // 202 Accepted
+            if ($response->getStatusCode() == 200 || $response->getStatusCode() == 202 || $response->getStatusCode() == 201) { // 202 Accepted
+                // Update the contacts with the datetime of Hubspot sync
+                foreach ($contacts as $contact) {
+                    $contact->datetime_of_hubspot_sync = now(); // assuming the column name is hubspot_sync
+                    $contact->save();
+                }
+
                 return response()->json([
                     'success' => true,
                     'message' => 'Contacts submitted to HubSpot successfully.',
