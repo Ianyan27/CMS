@@ -27,6 +27,7 @@
                         class="img-fluid" style="max-height: 50px;">
                 </div>
             </div>
+
             <div class="col-md-6 d-flex justify-content-end align-items-center">
                 <form action="{{ route('logout') }}" method="POST" class="d-inline">
                     @csrf
@@ -46,10 +47,17 @@
                     <ul class="navbar-nav">
                         @if ((Auth::check() && Auth::user()->role == 'Admin') || (Auth::check() && Auth::user()->role == 'BUH'))
                             <li class="nav-item dashboard-link">
-                                <a class="nav-link {{ Route::currentRouteName() == 'view-user' ? 'active-link' : '' }}"
-                                    href="{{ route('view-user') }}">
-                                    <i class="fa-solid fa-user"></i><span>Users</span>
-                                </a>
+                                @if (Auth::user()->role == 'BUH')
+                                    <a class="nav-link {{ Route::currentRouteName() == 'view-user-buh' ? 'active-link' : '' }}"
+                                        href="{{ route('view-user-buh') }}">
+                                        <i class="fa-solid fa-user"></i><span>Users</span>
+                                    </a>
+                                @else
+                                    <a class="nav-link {{ Route::currentRouteName() == 'view-user' ? 'active-link' : '' }}"
+                                        href="{{ route('view-user') }}">
+                                        <i class="fa-solid fa-user"></i><span>Users</span>
+                                    </a>
+                                @endif
                             </li>
                         @endif
 
