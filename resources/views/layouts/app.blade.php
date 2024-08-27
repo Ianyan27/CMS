@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,6 +17,7 @@
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ URL::asset('css/admin_style.css') }}">
 </head>
+
 <body class="d-flex flex-column">
     <div class="container-fluid flex-grow-1">
         <div class="row shadow-sm py-3">
@@ -42,7 +44,7 @@
                         </a>
                     </li> --}}
                     <ul class="navbar-nav">
-                        @if (Auth::check() && Auth::user()->role == 'Admin' || Auth::check() && Auth::user()->role == 'BUH')
+                        @if ((Auth::check() && Auth::user()->role == 'Admin') || (Auth::check() && Auth::user()->role == 'BUH'))
                             <li class="nav-item dashboard-link">
                                 <a class="nav-link {{ Route::currentRouteName() == 'view-user' ? 'active-link' : '' }}"
                                     href="{{ route('view-user') }}">
@@ -50,7 +52,7 @@
                                 </a>
                             </li>
                         @endif
-                    
+
                         @if (Auth::check() && Auth::user()->role == 'BUH')
                             <li class="nav-item dashboard-link">
                                 <a class="nav-link {{ Route::currentRouteName() == 'owner#view' ? 'active-link' : '' }}"
@@ -64,11 +66,12 @@
                                     <i class="fa-solid fa-file-arrow-up"></i><span>Upload Files</span>
                                 </a>
                             </li>
-                            <li class="nav-item {{ Route::currentRouteName() == 'hubspot.contacts' ? 'active-link' : '' }}">
+                            <li
+                                class="nav-item {{ Route::currentRouteName() == 'hubspot.contacts' ? 'active-link' : '' }}">
                                 <a class="nav-link" href="{{ route('hubspot.contacts') }}">HubSpot Contacts</a>
                             </li>
                         @endif
-                    
+
                         @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
                             <li class="nav-item dashboard-link">
                                 <a class="nav-link {{ Route::currentRouteName() == 'contact-listing' ? 'active-link' : '' }}"
@@ -78,7 +81,7 @@
                             </li>
                         @endif
                     </ul>
-                    
+
                 </ul>
             </div>
             <div class="col-11 px-4 min-height content-width">

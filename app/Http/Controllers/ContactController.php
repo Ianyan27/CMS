@@ -11,6 +11,7 @@ use App\Models\EngagementDiscard;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ContactController extends Controller
@@ -30,7 +31,26 @@ class ContactController extends Controller
         ]);
     }
 
-    public function viewContact($contact_pid){
+    public function contacts_by_owner()
+    {
+        // Get the logged-in user (sales agent)
+        $user = Auth::user();
+
+        // Get contacts related to this sales agent
+        $contacts = Contact::where('fk_contacts__owner_pid', $user->id)->paginate(50);
+        $contactArchive = ContactArchive::where('fk_contact_archives__owner_pid', $user->id)->paginate(50);
+        $contactDiscard = ContactDiscard::where('fk_contact_discards__owner_pid', $user->id)->paginate(50);
+
+        // Pass the data to the view
+        return view('Contact_Listing', [
+            'contacts' => $contacts,
+            'contactArchive' => $contactArchive,
+            'contactDiscard' => $contactDiscard
+        ]);
+    }
+
+    public function viewContact($contact_pid)
+    {
         /* Retrieve the contact record with the specified 'contact_pid' and pass
          it to the 'Edit_Contact_Detail_Page' view for editing. */
         $editContact = Contact::where('contact_pid', $contact_pid)->first();
@@ -43,7 +63,8 @@ class ContactController extends Controller
         ]);
     }
 
-    public function updateContact(Request $request, $contact_pid){
+    public function updateContact(Request $request, $contact_pid)
+    {
         // Find the contact based on the contact_pid
         $contact = Contact::find($contact_pid);
 
@@ -51,19 +72,18 @@ class ContactController extends Controller
         if (!$contact) {
             return redirect()->route('contact-listing')->with('error', 'Contact not found.');
         }
-        
+
         // Handle the "Archive" and "Discard" status cases
         if (in_array($request->input('status'), ['Archive', 'Discard'])) {
             // Determine the target model based on the status
-            $targetContactModel = $request->input('status') === 'Archive' ? new ContactArchive() : new ContactDiscard();   
+            $targetContactModel = $request->input('status') === 'Archive' ? new ContactArchive() : new ContactDiscard();
             // Copy the contact data to the new table
             $targetContactModel->fill($contact->toArray());
             $targetContactModel->status = $request->input('status'); // Explicitly set the status
             $targetContactModel->save();
 
-            // Get the ID of the newly created contact in the archive/discard table
-            $targetContactId = $request->input('status') === 'Archive' ? $targetContactModel->contact_archive_pid : $targetContactModel->contact_discard_pid;
-
+            $contactArchiveId = $targetContactModel->contact_archive_pid;
+            $contactDiscardId = $targetContactModel->contact_discard_pid;
             // Move related activities
             $activities = Engagement::where('fk_engagements__contact_pid', $contact_pid)->get();
             $targetActivityModel = $request->input('status') === 'Archive' ? new EngagementArchive() : new EngagementDiscard();
@@ -74,9 +94,9 @@ class ContactController extends Controller
 
                 // Set the foreign key to reference the newly created contact
                 if ($request->input('status') === 'Archive') {
-                    $newActivity->fk_engagement_archives__contact_archive_pid = $targetContactId;
+                    $newActivity->fk_engagement_archives__contact_archive_pid = $contactArchiveId;
                 } else {
-                    $newActivity->fk_engagement_discards__contact_discard_pid = $targetContactId;
+                    $newActivity->fk_engagement_discards__contact_discard_pid = $contactDiscardId;
                 }
 
                 $newActivity->save();
@@ -217,18 +237,17 @@ class ContactController extends Controller
         $hubspotContactsNoSync = Contact::where('status', 'HubSpot Contact')
             ->whereNull('datetime_of_hubspot_sync')
             ->paginate(50);
-    
+
         // Get HubSpot contacts where datetime_of_hubspot_sync has a value
         $hubspotContactsSynced = Contact::where('status', 'HubSpot Contact')
             ->whereNotNull('datetime_of_hubspot_sync')
             ->paginate(50);
-    
+
         // Pass data to view
         return view('Hubspot_Contact_Listing', [
-            'hubspotContacts'=>$hubspotContacts,
+            'hubspotContacts' => $hubspotContacts,
             'hubspotContactsNoSync' => $hubspotContactsNoSync,
             'hubspotContactsSynced' => $hubspotContactsSynced
         ]);
     }
-
 }

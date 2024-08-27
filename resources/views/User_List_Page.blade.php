@@ -80,9 +80,10 @@
                 aria-labelledby="editUserModalLabel{{ $user->id }}" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
-                        <div class="modal-header d-flex justify-content-between align-items-center">
+                        <div class="modal-header d-flex justify-content-between align-items-center"
+                            style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);border:none;">
                             <h5 class="modal-title" id="editUserModalLabel{{ $user->id }}">
-                                <strong>Edit User</strong>
+                                <strong style="color: #91264c">Edit User</strong>
                             </h5>
                             <img src="{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}" alt="Company Logo"
                                 style="height: 30px;">
@@ -124,7 +125,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="modal-footer">
+                                <div class="modal-footer" style="border: none">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                     <button type="submit" class="btn" style="background: #91264c; color:white;">Save
                                         Changes</button>
@@ -168,13 +169,11 @@
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addUserModalLabel">Create New User</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                    <div class="modal-header"
+                        style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);border:none;">
+                        <h5 class="modal-title" id="addUserModalLabel" style="color: #91264c;">Create New User</h5>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body" style="color: #91264c">
                         <form action="{{ route('save-user') }}" method="POST">
                             @csrf
                             <div class="form-group">
@@ -210,7 +209,12 @@
                                 <input type="hidden" name="role" id="role" class="form-control"
                                     value="Sales_Agent" readonly>
                             </div>
-                            <button type="submit" class="btn btn-primary">Create User</button>
+
+                            <div class="modal-footer" style="border: none">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary"
+                                    style="background: #91264c; color: white;">Create User</button>
+                            </div>
                         </form>
                     </div>
                 </div>

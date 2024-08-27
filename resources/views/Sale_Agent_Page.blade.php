@@ -1,6 +1,7 @@
 @section('title', 'Sale Agent Dashboard')
 
 @extends('layouts.app')
+@extends('layouts.Add_Sales-Agent_Modal')
 
 @section('content')
     {{-- 
@@ -41,6 +42,9 @@
             display: none;
         }
     </style> --}}
+
+    <link rel="stylesheet" href="{{ URL::asset('css/contact-detail.css') }}">
+
 
     <div class="container-max-height">
         <div class="table-title d-flex justify-content-between align-items-center mb-3">

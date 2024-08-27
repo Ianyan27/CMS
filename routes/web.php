@@ -14,26 +14,26 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // Default Route
-Route::get('/', function() {
+Route::get('/', function () {
     return view('Login');
 })->name('login');
 // Microsoft Login Route
 Route::post('/microsoft-login', [AuthController::class, 'microsoftLogin'])->name('microsoft.login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-Route::middleware(['auth:sanctum', 'verified'])->get('/view-user', function() {
+Route::middleware(['auth:sanctum', 'verified'])->get('/view-user', function () {
     if (Auth::check()) {
         if (Auth::user()->role == 'Sales_Agent') {
             return redirect()->route('contact-listing');
         } elseif (Auth::user()->role == 'Admin') {
             return redirect()->route('view-user');
-        } else if (Auth::user()->role == 'BUH'){
-            return redirect()->route('view-user');
+        } else if (Auth::user()->role == 'BUH') {
+             return redirect()->route('view-user');
         }
     }
     return redirect()->route('login')->withErrors(['role' => 'Unauthorized access.']);
 });
 
-Route::group(['prefix' => 'Admin'], function(){
+Route::group(['prefix' => 'Admin'], function () {
     Route::get('/', [UserController::class, 'viewUser'])->name('view-user');
     Route::get('/view-user', [UserController::class, 'viewUser'])->name('view-user');
     Route::get('/edit-user/{id}', [UserController::class, 'editUser'])->name('user#edit-user');
@@ -42,7 +42,7 @@ Route::group(['prefix' => 'Admin'], function(){
     Route::post('/save-user', [UserController::class, 'saveUser'])->name('save-user');
 });
 
-Route::group(['prefix' => 'Sales_Agent'], function(){
+Route::group(['prefix' => 'Sales_Agent'], function () {
     Route::get('/', [OwnerController::class, 'owner'])->name('owner#view');
     // Sales Agent Route
     Route::get('/sales-agent', [OwnerController::class, 'owner'])->name('owner#view');
@@ -51,7 +51,7 @@ Route::group(['prefix' => 'Sales_Agent'], function(){
     Route::post('/update-owner/{owner_pid}', [OwnerController::class, 'updateOwner'])->name('owner#update_owner');
 
     // Contact Route
-    Route::get('/contact-listing', [ContactController::class, 'contacts'])->name('contact-listing');
+    Route::get('/contact-listing', [ContactController::class, 'contacts_by_owner'])->name('contact-listing');
 
     // View Contact Route
     Route::get('view_contact/{contact_pid}', [ContactController::class, 'viewContact'])->name('contact#view');
@@ -88,26 +88,25 @@ Route::group(['prefix' => 'Sales_Agent'], function(){
 
     // Save Discard Activity Route
     Route::post('/save_discard_activity/{contact_discard_pid}', [
-        DiscardController::class, 'saveDiscardActivity'
-        ])->name('discard#save_discard_activity');
-    // Edit Contact Detail Route
-    Route::get('/editcontactdetail', function () {
-        return view('Edit_Contact_Detail_Page');
-        
-    })->name('editcontactdetail');
+        DiscardController::class,
+        'saveDiscardActivity'
+    ])->name('discard#save_discard_activity');
 });
 
-Route::group(['prefix' => 'BUH'], function (){
+Route::group(['prefix' => 'BUH'], function () {
     Route::get('/', [ContactsImportController::class, 'import'])->name('import');
     // Import Copy Route
     Route::get('/importcsv', function () {
         return view('csv_import_form');
     })->name('importcsv');
     Route::post('/import', [ContactsImportController::class, 'import'])->name('import');
+
+    // Edit Contact Detail Route
+    Route::get('/editcontactdetail', function () {
+        return view('Edit_Contact_Detail_Page');
+    })->name('editcontactdetail');
     //get csv format
     Route::get('/getCsv', [CSVDownloadController::class, 'downloadCSV'])->name('getCsv');
-    
     Route::get('/hubspotContact', [ContactController::class, 'hubspotContacts'])->name('hubspot.contacts');
     Route::post('/submit-hubspot-contacts', [HubspotContactController::class, 'submitHubspotContacts'])->name('submitHubspotContacts');
-
 });
