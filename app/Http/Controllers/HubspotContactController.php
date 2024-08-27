@@ -4,25 +4,67 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Models\Contact;
+use GuzzleHttp\Client;
 
 class HubspotContactController extends Controller
 {
     public function submitHubspotContacts(Request $request)
     {
         $selectedContacts = $request->input('selectedContacts');
-    
+
         if ($selectedContacts) {
-            // Process the selected contacts as needed
-            // For example, you can log the selected contacts, send them to an external API, etc.
-            Log::info('Selected contacts: ', $selectedContacts);
-            
+            // Retrieve contacts with the selected IDs
+            $contacts = Contact::whereIn('contact_pid', $selectedContacts)->get();
+
+            // Convert the retrieved contacts to an array suitable for HubSpot
+            $hubspotContacts = $contacts->map(function ($contact) {
+                return [
+                    'properties' => [
+                        'firstname' => $contact->name,
+                        'email' => $contact->email,
+                        'phone' => $contact->phone,
+                    ],
+                ];
+            })->toArray();
+
+            // Structure the data to match HubSpot's API expectations
+            $data = [
+                'inputs' => $hubspotContacts,
+            ];
+
+            // Log the JSON result (optional)
+            Log::info('Selected contacts for HubSpot JSON: ' . json_encode($data));
+
+            // Send data to HubSpot
+            $client = new Client();
+            $response = $client->post('https://api.hubapi.com/crm/v3/objects/contacts/batch/create', [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'Bearer ' . env('HUBSPOT_API_KEY'), // Ensure your HubSpot API key is stored in your .env file
+                ],
+                'json' => $data,
+                'verify' => false, // Disable SSL verification (use only for testing purposes)
+            ]);
+
+            // Check the response from HubSpot
+            if ($response->getStatusCode() == 200) { // 202 Accepted
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Contacts submitted to HubSpot successfully.',
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to submit contacts to HubSpot.',
+                ], $response->getStatusCode());
+            }
         } else {
             // Handle the case where no contacts were selected
-            // You can return an error message or redirect with a flash message
-            return redirect()->back()->with('error', 'No contacts selected.');
+            return response()->json([
+                'success' => false,
+                'message' => 'No contacts selected.',
+            ]);
         }
-    
-        return redirect()->back()->with('success', 'Contacts submitted successfully.');
     }
-    
 }
