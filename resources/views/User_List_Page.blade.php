@@ -113,7 +113,7 @@
                                             <label class="font-educ" for="editRole{{ $user->id }}">Role</label>
                                             <select name="role" id="editRole{{ $user->id }}"
                                                 class="form-control fonts" required>
-                                                <option value="User" {{ $user->role == 'Admin' ? 'selected' : '' }}>Admin
+                                                <option value="Admin" {{ $user->role == 'Admin' ? 'selected' : '' }}>Admin
                                                 </option>
                                                 <option value="Sales_Agent"
                                                     {{ $user->role == 'Sales_Agent' ? 'selected' : '' }}>Sales Agent
