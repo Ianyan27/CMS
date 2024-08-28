@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use Symfony\Component\HttpFoundation\StreamedResponse;
-class CSVDownloadController extends Controller
-{
-    public function downloadCSV()
-    {
+class CSVDownloadController extends Controller{
+    public function downloadCSV(){
         $fileName = 'sample.csv';
 
         $columns = ['name', 'email', 'contact_number', 'address', 'country','qualification','job_role','company_name','skills','social_profile'];

@@ -14,8 +14,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-class ContactController extends Controller
-{
+class ContactController extends Controller{
 
     public function index(){
         // Get the logged-in user (sales agent)
@@ -51,8 +50,7 @@ class ContactController extends Controller
         ]);
     }
 
-    public function viewContact($contact_pid)
-    {
+    public function viewContact($contact_pid){
         /* Retrieve the contact record with the specified 'contact_pid' and pass
          it to the 'Edit_Contact_Detail_Page' view for editing. */
         $editContact = Contact::where('contact_pid', $contact_pid)->first();
@@ -65,8 +63,7 @@ class ContactController extends Controller
         ]);
     }
 
-    public function updateContact(Request $request, $contact_pid)
-    {
+    public function updateContact(Request $request, $contact_pid){
         // Find the contact based on the contact_pid
         $contact = Contact::find($contact_pid);
 
@@ -133,8 +130,7 @@ class ContactController extends Controller
     }
 
 
-    public function saveActivity(Request $request, $contact_pid)
-    {
+    public function saveActivity(Request $request, $contact_pid){
 
         $validator = Validator::make($request->all(), [
             'activity-date' => 'required',
@@ -161,12 +157,15 @@ class ContactController extends Controller
         $engagement->activity_name = $request->input('activity-name');
         $engagement->fk_engagements__contact_pid = $request->input('contact_pid');
         $engagement->save();
-
+        $contact = Contact::find($contact_pid);
+        if ($contact) {
+            $contact->status = "InProgress";
+            $contact->save();
+        }
         return redirect()->route('contact#view', ['contact_pid' => $contact_pid])->with('success', 'Activity added successfully.');
     }
 
-    public function editActivity($fk_engagements__contact_pid, $activity_id)
-    {
+    public function editActivity($fk_engagements__contact_pid, $activity_id){
         // Fetch all activities related to the contact ID
         $updateEngagements = Engagement::where('fk_engagements__contact_pid', $fk_engagements__contact_pid)->get();
 
@@ -188,8 +187,7 @@ class ContactController extends Controller
         ]);
     }
 
-    public function saveUpdateActivity(Request $request, $contact_pid, $activity_id)
-    {
+    public function saveUpdateActivity(Request $request, $contact_pid, $activity_id){
         // Validate the input data
         $validator = Validator::make($request->all(), [
             'activity-date' => 'required|date',
@@ -229,8 +227,7 @@ class ContactController extends Controller
             ->with('success', 'Activity updated successfully.');
     }
 
-    public function hubspotContacts()
-    {
+    public function hubspotContacts(){
         // Get HubSpot contacts 
         $hubspotContacts = Contact::where('status', 'HubSpot Contact')
             ->paginate(50);

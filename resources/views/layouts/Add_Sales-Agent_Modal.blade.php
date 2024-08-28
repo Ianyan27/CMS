@@ -47,7 +47,7 @@
                         </div>
                     </div>
                     <div class="modal-footer" style="border: none">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn" style="background: #91264c; color: white;">Save</button>
                     </div>
                 </form>

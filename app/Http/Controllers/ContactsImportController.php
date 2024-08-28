@@ -12,8 +12,7 @@ use App\Models\Contact;
 
 class ContactsImportController extends Controller
 {
-    public function import(Request $request)
-    {
+    public function import(Request $request){
         // Validate the uploaded file
         $fileValidator = Validator::make($request->all(), [
             'csv_file' => 'required|mimes:csv,txt|max:102400',
@@ -89,8 +88,7 @@ class ContactsImportController extends Controller
         ]);
     }
 
-    private function exportCsv($fileName, $data)
-    {
+    private function exportCsv($fileName, $data){
         try {
             $csvContent = $this->arrayToCsv($data);
             // Save the file to the 'public' disk
@@ -104,8 +102,7 @@ class ContactsImportController extends Controller
         }
     }
 
-    private function arrayToCsv(array $array)
-    {
+    private function arrayToCsv(array $array){
         $csv = fopen('php://temp', 'r+');
 
         foreach ($array as $row) {

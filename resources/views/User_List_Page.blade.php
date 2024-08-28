@@ -11,7 +11,7 @@
     <div class="container-max-height">
         <div class="table-title d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
-                <h5 class="ml-3 my-2 headings">User Listing Page</h5>
+                <h5 class="ml-3 my-2 headings">Sales Agent Listing Page</h5>
             </div>
             <div class="search-box d-flex align-items-center mr-3 mb-2">
                 <button type="button" class="btn hover-action" data-toggle="modal" data-target="#addUserModal">
