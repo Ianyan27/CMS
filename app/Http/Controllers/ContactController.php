@@ -133,8 +133,7 @@ class ContactController extends Controller
     }
 
 
-    public function saveActivity(Request $request, $contact_pid)
-    {
+    public function saveActivity(Request $request, $contact_pid){
 
         $validator = Validator::make($request->all(), [
             'activity-date' => 'required',
@@ -161,7 +160,11 @@ class ContactController extends Controller
         $engagement->activity_name = $request->input('activity-name');
         $engagement->fk_engagements__contact_pid = $request->input('contact_pid');
         $engagement->save();
-
+        $contact = Contact::find($contact_pid);
+        if ($contact) {
+            $contact->status = "InProgress";
+            $contact->save();
+        }
         return redirect()->route('contact#view', ['contact_pid' => $contact_pid])->with('success', 'Activity added successfully.');
     }
 
