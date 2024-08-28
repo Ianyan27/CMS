@@ -74,7 +74,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="font-educ" for="address">Address</label>
-                        <input style="height: 125px;" type="text" class="form-control fonts" id="address"
+                        <input style="min-height: 103px;" type="text" class="form-control fonts" id="address"
                             value=" {{ $editContact->address }} " readonly>
                     </div>
                 </div>

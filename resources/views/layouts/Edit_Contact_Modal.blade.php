@@ -35,7 +35,7 @@ aria-hidden="true">
                         </div>
                         <div class="form-group">
                             <label class="font-educ" for="contact-address">Address</label>
-                            <input class="form-control fonts" style="height: 125px;" type="text" name="address"
+                            <input class="form-control fonts" style="height: 103px;" type="text" name="address"
                                 id="address" value="{{ $editContact->address }}">
                         </div>
                     </div>
