@@ -14,7 +14,6 @@ class OwnerController extends Controller{
     public function owner(){
         // Get the current authenticated user
         $user = Auth::user();
-
         // Check if the user is a BUH or Admin
         if ($user->role == 'BUH') {
             // If the user is BUH, filter owners by the BUH's fk_buh
@@ -23,7 +22,6 @@ class OwnerController extends Controller{
             // If the user is Admin, show all owners
             $owner = Owner::paginate(10);
         }
-
         // Return the view with the appropriate data
         return view('Sale_Agent_Page', [
             'owner' => $owner

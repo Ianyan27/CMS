@@ -28,6 +28,7 @@
                 </div>
             </div>
             <div class="col-md-6 d-flex justify-content-end align-items-center">
+                <span> {{ Auth::user()->name }} </span>
                 <form action="{{ route('logout') }}" method="POST" class="d-inline">
                     @csrf
                     <button type="submit" class="btn hover-action">Signout</button>

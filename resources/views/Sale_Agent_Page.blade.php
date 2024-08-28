@@ -42,7 +42,6 @@
             display: none;
         }
     </style> --}}
-
     <link rel="stylesheet" href="{{ URL::asset('css/contact-detail.css') }}">
     <div class="container-max-height">
         <div class="table-title d-flex justify-content-between align-items-center mb-3">

@@ -1,8 +1,10 @@
 <!-- Edit Owner Modal -->
 <div class="modal fade" id="editOwnerModal" tabindex="-1" aria-labelledby="editOwnerModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header d-flex justify-content-between align-items-center">
+        <div class="modal-content rounded-0">
+            <div class="modal-header d-flex justify-content-between align-items-center"
+            style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+                        border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
                 <h5 class="modal-title font-educ" id="editOwnerModalLabel">
                     <strong>Edit Owner</strong>
                 </h5>
