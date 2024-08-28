@@ -12,7 +12,8 @@
     <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
+            <div class="modal-header" style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+                border:none;">
                     <h5 class="modal-title" id="successModalLabel">Success</h5>
                 </div>
                 <div class="modal-body">
@@ -84,9 +85,9 @@
         <div class="col-md-7 px-3">
             <div class="d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 ml-2 headings">Sales Engagement</h2>
-                <a class="btn hover-action font" href=" {{ route('owner#view') }} ">
+                <!-- <a class="btn hover-action font" href=" {{ route('owner#view') }} ">
                     <i class="fa-solid fa-left-long"></i>
-                </a>
+                </a> -->
             </div>
             <div class="row">
                 <div class="col">
