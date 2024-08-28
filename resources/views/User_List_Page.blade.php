@@ -7,21 +7,20 @@
             {{ session('success') }}
         </div>
     @endif
-
     <div class="container-max-height">
         <div class="table-title d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
-                <h5 class="ml-3 my-2 headings">Sales Agent Listing Page</h5>
+                <h5 class="mr-3 my-2 headings">User Listing Page</h5>
             </div>
-            <div class="search-box d-flex align-items-center mr-3 mb-2">
-                <button type="button" class="btn hover-action" data-toggle="modal" data-target="#addUserModal">
+            <div class="d-flex align-items-center mr-3 mb-2">
+                <button class="btn hover-action mx-1" type="button" data-toggle="modal" data-target="#addUserModal">
                     Add User
                 </button>
             </div>
         </div>
         <div class="table-container">
             <table class="table table-hover mt-2">
-                <thead class="font-educ text-left">
+                <thead class="text-left font-educ">
                     <tr>
                         <th scope="col">No #</th>
                         <th scope="col" id="name-header">Name
@@ -45,12 +44,12 @@
                                 onclick="sortTable('role', 'desc'); toggleSort('sortUp-role', 'sortDown-role')"
                                 style="display: none;"></i>
                         </th>
-                        <th scope="col">BU</i></th>
+                        <th scope="col">BU</th>
                         <th scope="col">Country</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="text-left bg-row">
+                <tbody class="text-left bg-row fonts">
                     @foreach ($userData as $user)
                         <tr>
                             <td>{{ $user->id }}</td>
@@ -60,12 +59,10 @@
                             <td>Sales and Marketing</td>
                             <td>Philippines</td>
                             <td>
-                                <a class="btn hover-action" data-toggle="modal"
-                                    data-target="#editUserModal{{ $user->id }}">
+                                <a class="btn hover-action" data-toggle="modal" data-target="#editUserModal{{ $user->id }}">
                                     <i class="fa-solid fa-eye"></i>
                                 </a>
-                                <a class="btn hover-action" data-toggle="modal"
-                                    data-target="#deleteUserModal{{ $user->id }}">
+                                <a class="btn hover-action" data-toggle="modal" data-target="#deleteUserModal{{ $user->id }}">
                                     <i class="fa-solid fa-trash"></i>
                                 </a>
                             </td>
@@ -74,14 +71,62 @@
                 </tbody>
             </table>
         </div>
+        <div aria-label="Page navigation example " class="paginationContainer">
+            <ul class="pagination justify-content-center">
+                <!-- Previous Button -->
+                <li class="page-item {{ $userData->onFirstPage() ? 'disabled' : '' }}">
+                    <a class="page-link font-educ" href="{{ $userData->previousPageUrl() }}"
+                        aria-label="Previous">&#60;</a>
+                </li>
+                <!-- First Page Button -->
+                @if ($userData->currentPage() > 3)
+                    <li class="page-item">
+                        <a class="page-link font-educ" href="{{ $userData->url(1) }}">1</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link font-educ" href="{{ $userData->url(2) }}">2</a>
+                    </li>
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                @endif
+                <!-- Middle Page Buttons -->
+                @for ($i = max($userData->currentPage() - 1, 1); $i <= min($userData->currentPage() + 1, $userData->lastPage()); $i++)
+                    <li class="page-item {{ $i == $userData->currentPage() ? 'active' : '' }}">
+                        <a class="page-link font-educ {{ $i == $userData->currentPage() ? 'active-bg' : '' }}"
+                            href="{{ $userData->url($i) }}">{{ $i }}</a>
+                    </li>
+                @endfor
+                <!-- Last Page Button -->
+                @if ($userData->currentPage() < $userData->lastPage() - 2)
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link font-educ"
+                            href="{{ $userData->url($userData->lastPage() - 1) }}">{{ $userData->lastPage() - 1 }}</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link font-educ"
+                            href="{{ $userData->url($userData->lastPage()) }}">{{ $userData->lastPage() }}</a>
+                    </li>
+                @endif
+                <!-- Next Button -->
+                <li class="page-item {{ !$userData->hasMorePages() ? 'disabled' : '' }}">
+                    <a class="page-link font-educ" href="{{ $userData->nextPageUrl() }}" aria-label="Next">&#62;</a>
+                </li>
+            </ul>
+        </div>
+    </div>
         <!-- Edit User Modal -->
         @foreach ($userData as $user)
             <div class="modal fade" id="editUserModal{{ $user->id }}" tabindex="-1"
                 aria-labelledby="editUserModalLabel{{ $user->id }}" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
+                    <div class="modal-content rounded-0">
                         <div class="modal-header d-flex justify-content-between align-items-center"
-                            style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);border:none;">
+                        style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+                        border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
                             <h5 class="modal-title" id="editUserModalLabel{{ $user->id }}">
                                 <strong style="color: #91264c">Edit User</strong>
                             </h5>
@@ -117,14 +162,11 @@
                                                     <option value="Admin" {{ 
                                                     $user->role == 'Admin' ? 'selected' : '' 
                                                     }}>Admin</option>
-                                                    <option value="Sales_Agent" {{ 
-                                                    $user->role == 'Sales_Agent' ? 'selected' : '' 
-                                                    }}>Sales Agent</option>
                                                     <option value="BUH" {{ 
                                                     $user->role == 'BUH' ? 'selected' : '' 
                                                     }}>Business Unit Head</option>
                                                     <option value="" {{ 
-                                                        $user->role == 'null' ? 'selected' : '' 
+                                                        $user->role == '' ? 'selected' : '' 
                                                     }}>Not Assigned</option>
                                                 @elseif (Auth::user()->role == 'BUH')
                                                     <!-- BUH can only view and select Sales Agent -->

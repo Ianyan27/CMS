@@ -28,13 +28,14 @@
                 </div>
             </div>
             <div class="col-md-6 d-flex justify-content-end align-items-center">
-                <span> {{ Auth::user()->name }} </span>
+                <input type="text" class="form-control text-center" placeholder="{{ Auth::user()->name }}" readonly
+                    style="max-width: 150px; margin-right: 10px;">
                 <form action="{{ route('logout') }}" method="POST" class="d-inline">
                     @csrf
                     <button type="submit" class="btn hover-action">Signout</button>
                 </form>
             </div>
-        </div>
+        </div>        
         <div class="row my-4 content-height">
             <div id="side-bar" class="col-auto dashboard rounded-right min-height navigation-width right-shadow">
                 <ul class="nav flex-column fonts mt-2">
@@ -49,7 +50,7 @@
                             <li class="nav-item dashboard-link">
                                 <a class="nav-link {{ Route::currentRouteName() == 'view-user' ? 'active-link' : '' }}"
                                     href="{{ route('view-user') }}">
-                                    <i class="fa-solid fa-user"></i><span>Sales Agent</span>
+                                    <i class="fa-solid fa-user"></i><span>User List</span>
                                 </a>
                             </li>
                         @endif
