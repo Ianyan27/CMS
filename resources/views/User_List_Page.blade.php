@@ -123,11 +123,17 @@
                                                     <option value="BUH" {{ 
                                                     $user->role == 'BUH' ? 'selected' : '' 
                                                     }}>Business Unit Head</option>
+                                                    <option value="" {{ 
+                                                        $user->role == 'null' ? 'selected' : '' 
+                                                    }}>Not Assigned</option>
                                                 @elseif (Auth::user()->role == 'BUH')
                                                     <!-- BUH can only view and select Sales Agent -->
                                                     <option value="Sales_Agent" {{ 
                                                     $user->role == 'Sales_Agent' ? 'selected' : ''
                                                     }}>Sales Agent</option>
+                                                    <option value="" {{ 
+                                                        $user->role == 'null' ? 'selected' : '' 
+                                                    }}>Not Assigned</option>
                                                 @endif
                                             </select>
                                         </div>
@@ -212,11 +218,6 @@
                                 <input type="hidden" class="form-control" id="password_confirmation"
                                     name="password_confirmation" value="creatingtestaccount" readonly>
                             </div>
-                            <div class="form-group">
-                                <input type="hidden" name="role" id="role" class="form-control"
-                                    value="Sales_Agent" readonly>
-                            </div>
-
                             <div class="modal-footer" style="border: none">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                 <button type="submit" class="btn btn-primary"
