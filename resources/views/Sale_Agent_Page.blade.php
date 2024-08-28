@@ -57,9 +57,9 @@
                     </button>
                 </div>
             </div>
-            <div class="d-flex align-items-center mr-3" style="margin-right: 45px">
-                <button class="btn hover-action add-sales-agent-button" data-toggle="modal"
-                    data-target="#addSalesAgentModal">
+            <div class="d-flex align-items-center mr-3">
+                <button class="btn hover-action add-sales-agent-button" data-toggle="modal" data-target="#addSalesAgentModal"
+                 style="padding: 10px 12px;">
                     <i class="fa-solid fa-square-plus"></i>
                 </button>
             </div>
@@ -86,6 +86,7 @@
                                 style="display: none;"></i>
                         </th>
                         <th scope="col">Total In Progress</th>
+                        <th scope="col">Total Assign Contacts</th>
                         <th scope="col">Total Hubspot Sync Contacts</th>
                         <th scope="col ">Action</th>
                     </tr>
@@ -99,13 +100,15 @@
                             <td>{{ $owners->owner_business_unit }}</td>
                             <td>{{ $owners->country }}</td>
                             <td class="text-center">{{ $owners->total_in_progress }}</td>
+                            <td class="text-center">{{ $owners->total_assign_contacts }}</td>
                             <td class="text-center">{{ $owners->total_hubspot_sync }}</td>
                             <td>
-                                <a href="{{ route('owner#view-owner', $owners->owner_pid) }}" class="btn hover-action"
-                                    data-toggle="tooltip" title="View">
+                                <a href="{{ route('owner#view-owner', $owners->owner_pid) }}" class="btn hover-action" data-toggle="tooltip" title="View"
+                                 style="padding: 10px 12px;">
                                     <i class="fa-solid fa-eye"></i>
                                 </a>
-                                <a class="btn hover-action" data-toggle="modal">
+                                <a class="btn hover-action" data-toggle="modal"
+                                style="padding: 10px 12px;">
                                     <i class="fa-solid fa-trash"></i>
                                 </a>
                             </td>
