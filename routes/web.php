@@ -72,16 +72,11 @@ Route::group(['prefix' => 'buh'], function () {
         return view('csv_import_form');
     })->name('importcsv');
     Route::post('/import', [BUHController::class, 'import'])->name('import');
-    // Edit Contact Detail Route
-    Route::get('/edit-contact-detail', function () {
-        return view('Edit_Contact_Detail_Page');
-    })->name('edit-contac-detail');
     //get csv format
     Route::get('/get-csv', [CSVDownloadController::class, 'downloadCSV'])->name('get-csv');
     //HubspotS
     Route::get('/hubspot-contact', [ContactController::class, 'hubspotContacts'])->name('hubspot-contact');
     Route::post('/submit-hubspot-contacts', [HubspotContactController::class, 'submitHubspotContacts'])->name('submit-hubspot-contacts');
-    // Sales Agent Route
     Route::get('/owner', [OwnerController::class, 'owner'])->name('owner#view');
     Route::get('/view-owner/{owner_pid}', [OwnerController::class, 'viewOwner'])->name('owner#view-owner');
     Route::get('/edit-owner/{owner_pid}', [OwnerController::class, 'editOwner'])->name('owner#update');

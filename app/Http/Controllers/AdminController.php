@@ -15,9 +15,8 @@ class AdminController extends Controller{
     }
 
     public function saveUser(Request $request){
-        
+
         $request->validate([
-            'role' => 'required|string|max:255',
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
@@ -25,7 +24,7 @@ class AdminController extends Controller{
 
         // Create a new user
         User::create([
-            'role'=>$request->role,
+            'role' => null,
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password), // Encrypt the password
@@ -40,10 +39,11 @@ class AdminController extends Controller{
 
     public function updateUser(Request $request, $id){
         $updateUser = User::find($id);
-        $updateUser->name = $request->input('name');
-        $updateUser->email = $request->input('email');
-        $updateUser->role = $request->input('role');
-        $updateUser->save();
+        $updateUser->update([
+        $updateUser->name = $request->input('name'),
+        $updateUser->email = $request->input('email'),
+        $updateUser->role = $request->input('role'),
+        ]);
 
     return redirect()->route('view-user')->with('success', 'User updated successfully');
     }
