@@ -78,7 +78,8 @@ Route::group(['prefix' => 'buh'], function () {
     })->name('edit-contac-detail');
     //get csv format
     Route::get('/get-csv', [CSVDownloadController::class, 'downloadCSV'])->name('get-csv');
-    Route::get('/hubspot-contact', [ContactController::class, 'hubspotContacts'])->name('hubspot.contacts');
+    //HubspotS
+    Route::get('/hubspot-contact', [ContactController::class, 'hubspotContacts'])->name('hubspot-contact');
     Route::post('/submit-hubspot-contacts', [HubspotContactController::class, 'submitHubspotContacts'])->name('submit-hubspot-contacts');
     // Sales Agent Route
     Route::get('/owner', [OwnerController::class, 'owner'])->name('owner#view');
