@@ -6,8 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class UserController extends Controller
-{
+class UserController extends Controller{
 
     public function viewUser(){
         // Get the currently authenticated user
@@ -30,8 +29,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function viewUserBUH(Request $request)
-    {
+    public function viewUserBUH(Request $request){
         // // Get the current logged-in user's fk_buh
         // $fkBuh = 10;
 
@@ -49,8 +47,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function saveUser(Request $request)
-    {
+    public function saveUser(Request $request){
 
         $request->validate([
             'role' => 'required|string|max:255',
@@ -69,14 +66,12 @@ class UserController extends Controller
         return redirect()->route('view-user')->with('success', 'User created successfully');
     }
 
-    public function editUser($id)
-    {
+    public function editUser($id){
         $editUser = User::find($id);
         return view('Edit_User_Detail_Page', ['editUser' => $editUser]);
     }
 
-    public function updateUser(Request $request, $id)
-    {
+    public function updateUser(Request $request, $id){
         $updateUser = User::find($id);
         $updateUser->name = $request->input('name');
         $updateUser->email = $request->input('email');
@@ -86,8 +81,7 @@ class UserController extends Controller
         return redirect()->route('view-user')->with('success', 'User updated successfully');
     }
 
-    public function deleteUser($id)
-    {
+    public function deleteUser($id){
         User::where('id', $id)->delete();
         return redirect()->route('view-user')->with('success', 'User Deleted Successfully');
     }

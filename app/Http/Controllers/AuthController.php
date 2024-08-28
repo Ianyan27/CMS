@@ -8,29 +8,28 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller{
 
-    public function microsoftLogin(Request $request)
-{
-    // Validate the input
-    $request->validate([
-        'email' => 'required|email'
-    ]);
+    public function microsoftLogin(Request $request){
+        // Validate the input
+        $request->validate([
+            'email' => 'required|email'
+        ]);
 
-    // Find the user by email
-    $user = User::where('email', $request->email)->first();
+        // Find the user by email
+        $user = User::where('email', $request->email)->first();
 
-    if ($user) {
-        // Log the user in manually
-        Auth::login($user);
+        if ($user) {
+            // Log the user in manually
+            Auth::login($user);
 
-        // Redirect to the intended page
-        return redirect()->intended('view-user');
+            // Redirect to the intended page
+            return redirect()->intended('view-user');
+        }
+
+        // Authentication failed
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ])->withInput($request->except('email'));
     }
-
-    // Authentication failed
-    return back()->withErrors([
-        'email' => 'The provided credentials do not match our records.',
-    ])->withInput($request->except('email'));
-}
 
 
     public function logout(Request $request){

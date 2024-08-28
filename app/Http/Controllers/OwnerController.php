@@ -9,11 +9,9 @@ use App\Models\Owner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class OwnerController extends Controller
-{
+class OwnerController extends Controller{
 
-    public function owner()
-    {
+    public function owner(){
         // Get the current authenticated user
         $user = Auth::user();
 
@@ -32,8 +30,7 @@ class OwnerController extends Controller
         ]);
     }
 
-    public function viewOwner($owner_pid)
-    {
+    public function viewOwner($owner_pid){
         // Execute the queries to get the actual data
         $editOwner = Owner::where('owner_pid', $owner_pid)->first();
 
@@ -82,8 +79,7 @@ class OwnerController extends Controller
         ]);
     }
 
-    public function updateOwner(Request $request, $owner_pid)
-    {
+    public function updateOwner(Request $request, $owner_pid){
 
         $owner = Owner::find($owner_pid);
 
