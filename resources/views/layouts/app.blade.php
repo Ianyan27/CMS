@@ -27,7 +27,6 @@
                         class="img-fluid" style="max-height: 50px;">
                 </div>
             </div>
-
             <div class="col-md-6 d-flex justify-content-end align-items-center">
                 <form action="{{ route('logout') }}" method="POST" class="d-inline">
                     @csrf
@@ -36,7 +35,7 @@
             </div>
         </div>
         <div class="row my-4 content-height">
-            <div id="side-bar" class="col-auto dashboard border-right-educ rounded-right min-height navigation-width">
+            <div id="side-bar" class="col-auto dashboard rounded-right min-height navigation-width right-shadow">
                 <ul class="nav flex-column fonts mt-2">
                     {{-- <li class="nav-item">
                         <a class="nav-link {{ Route::currentRouteName() == 'dashboard' ? 'active-link' : '' }}"
@@ -68,8 +67,8 @@
                                 </a>
                             </li>
                             <li class="nav-item dashboard-link">
-                                <a class="nav-link {{ Route::currentRouteName() == 'hubspot.contacts' ? 'active-link' : '' }}"
-                                    href="{{ route('hubspot.contacts') }}">
+                                <a class="nav-link {{ Route::currentRouteName() == 'hubspot-contact' ? 'active-link' : '' }}"
+                                    href="{{ route('hubspot-contact') }}">
                                     <i class="fa-brands fa-hubspot"></i><span>Hubspot Contacts</span>
                                 </a>
                             </li>

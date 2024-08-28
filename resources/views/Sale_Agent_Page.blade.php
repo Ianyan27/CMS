@@ -47,17 +47,15 @@
     <div class="container-max-height">
         <div class="table-title d-flex justify-content-between align-items-center mb-3">
             <div class="d-flex align-items-center">
-                <h2 class="mx-3 mb-2 font-educ"><strong>Sales Agents</strong></h2>
+                <h2 style="margin: 0 0.5rem 0 0.25rem;" class="font-educ headings">Sales Agents</h2>
                 <!-- Search Bar Section -->
-                <div class="search-box d-flex align-items-center ml-3" style="max-width: 350px;">
+                <div class="search-box d-flex align-items-center mx-3" style="max-width: 350px;">
                     <input type="search" class="form-control mr-1" placeholder="Search ID" id="search-id" aria-label="Search">
-                    <button class="btn hover-action mx-1" type="button" data-toggle="tooltip" title="Search">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
                 </div>
             </div>
             <div class="d-flex align-items-center mr-3">
-                <button class="btn hover-action add-sales-agent-button" data-toggle="modal" data-target="#addSalesAgentModal">
+                <button class="btn hover-action add-sales-agent-button" data-toggle="modal" data-target="#addSalesAgentModal"
+                 style="padding: 10px 12px;">
                     <i class="fa-solid fa-square-plus"></i>
                 </button>
             </div>
@@ -88,7 +86,7 @@
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
-                <tbody class="text-left bg-row">
+                <tbody class="text-left fonts">
                     @foreach ($owner as $owners)
                         <tr>
                             <td>{{ $owners->owner_pid }}</td>
@@ -99,7 +97,8 @@
                             <td>{{ $owners->total_in_progress }}</td>
                             <td>{{ $owners->total_hubspot_sync }}</td>
                             <td>
-                                <a href="{{ route('owner#view-owner', $owners->owner_pid) }}" class="btn hover-action" data-toggle="tooltip" title="View">
+                                <a href="{{ route('owner#view-owner', $owners->owner_pid) }}" class="btn hover-action" data-toggle="tooltip" title="View"
+                                 style="padding: 10px 12px;">
                                     <i class="fa-solid fa-eye"></i>
                                 </a>
                             </td>
@@ -157,20 +156,20 @@
     </div>
     <script>
         document.getElementById('search-id').addEventListener('keyup', function() {
-    var input = this.value.toLowerCase();
-    var rows = document.querySelectorAll('#sales-agents-table tbody tr');
+            var input = this.value.toLowerCase();
+            var rows = document.querySelectorAll('#sales-agents-table tbody tr');
 
-    rows.forEach(function(row) {
-        var idCell = row.querySelector('td:first-child'); // Target the first column (ID)
-        var idText = idCell.textContent || idCell.innerText;
+            rows.forEach(function(row) {
+                var idCell = row.querySelector('td:first-child'); // Target the first column (ID)
+                var idText = idCell.textContent || idCell.innerText;
 
-        if (idText.toLowerCase().includes(input)) {
-            row.style.display = ''; // Show the row if it matches the search input
-        } else {
-            row.style.display = 'none'; // Hide the row if it doesn't match
-        }
-    });
-});
+                if (idText.toLowerCase().includes(input)) {
+                    row.style.display = ''; // Show the row if it matches the search input
+                } else {
+                    row.style.display = 'none'; // Hide the row if it doesn't match
+                }
+            });
+        });
 
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

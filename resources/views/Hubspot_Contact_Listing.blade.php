@@ -4,17 +4,15 @@
 
 @section('content')
     <div class="container-max-height">
-        <link rel="stylesheet" href="{{ URL::asset('css/contact_listing.css') }}">
         <form id="hubspotContactsForm">
             @csrf
             <div class="table-title d-flex justify-content-between align-items-center mb-4">
                 <h5 class="mr-3 my-2 headings">HubSpot Contact Listing</h5>
                 <div class="d-flex">
-                    
-                    <button class="archive-table btn mx-3" id="show-no-sync">
+                    <button class="btn archive-table mx-3" id="show-no-sync">
                         View Unsynced
                     </button>
-                    <button class="hubspot-btn btn mx-3" id="show-synced">
+                    <button class="btn hubspot-btn mx-3" id="show-synced">
                         View Synced
                     </button>
                 </div>
@@ -24,9 +22,6 @@
                     </button>
                 </div>
             </div>
-
-            
-
             <!-- Table for No Sync Contacts -->
             <div class="table-container" id="no-sync" style="">
                 <table class="table table-hover mt-2">
