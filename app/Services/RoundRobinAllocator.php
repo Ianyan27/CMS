@@ -53,9 +53,15 @@ class RoundRobinAllocator
                         'owner_pid' => $owner->owner_pid,
                     ]);
 
-                    // Update the `total_in_progress` count for the assigned owner
-                    $owner->total_in_progress = Contact::where('fk_contacts__owner_pid', $owner->owner_pid)->count();
+
+                    // Update the `total_assign_contacts` count for the assigned owner
+                    $owner->total_assign_contacts = Contact::where('fk_contacts__owner_pid', $owner->owner_pid)->count();
                     $owner->save();
+
+                    Log::info('Updated owner details:', [
+                        'owner_pid' => $owner->owner_pid,
+                        'total_assign_contacts' => $owner->total_assign_contacts
+                    ]);
 
                     // Calculate the next owner_pid for the next iteration
                     $nextOwnerPid = $this->getNextOwnerPid($nextOwnerPid, $owners);

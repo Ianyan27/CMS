@@ -86,6 +86,7 @@
                                 style="display: none;"></i>
                         </th>
                         <th scope="col">Total In Progress</th>
+                        <th scope="col">Total Assign Contacts</th>
                         <th scope="col">Total Hubspot Sync Contacts</th>
                         <th scope="col ">Action</th>
                     </tr>
@@ -99,6 +100,7 @@
                             <td>{{ $owners->owner_business_unit }}</td>
                             <td>{{ $owners->country }}</td>
                             <td class="text-center">{{ $owners->total_in_progress }}</td>
+                            <td class="text-center">{{ $owners->total_assign_contacts }}</td>
                             <td class="text-center">{{ $owners->total_hubspot_sync }}</td>
                             <td>
                                 <a href="{{ route('owner#view-owner', $owners->owner_pid) }}" class="btn hover-action" data-toggle="tooltip" title="View"

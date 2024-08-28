@@ -12,11 +12,13 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
-class ContactController extends Controller{
+class ContactController extends Controller
+{
 
-    public function index(){
+    public function index()
+    {
         // Get the logged-in user (sales agent)
         $user = Auth::user();
 
@@ -33,7 +35,8 @@ class ContactController extends Controller{
         ]);
     }
 
-    public function contactsByOwner(){
+    public function contactsByOwner()
+    {
         // Get the logged-in user (sales agent)
         $user = Auth::user();
 
@@ -50,7 +53,8 @@ class ContactController extends Controller{
         ]);
     }
 
-    public function viewContact($contact_pid){
+    public function viewContact($contact_pid)
+    {
         /* Retrieve the contact record with the specified 'contact_pid' and pass
          it to the 'Edit_Contact_Detail_Page' view for editing. */
         $editContact = Contact::where('contact_pid', $contact_pid)->first();
@@ -63,7 +67,8 @@ class ContactController extends Controller{
         ]);
     }
 
-    public function updateContact(Request $request, $contact_pid){
+    public function updateContact(Request $request, $contact_pid)
+    {
         // Find the contact based on the contact_pid
         $contact = Contact::find($contact_pid);
 
@@ -130,7 +135,8 @@ class ContactController extends Controller{
     }
 
 
-    public function saveActivity(Request $request, $contact_pid){
+    public function saveActivity(Request $request, $contact_pid)
+    {
 
         $validator = Validator::make($request->all(), [
             'activity-date' => 'required',
@@ -162,10 +168,15 @@ class ContactController extends Controller{
             $contact->status = "InProgress";
             $contact->save();
         }
+
+        // Save activity to the logs table
+        $this->saveLog($contact_pid, $request);
+
         return redirect()->route('contact#view', ['contact_pid' => $contact_pid])->with('success', 'Activity added successfully.');
     }
 
-    public function editActivity($fk_engagements__contact_pid, $activity_id){
+    public function editActivity($fk_engagements__contact_pid, $activity_id)
+    {
         // Fetch all activities related to the contact ID
         $updateEngagements = Engagement::where('fk_engagements__contact_pid', $fk_engagements__contact_pid)->get();
 
@@ -187,7 +198,8 @@ class ContactController extends Controller{
         ]);
     }
 
-    public function saveUpdateActivity(Request $request, $contact_pid, $activity_id){
+    public function saveUpdateActivity(Request $request, $contact_pid, $activity_id)
+    {
         // Validate the input data
         $validator = Validator::make($request->all(), [
             'activity-date' => 'required|date',
@@ -227,7 +239,8 @@ class ContactController extends Controller{
             ->with('success', 'Activity updated successfully.');
     }
 
-    public function hubspotContacts(){
+    public function hubspotContacts()
+    {
         // Get HubSpot contacts 
         $hubspotContacts = Contact::where('status', 'HubSpot Contact')
             ->paginate(50);
@@ -247,6 +260,22 @@ class ContactController extends Controller{
             'hubspotContacts' => $hubspotContacts,
             'hubspotContactsNoSync' => $hubspotContactsNoSync,
             'hubspotContactsSynced' => $hubspotContactsSynced
+        ]);
+    }
+
+    private function saveLog($contact_pid, $request)
+    {
+        // Assuming you want to log the owner who made the action, you can use the authenticated user's ID
+        $ownerPid = Auth::user()->id; // If the user ID is the same as owner_pid
+
+        DB::table('logs')->insert([
+            'fk_logs__contact_pid' => $contact_pid,
+            'fk_logs__owner_pid' => $ownerPid,
+            'action_type' => 'Updated',
+            'action_description' => 'Activity added: ' . $request->input('activity-name'),
+            'activity_datetime' => now(),
+            'created_at' => now(),
+            'updated_at' => now()
         ]);
     }
 }
