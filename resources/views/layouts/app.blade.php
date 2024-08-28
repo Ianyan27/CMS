@@ -20,7 +20,7 @@
 
 <body class="d-flex flex-column">
     <div class="container-fluid flex-grow-1">
-        <div class="row shadow-sm py-3">
+        <div class="row shadow-sm py-3" style="max-height: 81.98px;">
             <div class="col-md-6 d-flex align-items-center">
                 <div class="logo">
                     <img src="{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}" alt="Logo"
@@ -30,7 +30,7 @@
             <div class="col-md-6 d-flex justify-content-end align-items-center">
                 <input type="text" class="form-control text-center" placeholder="{{ Auth::user()->name }}" readonly
                     style="max-width: 150px; margin-right: 10px;">
-                <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                <form action="{{ route('logout') }}" method="POST" class="d-inline" style="margin:0;">
                     @csrf
                     <button type="submit" class="btn hover-action">Signout</button>
                 </form>
@@ -105,5 +105,4 @@
     <script src="{{ URL::asset('js/sort.js') }}"></script>
     <script src="{{ URL::asset('js/filter_status.js') }}"></script>
 </body>
-
 </html>

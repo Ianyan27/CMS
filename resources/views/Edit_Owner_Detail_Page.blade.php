@@ -148,7 +148,7 @@
             </div>
         </div>
         <div class="">
-            <table class=" table table-hover mt-2" id="ownerContacts-table">
+            <table class=" table table-hover mt-2" id="contacts-table">
                 <thead class="text-left font-educ">
                     <tr>
                         <th scope="col">No #</th>
@@ -427,6 +427,4 @@
             }
         </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="{{ URL::asset('js/contact_detail.js') }}"></script>
-<script src="{{ URL::asset('js/status_color.js') }}"></script>
 @endsection
