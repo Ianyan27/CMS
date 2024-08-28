@@ -49,12 +49,17 @@
             <div class="d-flex align-items-center">
                 <h2 style="margin: 0 0.5rem 0 0.25rem;" class="font-educ headings">Sales Agents</h2>
                 <!-- Search Bar Section -->
-                <div class="search-box d-flex align-items-center mx-3" style="max-width: 350px;">
-                    <input type="search" class="form-control mr-1" placeholder="Search ID" id="search-id" aria-label="Search">
+                <div class="search-box d-flex align-items-center ml-3" style="max-width: 350px;">
+                    <input type="search" class="form-control mr-1" placeholder="Search ID" id="search-id"
+                        aria-label="Search" style="height: 30px">
+                    <button class="btn hover-action mx-1" type="button" data-toggle="tooltip" title="Search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
                 </div>
             </div>
-            <div class="d-flex align-items-center mr-3">
-                <button class="btn hover-action add-sales-agent-button" data-toggle="modal" data-target="#addSalesAgentModal">
+            <div class="d-flex align-items-center mr-3" style="margin-right: 45px">
+                <button class="btn hover-action add-sales-agent-button" data-toggle="modal"
+                    data-target="#addSalesAgentModal">
                     <i class="fa-solid fa-square-plus"></i>
                 </button>
             </div>
@@ -82,7 +87,7 @@
                         </th>
                         <th scope="col">Total In Progress</th>
                         <th scope="col">Total Hubspot Sync Contacts</th>
-                        <th scope="col">Action</th>
+                        <th scope="col ">Action</th>
                     </tr>
                 </thead>
                 <tbody class="text-left fonts">
@@ -93,11 +98,15 @@
                             <td>{{ $owners->owner_hubspot_id }}</td>
                             <td>{{ $owners->owner_business_unit }}</td>
                             <td>{{ $owners->country }}</td>
-                            <td>{{ $owners->total_in_progress }}</td>
-                            <td>{{ $owners->total_hubspot_sync }}</td>
+                            <td class="text-center">{{ $owners->total_in_progress }}</td>
+                            <td class="text-center">{{ $owners->total_hubspot_sync }}</td>
                             <td>
-                                <a href="{{ route('owner#view-owner', $owners->owner_pid) }}" class="btn hover-action" data-toggle="tooltip" title="View">
+                                <a href="{{ route('owner#view-owner', $owners->owner_pid) }}" class="btn hover-action"
+                                    data-toggle="tooltip" title="View">
                                     <i class="fa-solid fa-eye"></i>
+                                </a>
+                                <a class="btn hover-action" data-toggle="modal">
+                                    <i class="fa-solid fa-trash"></i>
                                 </a>
                             </td>
                         </tr>
@@ -156,9 +165,11 @@
         document.getElementById('search-id').addEventListener('keyup', function() {
             var input = this.value.toLowerCase();
             var rows = document.querySelectorAll('#sales-agents-table tbody tr');
+            var input = this.value.toLowerCase();
+            var rows = document.querySelectorAll('#sales-agents-table tbody tr');
 
             rows.forEach(function(row) {
-                var idCell = row.querySelector('td:first-child'); // Target the first column (ID)
+                var idCell = row.querySelector('td:nth-child(3)'); // Target the first column (ID)
                 var idText = idCell.textContent || idCell.innerText;
 
                 if (idText.toLowerCase().includes(input)) {
@@ -167,8 +178,8 @@
                     row.style.display = 'none'; // Hide the row if it doesn't match
                 }
             });
+            1
         });
-
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>

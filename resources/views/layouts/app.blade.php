@@ -44,26 +44,26 @@
                         </a>
                     </li> --}}
                     <ul class="navbar-nav">
-                        @if ((Auth::check() && Auth::user()->role == 'Admin') || (Auth::check() && Auth::user()->role == 'BUH'))
+                        @if (Auth::check() && Auth::user()->role == 'Admin')
                             <li class="nav-item dashboard-link">
                                 <a class="nav-link {{ Route::currentRouteName() == 'view-user' ? 'active-link' : '' }}"
                                     href="{{ route('view-user') }}">
-                                    <i class="fa-solid fa-user"></i><span>Users</span>
+                                    <i class="fa-solid fa-user"></i><span>Sales Agent</span>
                                 </a>
                             </li>
                         @endif
 
                         @if (Auth::check() && Auth::user()->role == 'BUH')
                             <li class="nav-item dashboard-link">
-                                <a class="nav-link {{ Route::currentRouteName() == 'owner#view' ? 'active-link' : '' }}"
-                                    href="{{ route('owner#view') }}">
-                                    <i class="fa-solid fa-universal-access"></i><span>Owner</span>
+                                <a class="nav-link {{ Route::currentRouteName() == 'importcsv' ? 'active-link' : '' }}"
+                                    href="{{ route('importcsv') }}">
+                                    <i class="fa-solid fa-file-arrow-up"></i><span>Import Files</span>
                                 </a>
                             </li>
                             <li class="nav-item dashboard-link">
-                                <a class="nav-link {{ Route::currentRouteName() == 'importcsv' ? 'active-link' : '' }}"
-                                    href="{{ route('importcsv') }}">
-                                    <i class="fa-solid fa-file-arrow-up"></i><span>Upload Files</span>
+                                <a class="nav-link {{ Route::currentRouteName() == 'owner#view' ? 'active-link' : '' }}"
+                                    href="{{ route('owner#view') }}">
+                                    <i class="fa-solid fa-universal-access"></i><span>Sales Agent</span>
                                 </a>
                             </li>
                             <li class="nav-item dashboard-link">
