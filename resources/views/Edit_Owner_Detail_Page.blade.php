@@ -347,7 +347,7 @@
                     </tbody>
                 </table>
             </div>
-            {{-- <div aria-label="Page navigation example " class="paginationContainer">
+            <div aria-label="Page navigation example " class="paginationContainer">
                 <ul class="pagination justify-content-center">
                     <!-- Previous Button -->
                     <li class="page-item {{ $ownerContacts->onFirstPage() ? 'disabled' : '' }}">
@@ -393,7 +393,7 @@
                     </li>
                 </ul>
             </div>
-        </div> --}}
+        </div>
         <script>
             $(document).ready(function() {
                 $('#archive-table').hide();

@@ -54,16 +54,16 @@ class OwnerController extends Controller{
         $ownerContacts = Contact::where(
             'fk_contacts__owner_pid',
             $owner_pid
-        )->get();
+        )->paginate(50);
 
         $ownerArchive = ContactArchive::where(
             'fk_contact_archives__owner_pid',
             $owner_pid
-        )->get();
+        )->paginate(50);
         $ownerDiscard = ContactDiscard::where(
             'fk_contact_discards__owner_pid',
             $owner_pid
-        )->get();
+        )->paginate(50);
 
         // Pass the data to the view
         return view('Edit_Owner_Detail_Page', [

@@ -218,6 +218,24 @@ tbody {
 .nav-item:hover .nav-link i {
     color: white; /* This turns both the text and the icon white */
 }
+
+/* Custom CSS to handle dropdown appearance */
+.dropdown-menu {
+    display: none; /* Initially hidden */
+    position: absolute;
+    top: 100%; /* Position below the button */
+    right: 0; /* Align to the right of the button */
+    min-width: 150px; /* Adjust as needed */
+}
+.dropdown-menu.show {
+    display: block; /* Show the dropdown when active */
+    width: 100%;
+    border: none;
+    height: 100%;
+}
+.dropdown-menu button{
+    text-align: center;
+}
 /* Hover Effects */
 .hover-action {
     border: 1px solid #91264c;

@@ -17,7 +17,6 @@
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ URL::asset('css/admin_style.css') }}">
 </head>
-
 <body class="d-flex flex-column">
     <div class="container-fluid flex-grow-1">
         <div class="row shadow-sm py-3" style="max-height: 81.98px;">
@@ -28,13 +27,19 @@
                 </div>
             </div>
             <div class="col-md-6 d-flex justify-content-end align-items-center">
-                <input type="text" class="form-control text-center" placeholder="{{ Auth::user()->name }}" readonly
-                    style="max-width: 150px; margin-right: 10px;">
-                <form action="{{ route('logout') }}" method="POST" class="d-inline" style="margin:0;">
-                    @csrf
-                    <button type="submit" class="btn hover-action">Signout</button>
-                </form>
-            </div>
+                <div class="dropdown">
+                    <button class="btn hover-action dropdown-toggle" type="button" id="dropdownMenuButton" aria-haspopup="true" aria-expanded="false">
+                        {{ Auth::user()->name }}
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="padding: 5px 0;">
+                        <form action="{{ route('logout') }}" method="POST" class="d-inline" style="margin:0;">
+                            @csrf
+                            <button type="submit" class="dropdown-item btn discard-table" 
+                            style="padding: 6px 11px;">Logout</button>
+                        </form>
+                    </div>
+                </div>
+            </div>            
         </div>        
         <div class="row my-4 content-height">
             <div id="side-bar" class="col-auto dashboard rounded-right min-height navigation-width right-shadow">
@@ -96,6 +101,23 @@
     <footer class="bg-educ color-white text-center py-3 mt-auto">
         © 2024 eduCLaaS Pte Ltd. All rights reserved.
     </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const dropdownButton = document.getElementById('dropdownMenuButton');
+            const dropdownMenu = document.querySelector('.dropdown-menu');
+    
+            dropdownButton.addEventListener('click', function () {
+                dropdownMenu.classList.toggle('show');
+            });
+    
+            // Optional: Close dropdown when clicking outside
+            document.addEventListener('click', function (event) {
+                if (!dropdownButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                    dropdownMenu.classList.remove('show');
+                }
+            });
+        });
+    </script>    
     <script src="https://kit.fontawesome.com/4d2a01d4ef.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
