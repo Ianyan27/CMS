@@ -2,8 +2,10 @@
 <div class="modal fade" id="editContactModal" tabindex="-1" aria-labelledby="editContactModalLabel"
 aria-hidden="true">
 <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-        <div class="modal-header d-flex justify-content-between align-items-center">
+    <div class="modal-content rounded-0">
+        <div class="modal-header d-flex justify-content-between align-items-center"
+        style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+                        border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
             <h5 class="modal-title" id="editContactModalLabel">
                 <strong>Edit Contact</strong>
             </h5>
@@ -35,7 +37,7 @@ aria-hidden="true">
                         </div>
                         <div class="form-group">
                             <label class="font-educ" for="contact-address">Address</label>
-                            <input class="form-control fonts" style="height: 125px;" type="text" name="address"
+                            <input class="form-control fonts" style="height: 103px;" type="text" name="address"
                                 id="address" value="{{ $editContact->address }}">
                         </div>
                     </div>

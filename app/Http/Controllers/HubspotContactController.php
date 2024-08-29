@@ -6,10 +6,8 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Contact;
 use GuzzleHttp\Client;
 
-class HubspotContactController extends Controller
-{
-    public function submitHubspotContacts(Request $request)
-    {
+class HubspotContactController extends Controller{
+    public function submitHubspotContacts(Request $request){
         $selectedContacts = $request->input('selectedContacts');
 
         if ($selectedContacts) {

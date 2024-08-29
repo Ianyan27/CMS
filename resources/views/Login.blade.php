@@ -8,11 +8,11 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ URL::asset('css/admin_style.css') }}">
 </head>
+<body>
 <div class="container-fluid d-flex flex-column" style="min-height: 100vh; padding: 0; overflow-x: hidden;">
     <div class="row shadow-sm py-3" style="margin: 0;">
         <div class="col-md-6 d-flex align-items-center">
@@ -35,7 +35,7 @@
                 class="fa-solid fa-user mb-3">
             </i>
             <h5 class="mb-4"><strong>Hi There! Welcome to Educlass CMS System</strong></h5>
-            <p class="text-muted">To keep Connected, consider sign-in using your official Microsoft account</p>
+            <p class="text-muted">To keep connected, consider sign-in using your official Microsoft account</p>
             <!-- Sign in with Microsoft Button -->
             <a href="#" class="btn d-flex align-items-center justify-content-center" data-toggle="modal" data-target="#loginModal"
                 style="background-color: #91264c; color: white; padding: 0.75rem 1.5rem; border-radius: 5px;">
@@ -48,34 +48,71 @@
         © 2024 eduCLaaS Pte Ltd. All rights reserved.
     </footer>
 </div>
-    <!-- Login Modal -->
-    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Microsoft Login</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ route('microsoft.login') }}" method="POST">
+                    @csrf
+                    <div class="form-group">
+                        <label for="email">Email address</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter your Microsoft account email" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Error Modal -->
+@if ($errors->any())
+    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="loginModalLabel">Microsoft Login</h5>
+                    <h5 class="modal-title" id="errorModalLabel">Login Error</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('microsoft.login') }}" method="POST">
-                        @csrf
-                        <div class="form-group">
-                            <label for="email">Email address</label>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your Microsoft account email" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Login</button>
-                    </form>
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li style="list-style-type: none">{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <script src="https://kit.fontawesome.com/4d2a01d4ef.js" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+@endif
+
+<script src="https://kit.fontawesome.com/4d2a01d4ef.js" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Show Error Modal if there are errors -->
+@if ($errors->any())
+    <script>
+        $(document).ready(function() {
+            $('#errorModal').modal('show');
+        });
+    </script>
+@endif
+
 </body>
 </html>

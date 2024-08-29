@@ -91,8 +91,7 @@ class ContactsImportController extends Controller
         ]);
     }
 
-    private function exportCsv($fileName, $data)
-    {
+    private function exportCsv($fileName, $data){
         try {
             $csvContent = $this->arrayToCsv($data);
             // Save the file to the 'public' disk
@@ -106,8 +105,7 @@ class ContactsImportController extends Controller
         }
     }
 
-    private function arrayToCsv(array $array)
-    {
+    private function arrayToCsv(array $array){
         $csv = fopen('php://temp', 'r+');
 
         foreach ($array as $row) {

@@ -12,12 +12,13 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class ContactController extends Controller
 {
 
-    public function index(){
+    public function index()
+    {
         // Get the logged-in user (sales agent)
         $user = Auth::user();
 
@@ -34,7 +35,8 @@ class ContactController extends Controller
         ]);
     }
 
-    public function contactsByOwner(){
+    public function contactsByOwner()
+    {
         // Get the logged-in user (sales agent)
         $user = Auth::user();
 
@@ -161,6 +163,14 @@ class ContactController extends Controller
         $engagement->activity_name = $request->input('activity-name');
         $engagement->fk_engagements__contact_pid = $request->input('contact_pid');
         $engagement->save();
+        $contact = Contact::find($contact_pid);
+        if ($contact) {
+            $contact->status = "InProgress";
+            $contact->save();
+        }
+
+        // Save activity to the logs table
+        $this->saveLog($contact_pid, $request);
 
         return redirect()->route('contact#view', ['contact_pid' => $contact_pid])->with('success', 'Activity added successfully.');
     }
@@ -250,6 +260,22 @@ class ContactController extends Controller
             'hubspotContacts' => $hubspotContacts,
             'hubspotContactsNoSync' => $hubspotContactsNoSync,
             'hubspotContactsSynced' => $hubspotContactsSynced
+        ]);
+    }
+
+    private function saveLog($contact_pid, $request)
+    {
+        // Assuming you want to log the owner who made the action, you can use the authenticated user's ID
+        $ownerPid = Auth::user()->id; // If the user ID is the same as owner_pid
+
+        DB::table('logs')->insert([
+            'fk_logs__contact_pid' => $contact_pid,
+            'fk_logs__owner_pid' => $ownerPid,
+            'action_type' => 'Updated',
+            'action_description' => 'Activity added: ' . $request->input('activity-name'),
+            'activity_datetime' => now(),
+            'created_at' => now(),
+            'updated_at' => now()
         ]);
     }
 }

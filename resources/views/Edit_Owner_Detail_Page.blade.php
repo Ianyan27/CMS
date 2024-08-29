@@ -12,7 +12,8 @@
     <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
+            <div class="modal-header" style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+                border:none;">
                     <h5 class="modal-title" id="successModalLabel">Success</h5>
                 </div>
                 <div class="modal-body">
@@ -84,9 +85,9 @@
         <div class="col-md-7 px-3">
             <div class="d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 ml-2 headings">Sales Engagement</h2>
-                <a class="btn hover-action font" href=" {{ route('owner#view') }} ">
+                <!-- <a class="btn hover-action font" href=" {{ route('owner#view') }} ">
                     <i class="fa-solid fa-left-long"></i>
-                </a>
+                </a> -->
             </div>
             <div class="row">
                 <div class="col">
@@ -129,7 +130,7 @@
         <div class="table-title d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
                 <h5 class="mr-3 my-2 headings">Contact Listing</h5>
-                <button style="border-radius: 15px;" class="btn hover-action mx-3" id="show-ownerContacts">
+                <button class="btn hover-action mx-3" id="show-ownerContacts">
                     Interested Contacts
                 </button>
                 <button class="archive-table btn mx-3" id="show-archive">
@@ -147,7 +148,7 @@
             </div>
         </div>
         <div class="">
-            <table class=" table table-hover mt-2" id="ownerContacts-table">
+            <table class=" table table-hover mt-2" id="contacts-table">
                 <thead class="text-left font-educ">
                     <tr>
                         <th scope="col">No #</th>
@@ -346,7 +347,7 @@
                     </tbody>
                 </table>
             </div>
-            {{-- <div aria-label="Page navigation example " class="paginationContainer">
+            <div aria-label="Page navigation example " class="paginationContainer">
                 <ul class="pagination justify-content-center">
                     <!-- Previous Button -->
                     <li class="page-item {{ $ownerContacts->onFirstPage() ? 'disabled' : '' }}">
@@ -392,7 +393,7 @@
                     </li>
                 </ul>
             </div>
-        </div> --}}
+        </div>
         <script>
             $(document).ready(function() {
                 $('#archive-table').hide();
@@ -426,6 +427,4 @@
             }
         </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="{{ URL::asset('js/contact_detail.js') }}"></script>
-<script src="{{ URL::asset('js/status_color.js') }}"></script>
 @endsection

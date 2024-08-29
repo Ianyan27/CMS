@@ -14,7 +14,8 @@
     <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header" style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+                border:none;">
                     <h5 class="modal-title" id="successModalLabel">Success</h5>
                 </div>
                 <div class="modal-body">
@@ -74,7 +75,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="font-educ" for="address">Address</label>
-                        <input style="height: 125px;" type="text" class="form-control fonts" id="address"
+                        <input style="min-height: 103px;" type="text" class="form-control fonts" id="address"
                             value=" {{ $editContact->address }} " readonly>
                     </div>
                 </div>
@@ -134,9 +135,9 @@
         <div class="col-md-7 px-3" id="activity-container">
             <div class="d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 ml-2 headings">Activities Notifications</h2>
-                <a class="btn hover-action font" href=" {{ route('contact-listing') }} ">
+                <!-- <a class="btn hover-action font" href=" {{ route('contact-listing') }} ">
                     <i class="fa-solid fa-left-long"></i>
-                </a>
+                </a> -->
             </div>
             <!-- Filter Buttons -->
             <div class="btn-group mb-3" role="group" aria-label="Activity Filter Buttons">

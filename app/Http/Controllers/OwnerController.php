@@ -9,14 +9,11 @@ use App\Models\Owner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class OwnerController extends Controller
-{
+class OwnerController extends Controller{
 
-    public function owner()
-    {
+    public function owner(){
         // Get the current authenticated user
         $user = Auth::user();
-
         // Check if the user is a BUH or Admin
         if ($user->role == 'BUH') {
             // If the user is BUH, filter owners by the BUH's fk_buh
@@ -25,15 +22,13 @@ class OwnerController extends Controller
             // If the user is Admin, show all owners
             $owner = Owner::paginate(10);
         }
-
         // Return the view with the appropriate data
         return view('Sale_Agent_Page', [
             'owner' => $owner
         ]);
     }
 
-    public function viewOwner($owner_pid)
-    {
+    public function viewOwner($owner_pid){
         // Execute the queries to get the actual data
         $editOwner = Owner::where('owner_pid', $owner_pid)->first();
 
@@ -59,16 +54,16 @@ class OwnerController extends Controller
         $ownerContacts = Contact::where(
             'fk_contacts__owner_pid',
             $owner_pid
-        )->get();
+        )->paginate(50);
 
         $ownerArchive = ContactArchive::where(
             'fk_contact_archives__owner_pid',
             $owner_pid
-        )->get();
+        )->paginate(50);
         $ownerDiscard = ContactDiscard::where(
             'fk_contact_discards__owner_pid',
             $owner_pid
-        )->get();
+        )->paginate(50);
 
         // Pass the data to the view
         return view('Edit_Owner_Detail_Page', [
@@ -82,8 +77,7 @@ class OwnerController extends Controller
         ]);
     }
 
-    public function updateOwner(Request $request, $owner_pid)
-    {
+    public function updateOwner(Request $request, $owner_pid){
 
         $owner = Owner::find($owner_pid);
 
