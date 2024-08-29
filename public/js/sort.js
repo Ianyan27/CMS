@@ -32,7 +32,7 @@ function sortTable(columnName, order) {
                 columnIndex = 2; // Indes for the 'Email' column
             }else if(columnName === 'role' || columnName === 'country') {
                 columnIndex = 3; // Index for the 'Role' column
-            } else if(columnName === 'country'){
+            } else if(columnName === 'country' || columnName === 'bu'){
                 columnIndex = 4;
             }
             

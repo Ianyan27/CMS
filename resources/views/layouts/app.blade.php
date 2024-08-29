@@ -98,7 +98,7 @@
             </div>
         </div>
     </div>
-    <footer class="bg-educ color-white text-center py-3 mt-auto">
+    <footer style="position: fixed; bottom: 0; left:0; display:block; width: 100%;" class="bg-educ color-white text-center py-3 mt-auto">
         © 2024 eduCLaaS Pte Ltd. All rights reserved.
     </footer>
     <script>

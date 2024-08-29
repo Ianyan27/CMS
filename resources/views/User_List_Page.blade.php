@@ -14,7 +14,7 @@
             </div>
             <div class="d-flex align-items-center mr-3 mb-2">
                 <button class="btn hover-action mx-1" type="button" data-toggle="modal" data-target="#addUserModal">
-                    Add User
+                    <i class="fa-solid fa-square-plus"></i>
                 </button>
             </div>
         </div>
@@ -44,8 +44,20 @@
                                 onclick="sortTable('role', 'desc'); toggleSort('sortUp-role', 'sortDown-role')"
                                 style="display: none;"></i>
                         </th>
-                        <th scope="col">BU</th>
-                        <th scope="col">Country</th>
+                        <th scope="col">BU
+                            <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-bu"
+                                onclick="sortTable('bu', 'asc'); toggleSort('sortDown-bu', 'sortUp-bu')"></i>
+                            <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-bu"
+                                onclick="sortTable('bu', 'desc'); toggleSort('sortUp-bu', 'sortDown-bu')"
+                                style="display: none;"></i>
+                        </th>
+                        <th scope="col">Country
+                            <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-country"
+                                onclick="sortTable('country', 'asc'); toggleSort('sortDown-country', 'sortUp-country')"></i>
+                            <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-country"
+                                onclick="sortTable('country', 'desc'); toggleSort('sortUp-country', 'sortDown-country')"
+                                style="display: none;"></i>
+                        </th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -56,11 +68,11 @@
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
                             <td>{{ $user->role }}</td>
-                            <td>Sales and Marketing</td>
-                            <td>Philippines</td>
+                            <td> {{ $user->business_unit }} </td>
+                            <td> {{ $user->country }} </td>
                             <td>
                                 <a class="btn hover-action" data-toggle="modal" data-target="#editUserModal{{ $user->id }}">
-                                    <i class="fa-solid fa-eye"></i>
+                                    <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
                                 <a class="btn hover-action" data-toggle="modal" data-target="#deleteUserModal{{ $user->id }}">
                                     <i class="fa-solid fa-trash"></i>
@@ -138,7 +150,7 @@
                                 @csrf
                                 <div class="row">
                                     <!-- Left Column -->
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <div class="form-group">
                                             <label class="font-educ" for="editName{{ $user->id }}">Name</label>
                                             <input type="text" class="form-control fonts"
@@ -153,7 +165,7 @@
                                         </div>
                                     </div>
                                     <!-- Right Column -->
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <div class="form-group">
                                             <label class="font-educ" for="editRole{{ $user->id }}">Role</label>
                                             <select name="role" id="editRole{{ $user->id }}" class="form-control fonts" required>
@@ -261,7 +273,7 @@
                                     name="password_confirmation" value="creatingtestaccount" readonly>
                             </div>
                             <div class="modal-footer" style="border: none">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                 <button type="submit" class="btn btn-primary"
                                     style="background: #91264c; color: white;">Create User</button>
                             </div>
