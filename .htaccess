@@ -2,5 +2,12 @@
     RewriteEngine On
 
     # Redirect all requests to the 'public' folder
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)$ /public/$1 [L]
 </IfModule>
+
+# Deny access to hidden files and directories
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
