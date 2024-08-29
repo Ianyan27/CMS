@@ -71,16 +71,16 @@
             <div class="col-sm-12">
                 <form action="{{ route('import') }}" method="POST" enctype="multipart/form-data">
 
-                    <div class=" w-100 mb-4 d-flex" style="width: 100%">
-                        <select id="platform" class="w-100 platforms" name="platform" required>
+                    <div class="w-100 mb-4 d-flex">
+                        <input type="radio" name="option" id="platformRadio" value="platform"> Platform
+                        <input type="radio" name="option" id="rawRadio" value="raw"> Raw
+                        <select id="platform" class="w-100 platforms d-none" name="platform" required>
                             <option value="" selected disabled>Select platform</option>
                             <option value="linkedin">LinkedIn</option>
-                            <option value="facebook">Apollo</option>
-                            <option value="raw">Raw CSV</option>
+                            <option value="apollo">Apollo</option>
                         </select>
                         <button id="raw-btn-container" class="btn hover-action mx-2 d-none" style="width: 20%"
-                            onclick="window.location.href='{{ route('get-csv') }}'">Get
-                            CSV Format</button>
+                            onclick="window.location.href='{{ route('get-csv') }}'">Get CSV Format</button>
                     </div>
                     <div class="text-center mb-4">
                         <div class="card-body justify-content-center align-items-center drop-zone" id="dropZone">
@@ -140,6 +140,27 @@
         const progressBar = document.getElementById('progressBar');
         const progressMessage = document.getElementById('progress-message');
         const errorMessage = document.getElementById('error-message');
+        
+        document.addEventListener('DOMContentLoaded', function() {
+        const platformRadio = document.getElementById('platformRadio');
+        const rawRadio = document.getElementById('rawRadio');
+        const platformSelect = document.getElementById('platform');
+        const rawBtn = document.getElementById('raw-btn-container');
+
+        platformRadio.addEventListener('change', function() {
+            if (platformRadio.checked) {
+                platformSelect.classList.remove('d-none');
+                rawBtn.classList.add('d-none');
+            }
+        });
+
+        rawRadio.addEventListener('change', function() {
+            if (rawRadio.checked) {
+                rawBtn.classList.remove('d-none');
+                platformSelect.classList.add('d-none');
+            }
+        });
+    });
 
 
 
