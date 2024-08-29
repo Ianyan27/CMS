@@ -2,46 +2,10 @@
 
 @extends('layouts.app')
 @extends('layouts.Add_Sales-Agent_Modal')
+@extends('layouts.Delete_Sales-Agent_Prompt_Modal')
 
 @section('content')
-    {{-- 
-    <style>
-        .dropdown-menu {
-            border-radius: 10px;
-            border: 1px solid #B45F04;
-            padding: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            width: 200px;
-        }
 
-        .dropdown-item {
-            padding: 10px 15px;
-            font-size: 16px;
-            color: #333;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        .dropdown-item:hover {
-            background-color: #f0f0f0;
-            border-radius: 5px;
-        }
-
-        .dropdown-item input[type="radio"] {
-            margin-right: 10px;
-        }
-
-        .dropdown-toggle {
-            cursor: pointer;
-            padding: 5px;
-            font-weight: bold;
-        }
-
-        .dropdown-toggle::after {
-            display: none;
-        }
-    </style> --}}
     <link rel="stylesheet" href="{{ URL::asset('css/contact-detail.css') }}">
     <div class="container-max-height">
         <div class="table-title d-flex justify-content-between align-items-center mb-3">
@@ -57,8 +21,8 @@
                 </div>
             </div>
             <div class="d-flex align-items-center mr-3">
-                <button class="btn hover-action add-sales-agent-button" data-toggle="modal" data-target="#addSalesAgentModal"
-                 style="padding: 10px 12px;">
+                <button class="btn hover-action add-sales-agent-button" data-toggle="modal"
+                    data-target="#addSalesAgentModal" style="padding: 10px 12px;">
                     <i class="fa-solid fa-square-plus"></i>
                 </button>
             </div>
@@ -102,12 +66,13 @@
                             <td class="text-center">{{ $owners->total_assign_contacts }}</td>
                             <td class="text-center">{{ $owners->total_hubspot_sync }}</td>
                             <td>
-                                <a href="{{ route('owner#view-owner', $owners->owner_pid) }}" class="btn hover-action" data-toggle="tooltip" title="View"
-                                 style="padding: 10px 12px;">
+                                <a href="{{ route('owner#view-owner', $owners->owner_pid) }}" class="btn hover-action"
+                                    data-toggle="tooltip" title="View" style="padding: 10px 12px;">
                                     <i class="fa-solid fa-eye"></i>
                                 </a>
-                                <a class="btn hover-action" data-toggle="modal"
-                                style="padding: 10px 12px;">
+                                <!-- Delete button triggers the modal -->
+                                <a href="#" class="btn hover-action" style="padding: 10px 12px;" data-toggle="modal"
+                                    data-target="#deleteModal" onclick="setDeleteAction('#')">
                                     <i class="fa-solid fa-trash"></i>
                                 </a>
                             </td>
