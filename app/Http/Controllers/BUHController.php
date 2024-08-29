@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Owner;
+use App\Models\User;
 use App\Services\RoundRobinAllocator;
 use Illuminate\Http\Request;
 use App\Imports\ContactsImport;
@@ -122,5 +124,38 @@ class BUHController extends Controller{
 
         rewind($csv);
         return stream_get_contents($csv);
+    }
+
+    public function saveUser(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'agentName' => 'required',
+            'email' => 'required',
+            'hubspotId' => 'required',
+            'businessUnit' => 'required',
+            'country' => 'required'
+        ]);
+
+        if($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        $user = new User();
+
+        $user->name = $request->input('agentName');
+        $user->email = $request->input('email');
+        $user->role = $request->input('role');
+        $user->save();
+
+        $saleAgent = new Owner();
+        $saleAgent->owner_name = $request->input('agentName');
+        $saleAgent->owner_email_id = $request->input('email');
+        $saleAgent->fk_buh = $request->input('fk_buh');
+        $saleAgent->owner_hubspot_id = $request->input('hubspotId');
+        $saleAgent->owner_business_unit = $request->input('businessUnit');
+        $saleAgent->country = $request->input('country');
+        $saleAgent->save();
+
+        return redirect()->route('owner#view')->with('success', 'Sale Agent successfully added');
     }
 }

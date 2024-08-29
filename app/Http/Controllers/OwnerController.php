@@ -24,7 +24,7 @@ class OwnerController extends Controller{
         }
         // Return the view with the appropriate data
         return view('Sale_Agent_Page', [
-            'owner' => $owner
+            'owner' => $owner, 'user' => $user
         ]);
     }
 

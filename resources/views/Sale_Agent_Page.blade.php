@@ -5,7 +5,24 @@
 @extends('layouts.Delete_Sales-Agent_Prompt_Modal')
 
 @section('content')
-
+    @if (Session::has('success'))
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="successModalLabel">Success</h5>
+            </div>
+            <div class="modal-body">
+            {{ Session::get('success') }}
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+        </div>
+    </div>
+    @endif
     <link rel="stylesheet" href="{{ URL::asset('css/contact-detail.css') }}">
     <div class="container-max-height">
         <div class="table-title d-flex justify-content-between align-items-center mb-3">
@@ -128,6 +145,13 @@
         </div>
     </div>
     </div>
+        @if (Session::has('success'))
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('#successModal').modal('show');
+            });
+        </script>
+        @endif
     <script>
         document.getElementById('search-id').addEventListener('keyup', function() {
             var input = this.value.toLowerCase();
@@ -145,7 +169,6 @@
                     row.style.display = 'none'; // Hide the row if it doesn't match
                 }
             });
-            1
         });
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

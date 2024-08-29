@@ -79,6 +79,7 @@ Route::group(['prefix' => 'buh'], function () {
     Route::post('/submit-hubspot-contacts', [HubspotContactController::class, 'submitHubspotContacts'])->name('submit-hubspot-contacts');
     Route::get('/owner', [OwnerController::class, 'owner'])->name('owner#view');
     Route::get('/view-owner/{owner_pid}', [OwnerController::class, 'viewOwner'])->name('owner#view-owner');
+    Route::post('/save-user', [BUHController::class, 'saveUser'])->name('owner#save-user');
     Route::get('/edit-owner/{owner_pid}', [OwnerController::class, 'editOwner'])->name('owner#update');
     Route::post('/update-owner/{owner_pid}', [OwnerController::class, 'updateOwner'])->name('owner#update-owner');
 });
