@@ -42,7 +42,7 @@
             </div>            
         </div>        
         <div class="row my-4 content-height">
-            <div id="side-bar" class="col-auto dashboard rounded-right min-height navigation-width right-shadow">
+            <div id="side-bar" class="col-auto dashboard rounded-right  navigation-width right-shadow">
                 <ul class="nav flex-column fonts mt-2">
                     {{-- <li class="nav-item">
                         <a class="nav-link {{ Route::currentRouteName() == 'dashboard' ? 'active-link' : '' }}"

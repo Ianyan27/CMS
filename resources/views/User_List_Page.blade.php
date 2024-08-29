@@ -44,20 +44,6 @@
                                 onclick="sortTable('role', 'desc'); toggleSort('sortUp-role', 'sortDown-role')"
                                 style="display: none;"></i>
                         </th>
-                        <th scope="col">BU
-                            <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-bu"
-                                onclick="sortTable('bu', 'asc'); toggleSort('sortDown-bu', 'sortUp-bu')"></i>
-                            <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-bu"
-                                onclick="sortTable('bu', 'desc'); toggleSort('sortUp-bu', 'sortDown-bu')"
-                                style="display: none;"></i>
-                        </th>
-                        <th scope="col">Country
-                            <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-country"
-                                onclick="sortTable('country', 'asc'); toggleSort('sortDown-country', 'sortUp-country')"></i>
-                            <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-country"
-                                onclick="sortTable('country', 'desc'); toggleSort('sortUp-country', 'sortDown-country')"
-                                style="display: none;"></i>
-                        </th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -68,8 +54,6 @@
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
                             <td>{{ $user->role }}</td>
-                            <td> {{ $user->business_unit }} </td>
-                            <td> {{ $user->country }} </td>
                             <td>
                                 <a class="btn hover-action" data-toggle="modal" data-target="#editUserModal{{ $user->id }}">
                                     <i class="fa-solid fa-pen-to-square"></i>
