@@ -30,6 +30,14 @@ class ContactsImport implements ToModel, WithHeadingRow
     private $duplicateRows = [];
     private $duplicateCount = 0;
 
+    protected $platform;  // Add platform property
+
+    // Constructor to accept platform
+    public function __construct($platform)
+    {
+        $this->platform = $platform;
+    }
+
     public function model(array $row)
     {
         $data = [];
@@ -79,6 +87,8 @@ class ContactsImport implements ToModel, WithHeadingRow
             $this->invalidRows[] = array_merge($row, ['validation_errors' => $validator->errors()->all()]);
             return null;
         }
+
+        $data['source'] = $this->platform; // Add platform to data
 
         $this->validRows[] = $data;
         return new Contact($data);

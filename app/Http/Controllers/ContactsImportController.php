@@ -19,10 +19,12 @@ class ContactsImportController extends Controller
         // Validate the uploaded file
         $fileValidator = Validator::make($request->all(), [
             'csv_file' => 'required|mimes:csv,txt|max:102400',
+            'platform' => 'required|string'
         ], [
             'csv_file.required' => 'The CSV file is required.',
             'csv_file.mimes' => 'The uploaded file must be a file of type: csv',
             'csv_file.max' => 'The uploaded file may not be greater than 100MB.',
+            'platform.required' => 'Source is required.'
         ]);
 
         if ($fileValidator->fails()) {
@@ -34,13 +36,14 @@ class ContactsImportController extends Controller
         }
 
         $file = $request->file('csv_file');
+        $platform = $request->input('platform'); // Get the platform value
 
         try {
             // Import the data into the database using the ContactsImport class
-            $import = new ContactsImport;
+            $import = new ContactsImport($platform);
             Excel::import($import, $file);
-            $allocator = new RoundRobinAllocator();
-            $allocator->allocate();
+            //$allocator = new RoundRobinAllocator();
+            //$allocator->allocate();
         } catch (\Exception $e) {
             
             return response()->json([
