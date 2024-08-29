@@ -1,0 +1,26 @@
+deployment:
+  tasks:
+    # Set the deployment path to the public_html directory
+    - export DEPLOYPATH=/home/stagingcmseduadm/public_html/
+
+    # Copy all files to the deployment path
+    - /bin/cp -r . $DEPLOYPATH
+
+    # Change to the deployment directory
+    - cd $DEPLOYPATH
+
+    # Install Composer dependencies
+    - /opt/cpanel/composer/bin/composer install --no-dev --optimize-autoloader
+
+    # Generate the Laravel application key
+    - php artisan key:generate
+
+    # Clear and cache configurations
+    - php artisan config:cache
+    - php artisan route:cache
+
+    # Set correct permissions for storage and bootstrap/cache directories
+    - find storage -type d -exec chmod 775 {} \;
+    - find storage -type f -exec chmod 664 {} \;
+    - find bootstrap/cache -type d -exec chmod 775 {} \;
+    - find bootstrap/cache -type f -exec chmod 664 {} \;
