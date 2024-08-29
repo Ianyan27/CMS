@@ -7,14 +7,16 @@
         <form id="hubspotContactsForm">
             @csrf
             <div class="table-title d-flex justify-content-between align-items-center mb-4">
-                <h5 class="mr-3 my-2 headings">HubSpot Contact Listing</h5>
-                <div class="d-flex">
+                <div class="d-flex align-items-center">
+                    <h5 class="mr-3 my-2 headings">HubSpot Contact Listing</h5>
+                    <div>
                     <button class="btn archive-table mx-3" id="show-no-sync">
                         View Unsynced
                     </button>
                     <button class="btn hubspot-btn mx-3" id="show-synced">
                         View Synced
                     </button>
+                </div>
                 </div>
                 <div class="d-flex">
                     <button type="button" class="btn hover-action ml-auto" id="submitContacts">
@@ -37,8 +39,9 @@
                     <tbody class="text-left bg-row fonts">
                         @foreach ($hubspotContactsNoSync as $index => $contact)
                             <tr data-contact-id="{{ $contact->contact_pid }}">
-                                
-                                <td><input type="checkbox" name="selectedContacts[]" value="{{ $contact->contact_pid }}"></td>
+
+                                <td><input type="checkbox" name="selectedContacts[]" value="{{ $contact->contact_pid }}">
+                                </td>
                                 <td>{{ $index + 1 }}</td> <!-- Index value -->
                                 <td>{{ $contact->name }}</td>
                                 <td>{{ $contact->email }}</td>
@@ -54,7 +57,7 @@
                     </tbody>
                 </table>
             </div>
-            
+
 
             <div class="table-container" id="synced" style="display:none;">
                 <table class="table table-hover mt-2">
@@ -85,7 +88,7 @@
                     </tbody>
                 </table>
             </div>
-            
+
 
         </form>
 
@@ -151,7 +154,7 @@
             syncedContainer.style.display = 'none';
         }
 
-      
+
 
         // Show No Sync Contacts Table
         showNoSyncBtn.addEventListener('click', function(event) {
@@ -168,54 +171,54 @@
         });
 
         document.getElementById('submitContacts').addEventListener('click', function() {
-        const form = document.getElementById('hubspotContactsForm');
-        const formData = new FormData(form);
+            const form = document.getElementById('hubspotContactsForm');
+            const formData = new FormData(form);
 
-        fetch('{{ route('submit-hubspot-contacts') }}', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': formData.get('_token'),
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Create the prompt element
-                const downloadPrompt = document.createElement('div');
+            fetch('{{ route('submit-hubspot-contacts') }}', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': formData.get('_token'),
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Create the prompt element
+                    const downloadPrompt = document.createElement('div');
 
-                downloadPrompt.style.position = 'fixed';
-                downloadPrompt.style.top = '50%';
-                downloadPrompt.style.left = '50%';
-                downloadPrompt.style.transform = 'translate(-50%, -50%)';
-                downloadPrompt.style.backgroundColor = '#fff';
-                downloadPrompt.style.padding = '20px';
-                downloadPrompt.style.boxShadow = '0px 0px 10px rgba(0, 0, 0, 0.4)';
-                downloadPrompt.style.zIndex = '1000';
-                downloadPrompt.style.borderRadius = '8px';
-                downloadPrompt.style.textAlign = 'center';
+                    downloadPrompt.style.position = 'fixed';
+                    downloadPrompt.style.top = '50%';
+                    downloadPrompt.style.left = '50%';
+                    downloadPrompt.style.transform = 'translate(-50%, -50%)';
+                    downloadPrompt.style.backgroundColor = '#fff';
+                    downloadPrompt.style.padding = '20px';
+                    downloadPrompt.style.boxShadow = '0px 0px 10px rgba(0, 0, 0, 0.4)';
+                    downloadPrompt.style.zIndex = '1000';
+                    downloadPrompt.style.borderRadius = '8px';
+                    downloadPrompt.style.textAlign = 'center';
 
-                if (data.success) {
-                    downloadPrompt.innerHTML = `${data.message}`;
-                } else {
-                    downloadPrompt.innerHTML = `${data.message}`;
-                }
-
-                document.body.appendChild(downloadPrompt);
-
-                // Automatically remove the prompt after a few seconds
-                setTimeout(() => {
                     if (data.success) {
-                        window.location.reload(); // Refresh the page
+                        downloadPrompt.innerHTML = `${data.message}`;
                     } else {
-                        downloadPrompt.remove(); // Remove the prompt after showing the error
+                        downloadPrompt.innerHTML = `${data.message}`;
                     }
-                }, 2000); // Adjust the time as needed
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while submitting contacts.');
-            });
+
+                    document.body.appendChild(downloadPrompt);
+
+                    // Automatically remove the prompt after a few seconds
+                    setTimeout(() => {
+                        if (data.success) {
+                            window.location.reload(); // Refresh the page
+                        } else {
+                            downloadPrompt.remove(); // Remove the prompt after showing the error
+                        }
+                    }, 2000); // Adjust the time as needed
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while submitting contacts.');
+                });
         });
     </script>
 @endsection

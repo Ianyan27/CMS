@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -24,6 +23,13 @@ class HubspotContactController extends Controller
                         'firstname' => $contact->name,
                         'email' => $contact->email,
                         'phone' => $contact->phone,
+                        'address' => $contact->address,
+                        'country' => $contact->country,
+                        'qualification' => $contact->qualification,
+                        'jobtitle' => $contact->job_role,
+                        'company' => $contact->company_name,
+                        'skills' => $contact->skills,
+                        'social_profile' => $contact->social_profile,
                     ],
                 ];
             })->toArray();
@@ -48,10 +54,10 @@ class HubspotContactController extends Controller
             ]);
 
             // Check the response from HubSpot
-            if ($response->getStatusCode() == 200 || $response->getStatusCode() == 202 || $response->getStatusCode() == 201) { // 202 Accepted
+            if (in_array($response->getStatusCode(), [200, 201, 202])) { // 200 OK, 201 Created, 202 Accepted
                 // Update the contacts with the datetime of Hubspot sync
                 foreach ($contacts as $contact) {
-                    $contact->datetime_of_hubspot_sync = now(); // assuming the column name is hubspot_sync
+                    $contact->datetime_of_hubspot_sync = now(); // assuming the column name is datetime_of_hubspot_sync
                     $contact->save();
                 }
 
