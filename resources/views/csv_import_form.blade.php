@@ -64,6 +64,61 @@
         select, option{
             padding-left: 15px;
         }
+        .w-100 {
+    width: 100%;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.mb-4 {
+    margin-bottom: 1.5rem;
+}
+
+.btn {
+    background-color: #fff;
+    border: 1px solid #8b0045;
+    color: #8b0045;
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+.btn:hover {
+    background-color: #8b0045;
+    color: #fff;
+}
+
+.radio-btn {
+    background-color: #8b0045;
+    color: #fff;
+    padding: 10px 20px;
+    margin-right: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.radio-btn:hover {
+    background-color: #6e0037;
+}
+
+.d-none {
+    display: none;
+}
+.search-bar{
+    margin-bottom: 10px;
+}
+
+.radio-btn.active {
+    background-color: #8b0045; 
+    color: white; 
+}
+.radio-btn.inactive {
+    background-color: #e0e0e0; 
+    color: #8b0045; 
+}
+
+
     </style>
 
     <div style="min-height: 720px;" class="container-max-height">
@@ -71,17 +126,35 @@
             <div class="col-sm-12">
                 <form action="{{ route('import') }}" method="POST" enctype="multipart/form-data">
 
-                    <div class="w-100 mb-4 d-flex">
-                        <input type="radio" name="option" id="platformRadio" value="platform"> Platform
-                        <input type="radio" name="option" id="rawRadio" value="raw"> Raw
-                        <select id="platform" class="w-100 platforms d-none" name="platform" required>
-                            <option value="" selected disabled>Select platform</option>
-                            <option value="linkedin">LinkedIn</option>
-                            <option value="apollo">Apollo</option>
-                        </select>
-                        <button id="raw-btn-container" class="btn hover-action mx-2 d-none" style="width: 20%"
-                            onclick="window.location.href='{{ route('get-csv') }}'">Get CSV Format</button>
-                    </div>
+                <div class="w-100 mb-4 d-flex justify-content-between align-items-center">
+    <!-- Radio buttons positioned to the left end -->
+    <div class="d-flex align-items-center">
+    <label for="platformRadio" class="radio-btn inactive">Platform</label>
+    <input type="radio" name="option" id="platformRadio" value="platform" class="d-none">
+    
+    <label for="rawRadio" class="radio-btn inactive">Raw</label>
+    <input type="radio" name="option" id="rawRadio" value="raw" class="d-none">
+</div>
+
+    
+    <!-- Get CSV Format button positioned to the right end -->
+    <div id="raw-btn-container" class="d-none">
+        <button class="btn hover-action" onclick="window.location.href='{{ route('get-csv') }}'">
+            Get CSV Format
+        </button>
+    </div>
+</div>
+
+<div id="platform-container">
+    <select id="platform" class="w-100 platforms search-bar d-none" name="platform">
+        <option value="" selected disabled>Select platform</option>
+        <option value="linkedin">LinkedIn</option>
+        <option value="apollo">Apollo</option>
+    </select>
+</div>
+
+
+
                     <div class="text-center mb-4">
                         <div class="card-body justify-content-center align-items-center drop-zone" id="dropZone">
                             <div class="mx-5">
@@ -398,5 +471,41 @@
                 downloadPrompt.remove();
             });
         }
+       // Update the JavaScript to toggle classes based on selection
+    document.addEventListener('DOMContentLoaded', function() {
+    const platformRadio = document.getElementById('platformRadio');
+    const rawRadio = document.getElementById('rawRadio');
+    const platformSelect = document.getElementById('platform');
+    const rawBtnContainer = document.getElementById('raw-btn-container');
+    const platformBtn = document.querySelector('label[for="platformRadio"]');
+    const rawBtn = document.querySelector('label[for="rawRadio"]');
+
+    platformRadio.addEventListener('change', function() {
+        if (platformRadio.checked) {
+            platformSelect.classList.remove('d-none');
+            platformSelect.style.display = 'block';
+            rawBtnContainer.style.display = 'none';
+
+            platformBtn.classList.add('active');
+            platformBtn.classList.remove('inactive');
+            rawBtn.classList.remove('active');
+            rawBtn.classList.add('inactive');
+        }
+    });
+
+    rawRadio.addEventListener('change', function() {
+        if (rawRadio.checked) {
+            platformSelect.style.display = 'none';
+            rawBtnContainer.style.display = 'block';
+
+            rawBtn.classList.add('active');
+            rawBtn.classList.remove('inactive');
+            platformBtn.classList.remove('active');
+            platformBtn.classList.add('inactive');
+        }
+    });
+});
+
+
     </script>
 @endsection
