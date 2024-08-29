@@ -115,6 +115,10 @@ class ContactController extends Controller
             return redirect()->route('contact-listing')->with('success', 'Contact and activities moved to ' . $request->input('status') . ' successfully.');
         }
 
+        // If status is not "Archive" or "Discard", check if the status has changed
+        $oldStatus = $contact->status;
+        $newStatus = $request->input('status');
+
         // If status is not "Archive" or "Discard", update the contact normally
         $contact->update([
             'name' => $request->input('name'),
@@ -128,6 +132,15 @@ class ContactController extends Controller
             'status' => $request->input('status')
         ]);
 
+        // Save the log only if the status has changed
+        if ($oldStatus !== $newStatus) {
+            $this->saveLog(
+                $contact_pid,
+                'Contact Status Updated',
+                "Status changed from '$oldStatus' to '$newStatus'."
+            );
+        }
+
         // Redirect with a success message
         return redirect()->route('contact#view', [
             'contact_pid' => $contact_pid
@@ -137,7 +150,7 @@ class ContactController extends Controller
 
     public function saveActivity(Request $request, $contact_pid)
     {
-
+        // Validate the input data
         $validator = Validator::make($request->all(), [
             'activity-date' => 'required',
             'activity-name' => 'required',
@@ -149,8 +162,10 @@ class ContactController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
+        // Create a new Engagement record
         $engagement = new Engagement();
 
+        // Handle file upload if a new file is provided
         if ($request->hasFile('activity-attachments')) {
             $imageFile = $request->file('activity-attachments');
             $imageName = uniqid() . '_' . $imageFile->getClientOriginalName();
@@ -158,11 +173,14 @@ class ContactController extends Controller
             $engagement->attachments = json_encode([$imageName]); // Save as a JSON array
         }
 
+        // Assign engagement data from request
         $engagement->date = $request->input('activity-date');
         $engagement->details = $request->input('activity-details');
         $engagement->activity_name = $request->input('activity-name');
-        $engagement->fk_engagements__contact_pid = $request->input('contact_pid');
+        $engagement->fk_engagements__contact_pid = $contact_pid;
         $engagement->save();
+
+        // Update contact status
         $contact = Contact::find($contact_pid);
         if ($contact) {
             $contact->status = "InProgress";
@@ -170,10 +188,16 @@ class ContactController extends Controller
         }
 
         // Save activity to the logs table
-        $this->saveLog($contact_pid, $request);
+        $actionType = 'Updated'; // Use a valid ENUM value
+        $actionDescription = "Added a new activity: {$request->input('activity-name')} with details: {$request->input('activity-details')}";
 
-        return redirect()->route('contact#view', ['contact_pid' => $contact_pid])->with('success', 'Activity added successfully.');
+        $this->saveLog($contact_pid, $actionType, $actionDescription);
+
+        // Redirect to the contact view page with a success message
+        return redirect()->route('contact#view', ['contact_pid' => $contact_pid])
+            ->with('success', 'Activity added successfully.');
     }
+
 
     public function editActivity($fk_engagements__contact_pid, $activity_id)
     {
@@ -187,6 +211,14 @@ class ContactController extends Controller
             return redirect()->route('contact#view', ['contact_pid' => $fk_engagements__contact_pid])
                 ->with('error', 'Activity not found.');
         }
+
+        // Log the update action
+        $this->saveLog(
+            $fk_engagements__contact_pid,
+            'Updated',
+            'Activity updated: ' . $activity_id
+        );
+
 
         // Redirect back to the contact view with the specific activity ID
         return redirect()->route('contact#view', [
@@ -234,6 +266,12 @@ class ContactController extends Controller
         $engagement->activity_name = $request->input('activity-name');
         $engagement->save();
 
+        // Log the update action
+        $actionType = 'Activity Updated'; // Example action type
+        $actionDescription = "Updated activity: {$request->input('activity-name')} with details: {$request->input('activity-details')}"; // Example action description
+
+        $this->saveLog($contact_pid, $actionType, $actionDescription);
+
         // Redirect to the contact view page with a success message
         return redirect()->route('contact#view', ['contact_pid' => $contact_pid])
             ->with('success', 'Activity updated successfully.');
@@ -263,16 +301,16 @@ class ContactController extends Controller
         ]);
     }
 
-    private function saveLog($contact_pid, $request)
+    private function saveLog($contact_pid, $action_type, $action_description)
     {
-        // Assuming you want to log the owner who made the action, you can use the authenticated user's ID
-        $ownerPid = Auth::user()->id; // If the user ID is the same as owner_pid
+
+        $ownerPid = Auth::user()->id; // Get the authenticated user's ID as owner_pid
 
         DB::table('logs')->insert([
             'fk_logs__contact_pid' => $contact_pid,
             'fk_logs__owner_pid' => $ownerPid,
-            'action_type' => 'Updated',
-            'action_description' => 'Activity added: ' . $request->input('activity-name'),
+            'action_type' => $action_type, // Ensure this value is one of the allowed ENUM values
+            'action_description' => $action_description,
             'activity_datetime' => now(),
             'created_at' => now(),
             'updated_at' => now()
