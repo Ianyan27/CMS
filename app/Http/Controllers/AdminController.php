@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contact;
+use App\Models\ContactArchive;
+use App\Models\ContactDiscard;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -15,9 +17,20 @@ class AdminController extends Controller{
         ]);
     }
 
-    public function viewContacts(){
-        $contacts = Contact::get();
-        return view('Contact_Listing', ['contacts'=>$contacts]);
+    public function viewUser(){
+        $userData = User::paginate(10);
+        return view ('User_List_Page', ['userData'=>$userData]);
+    }
+
+    public function contacts(){
+        $contacts = Contact::paginate(10);
+        $contactArchive = ContactArchive::paginate(10);
+        $contactDiscard = ContactDiscard::paginate(10);
+        return view('Contact_Listing', [
+            'contacts'=>$contacts,
+            'contactArchive' => $contactArchive,
+            'contactDiscard' => $contactDiscard
+        ]);
     }
 
     public function saveUser(Request $request){

@@ -47,22 +47,23 @@
         <div class="row my-4 content-height">
             <div id="side-bar" class="col-md-auto col-sm-auto dashboard rounded-right  navigation-width right-shadow">
                 <ul class="nav flex-column fonts my-2">
-                    {{-- <li class="nav-item">
-                        <a class="nav-link {{ Route::currentRouteName() == 'dashboard' ? 'active-link' : '' }}"
-                            href="{{ route('dashboard') }}">
-                            <i class="fa-solid fa-table-columns mr-3"></i>Dashboard
-                        </a>
-                    </li> --}}
                     <ul class="navbar-nav">
                         @if (Auth::check() && Auth::user()->role == 'Admin')
                             <li class="{{ Route::currentRouteName() != 'view-user' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'view-user' ? 'active-link' : '' }}">
                                 <a class="nav-link "
-                                    href="{{ route('view-user') }}">
+                                    href="{{ route('admin#view-user') }}">
                                     <i class="fa-solid fa-user"></i><span>User List</span>
                                 </a>
                             </li>
                         @endif
-
+                        @if (Auth::check() && Auth::user()->role == 'Admin')
+                            <li class="{{ Route::currentRouteName() != 'contact-listing' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'contact-listing' ? 'active-link' : '' }}">
+                                <a class="nav-link "
+                                    href="{{ route('admin#contact-listing') }}">
+                                    <i class="fa-solid fa-user"></i><span>Contacts</span>
+                                </a>
+                            </li>
+                        @endif
                         @if (Auth::check() && Auth::user()->role == 'BUH')
                             <li class="{{ Route::currentRouteName() != 'importcsv' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'importcsv' ? 'active-link' : '' }}">
                                 <a class="nav-link "
@@ -83,8 +84,7 @@
                                 </a>
                             </li>
                         @endif
-
-                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent' || Auth::check() && Auth::user()->role == 'Admin')
+                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
                             <li class="{{ Route::currentRouteName() != 'contact-listing' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'contact-listing' ? 'active-link' : '' }}">
                                 <a class="nav-link"
                                     href="{{ route('contact-listing') }}">
