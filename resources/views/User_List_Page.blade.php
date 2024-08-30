@@ -8,12 +8,12 @@
         </div>
     @endif
     <div class="container-max-height">
-        <div class="table-title d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center">
+        <div class="row position-relative">
+            <div class="col-lg-5 d-flex align-items-center">
                 <h5 class="mr-3 my-2 headings">User Listing Page</h5>
             </div>
-            <div class="d-flex align-items-center mr-3 mb-2">
-                <button class="btn hover-action mx-1" type="button" data-toggle="modal" data-target="#addUserModal">
+            <div class="col-lg-5 mr-3 mb-2">
+                <button class="btn hover-action mx-1 position-button" type="button" data-toggle="modal" data-target="#addUserModal">
                     <i class="fa-solid fa-square-plus"></i>
                 </button>
             </div>
@@ -66,52 +66,52 @@
                     @endforeach
                 </tbody>
             </table>
-        </div>
-        <div aria-label="Page navigation example " class="paginationContainer">
-            <ul class="pagination justify-content-center">
-                <!-- Previous Button -->
-                <li class="page-item {{ $userData->onFirstPage() ? 'disabled' : '' }}">
-                    <a class="page-link font-educ" href="{{ $userData->previousPageUrl() }}"
-                        aria-label="Previous">&#60;</a>
-                </li>
-                <!-- First Page Button -->
-                @if ($userData->currentPage() > 3)
-                    <li class="page-item">
-                        <a class="page-link font-educ" href="{{ $userData->url(1) }}">1</a>
+            <div aria-label="Page navigation example " class="paginationContainer">
+                <ul class="pagination justify-content-center">
+                    <!-- Previous Button -->
+                    <li class="page-item {{ $userData->onFirstPage() ? 'disabled' : '' }}">
+                        <a class="page-link font-educ" href="{{ $userData->previousPageUrl() }}"
+                            aria-label="Previous">&#60;</a>
                     </li>
-                    <li class="page-item">
-                        <a class="page-link font-educ" href="{{ $userData->url(2) }}">2</a>
+                    <!-- First Page Button -->
+                    @if ($userData->currentPage() > 3)
+                        <li class="page-item">
+                            <a class="page-link font-educ" href="{{ $userData->url(1) }}">1</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link font-educ" href="{{ $userData->url(2) }}">2</a>
+                        </li>
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    @endif
+                    <!-- Middle Page Buttons -->
+                    @for ($i = max($userData->currentPage() - 1, 1); $i <= min($userData->currentPage() + 1, $userData->lastPage()); $i++)
+                        <li class="page-item {{ $i == $userData->currentPage() ? 'active' : '' }}">
+                            <a class="page-link font-educ {{ $i == $userData->currentPage() ? 'active-bg' : '' }}"
+                                href="{{ $userData->url($i) }}">{{ $i }}</a>
+                        </li>
+                    @endfor
+                    <!-- Last Page Button -->
+                    @if ($userData->currentPage() < $userData->lastPage() - 2)
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link font-educ"
+                                href="{{ $userData->url($userData->lastPage() - 1) }}">{{ $userData->lastPage() - 1 }}</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link font-educ"
+                                href="{{ $userData->url($userData->lastPage()) }}">{{ $userData->lastPage() }}</a>
+                        </li>
+                    @endif
+                    <!-- Next Button -->
+                    <li class="page-item {{ !$userData->hasMorePages() ? 'disabled' : '' }}">
+                        <a class="page-link font-educ" href="{{ $userData->nextPageUrl() }}" aria-label="Next">&#62;</a>
                     </li>
-                    <li class="page-item disabled">
-                        <span class="page-link">...</span>
-                    </li>
-                @endif
-                <!-- Middle Page Buttons -->
-                @for ($i = max($userData->currentPage() - 1, 1); $i <= min($userData->currentPage() + 1, $userData->lastPage()); $i++)
-                    <li class="page-item {{ $i == $userData->currentPage() ? 'active' : '' }}">
-                        <a class="page-link font-educ {{ $i == $userData->currentPage() ? 'active-bg' : '' }}"
-                            href="{{ $userData->url($i) }}">{{ $i }}</a>
-                    </li>
-                @endfor
-                <!-- Last Page Button -->
-                @if ($userData->currentPage() < $userData->lastPage() - 2)
-                    <li class="page-item disabled">
-                        <span class="page-link">...</span>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link font-educ"
-                            href="{{ $userData->url($userData->lastPage() - 1) }}">{{ $userData->lastPage() - 1 }}</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link font-educ"
-                            href="{{ $userData->url($userData->lastPage()) }}">{{ $userData->lastPage() }}</a>
-                    </li>
-                @endif
-                <!-- Next Button -->
-                <li class="page-item {{ !$userData->hasMorePages() ? 'disabled' : '' }}">
-                    <a class="page-link font-educ" href="{{ $userData->nextPageUrl() }}" aria-label="Next">&#62;</a>
-                </li>
-            </ul>
+                </ul>
+            </div>
         </div>
     </div>
         <!-- Edit User Modal -->
@@ -179,8 +179,7 @@
                                 </div>
                                 <div class="modal-footer" style="border: none">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                    <button type="submit" class="btn" style="background: #91264c; color:white;">Save
-                                        Changes</button>
+                                    <button type="submit" class="btn" style="background: #91264c; color:white;">Save</button>
                                 </div>
                             </form>
                         </div>

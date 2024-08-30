@@ -69,25 +69,42 @@ body {
     min-height: calc(100vh - 82.98px - 56px - 48px); /* Adjusted for navbar, footer, and my-4 margins */
 }
 
+.position-button{
+    position: absolute; 
+    top: 0; 
+    right: 232px;
+}
+
 /* Responsive Adjustments */
-@media screen and (max-width: 1024px) {
-    .content-width {
-        width: calc(100% - 250px); /* Same width for smaller screens */
+@media screen and (max-width: 1650px){
+    .dashboard{
+        min-height: 500px;
+        max-height: 550px;
+    }
+    .container-max-height{
+        min-height: 500px;
+        max-height: 530px;
+    }
+    .table-container{
+        min-height: 350px;
+        max-height: 450px;
     }
 }
 
-/* Further Adjustments (if needed) */
-@media screen and (max-width: 768px) {
-    .content-width {
-        width: 100%; /* Full width for mobile devices */
+@media screen and (max-width: 925px) {
+    .dashboard{
+        width: 100%;
+        min-height: 40px;
+        max-height: 50px;
+        text-align: center;
+        margin-bottom: 45px;
     }
-    .owner-container{
-        min-height: 350px;
-        max-height: 400px;
+    .min-height{
+        width: 100%;
     }
-    .owner-contacts-container{
-        min-height: 450px;
-        max-height: 600px;
+    .position-button{
+        top: 0;
+        right: 80px;
     }
 }
 
