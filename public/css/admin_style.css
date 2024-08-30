@@ -225,6 +225,73 @@ tbody {
 .nav-item:hover .nav-link i {
     color: white; /* This turns both the text and the icon white */
 }
+/* Navbar Styles */
+.navbar-toggler {
+    display: none;
+    border: none;
+    background: none;
+    margin-right: 10px;
+}
+
+/* Hamburger Icon Customization */
+.navbar-toggler-icon {
+    width: 25px;
+    height: 2px;
+    background-color: #91264c;
+    display: block;
+    position: relative;
+    transition: background 0.2s ease-out;
+}
+
+.navbar-toggler-icon::before,
+.navbar-toggler-icon::after {
+    content: '';
+    width: 25px;
+    height: 2px;
+    background-color: #91264c;
+    position: absolute;
+    left: 0;
+    transition: all 0.2s ease-out;
+}
+
+.navbar-toggler-icon::before {
+    top: -8px;
+}
+
+.navbar-toggler-icon::after {
+    bottom: -8px;
+}
+
+
+/* Sidebar Toggle */
+@media (max-width: 768px) {
+    .navbar-toggler {
+        display: block;
+        position: relative;
+        z-index: 1050;
+        margin-left: 10px; /* Add margin to push the logo to the right */
+    }
+
+    #side-bar {
+        position: absolute;
+        top: 8%;
+        left: 0;
+        width: 250px;
+        height: 100%;
+        z-index: 1030;
+        background-color: white;
+        transform: translateX(-250px); /* Hidden by default */
+        transition: transform 0.3s ease-in-out;
+    }
+
+    #side-bar.active {
+        transform: translateX(0); /* Slide in on toggle */
+    }
+
+    .content-width {
+        width: 100%; /* Expand content when sidebar is hidden */
+    }
+}
 
 /* Custom CSS to handle dropdown appearance */
 .dropdown-menu {
