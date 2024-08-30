@@ -36,8 +36,8 @@
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="padding: 5px 0;">
                         <form action="{{ route('logout') }}" method="POST" class="d-inline">
                             @csrf
-                            <button type="submit" class="dropdown-item btn discard-table" style="padding: 6px 20px;"><i
-                                    class="fa-solid fa-right-from-bracket" style="padding: 0 10px 0 0;"></i>
+                            <button type="submit" class="dropdown-item btn discard-table" style="padding: 6px 20px;">
+                                <i class="fa-solid fa-right-from-bracket" style="padding: 0 10px 0 0;"></i>
                                 Logout</button>
                         </form>
                     </div>
@@ -65,21 +65,21 @@
                             </li>
                         @endif
                         @if (Auth::check() && Auth::user()->role == 'BUH')
-                            <li class="{{ Route::currentRouteName() != 'importcsv' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'importcsv' ? 'active-link' : '' }}">
-                                <a class="nav-link "
-                                    href="{{ route('importcsv') }}">
+                            <li
+                                class="{{ Route::currentRouteName() != 'importcsv' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'importcsv' ? 'active-link' : '' }}">
+                                <a class="nav-link " href="{{ route('importcsv') }}">
                                     <i class="fa-solid fa-file-arrow-up"></i><span>Import Files</span>
                                 </a>
                             </li>
-                            <li class="{{ Route::currentRouteName() != 'owner#view' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'owner#view' ? 'active-link' : '' }}">
-                                <a class="nav-link "
-                                    href="{{ route('owner#view') }}">
+                            <li
+                                class="{{ Route::currentRouteName() != 'owner#view' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'owner#view' ? 'active-link' : '' }}">
+                                <a class="nav-link " href="{{ route('owner#view') }}">
                                     <i class="fa-solid fa-universal-access"></i><span>Sales Agent</span>
                                 </a>
                             </li>
-                            <li class="{{ Route::currentRouteName() != 'hubspot-contact' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'hubspot-contact' ? 'active-link' : '' }}">
-                                <a class="nav-link "
-                                    href="{{ route('hubspot-contact') }}">
+                            <li
+                                class="{{ Route::currentRouteName() != 'hubspot-contact' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'hubspot-contact' ? 'active-link' : '' }}">
+                                <a class="nav-link " href="{{ route('hubspot-contact') }}">
                                     <i class="fa-brands fa-hubspot"></i><span>Hubspot Contacts</span>
                                 </a>
                             </li>
