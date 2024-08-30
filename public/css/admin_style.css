@@ -239,10 +239,10 @@ tbody {
 /* Custom CSS to handle dropdown appearance */
 .dropdown-menu {
     display: none; /* Initially hidden */
+    padding: 0px 5px;
     position: absolute;
     top: 100%; /* Position below the button */
-    right: 0; /* Align to the right of the button */
-    min-width: 150px; /* Adjust as needed */
+    min-width: max-content; /* Adjust as needed */
 }
 .dropdown-menu.show {
     display: block; /* Show the dropdown when active */
@@ -290,9 +290,9 @@ tbody {
 }
 
 .discard-table:hover {
-    background-color: #FF3A44;
+    background-color: #91264c;
     color: #ffffff;
-    border: 1px solid #FF3A44;
+    border: 1px solid #91264c;
 }
 
 /* Icons */
@@ -450,8 +450,10 @@ th, label{
 }
 
 .discard-table {
-    background-color: #FF7f86;
+    /* background-color: #FF7f86; */
+    width: max-content;
     color: #BD000C;
+
 }
 
 #archive, #discard{
