@@ -70,24 +70,31 @@ body {
 }
 
 /* Responsive Adjustments */
-@media screen and (max-width: 1024px) {
-    .content-width {
-        width: calc(100% - 250px); /* Same width for smaller screens */
+@media screen and (max-width: 1650px){
+    .dashboard{
+        min-height: 500px;
+        max-height: 675px;
+    }
+    .container-max-height{
+        min-height: 500px;
+        max-height: 530px;
+    }
+    .table-container{
+        min-height: 350px;
+        max-height: 450px;
     }
 }
 
-/* Further Adjustments (if needed) */
-@media screen and (max-width: 768px) {
-    .content-width {
-        width: 100%; /* Full width for mobile devices */
+@media screen and (max-width: 925px) {
+    .dashboard{
+        width: 100%;
+        min-height: 100px;
+        max-height: 150px;
+        text-align: center;
+        margin-bottom: 45px;
     }
-    .owner-container{
-        min-height: 350px;
-        max-height: 400px;
-    }
-    .owner-contacts-container{
-        min-height: 450px;
-        max-height: 600px;
+    .min-height{
+        width: 100%;
     }
 }
 
@@ -222,10 +229,10 @@ tbody {
 /* Custom CSS to handle dropdown appearance */
 .dropdown-menu {
     display: none; /* Initially hidden */
+    padding: 0px 5px;
     position: absolute;
     top: 100%; /* Position below the button */
-    right: 0; /* Align to the right of the button */
-    min-width: 150px; /* Adjust as needed */
+    min-width: max-content; /* Adjust as needed */
 }
 .dropdown-menu.show {
     display: block; /* Show the dropdown when active */
@@ -273,9 +280,9 @@ tbody {
 }
 
 .discard-table:hover {
-    background-color: #FF3A44;
+    background-color: #91264c;
     color: #ffffff;
-    border: 1px solid #FF3A44;
+    border: 1px solid #91264c;
 }
 
 /* Icons */
@@ -433,8 +440,10 @@ th, label{
 }
 
 .discard-table {
-    background-color: #FF7f86;
+    /* background-color: #FF7f86; */
+    width: max-content;
     color: #BD000C;
+
 }
 
 #archive, #discard{

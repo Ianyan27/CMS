@@ -47,7 +47,7 @@
                     <div class="row row-margin-bottom ">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="font-educ" for="businessUnit">Owner Business Unit</label>
+                                <label class="font-educ" for="businessUnit">Business Unit</label>
                                 <input type="text" name="businessUnit" class="form-control fonts" id="businessUnit"
                                     placeholder="Enter business unit" required>
                             </div>

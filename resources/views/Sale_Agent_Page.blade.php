@@ -29,10 +29,10 @@
             <div class="d-flex align-items-center">
                 <h2 style="margin: 0 0.5rem 0 0.25rem;" class="font-educ headings">Sales Agents</h2>
                 <!-- Search Bar Section -->
-                <div class="search-box d-flex align-items-center ml-3" style="max-width: 350px;">
-                    <input type="search" class="form-control mr-1" placeholder="Search ID" id="search-id"
-                        aria-label="Search" style="height: 30px">
-                    <button class="btn hover-action mx-1" type="button" data-toggle="tooltip" title="Search">
+                <div class="search-box d-flex align-items-center ml-3">
+                    <input type="search" class="form-control mr-1" placeholder="Search Name" id="search-name"
+                        aria-label="Search">
+                    <button style="padding: 10px 12px;" class="btn hover-action" type="button" data-toggle="tooltip" title="Search">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
                 </div>
@@ -48,8 +48,7 @@
             <table id="sales-agents-table" class="table table-hover mt-2">
                 <thead class="font-educ text-left">
                     <tr>
-                        <th scope="col">No #</th>
-                        <th scope="col" id="name-header">Sale Agent Name
+                        <th scope="col" id="name-header">Name
                             <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-agent"
                                 onclick="sortByColumn('agent', 'asc'); toggleSort('sortDown-agent', 'sortUp-agent')"></i>
                             <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-agent"
@@ -57,7 +56,6 @@
                                 style="display: none;"></i>
                         </th>
                         <th scope="col">Hubspot ID</th>
-                        <th scope="colr">Owner Business Unit</th>
                         <th scope="col" id="country-header">Country
                             <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-country"
                                 onclick="sortByColumn('country', 'asc'); toggleSort('sortDown-country', 'sortUp-country')"></i>
@@ -65,23 +63,19 @@
                                 onclick="sortByColumn('country', 'desc'); toggleSort('sortUp-country', 'sortDown-country')"
                                 style="display: none;"></i>
                         </th>
-                        <th scope="col">Total In Progress</th>
-                        <th scope="col">Total Assign Contacts</th>
-                        <th scope="col">Total Hubspot Sync Contacts</th>
+                        <th scope="col" class="text-center">Total In Progress</th>
+                        <th scope="col" class="text-center">Total Assign Contacts</th>
                         <th scope="col ">Action</th>
                     </tr>
                 </thead>
                 <tbody class="text-left fonts">
                     @foreach ($owner as $owners)
                         <tr>
-                            <td>{{ $owners->owner_pid }}</td>
                             <td>{{ $owners->owner_name }}</td>
                             <td>{{ $owners->owner_hubspot_id }}</td>
-                            <td>{{ $owners->owner_business_unit }}</td>
                             <td>{{ $owners->country }}</td>
                             <td class="text-center">{{ $owners->total_in_progress }}</td>
                             <td class="text-center">{{ $owners->total_assign_contacts }}</td>
-                            <td class="text-center">{{ $owners->total_hubspot_sync }}</td>
                             <td>
                                 <a href="{{ route('owner#view-owner', $owners->owner_pid) }}" class="btn hover-action"
                                     data-toggle="tooltip" title="View" style="padding: 10px 12px;">
@@ -153,17 +147,15 @@
         </script>
         @endif
     <script>
-        document.getElementById('search-id').addEventListener('keyup', function() {
-            var input = this.value.toLowerCase();
-            var rows = document.querySelectorAll('#sales-agents-table tbody tr');
+        document.getElementById('search-name').addEventListener('keyup', function() {
             var input = this.value.toLowerCase();
             var rows = document.querySelectorAll('#sales-agents-table tbody tr');
 
             rows.forEach(function(row) {
-                var idCell = row.querySelector('td:nth-child(3)'); // Target the first column (ID)
-                var idText = idCell.textContent || idCell.innerText;
+                var nameCell = row.querySelector('td:nth-child(1)'); // Target the first column (Name)
+                var nameText = nameCell.textContent || nameCell.innerText;
 
-                if (idText.toLowerCase().includes(input)) {
+                if (nameText.toLowerCase().includes(input)) {
                     row.style.display = ''; // Show the row if it matches the search input
                 } else {
                     row.style.display = 'none'; // Hide the row if it doesn't match
