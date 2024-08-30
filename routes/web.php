@@ -52,8 +52,8 @@ Route::group(['prefix' => 'sales-agent'], function () {
     Route::get('/edit-contact/{contact_pid}', [ContactController::class, 'editContact'])->name('contact#edit');
     Route::post('/save-contact/{contact_pid}/{id}', [ContactController::class, 'updateContact'])->name('contact#update-contact');
     Route::get('/edit-archive/{contact_archive_pid}', [ArchiveController::class, 'editArchive'])->name('archive#edit');
-    Route::get('/view-archive/{contact_archive_pid}', [ArchiveController::class, 'viewArchive'])->name('archive#view');
-    Route::post('save-archive/{contact_archive_pid}', [ArchiveController::class, 'updateArchive'])->name('archive#update-archive');
+    Route::get('/view-archive/{id}', [ArchiveController::class, 'viewArchive'])->name('archive#view');
+    Route::post('/save-archive/{contact_archive_pid}/{id}', [ArchiveController::class, 'updateArchive'])->name('archive#update-archive');
     Route::get('/edit-discard/{contact_discard_pid}', [DiscardController::class, 'editDiscard'])->name('discard#edit');
     Route::get('/view-discard/{contact_discard_pid}', [DiscardController::class, 'viewDiscard'])->name('discard#view');
     Route::post('/save-discard/{contact_discard_pid}', [DiscardController::class, 'updateDiscard'])->name('discard#update-discard');

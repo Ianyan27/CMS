@@ -14,8 +14,7 @@ aria-hidden="true">
                 style="height: 30px;">
         </div>
         <div class="modal-body">
-            <form action=" {{ route('archive#update_archive', $editArchive->contact_archive_pid) }}" method="POST"
-                id="editContactForm">
+            <form action="{{ route('archive#update-archive', ['contact_archive_pid' => $editArchive->contact_archive_pid, 'id' => $user->id]) }}" method="POST" id="editContactForm">
                 @csrf
                 <div class="row">
                     <!-- Left Column -->
@@ -90,14 +89,8 @@ aria-hidden="true">
                                 <option value="InProgress" {{ $editArchive->status === 'InProgress' ? 'selected' : '' }}>
                                     In Progress
                                 </option>
-                                <option value="HubSpot Contact" {{ $editArchive->status === 'HubSpot Contact' ? 'selected' : '' }}>
-                                    HubSpot
-                                </option>
                                 <option value="Discard" {{ $editArchive->status === 'Discard' ? 'selected' : '' }}>
                                     Discard
-                                </option>
-                                <option value="New" {{ $editArchive->status === 'New' ? 'selected' : '' }}>
-                                    New
                                 </option>
                                 <option value="Archive" {{ $editArchive->status === 'Archive' ? 'selected' : '' }}>
                                     Archive

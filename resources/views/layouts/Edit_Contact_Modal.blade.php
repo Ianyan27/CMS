@@ -14,7 +14,7 @@ aria-hidden="true">
                 style="height: 30px;">
         </div>
         <div class="modal-body">
-            <form action="{{ route('contact#update-contact', ['contact_pid' => $editContact->contact_pid, 'id' => $user->id]) }}" 
+            <form action="{{ route('contact#update-contact',['contact_pid' => $editContact->contact_pid, 'id' => $user->id]) }}" 
                 method="POST" id="editContactForm">
                 @csrf
                 <div class="row">

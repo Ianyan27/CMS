@@ -9,7 +9,6 @@ use App\Models\Engagement;
 use App\Models\EngagementArchive;
 use App\Models\EngagementDiscard;
 use App\Models\Log;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -57,24 +56,26 @@ class ContactController extends Controller{
         $editContact = Contact::where('contact_pid', $contact_pid)->first();
         $user = Auth::user();
         $engagements = Engagement::where('fk_engagements__contact_pid', $contact_pid)->get();
+        $engagementsArchive = EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $contact_pid)->get();
         $updateEngagement = $engagements->first();
         return view('Edit_Contact_Detail_Page')->with([
             'user' => $user,
             'editContact' => $editContact,
             'engagements' => $engagements,
-            'updateEngagement' => $updateEngagement
+            'updateEngagement' => $updateEngagement,
+            'engagementArchive' => $engagementsArchive
         ]);
     }
 
         public function updateContact(Request $request, $contact_pid, $id) {
             // Find the contact based on the contact_pid
             $contact = Contact::find($contact_pid);
-        
+            
             // Check if the contact exists
             if (!$contact) {
                 return redirect()->route('contact-listing')->with('error', 'Contact not found.');
             }
-        
+
             // Handle the "Archive" and "Discard" status cases
             if (in_array($request->input('status'), ['Archive', 'Discard'])) {
                 // Determine the target model based on the status
@@ -83,14 +84,14 @@ class ContactController extends Controller{
                 // Copy the contact data to the new table
                 $targetContactModel->fill($contact->toArray());
                 $targetContactModel->status = $request->input('status'); // Explicitly set the status
-        
+                
                 // Set the owner PID based on the user who updated the contact
                 if ($request->input('status') === 'Archive') {
                     $targetContactModel->fk_contact_archives__owner_pid = $id;
                 } else {
                     $targetContactModel->fk_contact_discards__owner_pid = $id;
                 }
-        
+                
                 $targetContactModel->save();
         
                 // Get the new contact ID from the archive or discard table
@@ -315,8 +316,7 @@ class ContactController extends Controller{
         ]);
     }
 
-    private function saveLog($contact_pid, $action_type, $action_description)
-    {
+    private function saveLog($contact_pid, $action_type, $action_description){
 
         $ownerPid = Auth::user()->id; // Get the authenticated user's ID as owner_pid
 
