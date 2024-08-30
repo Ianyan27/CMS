@@ -119,7 +119,6 @@ class ContactController extends Controller
         $oldStatus = $contact->status;
         $newStatus = $request->input('status');
 
-        // If status is not "Archive" or "Discard", update the contact normally
         $contact->update([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
