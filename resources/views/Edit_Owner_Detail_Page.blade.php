@@ -1,18 +1,21 @@
-@section('title', "View Owner Details")
+@section('title', 'View Owner Details')
 
 @extends('layouts.app')
 @extends('layouts.Edit_Owner_Modal')
 @section('content')
 @if (session('success'))
     <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
-    <button id="successModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal" style="display: none;">
+        <button id="successModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal"
+            style="display: none;">
         Open Modal
     </button>
     <!-- Modal -->
-    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
+            aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-            <div class="modal-header" style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+                    <div class="modal-header"
+                        style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
                 border:none;">
                     <h5 class="modal-title" id="successModalLabel">Success</h5>
                 </div>
@@ -87,8 +90,10 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <div class="d-flex justify-content-center btn-group mb-3" role="group" aria-label="Sales Engagement Buttons">
-                        <button type="button" class="btn activity-button mx-2" data onclick="showSection('totalContactsSection')">
+                    <div class="d-flex justify-content-center btn-group mb-3" role="group"
+                        aria-label="Sales Engagement Buttons">
+                        <button type="button" class="btn activity-button mx-2" data
+                            onclick="showSection('totalContactsSection')">
                             Total Contacts Allocated
                         </button>
                         <button type="button" class="btn activity-button mx-2" onclick="showSection('hubspotContactsSection')">
@@ -104,17 +109,20 @@
                 <div class="col-12">
                     <!-- Section for Total Contacts Allocated -->
                     <div id="totalContactsSection" class="text-center py-3 section-content">
-                        <span class="d-block font-educ" style="font-size: 2rem; font-weight: 500;">{{ $totalContacts }}</span>
+                        <span class="d-block font-educ"
+                            style="font-size: 2rem; font-weight: 500;">{{ $totalContacts }}</span>
                         <h3 class="font-educ" style="font-size: 2.5rem; font-weight:450;">Total Contacts Allocated</h3>
                     </div>
                     <!-- Section for Total Sync HubSpot Contact -->
                     <div id="hubspotContactsSection" class="text-center py-3 section-content" style="display: none;">
-                        <span class="d-block font-educ" style="font-size: 2rem; font-weight: 500;">{{ $hubspotContactsCount }}</span>
+                        <span class="d-block font-educ"
+                            style="font-size: 2rem; font-weight: 500;">{{ $hubspotContactsCount }}</span>
                         <h3 class="font-educ" style="font-size: 2.5rem; font-weight:450;">Total Sync HubSpot Contact</h3>
                     </div>
                     <!-- Section for Current Engaging Contact -->
                     <div id="engagingContactsSection" class="text-center py-3 section-content" style="display: none;">
-                        <span class="d-block font-educ" style="font-size: 2rem; font-weight: 500;">{{ $hubspotCurrentEngagingContact }}</span>
+                        <span class="d-block font-educ"
+                            style="font-size: 2rem; font-weight: 500;">{{ $hubspotCurrentEngagingContact }}</span>
                         <h3 class="font-educ" style="font-size: 2.5rem; font-weight:450;">Current Engaging Contact</h3>
                     </div>
                 </div>
@@ -137,7 +145,8 @@
                 </button>
             </div>
             <div class="search-box d-flex align-items-center mr-3 mb-2">
-                <input type="search" class="form-control mr-1" placeholder="Search..." id="search-input" aria-label="Search">
+                <input type="search" class="form-control mr-1" placeholder="Search..." id="search-input"
+                    aria-label="Search">
                 <button class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
@@ -173,23 +182,25 @@
                         </th>
                         <th class=" position-relative" scope="col">
                             Status
-                            <i style="cursor: pointer;" class="fa-solid fa-filter" id="filterIcon" onclick="toggleFilter()"></i>
+                            <i style="cursor: pointer;" class="fa-solid fa-filter" id="filterIcon"
+                                onclick="toggleFilter()"></i>
                             <!-- Filter Container -->
-                            <div id="filterContainer" class="filter-popup container rounded-bottom" style="display: none;">
+                            <div id="filterContainer" class="filter-popup container rounded-bottom"
+                                style="display: none;">
                                 <div class="row">
                                     <div class="filter-option">
-                                        <input class="ml-3" type="checkbox" id="new" name="status" value="New"
-                                            onclick="applyFilter()">
+                                        <input class="ml-3" type="checkbox" id="new" name="status"
+                                            value="New" onclick="applyFilter()">
                                         <label for="new" style= "color: #318FFC;">New</label>
                                     </div>
                                     <div class="filter-option">
-                                        <input class="ml-3" type="checkbox" id="inProgress" name="status" value="InProgress"
-                                            onclick="applyFilter()">
+                                        <input class="ml-3" type="checkbox" id="inProgress" name="status"
+                                            value="InProgress" onclick="applyFilter()">
                                         <label for="inProgress" style="color: #FF8300;">In Progress</label>
                                     </div>
                                     <div class="filter-option">
-                                        <input class="ml-3" type="checkbox" id="hubspot" name="status" value="HubSpot Contact"
-                                            onclick="applyFilter()">
+                                        <input class="ml-3" type="checkbox" id="hubspot" name="status"
+                                            value="HubSpot Contact" onclick="applyFilter()">
                                         <label for="hubspot" style="color: #FF5C35;">HubSpot</label>
                                     </div>
                                 </div>
