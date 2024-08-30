@@ -61,97 +61,104 @@
             background-color: #f2e6ec;
         }
 
-        select, option{
+        select,
+        option {
             padding-left: 15px;
         }
+
         .w-100 {
-    width: 100%;
-}
+            width: 100%;
+        }
 
-.w-100 {
-    width: 100%;
-}
+        .w-100 {
+            width: 100%;
+        }
 
-.mb-4 {
-    margin-bottom: 1.5rem;
-}
+        .mb-4 {
+            margin-bottom: 1.5rem;
+        }
 
-.btn {
-    background-color: #fff;
-    border: 1px solid #8b0045;
-    color: #8b0045;
-    padding: 8px 12px;
-    font-size: 14px;
-}
+        .btn {
+            background-color: #fff;
+            border: 1px solid #8b0045;
+            color: #8b0045;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
 
-.btn:hover {
-    background-color: #8b0045;
-    color: #fff;
-}
+        .btn:hover {
+            background-color: #8b0045;
+            color: #fff;
+        }
 
-.radio-btn {
-    background-color: #8b0045;
-    color: #fff;
-    padding: 10px 20px;
-    margin-right: 10px;
-    cursor: pointer;
-    border-radius: 5px;
-}
+        .radio-btn {
+            background-color: #8b0045;
+            color: #fff;
+            padding: 10px 20px;
+            margin-right: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
 
-.radio-btn:hover {
-    background-color: #6e0037;
-}
+        .radio-btn:hover {
+            background-color: #6e0037;
+        }
 
-.d-none {
-    display: none;
-}
-.search-bar{
-    margin-bottom: 10px;
-}
+        .d-none {
+            display: none;
+        }
 
-.radio-btn.active {
-    background-color: #8b0045; 
-    color: white; 
-}
-.radio-btn.inactive {
-    background-color: #e0e0e0; 
-    color: #8b0045; 
-}
+        .search-bar {
+            margin-bottom: 10px;
+        }
 
+        .radio-btn.active {
+            background-color: #8b0045;
+            color: white;
+        }
 
+        .radio-btn.inactive {
+            background-color: #e0e0e0;
+            color: #8b0045;
+        }
     </style>
 
     <div style="min-height: 720px;" class="container-max-height">
         <div class="row ">
             <div class="col-sm-12">
                 <form action="{{ route('import') }}" method="POST" enctype="multipart/form-data">
+                    <div class="d-none" id="radioValidationMsg" style="color: red; font-size: small">
+                        Please Select*
+                    </div>
+                    <div class="w-100 mb-4 d-flex justify-content-between align-items-center">
+                        <!-- Radio buttons positioned to the left end -->
+                        <div class="d-flex align-items-center">
+                            <label for="platformRadio" class="radio-btn inactive">Platform</label>
+                            <input type="radio" name="option" id="platformRadio" value="platform" class="d-none">
 
-                <div class="w-100 mb-4 d-flex justify-content-between align-items-center">
-    <!-- Radio buttons positioned to the left end -->
-    <div class="d-flex align-items-center">
-    <label for="platformRadio" class="radio-btn inactive">Platform</label>
-    <input type="radio" name="option" id="platformRadio" value="platform" class="d-none">
-    
-    <label for="rawRadio" class="radio-btn inactive">Raw</label>
-    <input type="radio" name="option" id="rawRadio" value="raw" class="d-none">
-</div>
+                            <label for="rawRadio" class="radio-btn inactive">Raw</label>
+                            <input type="radio" name="option" id="rawRadio" value="raw" class="d-none">
+                        </div>
 
-    
-    <!-- Get CSV Format button positioned to the right end -->
-    <div id="raw-btn-container" class="d-none">
-        <button class="btn hover-action" onclick="window.location.href='{{ route('get-csv') }}'">
-            Get CSV Format
-        </button>
-    </div>
-</div>
 
-<div id="platform-container">
-    <select id="platform" class="w-100 platforms search-bar d-none" name="platform">
-        <option value="" selected disabled>Select platform</option>
-        <option value="linkedin">LinkedIn</option>
-        <option value="apollo">Apollo</option>
-    </select>
-</div>
+                        <!-- Get CSV Format button positioned to the right end -->
+                        <div id="raw-btn-container" class="d-none">
+                            <button class="btn hover-action" onclick="window.location.href='{{ route('get-csv') }}'">
+                                Get CSV Format
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="platform-container">
+                        <div class="d-none" id="platformValidationMsg" style="color: red; font-size: small">
+                            Please Select Platform*
+                        </div>
+                        <select id="platform" class="w-100 platforms search-bar d-none" name="platform">
+                            <option value="" selected disabled>Select platform</option>
+                            <option value="linkedin">LinkedIn</option>
+                            <option value="apollo">Apollo</option>
+                        </select>
+                    </div>
 
 
 
@@ -191,8 +198,7 @@
                         <p id="error-message" class="text-danger d-none mt-2"></p>
                     </div>
                     <div>
-                        <input type="submit" id="submit-btn" class="btn hover-action d-none"
-                            style="margin-left: auto">
+                        <input type="submit" id="submit-btn" class="btn hover-action d-none" style="margin-left: auto">
                     </div>
                 </div>
             </div>
@@ -213,28 +219,6 @@
         const progressBar = document.getElementById('progressBar');
         const progressMessage = document.getElementById('progress-message');
         const errorMessage = document.getElementById('error-message');
-        
-        document.addEventListener('DOMContentLoaded', function() {
-        const platformRadio = document.getElementById('platformRadio');
-        const rawRadio = document.getElementById('rawRadio');
-        const platformSelect = document.getElementById('platform');
-        const rawBtn = document.getElementById('raw-btn-container');
-
-        platformRadio.addEventListener('change', function() {
-            if (platformRadio.checked) {
-                platformSelect.classList.remove('d-none');
-                rawBtn.classList.add('d-none');
-            }
-        });
-
-        rawRadio.addEventListener('change', function() {
-            if (rawRadio.checked) {
-                rawBtn.classList.remove('d-none');
-                platformSelect.classList.add('d-none');
-            }
-        });
-    });
-
 
 
         //----------Drag and drop--------------//
@@ -286,21 +270,38 @@
 
         function checkIfReadyToSubmit() {
             const platform = document.getElementById('platform');
+            const fileInput = document.getElementById(
+            'fileInput'); // Assuming you have an element with this ID for file input
             const submitBtn = document.getElementById('submit-btn');
+            const platformRadio = document.getElementById('platformRadio');
+            const rawRadio = document.getElementById('rawRadio');
+            const radioValidationMsg = document.getElementById('radioValidationMsg');
+            const platformValidationMsg = document.getElementById('platformValidationMsg');
 
-            // Show submit button if a valid platform is selected and a file is uploaded
-            if (platform && platform.checkValidity() && fileInput.files.length > 0) {
-                submitBtn.classList.remove('d-none');
-            } else {
-                submitBtn.classList.add('d-none');
-
-                // Report validity if the platform exists but isn't valid
-                if (platform) {
-                    platform.reportValidity();
+            if (platformRadio.checked || rawRadio.checked) {
+                if (platformRadio.checked) {
+                    if (platform && platform.value !== "") {
+                        submitBtn.classList.remove('d-none');
+                        radioValidationMsg.classList.add('d-none'); // Hide the validation message
+                    } else {
+                        platform.reportValidity(); // Highlight platform dropdown if it's invalid
+                        platform.focus(); 
+                        platformValidationMsg.classList.remove('d-none');
+                        submitBtn.classList.add('d-none'); // Keep the submit button hidden
+                    }
+                } else {
+                    if (fileInput && fileInput.files.length > 0) {
+                        submitBtn.classList.remove('d-none');
+                        radioValidationMsg.classList.add('d-none'); // Hide the validation message
+                    } else {
+                        submitBtn.classList.add('d-none'); // Keep the submit button hidden if no file is selected
+                    }
                 }
+            } else {
+                submitBtn.classList.add('d-none'); // Hide the submit button
+                radioValidationMsg.classList.remove('d-none'); // Show the validation message
             }
         }
-
 
 
         //----------submit-------------//
@@ -311,7 +312,13 @@
             //create form data
             const formData = new FormData();
             formData.append('csv_file', fileInput.files[0]);
-            formData.append('platform', document.getElementById('platform').value);
+            if (rawRadio.checked) {
+                formData.append('platform', 'raw');
+            } else {
+                const platformSelect = document.getElementById('platform');
+                formData.append('platform', platformSelect.value);
+            }
+
 
             submitBtn.classList.add('d-none');
             progressContainer.classList.remove('d-none')
@@ -333,7 +340,8 @@
                         return response.json().then(errorData => {
                             // Handle 500 error with custom message from the server
                             if (response.status === 500) {
-                                throw new Error(errorData.message || 'Internal Server Error');
+                                throw new Error(errorData.message ||
+                                    'Internal Server Error');
                             }
                             // Handle 422 validation errors
                             if (response.status === 422) {
@@ -471,41 +479,40 @@
                 downloadPrompt.remove();
             });
         }
-       // Update the JavaScript to toggle classes based on selection
-    document.addEventListener('DOMContentLoaded', function() {
-    const platformRadio = document.getElementById('platformRadio');
-    const rawRadio = document.getElementById('rawRadio');
-    const platformSelect = document.getElementById('platform');
-    const rawBtnContainer = document.getElementById('raw-btn-container');
-    const platformBtn = document.querySelector('label[for="platformRadio"]');
-    const rawBtn = document.querySelector('label[for="rawRadio"]');
+        // Update the JavaScript to toggle classes based on selection
+        document.addEventListener('DOMContentLoaded', function() {
+            const platformRadio = document.getElementById('platformRadio');
+            const rawRadio = document.getElementById('rawRadio');
+            const platformSelect = document.getElementById('platform');
+            const rawBtnContainer = document.getElementById('raw-btn-container');
+            const platformBtn = document.querySelector('label[for="platformRadio"]');
+            const rawBtn = document.querySelector('label[for="rawRadio"]');
 
-    platformRadio.addEventListener('change', function() {
-        if (platformRadio.checked) {
-            platformSelect.classList.remove('d-none');
-            platformSelect.style.display = 'block';
-            rawBtnContainer.style.display = 'none';
+            platformRadio.addEventListener('change', function() {
+                if (platformRadio.checked) {
+                    platformSelect.classList.remove('d-none');
+                    platformSelect.style.display = 'block';
+                    rawBtnContainer.style.display = 'none';
 
-            platformBtn.classList.add('active');
-            platformBtn.classList.remove('inactive');
-            rawBtn.classList.remove('active');
-            rawBtn.classList.add('inactive');
-        }
-    });
+                    platformBtn.classList.add('active');
+                    platformBtn.classList.remove('inactive');
+                    rawBtn.classList.remove('active');
+                    rawBtn.classList.add('inactive');
+                }
+            });
 
-    rawRadio.addEventListener('change', function() {
-        if (rawRadio.checked) {
-            platformSelect.style.display = 'none';
-            rawBtnContainer.style.display = 'block';
+            rawRadio.addEventListener('change', function() {
+                if (rawRadio.checked) {
+                    platformSelect.style.display = 'none';
+                    rawBtnContainer.classList.remove('d-none');
+                    rawBtnContainer.style.display = 'block';
 
-            rawBtn.classList.add('active');
-            rawBtn.classList.remove('inactive');
-            platformBtn.classList.remove('active');
-            platformBtn.classList.add('inactive');
-        }
-    });
-});
-
-
+                    rawBtn.classList.add('active');
+                    rawBtn.classList.remove('inactive');
+                    platformBtn.classList.remove('active');
+                    platformBtn.classList.add('inactive');
+                }
+            });
+        });
     </script>
 @endsection
