@@ -69,17 +69,11 @@ body {
     min-height: calc(100vh - 82.98px - 56px - 48px); /* Adjusted for navbar, footer, and my-4 margins */
 }
 
-.position-button{
-    position: absolute; 
-    top: 0; 
-    right: 232px;
-}
-
 /* Responsive Adjustments */
 @media screen and (max-width: 1650px){
     .dashboard{
         min-height: 500px;
-        max-height: 550px;
+        max-height: 675px;
     }
     .container-max-height{
         min-height: 500px;
@@ -94,17 +88,13 @@ body {
 @media screen and (max-width: 925px) {
     .dashboard{
         width: 100%;
-        min-height: 40px;
-        max-height: 50px;
+        min-height: 100px;
+        max-height: 150px;
         text-align: center;
         margin-bottom: 45px;
     }
     .min-height{
         width: 100%;
-    }
-    .position-button{
-        top: 0;
-        right: 80px;
     }
 }
 

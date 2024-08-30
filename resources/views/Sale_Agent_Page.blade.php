@@ -29,10 +29,10 @@
             <div class="d-flex align-items-center">
                 <h2 style="margin: 0 0.5rem 0 0.25rem;" class="font-educ headings">Sales Agents</h2>
                 <!-- Search Bar Section -->
-                <div class="search-box d-flex align-items-center ml-3" style="max-width: 350px;">
+                <div class="search-box d-flex align-items-center ml-3">
                     <input type="search" class="form-control mr-1" placeholder="Search ID" id="search-id"
-                        aria-label="Search" style="height: 30px">
-                    <button class="btn hover-action mx-1" type="button" data-toggle="tooltip" title="Search">
+                        aria-label="Search">
+                    <button style="padding: 10px 12px;" class="btn hover-action" type="button" data-toggle="tooltip" title="Search">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
                 </div>

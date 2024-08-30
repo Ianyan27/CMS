@@ -8,16 +8,14 @@
         </div>
     @endif
     <div class="container-max-height">
-        <div class="row position-relative">
-            <div class="col-lg-5 d-flex align-items-center">
-                <h5 class="mr-3 my-2 headings">User Listing Page</h5>
-            </div>
-            <div class="col-lg-5 mr-3 mb-2">
+        <div class="d-flex align-items-center my-3">
+            <h2 class="mt-2 ml-2 headings">User Listing Page</h2>
+            <div class="mx-3">
                 <button class="btn hover-action mx-1 position-button" type="button" data-toggle="modal" data-target="#addUserModal">
                     <i class="fa-solid fa-square-plus"></i>
                 </button>
             </div>
-        </div>
+        </div>        
         <div class="table-container">
             <table class="table table-hover mt-2">
                 <thead class="text-left font-educ">

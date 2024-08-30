@@ -121,11 +121,11 @@
         }
     </style>
 
-    <div style="min-height: 720px;" class="container-max-height">
+    <div class="container-max-height">
         <div class="row ">
             <div class="col-sm-12">
                 <form action="{{ route('import') }}" method="POST" enctype="multipart/form-data">
-                    <h5 class="mb-4 font-educ">Please Select Data Source</h5>
+                    <h5 class="mb-4 font-educ headings">Please Select Data Source</h5>
                     <div class="d-none" id="radioValidationMsg" style="color: red; font-size: small">
                         Please Select*
                     </div>
