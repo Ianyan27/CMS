@@ -11,9 +11,11 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
-class BUHController extends Controller{
+class BUHController extends Controller
+{
 
-    public function index(){
+    public function index()
+    {
         return view('csv_import_form');
     }
     public function import(Request $request)
@@ -42,13 +44,15 @@ class BUHController extends Controller{
         $platform = $request->input('platform'); // Get the platform value
 
         try {
+            // Store the file in public storage
+            $filePath = Storage::disk('public')->putFile('csv_uploads', $file);
             // Import the data into the database using the ContactsImport class
             $import = new ContactsImport($platform);
             Excel::import($import, $file);
-            //$allocator = new RoundRobinAllocator();
-            //$allocator->allocate();
+            $allocator = new RoundRobinAllocator();
+            $allocator->allocate();
         } catch (\Exception $e) {
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to import data: ' . $e->getMessage()
@@ -92,12 +96,14 @@ class BUHController extends Controller{
                 'valid_count' => $validCount,
                 'invalid_count' => $invalidCount,
                 'duplicate_count' => $duplicateCount,
-                'file_links' => $fileLinks
+                'file_links' => $fileLinks,
+                'uploaded_file_path' => Storage::url($filePath) // Provide URL to the uploaded file
             ]
         ]);
     }
 
-    private function exportCsv($fileName, $data){
+    private function exportCsv($fileName, $data)
+    {
         try {
             $csvContent = $this->arrayToCsv($data);
             // Save the file to the 'public' disk
@@ -111,7 +117,8 @@ class BUHController extends Controller{
         }
     }
 
-    private function arrayToCsv(array $array){
+    private function arrayToCsv(array $array)
+    {
         $csv = fopen('php://temp', 'r+');
 
         foreach ($array as $row) {
@@ -131,7 +138,8 @@ class BUHController extends Controller{
         return stream_get_contents($csv);
     }
 
-    public function saveUser(Request $request){
+    public function saveUser(Request $request)
+    {
 
         $validator = Validator::make($request->all(), [
             'agentName' => 'required',
@@ -141,7 +149,7 @@ class BUHController extends Controller{
             'country' => 'required'
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
 
