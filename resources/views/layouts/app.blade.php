@@ -20,13 +20,13 @@
 <body class="d-flex flex-column">
     <div class="container-fluid flex-grow-1">
         <div class="row shadow-sm py-3" style="max-height: 81.98px;">
-            <div class="col-md-6 d-flex align-items-center">
+            <div class="col-md-6 col-sm-5 d-flex align-items-center">
                 <div class="logo">
                     <img src="{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}" alt="Logo"
                         class="img-fluid" style="max-height: 50px;">
                 </div>
             </div>
-            <div class="col-md-6 d-flex justify-content-end align-items-center">
+            <div class="col-md-6 col-sm-5 d-flex justify-content-end align-items-center">
                 <div class="dropdown">
                     <button class="btn hover-action dropdown-toggle" type="button" id="dropdownMenuButton" aria-haspopup="true" aria-expanded="false">
                         {{ Auth::user()->name }}
@@ -42,7 +42,7 @@
             </div>            
         </div>        
         <div class="row my-4 content-height">
-            <div id="side-bar" class="col-auto dashboard rounded-right  navigation-width right-shadow">
+            <div id="side-bar" class="col-md-auto col-sm-auto dashboard rounded-right  navigation-width right-shadow">
                 <ul class="nav flex-column fonts mt-2">
                     {{-- <li class="nav-item">
                         <a class="nav-link {{ Route::currentRouteName() == 'dashboard' ? 'active-link' : '' }}"
@@ -98,7 +98,7 @@
             </div>
         </div>
     </div>
-    <footer style="position: fixed; bottom: 0; left:0; display:block; width: 100%;" class="bg-educ color-white text-center py-3 mt-auto">
+    <footer class="bg-educ color-white text-center py-3 mt-auto">
         © 2024 eduCLaaS Pte Ltd. All rights reserved.
     </footer>
     <script>
