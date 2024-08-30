@@ -86,6 +86,6 @@ class OwnerController extends Controller{
             $owner->country = $request->input('country')
         ]);
 
-        return redirect()->route('owner#view_owner', ['owner_pid' => $owner_pid])->with('success', 'Owner updated successfully.');
+        return redirect()->route('owner#view-owner', ['owner_pid' => $owner_pid])->with('success', 'Sale Agent updated successfully.');
     }
 }

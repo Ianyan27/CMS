@@ -440,10 +440,8 @@ th, label{
 }
 
 .discard-table {
-    /* background-color: #FF7f86; */
-    width: max-content;
+    background-color: #FF7f86;
     color: #BD000C;
-
 }
 
 #archive, #discard{

@@ -51,12 +51,11 @@
                 <div class="col-md-6">
                     <div class="form-group mb-3">
                         <label class="font-educ" for="contact-number">Hubspot Id</label>
-                        <input type="text" class="form-control fonts" id="contact_number"
-                               value="{{ $editOwner->owner_hubspot_id }}" readonly>
+                        <h5 class="fonts" id="contact_number">{{ $editOwner->owner_hubspot_id }}</h5>
                     </div>
                     <div class="form-group mb-3">
                         <label class="font-educ" for="country">Country</label>
-                        <input type="text" class="form-control fonts" id="country" value="{{ $editOwner->country }}" readonly>
+                        <h5 class="fonts" id="country">{{ $editOwner->country }}</h5>
                     </div>
                 </div>
             </div>            
@@ -64,23 +63,20 @@
                 <div class="col-md-6">
                     <div class="form-group mb-3">
                         <label class="font-educ" for="skills">Name</label>
-                        <input type="text" class="form-control fonts" id="skills" value="{{ $editOwner->owner_name }}"
-                            readonly>
+                        <h5 class="fonts" id="skills">{{ $editOwner->owner_name }}</h5>
                     </div>
                     <div class="form-group mb-3">
                         <label class="font-educ" for="email">Email</label>
-                        <input type="email" class="form-control fonts" id="email" value=" {{ $editOwner->owner_email_id }} "
-                            readonly>
+                        <h5 class="fonts" id="email">{{ $editOwner->owner_email_id }}</h5>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label class="font-educ" for="job-role">Business Unit</label>
-                        <input type="text" class="form-control fonts" id="job-role" value=" {{ $editOwner->owner_business_unit }} "
-                            readonly>
+                        <label class="font-educ" for="job-role">Business Unit: </label>
+                        <h5 class="fonts" id="job-role">{{ $editOwner->owner_business_unit }}</h5>
                     </div>
                 </div>
-            </div>
+            </div>            
         </div>
         <div class="col-md-7 px-3">
             <div class="d-flex justify-content-between align-items-center my-3">

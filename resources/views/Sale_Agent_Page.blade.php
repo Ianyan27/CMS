@@ -63,8 +63,9 @@
                                 onclick="sortByColumn('country', 'desc'); toggleSort('sortUp-country', 'sortDown-country')"
                                 style="display: none;"></i>
                         </th>
-                        <th scope="col" class="text-center">Total In Progress</th>
                         <th scope="col" class="text-center">Total Assign Contacts</th>
+                        <th scope="col" class="text-center">Total Hubspot Sync</th>
+                        <th scope="col" class="text-center">Total In Progress</th>
                         <th scope="col ">Action</th>
                     </tr>
                 </thead>
@@ -74,8 +75,9 @@
                             <td>{{ $owners->owner_name }}</td>
                             <td>{{ $owners->owner_hubspot_id }}</td>
                             <td>{{ $owners->country }}</td>
-                            <td class="text-center">{{ $owners->total_in_progress }}</td>
                             <td class="text-center">{{ $owners->total_assign_contacts }}</td>
+                            <td class="text-center">{{ $owners->total_hubspot_sync }}</td>
+                            <td class="text-center">{{ $owners->total_in_progress }}</td>
                             <td>
                                 <a href="{{ route('owner#view-owner', $owners->owner_pid) }}" class="btn hover-action"
                                     data-toggle="tooltip" title="View" style="padding: 10px 12px;">

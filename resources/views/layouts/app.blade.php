@@ -84,7 +84,7 @@
                             </li>
                         @endif
 
-                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent' || Auth::check() && Auth::user()->role == 'Admin')
                             <li class="{{ Route::currentRouteName() != 'contact-listing' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'contact-listing' ? 'active-link' : '' }}">
                                 <a class="nav-link"
                                     href="{{ route('contact-listing') }}">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Contact;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -12,6 +13,11 @@ class AdminController extends Controller{
         return view ('User_List_Page', [
             'userData'=>$userData
         ]);
+    }
+
+    public function viewContacts(){
+        $contacts = Contact::get();
+        return view('Contact_Listing', ['contacts'=>$contacts]);
     }
 
     public function saveUser(Request $request){
