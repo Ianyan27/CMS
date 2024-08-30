@@ -33,6 +33,13 @@
             <div class="d-flex align-items-center">
                 <h2 style="margin: 0 0.5rem 0 0.25rem;" class="font-educ headings">Sales Agents</h2>
                 <!-- Search Bar Section -->
+                <button class="btn hover-action add-sales-agent-button" data-toggle="modal"
+                    data-target="#addSalesAgentModal" style="padding: 10px 12px;">
+                    <i class="fa-solid fa-square-plus"></i>
+                </button>
+            </div>
+            <div class="d-flex align-items-center mr-3">
+
                 <div class="search-box d-flex align-items-center ml-3">
                     <input type="search" class="form-control mr-1" placeholder="Search Name" id="search-name"
                         aria-label="Search">
@@ -41,12 +48,6 @@
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
                 </div>
-            </div>
-            <div class="d-flex align-items-center mr-3">
-                <button class="btn hover-action add-sales-agent-button" data-toggle="modal"
-                    data-target="#addSalesAgentModal" style="padding: 10px 12px;">
-                    <i class="fa-solid fa-square-plus"></i>
-                </button>
             </div>
         </div>
         <div class="table-container">
