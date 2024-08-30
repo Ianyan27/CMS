@@ -6,22 +6,22 @@
 
 @section('content')
     @if (Session::has('success'))
-        <!-- Success Modal -->
-        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="successModalLabel">Success</h5>
-                    </div>
-                    <div class="modal-body">
-                        {{ Session::get('success') }}
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
-                    </div>
-                </div>
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="successModalLabel">Success</h5>
+            </div>
+            <div class="modal-body">
+            {{ Session::get('success') }}
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
             </div>
         </div>
+        </div>
+    </div>
     @endif
     <link rel="stylesheet" href="{{ URL::asset('css/contact-detail.css') }}">
     <div class="container-max-height">
@@ -31,18 +31,8 @@
                 <!-- Search Bar Section -->
                 <div class="search-box d-flex align-items-center ml-3">
                     <input type="search" class="form-control mr-1" placeholder="Search Name" id="search-name"
-
-                <button class="btn hover-action add-sales-agent-button" data-toggle="modal"
-                    data-target="#addSalesAgentModal" style="padding: 10px 12px;">
-                    <i class="fa-solid fa-square-plus"></i>
-                </button>
-            </div>
-            <div class="d-flex align-items-center mr-3">
-                <div class="search-box d-flex align-items-center ml-3" style="max-width: 350px;">
-                    <input type="search" class="form-control mr-1" placeholder="Search ID" id="search-id"
                         aria-label="Search">
-                    <button style="padding: 10px 12px;" class="btn hover-action" type="button" data-toggle="tooltip"
-                        title="Search">
+                    <button style="padding: 10px 12px;" class="btn hover-action" type="button" data-toggle="tooltip" title="Search">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
                 </div>
@@ -149,13 +139,13 @@
         </div>
     </div>
     </div>
-    @if (Session::has('success'))
+        @if (Session::has('success'))
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#successModal').modal('show');
             });
         </script>
-    @endif
+        @endif
     <script>
         document.getElementById('search-name').addEventListener('keyup', function() {
             var input = this.value.toLowerCase();
