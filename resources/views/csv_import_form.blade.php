@@ -92,16 +92,24 @@
         }
 
         .radio-btn {
-            background-color: #8b0045;
-            color: #fff;
-            padding: 10px 20px;
-            margin-right: 10px;
+            /* background-color: #8b0045; */
+
+            color: #000000;
+            padding: 5px 10px;
+            margin-right: 5px;
             cursor: pointer;
             border-radius: 5px;
+            font-size: medium;
+            font-weight: normal;
         }
 
-        .radio-btn:hover {
-            background-color: #6e0037;
+        input[type="radio"].radio-circle:checked {
+
+            accent-color: #91264c;
+        }
+
+        input[type="radio"]:checked+label {
+            color:  #91264c;
         }
 
         .d-none {
@@ -111,33 +119,27 @@
         .search-bar {
             margin-bottom: 10px;
         }
-
-        .radio-btn.active {
-            background-color: #8b0045;
-            color: white;
-        }
-
-        .radio-btn.inactive {
-            background-color: #e0e0e0;
-            color: #8b0045;
-        }
     </style>
 
     <div style="min-height: 720px;" class="container-max-height">
         <div class="row ">
             <div class="col-sm-12">
                 <form action="{{ route('import') }}" method="POST" enctype="multipart/form-data">
+                    <h5 class="mb-4 font-educ">Please Select Data Source</h5>
                     <div class="d-none" id="radioValidationMsg" style="color: red; font-size: small">
                         Please Select*
                     </div>
                     <div class="w-100 mb-4 d-flex justify-content-between align-items-center">
                         <!-- Radio buttons positioned to the left end -->
                         <div class="d-flex align-items-center">
-                            <label for="platformRadio" class="radio-btn inactive">Platform</label>
-                            <input type="radio" name="option" id="platformRadio" value="platform" class="d-none">
+                            <input type="radio" name="option" id="platformRadio" value="platform" class="radio-circle">
+                            <label for="platformRadio" class="radio-btn ">Platform</label>
 
-                            <label for="rawRadio" class="radio-btn inactive">Raw</label>
-                            <input type="radio" name="option" id="rawRadio" value="raw" class="d-none">
+                            <input type="radio" name="option" id="rawRadio" value="raw" class="radio-circle">
+                            <label for="rawRadio" class="radio-btn ">Raw</label>
+
+
+
                         </div>
 
 
@@ -271,7 +273,7 @@
         function checkIfReadyToSubmit() {
             const platform = document.getElementById('platform');
             const fileInput = document.getElementById(
-            'fileInput'); // Assuming you have an element with this ID for file input
+                'fileInput'); // Assuming you have an element with this ID for file input
             const submitBtn = document.getElementById('submit-btn');
             const platformRadio = document.getElementById('platformRadio');
             const rawRadio = document.getElementById('rawRadio');
@@ -285,7 +287,7 @@
                         radioValidationMsg.classList.add('d-none'); // Hide the validation message
                     } else {
                         platform.reportValidity(); // Highlight platform dropdown if it's invalid
-                        platform.focus(); 
+                        platform.focus();
                         platformValidationMsg.classList.remove('d-none');
                         submitBtn.classList.add('d-none'); // Keep the submit button hidden
                     }
