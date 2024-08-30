@@ -21,7 +21,7 @@ class RoundRobinAllocator
             Log::info('Total owners retrieved for BUH ID ' . $buhId . ':', ['count' => $owners->count()]);
 
             if ($owners->isEmpty()) {
-                throw new \Exception("No owners found for allocation under BUH ID " . $buhId);
+                throw new \Exception("No sales agent is assigned. Please make sure to assign the appropriate sales agents to continue." . $buhId);
             }
 
             // Get unassigned contacts
