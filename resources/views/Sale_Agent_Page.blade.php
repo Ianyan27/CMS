@@ -6,27 +6,26 @@
 
 @section('content')
     @if (Session::has('success'))
-    @endif
-    <!-- Success Modal -->
-    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header"
-                    style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+        <!-- Success Modal -->
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header"
+                        style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
                         border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
-                    <h5 class="modal-title" id="successModalLabel" style="color: #91264c"><strong>Success</strong></h5>
-                </div>
-                <div class="modal-body" style="color: #91264c;border:none;">
-                    {{ Session::get('success') }}
-                </div>
-                <div class="modal-footer" style="border:none;">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                        style="background: #91264c; color:white;">OK</button>
+                        <h5 class="modal-title" id="successModalLabel" style="color: #91264c"><strong>Success</strong></h5>
+                    </div>
+                    <div class="modal-body" style="color: #91264c;border:none;">
+                        {{ Session::get('success') }}
+                    </div>
+                    <div class="modal-footer" style="border:none;">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                            style="background: #91264c; color:white;">OK</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
+    @endif
 
     <link rel="stylesheet" href="{{ URL::asset('css/contact-detail.css') }}">
     <div class="container-max-height">
