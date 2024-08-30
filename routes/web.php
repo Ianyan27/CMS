@@ -48,7 +48,7 @@ Route::group(['prefix' => 'sales-agent'], function () {
     Route::get('/contact-listing', [ContactController::class, 'contactsByOwner'])->name('contact-listing');
     Route::get('view-contact/{contact_pid}', [ContactController::class, 'viewContact'])->name('contact#view');
     Route::get('/edit-contact/{contact_pid}', [ContactController::class, 'editContact'])->name('contact#edit');
-    Route::post('/save-contact/{contact_pid}', [ContactController::class, 'updateContact'])->name('contact#update-contact');
+    Route::post('/save-contact/{contact_pid}/{id}', [ContactController::class, 'updateContact'])->name('contact#update-contact');
     Route::get('/edit-archive/{contact_archive_pid}', [ArchiveController::class, 'editArchive'])->name('archive#edit');
     Route::get('/view-archive/{contact_archive_pid}', [ArchiveController::class, 'viewArchive'])->name('archive#view');
     Route::post('save-archive/{contact_archive_pid}', [ArchiveController::class, 'updateArchive'])->name('archive#update-archive');
