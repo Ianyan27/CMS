@@ -167,6 +167,7 @@ class BUHController extends Controller
         $saleAgent->owner_hubspot_id = $request->input('hubspotId');
         $saleAgent->owner_business_unit = $request->input('businessUnit');
         $saleAgent->country = $request->input('country');
+        $saleAgent->owner_pid = $user->id;
         $saleAgent->save();
 
         return redirect()->route('owner#view')->with('success', 'Sale Agent successfully added');

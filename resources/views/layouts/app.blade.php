@@ -55,9 +55,6 @@
                     <ul class="navbar-nav">
                         @if (Auth::check() && Auth::user()->role == 'Admin')
                             <li class="{{ Route::currentRouteName() != 'view-user' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'view-user' ? 'active-link' : '' }}">
-                                <a class="nav-link "
-                                    href="{{ route('admin#view-user') }}">
-                            <li class="{{ Route::currentRouteName() != 'view-user' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'view-user' ? 'active-link' : '' }}">
                                 <a class="nav-link" href="{{ route('view-user') }}">
                                     <i class="fa-solid fa-user"></i><span>User List</span>
                                 </a>
@@ -99,12 +96,12 @@
                     </ul>
                 </ul>
             </div>
-            <div class="col-11 px-4 min-height content-width">
+            <div class="col-11 px-4 min-height content-width mb-4">
                 @yield('content')
             </div>
         </div>
     </div>
-    <footer style="position: sticky;bottom:0;" class="bg-educ color-white text-center py-3 mt-auto">
+    <footer style="position: sticky; bottom: 0;" class="bg-educ color-white text-center py-3 mt-auto">
         © 2024 eduCLaaS Pte Ltd. All rights reserved.
     </footer>
     <script>

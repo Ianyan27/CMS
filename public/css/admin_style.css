@@ -23,6 +23,13 @@ body {
 
 .table-container{
     min-height: 450px;
+    height: 575px;
+    max-height: 575px;
+    overflow-y: auto;
+}
+
+table{
+    min-height: 500px;
     max-height: 550px;
     overflow-y: auto;
 }
@@ -322,24 +329,6 @@ tbody {
     color: white;
 }
 
-.agent-meeting:hover {
-    border: 1px solid #A47786;
-    background-color: white;
-    color: #1c1c1e;
-}
-
-.agent-active:hover {
-    border: 1px solid #A0C8A9;
-    background-color: white;
-    color: #1c1c1e;
-}
-
-.agent-offline:hover {
-    border: 1px solid #E2E2E2;
-    background-color: white;
-    color: #1c1c1e;
-}
-
 .archive-table:hover {
     background-color: #2C3E50;
     color: #ffffff;
@@ -347,9 +336,9 @@ tbody {
 }
 
 .discard-table:hover {
-    background-color: #91264c;
+    background-color: #FF4C4C;
     color: #ffffff;
-    border: 1px solid #91264c;
+    border: 1px solid #FF4C4C;
 }
 
 /* Icons */
@@ -565,11 +554,9 @@ th, label{
 
 /* Pagination */
 .paginationContainer {
-    position: -webkit-sticky; 
+    position: -webkit-sticky;
     position: sticky;
-    bottom: 0;
     background-color: transparent; 
-    z-index: 1000; 
     margin-top: 20px;
     padding: 10px 0; 
 }

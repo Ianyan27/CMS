@@ -39,8 +39,7 @@
         </script>
     @endif
     <div class="container-max-height">
-        <link rel="stylesheet" href="{{ URL::asset('css/contact_listing.css') }}">
-        <div class="table-title d-flex justify-content-between align-items-center">
+        <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
                 <h5 class="mr-3 my-2 headings">Contact Listing</h5>
                 <button class="btn hover-action mx-3" id="show-contacts">
@@ -64,7 +63,7 @@
         <div class="table-container" id="contacts">
             <table class=" table table-hover mt-2" id="contacts-table">
                 <thead class="text-left font-educ">
-                    <tr>
+                    <tr class="text-left font-educ">
                         <th scope="col">No #</th>
                         <th scope="col" id="name-header">Name
                             <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name"
@@ -171,10 +170,10 @@
                 </tbody>
             </table>
         </div>
-        <div class="table-container" id="archive">
+        <div class="table-container" id="archive" >
             <table class="table table-hover mt-2" id="archive-table">
                 <thead class="text-left font-educ">
-                    <tr class="text-left">
+                    <tr class="text-left font-educ">
                         <th scope="col">No #</th>
                         <th scope="col">Name <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
                         <th scope="col">Email <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
@@ -237,7 +236,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="table-container" id="discard">
+        <div class="table-container" id="discard" >
             <table class="table table-hover mt-2" id="discard-table">
                 <thead class="font-educ text-left">
                     <tr class="font-educ text-left">
