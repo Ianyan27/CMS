@@ -52,8 +52,8 @@
                     </li> --}}
                     <ul class="navbar-nav">
                         @if (Auth::check() && Auth::user()->role == 'Admin')
-                            <li class="nav-item dashboard-link">
-                                <a class="nav-link {{ Route::currentRouteName() == 'view-user' ? 'active-link' : '' }}"
+                            <li class="{{ Route::currentRouteName() != 'view-user' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'view-user' ? 'active-link' : '' }}">
+                                <a class="nav-link "
                                     href="{{ route('view-user') }}">
                                     <i class="fa-solid fa-user"></i><span>User List</span>
                                 </a>
@@ -61,20 +61,20 @@
                         @endif
 
                         @if (Auth::check() && Auth::user()->role == 'BUH')
-                            <li class="nav-item dashboard-link">
-                                <a class="nav-link {{ Route::currentRouteName() == 'importcsv' ? 'active-link' : '' }}"
+                            <li class="{{ Route::currentRouteName() != 'importcsv' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'importcsv' ? 'active-link' : '' }}">
+                                <a class="nav-link "
                                     href="{{ route('importcsv') }}">
                                     <i class="fa-solid fa-file-arrow-up"></i><span>Import Files</span>
                                 </a>
                             </li>
-                            <li class="nav-item dashboard-link">
-                                <a class="nav-link {{ Route::currentRouteName() == 'owner#view' ? 'active-link' : '' }}"
+                            <li class="{{ Route::currentRouteName() != 'owner#view' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'owner#view' ? 'active-link' : '' }}">
+                                <a class="nav-link "
                                     href="{{ route('owner#view') }}">
                                     <i class="fa-solid fa-universal-access"></i><span>Sales Agent</span>
                                 </a>
                             </li>
-                            <li class="nav-item dashboard-link">
-                                <a class="nav-link {{ Route::currentRouteName() == 'hubspot-contact' ? 'active-link' : '' }}"
+                            <li class="{{ Route::currentRouteName() != 'hubspot-contact' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'hubspot-contact' ? 'active-link' : '' }}">
+                                <a class="nav-link "
                                     href="{{ route('hubspot-contact') }}">
                                     <i class="fa-brands fa-hubspot"></i><span>Hubspot Contacts</span>
                                 </a>
@@ -82,8 +82,8 @@
                         @endif
 
                         @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
-                            <li class="nav-item dashboard-link">
-                                <a class="nav-link {{ Route::currentRouteName() == 'contact-listing' ? 'active-link' : '' }}"
+                            <li class="{{ Route::currentRouteName() != 'contact-listing' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'contact-listing' ? 'active-link' : '' }}">
+                                <a class="nav-link"
                                     href="{{ route('contact-listing') }}">
                                     <i class="fa-solid fa-address-book"></i><span>Contact Listing</span>
                                 </a>

@@ -56,7 +56,7 @@ body {
 }
 
 .navigation-width {
-    width: 250px;
+    width: 220px;
     padding: 0;
 }
 
@@ -511,7 +511,7 @@ th, label{
     position: -webkit-sticky; 
     position: sticky;
     bottom: 0;
-    background-color: #fff; 
+    background-color: transparent; 
     z-index: 1000; 
     margin-top: 20px;
     padding: 10px 0; 
@@ -527,4 +527,9 @@ th, label{
     display: block;
     margin-left: auto;
     margin-right: auto;
+}
+
+.active-link{
+    background-color:  #91264c;
+    color: white;
 }
