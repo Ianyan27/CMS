@@ -6,7 +6,7 @@ aria-hidden="true">
         <div class="modal-header d-flex justify-content-between align-items-center"
         style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
                         border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
-            <h5 class="modal-title" id="editArchiveModalLabel">
+            <h5 class="modal-title font-educ" id="editArchiveModalLabel">
                 <strong>Edit Archive</strong>
             </h5>
             <!-- Adding the logo on the right side -->

@@ -14,7 +14,7 @@ aria-hidden="true">
                 style="height: 30px;">
         </div>
         <div class="modal-body">
-            <form action=" {{ route('discard#update_discard', $editDiscard->contact_discard_pid) }}" method="POST"
+            <form action=" {{ route('discard#update-discard', $editDiscard->contact_discard_pid) }}" method="POST"
                 id="editContactForm">
                 @csrf
                 <div class="row">

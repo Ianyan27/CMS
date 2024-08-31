@@ -3,6 +3,8 @@
 @extends('layouts.app')
 
 @extends('layouts.Edit_Archive_Modal')
+@extends('layouts.Add_Archive_Activity_Modal')
+@extends('layouts.Edit_Archive_Activity_Modal')
 @section('content')
 @if (session('success'))
     <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
@@ -162,6 +164,11 @@
         <div class="d-flex align-items-center">
             <h2 class="ml-2 mb-1 headings">Activity Taken</h2>
         </div>
+        <div class="d-flex align-items-center mr-2 mb-2">
+            <button class="btn hover-action add-activity-button" data-toggle="modal" data-target="#addArchiveActivityModal">
+                <i style="font-size: 22px;" class="fa-solid fa-square-plus p-1"></i>
+            </button>
+        </div>
     </div>
     <!-- Table -->
     <table class="table table-hover mt-2">
@@ -184,8 +191,8 @@
                     <td> {{ $engagement->details }} </td>
                     <td> {{ $engagement->attachments }} </td>
                     <td>
-                        <a class="btn hover-action" href="#" data-toggle="modal" data-target="#updateActivityModal">
-                            <i  class="fa-solid fa-pen-to-square" ></i>
+                        <a class="btn hover-action" data-toggle="modal" data-target="#updateArchiveActivityModal-{{ $engagement->engagement_archive_pid }}">
+                            <i class="fa-solid fa-pen-to-square"></i>
                         </a>
                     </td>
                 </tr>

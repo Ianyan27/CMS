@@ -52,15 +52,17 @@ Route::group(['prefix' => 'sales-agent'], function () {
     Route::get('/edit-contact/{contact_pid}', [ContactController::class, 'editContact'])->name('contact#edit');
     Route::post('/save-contact/{contact_pid}/{id}', [ContactController::class, 'updateContact'])->name('contact#update-contact');
     Route::get('/edit-archive/{contact_archive_pid}', [ArchiveController::class, 'editArchive'])->name('archive#edit');
-    Route::get('/view-archive/{id}', [ArchiveController::class, 'viewArchive'])->name('archive#view');
+    Route::get('/view-archive/{contact_archive_pid}', [ArchiveController::class, 'viewArchive'])->name('archive#view');
     Route::post('/save-archive/{contact_archive_pid}/{id}', [ArchiveController::class, 'updateArchive'])->name('archive#update-archive');
     Route::get('/edit-discard/{contact_discard_pid}', [DiscardController::class, 'editDiscard'])->name('discard#edit');
     Route::get('/view-discard/{contact_discard_pid}', [DiscardController::class, 'viewDiscard'])->name('discard#view');
     Route::post('/save-discard/{contact_discard_pid}', [DiscardController::class, 'updateDiscard'])->name('discard#update-discard');
     Route::post('/save-activity/{contact_pid}', [ContactController::class, 'saveActivity'])->name('contact#save-activity');
+    Route::post('/save-archive-activity/{contact_archive_pid}', [ArchiveController::class, 'saveActivity'])->name('archive#save-activity');
     Route::get('/edit-activity/{contact_id}/{activity_id}', [ContactController::class, 'editActivity'])->name('contact#update-activity');
     Route::post('/contact/{contact_pid}/activity/{activity_id}/update', [ContactController::class, 'saveUpdateActivity'])
         ->name('contact#save-update-activity');
+    Route::post('/archive/{contact_archive_pid}/activity/{activity_id}/update', [ArchiveController::class, 'updateActivity'])->name('archive#update-activity');
     Route::post('/save-discard-activity/{contact_discard_pid}', [
         DiscardController::class,
         'saveDiscardActivity'
