@@ -25,16 +25,18 @@
                 <button class="navbar-toggler" type="button">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                
+
             </div>
             <div class="col-auto d-flex align-items-center">
                 <div class="logo ms-2">
-                    <img src="{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}" alt="Logo" class="img-fluid" style="max-height: 50px;">
+                    <img src="{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}" alt="Logo"
+                        class="img-fluid" style="max-height: 50px;">
                 </div>
             </div>
             <div class="col d-flex justify-content-end align-items-center">
                 <div class="dropdown">
-                    <button class="btn hover-action dropdown-toggle" type="button" id="dropdownMenuButton" aria-haspopup="true" aria-expanded="false" style="border:none;">
+                    <button class="btn hover-action dropdown-toggle" type="button" id="dropdownMenuButton"
+                        aria-haspopup="true" aria-expanded="false" style="border:none;">
                         <i class="fa-solid fa-user" style="padding: 0 5px 0 0;"></i>{{ Auth::user()->name }}
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="padding: 5px 0;">
@@ -54,41 +56,45 @@
                     <!-- Sidebar Navigation Items -->
                     <ul class="navbar-nav">
                         @if (Auth::check() && Auth::user()->role == 'Admin')
-                            <li class="{{ Route::currentRouteName() != 'view-user' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'view-user' ? 'active-link' : '' }}">
+                            <li
+                                class="{{ Route::currentRouteName() != 'view-user' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'view-user' ? 'active-link' : '' }}">
                                 <a class="nav-link" href="{{ route('view-user') }}">
                                     <i class="fa-solid fa-user"></i><span>User List</span>
                                 </a>
                             </li>
                         @endif
                         @if (Auth::check() && Auth::user()->role == 'Admin')
-                            <li class="{{ Route::currentRouteName() != 'contact-listing' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'contact-listing' ? 'active-link' : '' }}">
-                                <a class="nav-link "
-                                    href="{{ route('admin#contact-listing') }}">
+                            <li
+                                class="{{ Route::currentRouteName() != 'contact-listing' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'contact-listing' ? 'active-link' : '' }}">
+                                <a class="nav-link " href="{{ route('admin#contact-listing') }}">
                                     <i class="fa-solid fa-user"></i><span>Contacts</span>
                                 </a>
                             </li>
                         @endif
                         @if (Auth::check() && Auth::user()->role == 'BUH')
-                            <li class="{{ Route::currentRouteName() != 'importcsv' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'importcsv' ? 'active-link' : '' }}">
+                            <li
+                                class="{{ Route::currentRouteName() != 'importcsv' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'importcsv' ? 'active-link' : '' }}">
                                 <a class="nav-link" href="{{ route('importcsv') }}">
                                     <i class="fa-solid fa-file-arrow-up"></i><span>Import Files</span>
                                 </a>
                             </li>
-                            <li class="{{ Route::currentRouteName() != 'owner#view' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'owner#view' ? 'active-link' : '' }}">
+                            <li
+                                class="{{ Route::currentRouteName() != 'owner#view' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'owner#view' ? 'active-link' : '' }}">
                                 <a class="nav-link" href="{{ route('owner#view') }}">
                                     <i class="fa-solid fa-universal-access"></i><span>Sales Agent</span>
                                 </a>
                             </li>
-                            <li class="{{ Route::currentRouteName() != 'hubspot-contact' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'hubspot-contact' ? 'active-link' : '' }}">
+                            <li
+                                class="{{ Route::currentRouteName() != 'hubspot-contact' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'hubspot-contact' ? 'active-link' : '' }}">
                                 <a class="nav-link" href="{{ route('hubspot-contact') }}">
                                     <i class="fa-brands fa-hubspot"></i><span>Hubspot Contacts</span>
                                 </a>
                             </li>
                         @endif
                         @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
-                            <li class="{{ Route::currentRouteName() != 'contact-listing' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'contact-listing' ? 'active-link' : '' }}">
-                                <a class="nav-link"
-                                    href="{{ route('contact-listing') }}">
+                            <li
+                                class="{{ Route::currentRouteName() != 'contact-listing' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'contact-listing' ? 'active-link' : '' }}">
+                                <a class="nav-link" href="{{ route('contact-listing') }}">
                                     <i class="fa-solid fa-address-book"></i><span>Contact Listing</span>
                                 </a>
                             </li>
@@ -119,7 +125,8 @@
             // Toggle sidebar and dropdown on hamburger menu click
             navbarToggler.addEventListener('click', function() {
                 sidebar.classList.toggle('active');
-                hamburgerDropdown.style.display = hamburgerDropdown.style.display === 'none' || hamburgerDropdown.style.display === '' ? 'block' : 'none';
+                hamburgerDropdown.style.display = hamburgerDropdown.style.display === 'none' ||
+                    hamburgerDropdown.style.display === '' ? 'block' : 'none';
             });
 
             // Position dropdown below the hamburger menu
@@ -129,7 +136,8 @@
 
             // Optional: Close dropdown when clicking outside
             document.addEventListener('click', function(event) {
-                if (!dropdownButton.contains(event.target) && !dropdownMenu.contains(event.target) && !navbarToggler.contains(event.target)) {
+                if (!dropdownButton.contains(event.target) && !dropdownMenu.contains(event.target) && !
+                    navbarToggler.contains(event.target)) {
                     dropdownMenu.classList.remove('show');
                     hamburgerDropdown.style.display = 'none';
                 }
@@ -146,4 +154,3 @@
 </body>
 
 </html>
- 

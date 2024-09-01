@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
-use GuzzleHttp\Client;
 use Illuminate\Support\Str;
 
 
@@ -32,10 +31,6 @@ class AuthController extends Controller
         /**
          * Auto login with current account
          */
-        $client = new Client([
-            'verify' => false, // Disable SSL verification
-        ]);
-
         return Socialite::driver('microsoft')
             ->redirect();
     }
@@ -74,7 +69,7 @@ class AuthController extends Controller
             }
         } catch (\Exception $e) {
             // Handle exceptions like user canceling the login
-            return redirect('/login')->withErrors(['msg' => 'Login failed. Please try again. Error code: ' . $e]);
+            return redirect('/')->withErrors(['msg' => 'Login failed. Please try again. Error code: ' . $e]);
         }
     }
 
