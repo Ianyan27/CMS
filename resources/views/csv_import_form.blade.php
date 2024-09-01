@@ -113,13 +113,13 @@
             <div class="col-sm-12">
                 <form action="{{ route('import') }}" method="POST" enctype="multipart/form-data">
                     <h5 class="mb-4 font-educ headings">Please Select Data Source</h5>
-                    <div class="d-none" id="radioValidationMsg" style="color: red; font-size: small">
-                        Please Select Data Source
-                    </div>
+                    <div class="alert alert-danger d-none" id="radioValidationMsg" role="alert" style="font-size: medium;">
+                        Please select a data source.
+                    </div>                    
                     <div class="w-100 mb-4 d-flex justify-content-between align-items-center">
                         <!-- Radio buttons positioned to the left end -->
-                        <div class="d-flex align-items-center" id="radio-container">
-                            <input type="radio" name="option" id="platformRadio" value="platform" class="radio-circle">
+                        <div class="d-flex align-items-center pl-1" id="radio-container">
+                            <input type="radio" name="option" id="platformRadio" value="platform" class="radio-circle ml-1">
                             <label for="platformRadio" class="radio-btn ">Platform</label>
 
                             <input type="radio" name="option" id="rawRadio" value="raw" class="radio-circle">
@@ -133,11 +133,11 @@
                         </div>
                     </div>
                     <div id="platform-container">
-                        <div class="d-none" id="platformValidationMsg" style="color: red; font-size: small">
-                            Please Select Platform*
+                        <div class="alert alert-danger d-none" id="platformValidationMsg" role="alert" style="font-size: medium">
+                            Please Select Platform *
                         </div>
                         <select id="platform" class="w-100 platforms search-bar d-none" name="platform">
-                            <option value="" selected disabled>Select platform</option>
+                            <option value="" selected disabled>Select Platform</option>
                             <option value="linkedin">LinkedIn</option>
                             <option value="apollo">Apollo</option>
                         </select>
