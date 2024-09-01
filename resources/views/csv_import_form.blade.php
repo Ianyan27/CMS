@@ -109,7 +109,7 @@
         }
 
         input[type="radio"]:checked+label {
-            color:  #91264c;
+            color: #91264c;
         }
 
         .d-none {
@@ -127,19 +127,16 @@
                 <form action="{{ route('import') }}" method="POST" enctype="multipart/form-data">
                     <h5 class="mb-4 font-educ headings">Please Select Data Source</h5>
                     <div class="d-none" id="radioValidationMsg" style="color: red; font-size: small">
-                        Please Select*
+                        Please Select Data Source
                     </div>
                     <div class="w-100 mb-4 d-flex justify-content-between align-items-center">
                         <!-- Radio buttons positioned to the left end -->
-                        <div class="d-flex align-items-center">
+                        <div class="d-flex align-items-center" id="radio-container">
                             <input type="radio" name="option" id="platformRadio" value="platform" class="radio-circle">
                             <label for="platformRadio" class="radio-btn ">Platform</label>
 
                             <input type="radio" name="option" id="rawRadio" value="raw" class="radio-circle">
                             <label for="rawRadio" class="radio-btn ">Raw</label>
-
-
-
                         </div>
 
 
@@ -221,6 +218,8 @@
         const progressBar = document.getElementById('progressBar');
         const progressMessage = document.getElementById('progress-message');
         const errorMessage = document.getElementById('error-message');
+        const radioContainer = document.getElementById('radio-container');
+
 
 
         //----------Drag and drop--------------//
@@ -285,6 +284,7 @@
                     if (platform && platform.value !== "") {
                         submitBtn.classList.remove('d-none');
                         radioValidationMsg.classList.add('d-none'); // Hide the validation message
+
                     } else {
                         platform.reportValidity(); // Highlight platform dropdown if it's invalid
                         platform.focus();
@@ -295,6 +295,7 @@
                     if (fileInput && fileInput.files.length > 0) {
                         submitBtn.classList.remove('d-none');
                         radioValidationMsg.classList.add('d-none'); // Hide the validation message
+
                     } else {
                         submitBtn.classList.add('d-none'); // Keep the submit button hidden if no file is selected
                     }
@@ -302,6 +303,9 @@
             } else {
                 submitBtn.classList.add('d-none'); // Hide the submit button
                 radioValidationMsg.classList.remove('d-none'); // Show the validation message
+                radioContainer.style.backgroundColor = "#FFCCD4";
+                radioContainer.style.border = "1px solid #FFCCD7";
+                radioContainer.style.borderRadius = "0.375rem";
             }
         }
 
@@ -492,27 +496,38 @@
 
             platformRadio.addEventListener('change', function() {
                 if (platformRadio.checked) {
+                    const radioValidationMsg = document.getElementById('radioValidationMsg');
                     platformSelect.classList.remove('d-none');
                     platformSelect.style.display = 'block';
                     rawBtnContainer.style.display = 'none';
+                    radioValidationMsg.classList.add('d-none');
 
                     platformBtn.classList.add('active');
                     platformBtn.classList.remove('inactive');
                     rawBtn.classList.remove('active');
                     rawBtn.classList.add('inactive');
+
+                    radioContainer.style.backgroundColor = "transparent";
+                    radioContainer.style.border = "none";
                 }
             });
 
             rawRadio.addEventListener('change', function() {
                 if (rawRadio.checked) {
+                    const radioValidationMsg = document.getElementById('radioValidationMsg');
+
                     platformSelect.style.display = 'none';
                     rawBtnContainer.classList.remove('d-none');
                     rawBtnContainer.style.display = 'block';
+                    radioValidationMsg.classList.add('d-none');
 
                     rawBtn.classList.add('active');
                     rawBtn.classList.remove('inactive');
                     platformBtn.classList.remove('active');
                     platformBtn.classList.add('inactive');
+
+                    radioContainer.style.backgroundColor = "transparent";
+                    radioContainer.style.border = "none";
                 }
             });
         });
