@@ -10,6 +10,8 @@ use App\Imports\ContactsImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class BUHController extends Controller
 {
@@ -43,9 +45,23 @@ class BUHController extends Controller
         $file = $request->file('csv_file');
         $platform = $request->input('platform'); // Get the platform value
 
+         // Get the BUH ID from the logged-in user
+         $buhId = Auth::user()->id;
+
+         // Retrieve owners (sales agents) under the specified BUH
+         $owners = Owner::where('fk_buh', $buhId)->get();
+         Log::info('Total owners retrieved for BUH ID ' . $buhId . ':', ['count' => $owners->count()]);
+
+         if ($owners->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => "No sales agent is assigned. Please make sure to assign the appropriate sales agents to continue."
+            ], 500);
+         }
+
         try {
             // Store the file in public storage
-            $filePath = Storage::disk('public')->putFile('csv_uploads', $file);
+            //$filePath = Storage::disk('public')->putFile('csv_uploads', $file);
             // Import the data into the database using the ContactsImport class
             $import = new ContactsImport($platform);
             Excel::import($import, $file);
@@ -96,8 +112,8 @@ class BUHController extends Controller
                 'valid_count' => $validCount,
                 'invalid_count' => $invalidCount,
                 'duplicate_count' => $duplicateCount,
-                'file_links' => $fileLinks,
-                'uploaded_file_path' => Storage::url($filePath) // Provide URL to the uploaded file
+                'file_links' => $fileLinks
+               // 'uploaded_file_path' => Storage::url($filePath) // Provide URL to the uploaded file
             ]
         ]);
     }

@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
-// use Stancl\Tenancy\Tenancy;
+use GuzzleHttp\Client;
 use Illuminate\Support\Str;
 
 
@@ -32,7 +32,12 @@ class AuthController extends Controller
         /**
          * Auto login with current account
          */
-        return Socialite::driver('microsoft')->redirect();
+        $client = new Client([
+            'verify' => false, // Disable SSL verification
+        ]);
+
+        return Socialite::driver('microsoft')
+            ->redirect();
     }
 
     // Handle the callback from Microsoft

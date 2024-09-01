@@ -15,6 +15,9 @@ deployment:
     # Generate the Laravel application key
     - php artisan key:generate
 
+    #Create storage link
+    - php artisan storage:link
+
     # Clear and cache configurations
     - php artisan config:cache
     - php artisan route:cache
