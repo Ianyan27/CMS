@@ -78,22 +78,9 @@
             margin-bottom: 1.5rem;
         }
 
-        .btn {
-            background-color: #fff;
-            border: 1px solid #8b0045;
-            color: #8b0045;
-            padding: 8px 12px;
-            font-size: 14px;
-        }
-
-        .btn:hover {
-            background-color: #8b0045;
-            color: #fff;
-        }
 
         .radio-btn {
             /* background-color: #8b0045; */
-
             color: #000000;
             padding: 5px 10px;
             margin-right: 5px;
@@ -138,8 +125,6 @@
                             <input type="radio" name="option" id="rawRadio" value="raw" class="radio-circle">
                             <label for="rawRadio" class="radio-btn ">Raw</label>
                         </div>
-
-
                         <!-- Get CSV Format button positioned to the right end -->
                         <div id="raw-btn-container" class="d-none">
                             <button class="btn hover-action" onclick="window.location.href='{{ route('get-csv') }}'">
@@ -147,7 +132,6 @@
                             </button>
                         </div>
                     </div>
-
                     <div id="platform-container">
                         <div class="d-none" id="platformValidationMsg" style="color: red; font-size: small">
                             Please Select Platform*
@@ -158,9 +142,6 @@
                             <option value="apollo">Apollo</option>
                         </select>
                     </div>
-
-
-
                     <div class="text-center mb-4">
                         <div class="card-body justify-content-center align-items-center drop-zone" id="dropZone">
                             <div class="mx-5">
@@ -193,7 +174,6 @@
                             <div class="progress-bar bg-educ" id="progressBar" style="width: 0%;"></div>
                         </div>
                         <p id="progress-message" class="text-muted d-none mt-2"></p>
-
                         <p id="error-message" class="text-danger d-none mt-2"></p>
                     </div>
                     <div>
