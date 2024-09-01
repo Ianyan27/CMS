@@ -6,34 +6,38 @@
 @extends('layouts.Add_Archive_Activity_Modal')
 @extends('layouts.Edit_Archive_Activity_Modal')
 @section('content')
-@if (session('success'))
-    <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
-    <button id="successModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal" style="display: none;">
-        Open Modal
-    </button>
-    <!-- Modal -->
-    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="successModalLabel">Success</h5>
-                </div>
-                <div class="modal-body">
-                    {{ session('success') }}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    @if (session('success'))
+        <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
+        <button id="successModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal"
+            style="display: none;">
+            Open Modal
+        </button>
+        <!-- Modal -->
+        <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header"
+                        style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+                border:none;">
+                        <h5 class="modal-title font-educ" id="successModalLabel">Success</h5>
+                    </div>
+                    <div class="modal-body" style="color: #91264c">
+                        {{ session('success') }}
+                    </div>
+                    <div class="modal-footer" style="border:none">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Script to trigger the modal -->
-    <script type="text/javascript">
-        window.onload = function() {
-            document.getElementById('successModalBtn').click();
-        };
-    </script>
-@endif
+        <!-- Script to trigger the modal -->
+        <script type="text/javascript">
+            window.onload = function() {
+                document.getElementById('successModalBtn').click();
+            };
+        </script>
+    @endif
     {{-- css will edit to css file soon --}}
     <link rel="stylesheet" href="{{ URL::asset('css/contact_detail.css') }}">
     <div class="row border-educ rounded">
@@ -105,16 +109,22 @@
                         <label class="font-educ" for="status">Status</label>
                         <h5 class="fonts p-1 rounded" id="status">
                             {{ trim(
-                                $editArchive->status === 'HubSpot Contact' ? 'HubSpot' :
-                                ($editArchive->status === 'Discard' ? 'Discard' :
-                                ($editArchive->status === 'InProgress' ? 'In Progress' :
-                                ($editArchive->status === 'New' ? 'New' :
-                                ($editArchive->status === 'Archive' ? 'Archive' : ''))))
+                                $editArchive->status === 'HubSpot Contact'
+                                    ? 'HubSpot'
+                                    : ($editArchive->status === 'Discard'
+                                        ? 'Discard'
+                                        : ($editArchive->status === 'InProgress'
+                                            ? 'In Progress'
+                                            : ($editArchive->status === 'New'
+                                                ? 'New'
+                                                : ($editArchive->status === 'Archive'
+                                                    ? 'Archive'
+                                                    : '')))),
                             ) }}
                         </h5>
                     </div>
                 </div>
-            </div>            
+            </div>
         </div>
         <div class="col-md-7 px-3" id="activity-container">
             <div class="d-flex justify-content-between align-items-center my-3">
@@ -132,8 +142,8 @@
             {{-- Iterating all the activities from all contacts --}}
             <div class="activities">
                 @forelse ($engagementArchive->groupBy(function ($date) {
-                return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
-            }) as $month => $activitiesInMonth)
+                                                    return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
+                                                }) as $month => $activitiesInMonth)
                     <div class="activity-list">
                         <div class="activity-date my-3 ml-3">
                             <span class="text-muted">{{ $month }}</span>
@@ -165,7 +175,8 @@
             <h2 class="ml-2 mb-1 headings">Activity Taken</h2>
         </div>
         <div class="d-flex align-items-center mr-2 mb-2">
-            <button class="btn hover-action add-activity-button" data-toggle="modal" data-target="#addArchiveActivityModal">
+            <button class="btn hover-action add-activity-button" data-toggle="modal"
+                data-target="#addArchiveActivityModal">
                 <i style="font-size: 22px;" class="fa-solid fa-square-plus p-1"></i>
             </button>
         </div>
@@ -183,15 +194,18 @@
             </tr>
         </thead>
         <tbody class="text-left bg-row">
+            <?php $i = 0; ?>
+
             @foreach ($engagementArchive as $engagement)
                 <tr>
-                    <td> {{ $engagement->engagement_archive_pid }} </td>
+                    <td> {{ ++$i }} </td>
                     <td> {{ $engagement->date }} </td>
                     <td> {{ $engagement->activity_name }} </td>
                     <td> {{ $engagement->details }} </td>
                     <td> {{ $engagement->attachments }} </td>
                     <td>
-                        <a class="btn hover-action" data-toggle="modal" data-target="#updateArchiveActivityModal-{{ $engagement->engagement_archive_pid }}">
+                        <a class="btn hover-action" data-toggle="modal"
+                            data-target="#updateArchiveActivityModal-{{ $engagement->engagement_archive_pid }}">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </a>
                     </td>

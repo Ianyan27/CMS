@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
-// use Stancl\Tenancy\Tenancy;
 use Illuminate\Support\Str;
 
 
@@ -32,7 +31,8 @@ class AuthController extends Controller
         /**
          * Auto login with current account
          */
-        return Socialite::driver('microsoft')->redirect();
+        return Socialite::driver('microsoft')
+            ->redirect();
     }
 
     // Handle the callback from Microsoft
@@ -69,7 +69,7 @@ class AuthController extends Controller
             }
         } catch (\Exception $e) {
             // Handle exceptions like user canceling the login
-            return redirect('/login')->withErrors(['msg' => 'Login failed. Please try again. Error code: ' . $e]);
+            return redirect('/')->withErrors(['msg' => 'Login failed. Please try again. Error code: ' . $e]);
         }
     }
 

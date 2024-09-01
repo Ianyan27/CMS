@@ -22,7 +22,7 @@
                     <div class="modal-body">
                         {{ session('success') }}
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer" style="border:none">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -114,9 +114,10 @@
                     </tr>
                 </thead>
                 <tbody class="text-left bg-row fonts">
+                    <?php $i = 0; ?>
                     @forelse ($contacts as $contact)
                         <tr data-status="{{ $contact['status'] }}">
-                            <td>{{ $contact['contact_pid'] }}</td>
+                            <td>{{ ++$i }}</td>
                             <td>{{ $contact['name'] }}</td>
                             <td>{{ $contact['email'] }}</td>
                             <td>{{ $contact['contact_number'] }}</td>
@@ -167,7 +168,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="table-container" id="archive" >
+        <div class="table-container" id="archive">
             <table class="table table-hover mt-2" id="archive-table">
                 <thead class="text-left font-educ">
                     <tr class="text-left font-educ">
@@ -189,9 +190,10 @@
                     </tr>
                 </thead>
                 <tbody class="text-left bg-row">
+                    <?php $i = 0; ?>
                     @foreach ($contactArchive as $archive)
                         <tr>
-                            <td> {{ $archive['contact_archive_pid'] }} </td>
+                            <td> {{ ++$i }} </td>
                             <td> {{ $archive['name'] }} </td>
                             <td> {{ $archive['email'] }} </td>
                             <td> {{ $archive['contact_number'] }} </td>
@@ -233,7 +235,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="table-container" id="discard" >
+        <div class="table-container" id="discard">
             <table class="table table-hover mt-2" id="discard-table">
                 <thead class="font-educ text-left">
                     <tr class="font-educ text-left">
@@ -253,9 +255,10 @@
                     </tr>
                 </thead>
                 <tbody class="text-left bg-row">
+                    <?php $i = 0; ?>
                     @foreach ($contactDiscard as $discard)
                         <tr>
-                            <td> {{ $discard['contact_discard_pid'] }} </td>
+                            <td> {{ ++$i }} </td>
                             <td> {{ $discard['name'] }} </td>
                             <td> {{ $discard['email'] }} </td>
                             <td> {{ $discard['contact_number'] }} </td>

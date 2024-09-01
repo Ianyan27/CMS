@@ -3,34 +3,38 @@
 @extends('layouts.app')
 @extends('layouts.Edit_Discard_Modal')
 @section('content')
-@if (session('success'))
-    <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
-    <button id="successModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal" style="display: none;">
-        Open Modal
-    </button>
-    <!-- Modal -->
-    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="successModalLabel">Success</h5>
-                </div>
-                <div class="modal-body">
-                    {{ session('success') }}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    @if (session('success'))
+        <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
+        <button id="successModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal"
+            style="display: none;">
+            Open Modal
+        </button>
+        <!-- Modal -->
+        <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header"
+                        style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+                border:none;">
+                        <h5 class="modal-title font-educ" id="successModalLabel">Success</h5>
+                    </div>
+                    <div class="modal-body" style="color: #91264c">
+                        {{ session('success') }}
+                    </div>
+                    <div class="modal-footer" style="border:none">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Script to trigger the modal -->
-    <script type="text/javascript">
-        window.onload = function() {
-            document.getElementById('successModalBtn').click();
-        };
-    </script>
-@endif
+        <!-- Script to trigger the modal -->
+        <script type="text/javascript">
+            window.onload = function() {
+                document.getElementById('successModalBtn').click();
+            };
+        </script>
+    @endif
     {{-- css will edit to css file soon --}}
     <link rel="stylesheet" href="{{ URL::asset('css/contact_detail.css') }}">
     <div class="row border-educ rounded h-auto">
@@ -102,22 +106,28 @@
                         <label class="font-educ" for="status">Status</label>
                         <h5 class="fonts p-1 rounded" id="status">
                             {{ trim(
-                                $editDiscard->status === 'HubSpot Contact' ? 'HubSpot' :
-                                ($editDiscard->status === 'Discard' ? 'Discard' :
-                                ($editDiscard->status === 'InProgress' ? 'In Progress' :
-                                ($editDiscard->status === 'New' ? 'New' :
-                                ($editDiscard->status === 'Archive' ? 'Archive' : ''))))
+                                $editDiscard->status === 'HubSpot Contact'
+                                    ? 'HubSpot'
+                                    : ($editDiscard->status === 'Discard'
+                                        ? 'Discard'
+                                        : ($editDiscard->status === 'InProgress'
+                                            ? 'In Progress'
+                                            : ($editDiscard->status === 'New'
+                                                ? 'New'
+                                                : ($editDiscard->status === 'Archive'
+                                                    ? 'Archive'
+                                                    : '')))),
                             ) }}
                         </h5>
                     </div>
                 </div>
             </div>
-        </div>        
+        </div>
         <div class="col-md-7 px-3" id="activity-container">
             <div class="d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 ml-2 headings">Activities Notifications</h2>
             </div>
-        <!-- Filter Buttons -->
+            <!-- Filter Buttons -->
             <div class="btn-group mb-3" role="group" aria-label="Activity Filter Buttons">
                 <button type="button" class="btn activity-button mx-2 active-activity-button"
                     data-filter="all">Activities</button>
@@ -129,8 +139,8 @@
             {{-- Iterating all the activities from all contacts --}}
             <div class="activities">
                 @forelse ($engagementDiscard->groupBy(function ($date) {
-                return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
-            }) as $month => $activitiesInMonth)
+                        return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
+                    }) as $month => $activitiesInMonth)
                     <div class="activity-list">
                         <div class="activity-date my-3 ml-3">
                             <span class="text-muted">{{ $month }}</span>
@@ -175,16 +185,18 @@
             </tr>
         </thead>
         <tbody class="text-left bg-row">
+            <?php $i = 0; ?>
             @foreach ($engagementDiscard as $engagement)
                 <tr>
-                    <td> {{ $engagement->engagement_discard_pid }} </td>
+                    <td> {{ ++$i }} </td>
                     <td> {{ $engagement->date }} </td>
                     <td> {{ $engagement->activity_name }} </td>
                     <td> {{ $engagement->details }} </td>
                     <td> {{ $engagement->attachments }} </td>
                     <td>
-                        <a class="btn hover-action" href="#" data-toggle="modal" data-target="#updateActivityModal">
-                            <i  class="fa-solid fa-pen-to-square" ></i>
+                        <a class="btn hover-action" href="#" data-toggle="modal"
+                            data-target="#updateActivityModal">
+                            <i class="fa-solid fa-pen-to-square"></i>
                         </a>
                     </td>
                 </tr>
