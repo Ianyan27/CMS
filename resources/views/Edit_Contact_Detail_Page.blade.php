@@ -16,7 +16,7 @@
             <div class="modal-content">
                 <div class="modal-header" style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
                 border:none;">
-                    <h5 class="modal-title" id="successModalLabel">Success</h5>
+                    <h5 class="modal-title font-educ" id="successModalLabel">Success</h5>
                 </div>
                 <div class="modal-body">
                     {{ session('success') }}
@@ -36,7 +36,7 @@
 @endif
     {{-- css will edit to css file soon --}}
     <link rel="stylesheet" href="{{ URL::asset('css/contact_detail.css') }}">
-    <div class="row border-educ rounded h-auto">
+    <div class="row border-educ rounded">
         <div class="col-md-5 border-right" id="contact-detail">
             <div class="table-title d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 headings">Contact Detail</h2>
@@ -49,25 +49,21 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="font-educ" for="name">Name</label>
-                        <input type="text" class="form-control fonts" id="name" value=" {{ $editContact->name }} "
-                            readonly>
+                        <h5 class="fonts p-1" id="name">{{ $editContact->name }}</h5>
                     </div>
                     <div class="form-group">
                         <label class="font-educ" for="contact-number">Contact Number</label>
-                        <input type="text" class="form-control fonts" id="contact_number"
-                            value= " {{ $editContact->contact_number }} " readonly>
+                        <h5 class="fonts p-1" id="contact_number">{{ $editContact->contact_number }}</h5>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="font-educ" for="email">Email</label>
-                        <input type="email" class="form-control fonts" id="email" value=" {{ $editContact->email }} "
-                            readonly>
+                        <h5 class="fonts p-1" id="email">{{ $editContact->email }}</h5>
                     </div>
                     <div class="form-group">
                         <label class="font-educ" for="country">Country</label>
-                        <input type="text" class="form-control fonts" id="country"
-                            value=" {{ $editContact->country }} " readonly>
+                        <h5 class="fonts p-1" id="country">{{ $editContact->country }}</h5>
                     </div>
                 </div>
             </div>
@@ -75,20 +71,17 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="font-educ" for="address">Address</label>
-                        <input style="min-height: 103px;" type="text" class="form-control fonts" id="address"
-                            value=" {{ $editContact->address }} " readonly>
+                        <h5 class="fonts p-1" id="address" style="min-height: 103px;">{{ $editContact->address }}</h5>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="font-educ" for="date-of-allocation">Date of Allocation</label>
-                        <input type="datetime" class="form-control fonts" id="date-of-allocation"
-                            value="{{ $editContact->date_of_allocation }}" readonly>
+                        <h5 class="fonts p-1" id="date-of-allocation">{{ $editContact->date_of_allocation }}</h5>
                     </div>
                     <div class="form-group">
                         <label class="font-educ" for="qualification">Qualification</label>
-                        <input type="text" class="form-control fonts" id="qualification"
-                            value=" {{ $editContact->qualification }} " readonly>
+                        <h5 class="fonts p-1" id="qualification">{{ $editContact->qualification }}</h5>
                     </div>
                 </div>
             </div>
@@ -96,25 +89,22 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="font-educ" for="skills">Skills</label>
-                        <input type="text" class="form-control fonts" id="skills" value="{{ $editContact->skills }}"
-                            readonly>
+                        <h5 class="fonts p-1" id="skills">{{ $editContact->skills }}</h5>
                     </div>
                     <div class="form-group">
                         <label class="font-educ" for="source">Source</label>
-                        <input type="text" class="form-control fonts" id="source" value="{{ $editContact->source }}"
-                            readonly>
+                        <h5 class="fonts p-1" id="source">{{ $editContact->source }}</h5>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="font-educ" for="job-role">Job Role</label>
-                        <input type="text" class="form-control fonts" id="job-role"
-                            value=" {{ $editContact->job_role }} " readonly>
+                        <h5 class="fonts p-1" id="job-role">{{ $editContact->job_role }}</h5>
                     </div>
                     <div class="form-group">
                         <label class="font-educ" for="status">Status</label>
-                        <input type="text" class="form-control fonts" id="status"
-                            value="{{ trim(
+                        <h5 class="fonts p-1 rounded" id="status">
+                            {{ trim(
                                 $editContact->status === 'HubSpot Contact'
                                     ? 'HubSpot'
                                     : ($editContact->status === 'discard'
@@ -126,18 +116,15 @@
                                                 : ($editContact->status === 'Archive'
                                                     ? 'Archive'
                                                     : '')))),
-                            ) }}"
-                            readonly>
+                            ) }}
+                        </h5>
                     </div>
-                </div>
+                </div>          
             </div>
         </div>
         <div class="col-md-7 px-3" id="activity-container">
             <div class="d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 ml-2 headings">Activities Notifications</h2>
-                <!-- <a class="btn hover-action font" href=" {{ route('contact-listing') }} ">
-                    <i class="fa-solid fa-left-long"></i>
-                </a> -->
             </div>
             <!-- Filter Buttons -->
             <div class="btn-group mb-3" role="group" aria-label="Activity Filter Buttons">
@@ -150,9 +137,9 @@
             </div>
             {{-- Iterating all the activities from all contacts --}}
             <div class="activities">
-                @foreach ($engagements->groupBy(function ($date) {
-            return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
-            }) as $month => $activitiesInMonth)
+                @forelse ($engagements->groupBy(function ($date) {
+                    return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
+                }) as $month => $activitiesInMonth)
                     <div class="activity-list">
                         <div class="activity-date my-3 ml-3">
                             <span class="text-muted">{{ $month }}</span>
@@ -164,14 +151,18 @@
                                 <small>{{ \Carbon\Carbon::parse($activity->date)->format('d-m-Y') }}</small>
                                 <p class="text-muted">{{ $activity->details }}</p>
                                 {{-- @if ($activity->attachments)
-                                <p class="text-muted">Attachment: <a href="{{ Storage::url($activity->attachments) }}"
-                                        target="_blank">View File</a></p>
-                            @endif --}}
+                                    <p class="text-muted">Attachment: <a href="{{ Storage::url($activity->attachments) }}"
+                                            target="_blank">View File</a></p>
+                                @endif --}}
                             </div>
                         @endforeach
                     </div>
-                @endforeach
-            </div>
+                @empty
+                    <div class="no-activities text-center my-4">
+                        <p class="text-muted">No activities found.</p>
+                    </div>
+                @endforelse
+            </div>            
         </div>
     </div>
     <!-- Activity Taken Section -->

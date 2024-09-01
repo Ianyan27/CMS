@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const statusInput = document.getElementById('status');
     const statusValue = statusInput.value;
     switch (statusValue) {
-        case 'HubSpot':
+        case 'HubSpot Contact':
             statusInput.style.backgroundColor = '#FFE8E2';
             statusInput.style.color = '#FF5C35';
             break;
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateStatusStyles() {
         const statusValue = statusSelect.value;
         switch (statusValue) {
-            case 'HubSpot':
+            case 'HubSpot Contact':
                 statusSelect.style.backgroundColor = '#FFE8E2';
                 statusSelect.style.color = '#FF5C35';
                 break;
@@ -63,4 +63,37 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Update styles when the selected option changes
     statusSelect.addEventListener('change', updateStatusStyles);
+});
+document.addEventListener('DOMContentLoaded', function() {
+    const statusH5 = document.getElementById('status');
+    
+    // Get the text content of the h5 element
+    const statusValue = statusH5.textContent.trim();
+    
+    // Apply styles based on the status value
+    switch (statusValue) {
+        case 'HubSpot':
+            statusH5.style.backgroundColor = '#FFE8E2';
+            statusH5.style.color = '#FF5C35';
+            break;
+        case 'Discard':
+            statusH5.style.backgroundColor = '#FF7F86';
+            statusH5.style.color = '#BD000C';
+            break;
+        case 'In Progress':
+            statusH5.style.backgroundColor = '#FFF3CD';
+            statusH5.style.color = '#FF8300';
+            break;
+        case 'New':
+            statusH5.style.backgroundColor = '#CCE5FF';
+            statusH5.style.color = '#318FFC';
+            break;
+        case 'Archive':
+            statusH5.style.backgroundColor = '#E2E3E5';
+            statusH5.style.color = '#303030';
+            break;
+        default:
+            statusH5.style.backgroundColor = '#FFFFFF';
+            statusH5.style.color = '#000000';
+    }
 });

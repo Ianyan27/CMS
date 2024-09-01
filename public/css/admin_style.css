@@ -23,6 +23,13 @@ body {
 
 .table-container{
     min-height: 450px;
+    height: 575px;
+    max-height: 575px;
+    overflow-y: auto;
+}
+
+table{
+    min-height: 500px;
     max-height: 550px;
     overflow-y: auto;
 }
@@ -225,6 +232,73 @@ tbody {
 .nav-item:hover .nav-link i {
     color: white; /* This turns both the text and the icon white */
 }
+/* Navbar Styles */
+.navbar-toggler {
+    display: none;
+    border: none;
+    background: none;
+    margin-right: 10px;
+}
+
+/* Hamburger Icon Customization */
+.navbar-toggler-icon {
+    width: 25px;
+    height: 2px;
+    background-color: #91264c;
+    display: block;
+    position: relative;
+    transition: background 0.2s ease-out;
+}
+
+.navbar-toggler-icon::before,
+.navbar-toggler-icon::after {
+    content: '';
+    width: 25px;
+    height: 2px;
+    background-color: #91264c;
+    position: absolute;
+    left: 0;
+    transition: all 0.2s ease-out;
+}
+
+.navbar-toggler-icon::before {
+    top: -8px;
+}
+
+.navbar-toggler-icon::after {
+    bottom: -8px;
+}
+
+
+/* Sidebar Toggle */
+@media (max-width: 768px) {
+    .navbar-toggler {
+        display: block;
+        position: relative;
+        z-index: 1050;
+        margin-left: 10px; /* Add margin to push the logo to the right */
+    }
+
+    #side-bar {
+        position: absolute;
+        top: 8%;
+        left: 0;
+        width: 250px;
+        height: 100%;
+        z-index: 1030;
+        background-color: white;
+        transform: translateX(-250px); /* Hidden by default */
+        transition: transform 0.3s ease-in-out;
+    }
+
+    #side-bar.active {
+        transform: translateX(0); /* Slide in on toggle */
+    }
+
+    .content-width {
+        width: 100%; /* Expand content when sidebar is hidden */
+    }
+}
 
 /* Custom CSS to handle dropdown appearance */
 .dropdown-menu {
@@ -255,24 +329,6 @@ tbody {
     color: white;
 }
 
-.agent-meeting:hover {
-    border: 1px solid #A47786;
-    background-color: white;
-    color: #1c1c1e;
-}
-
-.agent-active:hover {
-    border: 1px solid #A0C8A9;
-    background-color: white;
-    color: #1c1c1e;
-}
-
-.agent-offline:hover {
-    border: 1px solid #E2E2E2;
-    background-color: white;
-    color: #1c1c1e;
-}
-
 .archive-table:hover {
     background-color: #2C3E50;
     color: #ffffff;
@@ -280,9 +336,9 @@ tbody {
 }
 
 .discard-table:hover {
-    background-color: #91264c;
+    background-color: #FF4C4C;
     color: #ffffff;
-    border: 1px solid #91264c;
+    border: 1px solid #FF4C4C;
 }
 
 /* Icons */
@@ -440,10 +496,8 @@ th, label{
 }
 
 .discard-table {
-    /* background-color: #FF7f86; */
-    width: max-content;
+    background-color: #FF7f86;
     color: #BD000C;
-
 }
 
 #archive, #discard{
@@ -500,11 +554,9 @@ th, label{
 
 /* Pagination */
 .paginationContainer {
-    position: -webkit-sticky; 
+    position: -webkit-sticky;
     position: sticky;
-    bottom: 0;
     background-color: transparent; 
-    z-index: 1000; 
     margin-top: 20px;
     padding: 10px 0; 
 }

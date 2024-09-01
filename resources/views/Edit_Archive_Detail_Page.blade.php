@@ -3,6 +3,8 @@
 @extends('layouts.app')
 
 @extends('layouts.Edit_Archive_Modal')
+@extends('layouts.Add_Archive_Activity_Modal')
+@extends('layouts.Edit_Archive_Activity_Modal')
 @section('content')
 @if (session('success'))
     <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
@@ -34,7 +36,7 @@
 @endif
     {{-- css will edit to css file soon --}}
     <link rel="stylesheet" href="{{ URL::asset('css/contact_detail.css') }}">
-    <div class="row border-educ rounded h-auto">
+    <div class="row border-educ rounded">
         <div class="col-md-5 border-right" id="contact-detail">
             <div class="table-title d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 ml-3 headings">Contact Detail</h2>
@@ -47,25 +49,21 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="font-educ" for="name">Name</label>
-                        <input type="text" class="form-control fonts" id="name" value=" {{ $editArchive->name }} "
-                            readonly>
+                        <h5 class=" fonts" id="name">{{ $editArchive->name }}</h5>
                     </div>
                     <div class="form-group">
                         <label class="font-educ" for="contact-number">Contact Number</label>
-                        <input type="text" class="form-control fonts" id="contact_number"
-                            value= " {{ $editArchive->contact_number }} " readonly>
+                        <h5 class=" fonts" id="contact_number">{{ $editArchive->contact_number }}</h5>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="font-educ" for="email">Email</label>
-                        <input type="email" class="form-control fonts" id="email" value=" {{ $editArchive->email }} "
-                            readonly>
+                        <h5 class=" fonts" id="email">{{ $editArchive->email }}</h5>
                     </div>
                     <div class="form-group">
                         <label class="font-educ" for="country">Country</label>
-                        <input type="text" class="form-control fonts" id="country" value=" {{ $editArchive->country }} "
-                            readonly>
+                        <h5 class=" fonts" id="country">{{ $editArchive->country }}</h5>
                     </div>
                 </div>
             </div>
@@ -73,20 +71,17 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="font-educ" for="address">Address</label>
-                        <input style="height: 125px;" type="text" class="form-control fonts" id="address"
-                            value=" {{ $editArchive->address }} " readonly>
+                        <h5 class=" fonts" id="address" style="height: 125px;">{{ $editArchive->address }}</h5>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="font-educ" for="date-of-allocation">Date of Allocation</label>
-                        <input type="datetime" class="form-control fonts" id="date-of-allocation"
-                            value="{{ $editArchive->date_of_allocation }}" readonly>
+                        <h5 class=" fonts" id="date-of-allocation">{{ $editArchive->date_of_allocation }}</h5>
                     </div>
                     <div class="form-group">
                         <label class="font-educ" for="qualification">Qualification</label>
-                        <input type="text" class="form-control fonts" id="qualification"
-                            value=" {{ $editArchive->qualification }} " readonly>
+                        <h5 class=" fonts" id="qualification">{{ $editArchive->qualification }}</h5>
                     </div>
                 </div>
             </div>
@@ -94,81 +89,85 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="font-educ" for="skills">Skills</label>
-                        <input type="text" class="form-control fonts" id="skills" value="{{ $editArchive->skills }}"
-                            readonly>
+                        <h5 class=" fonts" id="skills">{{ $editArchive->skills }}</h5>
                     </div>
                     <div class="form-group">
                         <label class="font-educ" for="source">Source</label>
-                        <input type="text" class="form-control fonts" id="source" value="{{ $editArchive->source }}"
-                            readonly>
+                        <h5 class=" fonts" id="source">{{ $editArchive->source }}</h5>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="font-educ" for="job-role">Job Role</label>
-                        <input type="text" class="form-control fonts" id="job-role" value=" {{ $editArchive->job_role }} "
-                            readonly>
+                        <h5 class=" fonts" id="job-role">{{ $editArchive->job_role }}</h5>
                     </div>
                     <div class="form-group">
                         <label class="font-educ" for="status">Status</label>
-                        <input type="text" class="form-control fonts" id="status" 
-                            value="{{ trim(
+                        <h5 class="fonts p-1 rounded" id="status">
+                            {{ trim(
                                 $editArchive->status === 'HubSpot Contact' ? 'HubSpot' :
                                 ($editArchive->status === 'Discard' ? 'Discard' :
                                 ($editArchive->status === 'InProgress' ? 'In Progress' :
                                 ($editArchive->status === 'New' ? 'New' :
                                 ($editArchive->status === 'Archive' ? 'Archive' : ''))))
-                            ) }}" readonly>
+                            ) }}
+                        </h5>
                     </div>
                 </div>
-            </div>
+            </div>            
         </div>
         <div class="col-md-7 px-3" id="activity-container">
             <div class="d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 ml-2 headings">Activities Notifications</h2>
-                <a class="btn hover-action font" href=" {{ route('contact-listing') }} ">
-                    <i class="fa-solid fa-left-long"></i>
-                </a>
-        </div>
-        <!-- Filter Buttons -->
-        <div class="btn-group mb-3" role="group" aria-label="Activity Filter Buttons">
-            <button type="button" class="btn activity-button mx-2 active-activity-button"
-                data-filter="all">Activities</button>
-            <button type="button" class="btn activity-button mx-2" data-filter="meeting">Meetings</button>
-            <button type="button" class="btn activity-button mx-2" data-filter="email">Emails</button>
-            <button type="button" class="btn activity-button mx-2" data-filter="phone">Calls</button>
-            <button type="button" class="btn activity-button mx-2" data-filter="whatsapp">Whatsapp</button>
-        </div>
-        {{-- Iterating all the activities from all contacts --}}
-        <div class="activities">
-            @foreach ($engagementArchive->groupBy(function ($date) {
-            return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
-        }) as $month => $activitiesInMonth)
-                <div class="activity-list">
-                    <div class="activity-date my-3 ml-3">
-                        <span class="text-muted">{{ $month }}</span>
-                    </div>
-                    @foreach ($activitiesInMonth as $activity)
-                        <div class="activity-item mb-3 mx-3 border-educ rounded p-3"
-                            data-type="{{ strtolower($activity->activity_name) }}">
-                            <h5 class="font-educ">{{ $activity->activity_name }} Activities</h5>
-                            <small>{{ \Carbon\Carbon::parse($activity->date)->format('d-m-Y') }}</small>
-                            <p class="text-muted">{{ $activity->details }}</p>
-                            {{-- @if ($activity->attachments)
-                                <p class="text-muted">Attachment: <a href="{{ Storage::url($activity->attachments) }}"
-                                        target="_blank">View File</a></p>
-                            @endif --}}
+            </div>
+            <!-- Filter Buttons -->
+            <div class="btn-group mb-3" role="group" aria-label="Activity Filter Buttons">
+                <button type="button" class="btn activity-button mx-2 active-activity-button"
+                    data-filter="all">Activities</button>
+                <button type="button" class="btn activity-button mx-2" data-filter="meeting">Meetings</button>
+                <button type="button" class="btn activity-button mx-2" data-filter="email">Emails</button>
+                <button type="button" class="btn activity-button mx-2" data-filter="phone">Calls</button>
+                <button type="button" class="btn activity-button mx-2" data-filter="whatsapp">Whatsapp</button>
+            </div>
+            {{-- Iterating all the activities from all contacts --}}
+            <div class="activities">
+                @forelse ($engagementArchive->groupBy(function ($date) {
+                return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
+            }) as $month => $activitiesInMonth)
+                    <div class="activity-list">
+                        <div class="activity-date my-3 ml-3">
+                            <span class="text-muted">{{ $month }}</span>
                         </div>
-                    @endforeach
-                </div>
-            @endforeach
+                        @foreach ($activitiesInMonth as $activity)
+                            <div class="activity-item mb-3 mx-3 border-educ rounded p-3"
+                                data-type="{{ strtolower($activity->activity_name) }}">
+                                <h5 class="font-educ">{{ $activity->activity_name }} Activities</h5>
+                                <small>{{ \Carbon\Carbon::parse($activity->date)->format('d-m-Y') }}</small>
+                                <p class="text-muted">{{ $activity->details }}</p>
+                                {{-- @if ($activity->attachments)
+                                    <p class="text-muted">Attachment: <a href="{{ Storage::url($activity->attachments) }}"
+                                            target="_blank">View File</a></p>
+                                @endif --}}
+                            </div>
+                        @endforeach
+                    </div>
+                @empty
+                    <div class="no-activities text-center my-4">
+                        <p class="text-muted">No Activities Found</p>
+                    </div>
+                @endforelse
+            </div>
         </div>
-    </div>
     </div>
     <!-- Activity Taken Section -->
     <div class="table-title d-flex justify-content-between align-items-center mt-5">
         <div class="d-flex align-items-center">
             <h2 class="ml-2 mb-1 headings">Activity Taken</h2>
+        </div>
+        <div class="d-flex align-items-center mr-2 mb-2">
+            <button class="btn hover-action add-activity-button" data-toggle="modal" data-target="#addArchiveActivityModal">
+                <i style="font-size: 22px;" class="fa-solid fa-square-plus p-1"></i>
+            </button>
         </div>
     </div>
     <!-- Table -->
@@ -192,8 +191,8 @@
                     <td> {{ $engagement->details }} </td>
                     <td> {{ $engagement->attachments }} </td>
                     <td>
-                        <a class="btn hover-action" href="#" data-toggle="modal" data-target="#updateActivityModal">
-                            <i  class="fa-solid fa-pen-to-square" ></i>
+                        <a class="btn hover-action" data-toggle="modal" data-target="#updateArchiveActivityModal-{{ $engagement->engagement_archive_pid }}">
+                            <i class="fa-solid fa-pen-to-square"></i>
                         </a>
                     </td>
                 </tr>

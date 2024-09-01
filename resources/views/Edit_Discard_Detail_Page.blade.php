@@ -46,25 +46,21 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="font-educ" for="name">Name</label>
-                        <input type="text" class="form-control fonts" id="name" value=" {{ $editDiscard->name }} "
-                            readonly>
+                        <h5 class="fonts" id="name">{{ $editDiscard->name }}</h5>
                     </div>
                     <div class="form-group">
                         <label class="font-educ" for="contact-number">Contact Number</label>
-                        <input type="text" class="form-control fonts" id="contact_number"
-                            value= " {{ $editDiscard->contact_number }} " readonly>
+                        <h5 class="fonts" id="contact_number">{{ $editDiscard->contact_number }}</h5>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="font-educ" for="email">Email</label>
-                        <input type="email" class="form-control fonts" id="email" value=" {{ $editDiscard->email }} "
-                            readonly>
+                        <h5 class="fonts" id="email">{{ $editDiscard->email }}</h5>
                     </div>
                     <div class="form-group">
                         <label class="font-educ" for="country">Country</label>
-                        <input type="text" class="form-control fonts" id="country" value=" {{ $editDiscard->country }} "
-                            readonly>
+                        <h5 class="fonts" id="country">{{ $editDiscard->country }}</h5>
                     </div>
                 </div>
             </div>
@@ -72,20 +68,17 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="font-educ" for="address">Address</label>
-                        <input style="height: 125px;" type="text" class="form-control fonts" id="address"
-                            value=" {{ $editDiscard->address }} " readonly>
+                        <h5 class="fonts" id="address" style="height: 125px;">{{ $editDiscard->address }}</h5>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="font-educ" for="date-of-allocation">Date of Allocation</label>
-                        <input type="datetime" class="form-control fonts" id="date-of-allocation"
-                            value="{{ $editDiscard->date_of_allocation }}" readonly>
+                        <h5 class="fonts" id="date-of-allocation">{{ $editDiscard->date_of_allocation }}</h5>
                     </div>
                     <div class="form-group">
                         <label class="font-educ" for="qualification">Qualification</label>
-                        <input type="text" class="form-control fonts" id="qualification"
-                            value=" {{ $editDiscard->qualification }} " readonly>
+                        <h5 class="fonts" id="qualification">{{ $editDiscard->qualification }}</h5>
                     </div>
                 </div>
             </div>
@@ -93,76 +86,75 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="font-educ" for="skills">Skills</label>
-                        <input type="text" class="form-control fonts" id="skills" value="{{ $editDiscard->skills }}"
-                            readonly>
+                        <h5 class="fonts" id="skills">{{ $editDiscard->skills }}</h5>
                     </div>
                     <div class="form-group">
                         <label class="font-educ" for="source">Source</label>
-                        <input type="text" class="form-control fonts" id="source" value="{{ $editDiscard->source }}"
-                            readonly>
+                        <h5 class="fonts" id="source">{{ $editDiscard->source }}</h5>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="font-educ" for="job-role">Job Role</label>
-                        <input type="text" class="form-control fonts" id="job-role" value=" {{ $editDiscard->job_role }} "
-                            readonly>
+                        <h5 class="fonts" id="job-role">{{ $editDiscard->job_role }}</h5>
                     </div>
                     <div class="form-group">
                         <label class="font-educ" for="status">Status</label>
-                        <input type="text" class="form-control fonts" id="status" 
-                            value="{{ trim(
+                        <h5 class="fonts p-1 rounded" id="status">
+                            {{ trim(
                                 $editDiscard->status === 'HubSpot Contact' ? 'HubSpot' :
                                 ($editDiscard->status === 'Discard' ? 'Discard' :
                                 ($editDiscard->status === 'InProgress' ? 'In Progress' :
                                 ($editDiscard->status === 'New' ? 'New' :
                                 ($editDiscard->status === 'Archive' ? 'Archive' : ''))))
-                            ) }}" readonly>
+                            ) }}
+                        </h5>
                     </div>
                 </div>
             </div>
-        </div>
+        </div>        
         <div class="col-md-7 px-3" id="activity-container">
             <div class="d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 ml-2 headings">Activities Notifications</h2>
-                <a class="btn hover-action font" href=" {{ route('contact-listing') }} ">
-                    <i class="fa-solid fa-left-long"></i>
-                </a>
-        </div>
+            </div>
         <!-- Filter Buttons -->
-        <div class="btn-group mb-3" role="group" aria-label="Activity Filter Buttons">
-            <button type="button" class="btn activity-button mx-2 active-activity-button"
-                data-filter="all">Activities</button>
-            <button type="button" class="btn activity-button mx-2" data-filter="meeting">Meetings</button>
-            <button type="button" class="btn activity-button mx-2" data-filter="email">Emails</button>
-            <button type="button" class="btn activity-button mx-2" data-filter="phone">Calls</button>
-            <button type="button" class="btn activity-button mx-2" data-filter="whatsapp">Whatsapp</button>
-        </div>
-        {{-- Iterating all the activities from all contacts --}}
-        <div class="activities">
-            @foreach ($engagementDiscard->groupBy(function ($date) {
-            return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
-        }) as $month => $activitiesInMonth)
-                <div class="activity-list">
-                    <div class="activity-date my-3 ml-3">
-                        <span class="text-muted">{{ $month }}</span>
-                    </div>
-                    @foreach ($activitiesInMonth as $activity)
-                        <div class="activity-item mb-3 mx-3 border-educ rounded p-3"
-                            data-type="{{ strtolower($activity->activity_name) }}">
-                            <h5 class="font-educ">{{ $activity->activity_name }} Activities</h5>
-                            <small>{{ \Carbon\Carbon::parse($activity->date)->format('d-m-Y') }}</small>
-                            <p class="text-muted">{{ $activity->details }}</p>
-                            {{-- @if ($activity->attachments)
-                                <p class="text-muted">Attachment: <a href="{{ Storage::url($activity->attachments) }}"
-                                        target="_blank">View File</a></p>
-                            @endif --}}
+            <div class="btn-group mb-3" role="group" aria-label="Activity Filter Buttons">
+                <button type="button" class="btn activity-button mx-2 active-activity-button"
+                    data-filter="all">Activities</button>
+                <button type="button" class="btn activity-button mx-2" data-filter="meeting">Meetings</button>
+                <button type="button" class="btn activity-button mx-2" data-filter="email">Emails</button>
+                <button type="button" class="btn activity-button mx-2" data-filter="phone">Calls</button>
+                <button type="button" class="btn activity-button mx-2" data-filter="whatsapp">Whatsapp</button>
+            </div>
+            {{-- Iterating all the activities from all contacts --}}
+            <div class="activities">
+                @forelse ($engagementDiscard->groupBy(function ($date) {
+                return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
+            }) as $month => $activitiesInMonth)
+                    <div class="activity-list">
+                        <div class="activity-date my-3 ml-3">
+                            <span class="text-muted">{{ $month }}</span>
                         </div>
-                    @endforeach
-                </div>
-            @endforeach
+                        @foreach ($activitiesInMonth as $activity)
+                            <div class="activity-item mb-3 mx-3 border-educ rounded p-3"
+                                data-type="{{ strtolower($activity->activity_name) }}">
+                                <h5 class="font-educ">{{ $activity->activity_name }} Activities</h5>
+                                <small>{{ \Carbon\Carbon::parse($activity->date)->format('d-m-Y') }}</small>
+                                <p class="text-muted">{{ $activity->details }}</p>
+                                {{-- @if ($activity->attachments)
+                                    <p class="text-muted">Attachment: <a href="{{ Storage::url($activity->attachments) }}"
+                                            target="_blank">View File</a></p>
+                                @endif --}}
+                            </div>
+                        @endforeach
+                    </div>
+                @empty
+                    <div class="no-activities text-center my-4">
+                        <p class="text-muted">No Activities Found</p>
+                    </div>
+                @endforelse
+            </div>
         </div>
-    </div>
     </div>
     <!-- Activity Taken Section -->
     <div class="table-title d-flex justify-content-between align-items-center mt-5">
