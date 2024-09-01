@@ -37,7 +37,6 @@ class AuthController extends Controller
         ]);
 
         return Socialite::driver('microsoft')
-            ->setHttpClient($client)
             ->redirect();
     }
 
