@@ -11,6 +11,8 @@ deployment:
 
     # Install Composer dependencies
     - /opt/cpanel/composer/bin/composer install --no-dev --optimize-autoloader
+    - /opt/cpanel/composer/bin/composer update
+    - composer update
 
     # Generate the Laravel application key
     - php artisan key:generate
