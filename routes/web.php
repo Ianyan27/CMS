@@ -18,6 +18,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('Login');
 })->name('login');
+
+// Microsoft OAuth Login
+Route::get('login/microsoft', [AuthController::class, 'redirectToMicrosoft'])->name('login.microsoft');
+Route::get('auth/callback', [AuthController::class, 'handleMicrosoftCallback'])->name('callback');
+
 // Microsoft Login Route
 Route::post('/microsoft-login', [AuthController::class, 'microsoftLogin'])->name('microsoft.login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -34,6 +39,11 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/view-user', function () {
     }
     return redirect()->route('login')->withErrors(['role' => 'Unauthorized access.']);
 });
+
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/view-user', [AdminController::class, 'viewUser'])->name('view-user');
+// });
+
 
 Route::group(['prefix' => 'admin'], function () {
     Route::get('/', [AdminController::class, 'index'])->name('admin#index');

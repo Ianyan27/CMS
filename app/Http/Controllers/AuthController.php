@@ -7,9 +7,72 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Laravel\Socialite\Facades\Socialite;
+// use Stancl\Tenancy\Tenancy;
+use Illuminate\Support\Str;
+
 
 class AuthController extends Controller
 {
+
+    // Redirect to Microsoft OAuth page
+    public function redirectToMicrosoft()
+    {
+        /**
+         * Re login method
+         */
+        // Get the base URL for Microsoft OAuth
+        // $url = Socialite::driver('microsoft')->redirect()->getTargetUrl();
+
+        // // Append 'prompt=login' to the URL to force the user to re-authenticate
+        // $url .= (strpos($url, '?') === false ? '?' : '&') . 'prompt=login';
+
+        // return redirect($url);
+
+        /**
+         * Auto login with current account
+         */
+        return Socialite::driver('microsoft')->redirect();
+    }
+
+    // Handle the callback from Microsoft
+    public function handleMicrosoftCallback()
+    {
+        try {
+            // Retrieve the user from Microsoft
+            $microsoftUser = Socialite::driver('microsoft')->user();
+
+
+            // Find or create the user in your application
+            $user = User::firstOrCreate(
+                ['email' => $microsoftUser->getEmail()],
+                [
+                    'name' => $microsoftUser->getName(),
+                    'password' => bcrypt(Str::random(16)), // Use Str::random() to generate a secure password
+                ]
+            );
+
+            if ($user) {
+                // Log the user in manually
+                Auth::login($user);
+
+                // Store user information including role in session
+                session()->put('name', $user->name);
+                session()->put('email', $user->email);
+                session()->put('role', $user->role); // Assuming 'role' is a column in the users table
+
+                Log::info('Checking User table \n');
+
+                Log::info('The role: ' . $user);
+                // Redirect to the intended page
+                return redirect()->intended('view-user');
+            }
+        } catch (\Exception $e) {
+            // Handle exceptions like user canceling the login
+            return redirect('/login')->withErrors(['msg' => 'Login failed. Please try again. Error code: ' . $e]);
+        }
+    }
+
 
     public function microsoftLogin(Request $request)
     {
