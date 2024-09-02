@@ -133,34 +133,53 @@
             </div>
             <!-- Filter Buttons -->
             <div class="btn-group mb-3" role="group" aria-label="Activity Filter Buttons">
-                <button type="button" class="btn activity-button mx-2 active-activity-button"
-                    data-filter="all">Activities</button>
+                <button type="button" class="btn activity-button mx-2 active-activity-button" data-filter="all">Activities</button>
                 <button type="button" class="btn activity-button mx-2" data-filter="meeting">Meetings</button>
                 <button type="button" class="btn activity-button mx-2" data-filter="email">Emails</button>
                 <button type="button" class="btn activity-button mx-2" data-filter="phone">Calls</button>
                 <button type="button" class="btn activity-button mx-2" data-filter="whatsapp">Whatsapp</button>
             </div>
-            {{-- Iterating all the activities from all contacts --}}
             <div class="activities">
                 @forelse ($engagements->groupBy(function ($date) {
-                                                                                                    return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
-                                                                                                }) as $month => $activitiesInMonth)
+                    return \Carbon\Carbon::parse($date->date)->format('F Y');
+                }) as $month => $activitiesInMonth)
                     <div class="activity-list">
                         <div class="activity-date my-3 ml-3">
                             <span class="text-muted">{{ $month }}</span>
                         </div>
+        
+                        @php
+                            // Collect activity types in the current month
+                            $activityTypes = $activitiesInMonth->pluck('activity_name')->map(function($name) {
+                                return strtolower($name);
+                            })->unique();
+                        @endphp
+        
                         @foreach ($activitiesInMonth as $activity)
                             <div class="activity-item mb-3 mx-3 border-educ rounded p-3"
                                 data-type="{{ strtolower($activity->activity_name) }}">
                                 <h5 class="font-educ">{{ $activity->activity_name }} Activities</h5>
                                 <small>{{ \Carbon\Carbon::parse($activity->date)->format('d-m-Y') }}</small>
                                 <p class="text-muted">{{ $activity->details }}</p>
-                                {{-- @if ($activity->attachments)
-                                    <p class="text-muted">Attachment: <a href="{{ Storage::url($activity->attachments) }}"
-                                            target="_blank">View File</a></p>
-                                @endif --}}
                             </div>
                         @endforeach
+                        {{-- No activity messages for specific types --}}
+                        <div class="no-activity-message mb-3 mx-3 border-educ rounded p-3 d-none" data-type="meeting">
+                            <h5 class="font-educ">Meetings</h5>
+                            <p class="text-muted">No meetings taken for this month.</p>
+                        </div>
+                        <div class="no-activity-message mb-3 mx-3 border-educ rounded p-3 d-none" data-type="email">
+                            <h5 class="font-educ">Emails</h5>
+                            <p class="text-muted">No emails taken for this month.</p>
+                        </div>
+                        <div class="no-activity-message mb-3 mx-3 border-educ rounded p-3 d-none" data-type="phone">
+                            <h5 class="font-educ">Calls</h5>
+                            <p class="text-muted">No calls taken for this month.</p>
+                        </div>
+                        <div class="no-activity-message mb-3 mx-3 border-educ rounded p-3 d-none" data-type="whatsapp">
+                            <h5 class="font-educ">WhatsApp</h5>
+                            <p class="text-muted">No WhatsApp taken for this month.</p>
+                        </div>
                     </div>
                 @empty
                     <div class="no-activities text-center my-4">
@@ -168,7 +187,7 @@
                     </div>
                 @endforelse
             </div>
-        </div>
+        </div>        
     </div>
     <!-- Activity Taken Section -->
     <div class="table-title d-flex justify-content-between align-items-center mt-5">
@@ -201,7 +220,7 @@
             </thead>
             <tbody class="text-left bg-row">
                 <?php $i = 0; ?>
-                @foreach ($engagements as $engagement)
+                @forelse ($engagements as $engagement)
                     @php
                         // Decode the JSON or handle the attachments array properly
                         $attachments = json_decode($engagement->attachments, true); // Assuming it's a JSON string
@@ -232,10 +251,48 @@ $filePath = public_path('attachments/leads/' . $filename);
                             </td>
                         @endif
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="5" class="text-center">No Activity Taken.</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
+    <script>
+        document.querySelectorAll('.activity-button').forEach(button => {
+            button.addEventListener('click', function() {
+                let filter = this.getAttribute('data-filter');
+                // Reset active button class
+                document.querySelectorAll('.activity-button').forEach(btn => btn.classList.remove('active-activity-button'));
+                this.classList.add('active-activity-button');
+                // Show or hide activities based on filter
+                document.querySelectorAll('.activity-item').forEach(item => {
+                    if (filter === 'all' || item.getAttribute('data-type') === filter) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                // Check if any activities are visible after filtering
+                let visibleItems = document.querySelectorAll(`.activity-item[data-type="${filter}"]`);
+                let noActivityMessage = document.querySelector(`.no-activity-message[data-type="${filter}"]`);
+    
+                if (visibleItems.length === 0 && noActivityMessage) {
+                    noActivityMessage.classList.remove('d-none');
+                } else if (noActivityMessage) {
+                    noActivityMessage.classList.add('d-none');
+                }
+    
+                // Hide all no-activity messages except for the current filter
+                document.querySelectorAll('.no-activity-message').forEach(msg => {
+                    if (msg.getAttribute('data-type') !== filter) {
+                        msg.classList.add('d-none');
+                    }
+                });
+            });
+        });
+    </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ URL::asset('js/contact_detail.js') }}"></script>
     <script src="{{ URL::asset('js/status_color.js') }}"></script>

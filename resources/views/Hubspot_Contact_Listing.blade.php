@@ -22,7 +22,6 @@
                             <i class="fa-brands fa-hubspot" style="margin: 0"></i><span>Batch Sync</span>
                         </button>
                     </div>
-
             </div>
         </div>
         <!-- Table for No Sync Contacts -->
@@ -53,7 +52,6 @@
                     @forelse ($hubspotContactsNoSync as $index => $contact)
                         <tr>
                             <td><input type="checkbox" name="selectedContacts[]" value="{{ $contact->contact_pid }}"></td>
-                            <td>{{ $contact->contact_pid }}</td>
                             <td>{{ $index + 1 }}</td> <!-- Index value -->
                             <td>{{ $contact->name }}</td>
                             <td>{{ $contact->email }}</td>
