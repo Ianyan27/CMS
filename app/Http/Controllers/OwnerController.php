@@ -88,4 +88,10 @@ class OwnerController extends Controller{
 
         return redirect()->route('owner#view-owner', ['owner_pid' => $owner_pid])->with('success', 'Sale Agent updated successfully.');
     }
+
+    public function deleteOwner($owner_pid){
+        Owner::where('owner_pid', $owner_pid)->delete();
+        return redirect()->route('owner#view')->with('success', "Owner Deleted Successfully.");
+    }
+    
 }
