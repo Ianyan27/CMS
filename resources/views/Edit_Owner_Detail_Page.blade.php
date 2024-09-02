@@ -436,6 +436,8 @@
             </ul>
         </div>
     </div>
+    <script src="{{ asset('js/show_hide_contacts_table.js') }}"></script>
+    <script src="{{asset('js/active_activity_buttons.js')}}"></script>
     <script>
         window.onload = function() {
             interestedButton.classList.add('active-interest'); // Add active class to the clicked button
@@ -468,52 +470,38 @@
             clearActiveClasses();
             discardButton.classList.add('active-discard');
         });
-        const showContactsBtn = document.getElementById('show-contacts');
-        const showArchiveBtn = document.getElementById('show-archive');
-        const showDiscardBtn = document.getElementById('show-discard');
+        // const showContactsBtn = document.getElementById('show-contacts');
+        // const showArchiveBtn = document.getElementById('show-archive');
+        // const showDiscardBtn = document.getElementById('show-discard');
 
-        const contactsContainer = document.getElementById('contacts');
-        const archiveContainer = document.getElementById('archive');
-        const discardContainer = document.getElementById('discard');
+        // const contactsContainer = document.getElementById('contacts');
+        // const archiveContainer = document.getElementById('archive');
+        // const discardContainer = document.getElementById('discard');
 
-        // Function to hide all tables
-        function hideAllTables() {
-            contactsContainer.style.display = 'none';
-            archiveContainer.style.display = 'none';
-            discardContainer.style.display = 'none';
-        }
+        // // Function to hide all tables
+        // function hideAllTables() {
+        //     contactsContainer.style.display = 'none';
+        //     archiveContainer.style.display = 'none';
+        //     discardContainer.style.display = 'none';
+        // }
 
-        // Show Contacts Table (default)
-        showContactsBtn.addEventListener('click', function() {
-            hideAllTables();
-            contactsContainer.style.display = 'block';
-        });
+        // // Show Contacts Table (default)
+        // showContactsBtn.addEventListener('click', function() {
+        //     hideAllTables();
+        //     contactsContainer.style.display = 'block';
+        // });
 
-        // Show Archive Table
-        showArchiveBtn.addEventListener('click', function() {
-            hideAllTables();
-            archiveContainer.style.display = 'block';
-        });
+        // // Show Archive Table
+        // showArchiveBtn.addEventListener('click', function() {
+        //     hideAllTables();
+        //     archiveContainer.style.display = 'block';
+        // });
 
-        // Show Discard Table
-        showDiscardBtn.addEventListener('click', function() {
-            hideAllTables();
-            discardContainer.style.display = 'block';
-        });
-        const buttons = document.querySelectorAll('.activity-button');
-
-            buttons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Remove 'active' class from all buttons
-                    buttons.forEach(btn => btn.classList.remove('active'));
-
-                    // Add 'active' class to the clicked button
-                    this.classList.add('active');
-
-                    // Show the corresponding section (you likely already have this)
-                    showSection(this.getAttribute('onclick').split("'")[1]);
-                });
-        });
+        // // Show Discard Table
+        // showDiscardBtn.addEventListener('click', function() {
+        //     hideAllTables();
+        //     discardContainer.style.display = 'block';
+        // });
     </script>
     <script>
         function showSection(sectionId) {

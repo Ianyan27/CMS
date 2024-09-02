@@ -18,8 +18,7 @@ use Illuminate\Support\Facades\Log;
 class ContactController extends Controller
 {
 
-    public function index()
-    {
+    public function index(){
         // Get the logged-in user (sales agent)
         $user = Auth::user();
 
@@ -36,8 +35,7 @@ class ContactController extends Controller
         ]);
     }
 
-    public function contactsByOwner()
-    {
+    public function contactsByOwner(){
         // Get the logged-in user (sales agent)
         $user = Auth::user();
 
@@ -54,8 +52,7 @@ class ContactController extends Controller
         ]);
     }
 
-    public function viewContact($contact_pid)
-    {
+    public function viewContact($contact_pid){
         /* Retrieve the contact record with the specified 'contact_pid' and pass
          it to the 'Edit_Contact_Detail_Page' view for editing. */
         $editContact = Contact::where('contact_pid', $contact_pid)->first();
@@ -72,8 +69,7 @@ class ContactController extends Controller
         ]);
     }
 
-    public function updateContact(Request $request, $contact_pid, $id)
-    {
+    public function updateContact(Request $request, $contact_pid, $id){
         //checking for admin role and redirect it
         $user = Auth::user();
         if ($user->role === 'Admin') {
@@ -178,8 +174,7 @@ class ContactController extends Controller
 
 
 
-    public function saveActivity(Request $request, $contact_pid)
-    {
+    public function saveActivity(Request $request, $contact_pid){
 
         //checking for admin role and redirect it
         $user = Auth::user();
@@ -237,8 +232,7 @@ class ContactController extends Controller
     }
 
 
-    public function editActivity($fk_engagements__contact_pid, $activity_id)
-    {
+    public function editActivity($fk_engagements__contact_pid, $activity_id){
         // Fetch all activities related to the contact ID
         $updateEngagements = Engagement::where('fk_engagements__contact_pid', $fk_engagements__contact_pid)->get();
 
@@ -261,8 +255,7 @@ class ContactController extends Controller
         ]);
     }
 
-    public function saveUpdateActivity(Request $request, $contact_pid, $activity_id)
-    {
+    public function saveUpdateActivity(Request $request, $contact_pid, $activity_id){
         //checking for admin role and redirect it
         $user = Auth::user();
         if ($user->role === 'Admin') {
@@ -317,8 +310,7 @@ class ContactController extends Controller
             ->with('success', 'Activity updated successfully.');
     }
 
-    public function hubspotContacts()
-    {
+    public function hubspotContacts(){
         $ownerPid = Auth::user()->id; // Get the authenticated user's ID as owner_pid
 
         log::info("buh id " . $ownerPid);
@@ -357,8 +349,7 @@ class ContactController extends Controller
         ]);
     }
 
-    private function saveLog($contact_pid, $action_type, $action_description)
-    {
+    private function saveLog($contact_pid, $action_type, $action_description){
 
         $ownerPid = Auth::user()->id; // Get the authenticated user's ID as owner_pid
 

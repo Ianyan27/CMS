@@ -32,8 +32,9 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="email" class="font-educ">Email</label>
-                                <input type="text" name="email" class="form-control fonts" id="email"
-                                    placeholder="Enter Email" required>
+                                <input type="email" name="email" class="form-control fonts" id="email"
+                                placeholder="Enter Email" pattern="[a-zA-Z0-9._%+-]+@(lithan\.com|educlass\.com)$" required>
+
                             </div>
                         </div>
                         <div class="col-md-6">

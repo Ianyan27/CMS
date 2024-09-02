@@ -343,74 +343,8 @@
             </ul>
         </div>
     </div>
-    <script>
-        const showContactsBtn = document.getElementById('show-contacts');
-        const showArchiveBtn = document.getElementById('show-archive');
-        const showDiscardBtn = document.getElementById('show-discard');
-
-        const contactsContainer = document.getElementById('contacts');
-        const archiveContainer = document.getElementById('archive');
-        const discardContainer = document.getElementById('discard');
-
-        // Function to hide all tables
-        function hideAllTables() {
-            contactsContainer.style.display = 'none';
-            archiveContainer.style.display = 'none';
-            discardContainer.style.display = 'none';
-        }
-
-        // Show Contacts Table (default)
-        showContactsBtn.addEventListener('click', function() {
-            hideAllTables();
-            contactsContainer.style.display = 'block';
-        });
-
-        // Show Archive Table
-        showArchiveBtn.addEventListener('click', function() {
-            hideAllTables();
-            archiveContainer.style.display = 'block';
-        });
-
-        // Show Discard Table
-        showDiscardBtn.addEventListener('click', function() {
-            hideAllTables();
-            discardContainer.style.display = 'block';
-        });
-    </script>
-    {{-- Active button --}}
-    <script>
-        window.onload = function() {
-            interestedButton.classList.add('active-interest'); // Add active class to the clicked button
-
-        };
-        // Get the buttons
-        const interestedButton = document.getElementById('show-contacts');
-        const archiveButton = document.getElementById('show-archive');
-        const discardButton = document.getElementById('show-discard');
-
-        // Function to remove active classes from all buttons
-        function clearActiveClasses() {
-            interestedButton.classList.remove('active-interest');
-            archiveButton.classList.remove('active-archive');
-            discardButton.classList.remove('active-discard');
-        }
-
-        // Add click event listeners
-        interestedButton.addEventListener('click', () => {
-            clearActiveClasses(); // Remove all active classes
-            interestedButton.classList.add('active-interest'); // Add active class to the clicked button
-        });
-
-        archiveButton.addEventListener('click', () => {
-            clearActiveClasses();
-            archiveButton.classList.add('active-archive');
-        });
-
-        discardButton.addEventListener('click', () => {
-            clearActiveClasses();
-            discardButton.classList.add('active-discard');
-        });
-    </script>
+    <script src=" {{asset('js/show_hide_contacts_table.js')}} "></script>
+    <script src=" {{asset('js/active-buttons.js')}} "></script>
 @endsection
 @section('scripts')
     <!-- Add Bootstrap Tooltip Initialization -->
