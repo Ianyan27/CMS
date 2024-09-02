@@ -41,10 +41,12 @@
         <div class="col-md-5 border-right" id="contact-detail">
             <div class="table-title d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 ml-3 headings">Contact Detail</h2>
-                <a href="{{ route('discard#edit', $editDiscard->contact_discard_pid) }}" class="btn hover-action mx-1"
-                    data-toggle="modal" data-target="#editDiscardModal">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                </a>
+                @if (Auth::check() && Auth::user()->role == 'Sales-Agent')
+                    <a href="{{ route('discard#edit', $editDiscard->contact_discard_pid) }}" class="btn hover-action mx-1"
+                        data-toggle="modal" data-target="#editDiscardModal">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </a>
+                @endif
             </div>
             <div class="row row-margin-bottom row-border-bottom mx-1">
                 <div class="col-md-6">
@@ -139,8 +141,8 @@
             {{-- Iterating all the activities from all contacts --}}
             <div class="activities">
                 @forelse ($engagementDiscard->groupBy(function ($date) {
-                        return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
-                    }) as $month => $activitiesInMonth)
+                                                            return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
+                                                        }) as $month => $activitiesInMonth)
                     <div class="activity-list">
                         <div class="activity-date my-3 ml-3">
                             <span class="text-muted">{{ $month }}</span>
@@ -187,12 +189,27 @@
         <tbody class="text-left bg-row">
             <?php $i = 0; ?>
             @foreach ($engagementDiscard as $engagement)
+                @php
+                    // Decode the JSON or handle the attachments array properly
+                    $attachments = json_decode($engagement->attachments, true); // Assuming it's a JSON string
+$filename = $attachments[0] ?? ''; // Get the first filename from the array
+$filePath = public_path('attachments/leads/' . $filename);
+                @endphp
+
                 <tr>
                     <td> {{ ++$i }} </td>
                     <td> {{ $engagement->date }} </td>
                     <td> {{ $engagement->activity_name }} </td>
                     <td> {{ $engagement->details }} </td>
-                    <td> {{ $engagement->attachments }} </td>
+                    <td>
+                        @if (file_exists($filePath) && $filename)
+                            <img src="{{ asset('attachments/leads/' . $filename) }}" alt="Attachment Image"
+                                style="width: 100px; height: auto;">
+                        @else
+                            No Image Available
+                        @endif
+                    </td>
+
                     <td>
                         <a class="btn hover-action" href="#" data-toggle="modal"
                             data-target="#updateActivityModal">

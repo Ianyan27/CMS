@@ -59,7 +59,7 @@
                             <li
                                 class="{{ Route::currentRouteName() != 'admin#index' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'admin#index' ? 'active-link' : '' }}">
                                 <a class="nav-link" href="{{ route('admin#index') }}">
-                                    <i class="fa-solid fa-user"></i><span>User List</span>
+                                    <i class="fa-solid fa-user"></i><span>Users</span>
                                 </a>
                             </li>
                         @endif
@@ -67,7 +67,7 @@
                             <li
                                 class="{{ Route::currentRouteName() != 'admin#contact-listing' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'admin#contact-listing' ? 'active-link' : '' }}">
                                 <a class="nav-link " href="{{ route('admin#contact-listing') }}">
-                                    <i class="fa-solid fa-user"></i><span>Contact Listing</span>
+                                    <i class="fa-solid fa-user"></i><span>Contacts</span>
                                 </a>
                             </li>
                         @endif
@@ -95,7 +95,7 @@
                             <li
                                 class="{{ Route::currentRouteName() != 'contact-listing' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'contact-listing' ? 'active-link' : '' }}">
                                 <a class="nav-link" href="{{ route('contact-listing') }}">
-                                    <i class="fa-solid fa-address-book"></i><span>Contact Listing</span>
+                                    <i class="fa-solid fa-address-book"></i><span>Contacts</span>
                                 </a>
                             </li>
                         @endif

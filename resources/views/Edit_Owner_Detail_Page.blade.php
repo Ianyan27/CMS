@@ -40,9 +40,11 @@
         <div class="col-md-5 border-right" id="contact-detail">
             <div class="table-title d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 ml-3 headings">Sale Agent Detail</h2>
-                <a style="padding: 10px 12px;" href="{{ route('owner#update', $editOwner->owner_pid) }}" class="btn hover-action mx-1" data-toggle="modal" data-target="#editOwnerModal">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                </a>
+                @if (Auth::check() && Auth::user()->role == 'BUH')
+                    <a style="padding: 10px 12px;" href="{{ route('owner#update', $editOwner->owner_pid) }}" class="btn hover-action mx-1" data-toggle="modal" data-target="#editOwnerModal">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </a>
+                @endif
             </div>
             <div class="row mx-1 mb-1">
                 <div class="col-md-6">
