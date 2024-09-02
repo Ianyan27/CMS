@@ -162,7 +162,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="text-center">No contacts found.</td>
+                            <td colspan="7" class="text-center">No contacts found.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -191,7 +191,7 @@
                 </thead>
                 <tbody class="text-left bg-row">
                     <?php $i = 0; ?>
-                    @foreach ($contactArchive as $archive)
+                    @forelse ($contactArchive as $archive)
                         <tr>
                             <td> {{ ++$i }} </td>
                             <td> {{ $archive['name'] }} </td>
@@ -231,7 +231,11 @@
                                 </a>
                             </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="7"> No Archive Contacts</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

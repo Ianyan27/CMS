@@ -34,16 +34,6 @@
             /* Custom progress bar color */
         }
 
-        .btn-custom {
-            background-color: #870f4a;
-            color: white;
-            border: none;
-        }
-
-        .btn-close-custom {
-            color: #c58ca8;
-        }
-
         .status-text {
             color: green;
         }
@@ -66,34 +56,8 @@
             padding-left: 15px;
         }
 
-        .w-100 {
-            width: 100%;
-        }
-
-        .w-100 {
-            width: 100%;
-        }
-
-        .mb-4 {
-            margin-bottom: 1.5rem;
-        }
-
-        .btn {
-            background-color: #fff;
-            border: 1px solid #8b0045;
-            color: #8b0045;
-            padding: 8px 12px;
-            font-size: 14px;
-        }
-
-        .btn:hover {
-            background-color: #8b0045;
-            color: #fff;
-        }
-
         .radio-btn {
             /* background-color: #8b0045; */
-
             color: #000000;
             padding: 5px 10px;
             margin-right: 5px;
@@ -104,16 +68,11 @@
         }
 
         input[type="radio"].radio-circle:checked {
-
             accent-color: #91264c;
         }
 
         input[type="radio"]:checked+label {
             color: #91264c;
-        }
-
-        .d-none {
-            display: none;
         }
 
         .search-bar {
@@ -126,20 +85,18 @@
             <div class="col-sm-12">
                 <form action="{{ route('import') }}" method="POST" enctype="multipart/form-data">
                     <h5 class="mb-4 font-educ headings">Please Select Data Source</h5>
-                    <div class="d-none" id="radioValidationMsg" style="color: red; font-size: small">
-                        Please Select Data Source
-                    </div>
+                    <div class="alert alert-danger d-none" id="radioValidationMsg" role="alert" style="font-size: medium;">
+                        Please select a data source.
+                    </div>                    
                     <div class="w-100 mb-4 d-flex justify-content-between align-items-center">
                         <!-- Radio buttons positioned to the left end -->
-                        <div class="d-flex align-items-center" id="radio-container">
-                            <input type="radio" name="option" id="platformRadio" value="platform" class="radio-circle">
+                        <div class="d-flex align-items-center pl-1" id="radio-container">
+                            <input type="radio" name="option" id="platformRadio" value="platform" class="radio-circle ml-1">
                             <label for="platformRadio" class="radio-btn ">Platform</label>
 
                             <input type="radio" name="option" id="rawRadio" value="raw" class="radio-circle">
                             <label for="rawRadio" class="radio-btn ">Raw</label>
                         </div>
-
-
                         <!-- Get CSV Format button positioned to the right end -->
                         <div id="raw-btn-container" class="d-none">
                             <button class="btn hover-action" onclick="window.location.href='{{ route('get-csv') }}'">
@@ -147,20 +104,16 @@
                             </button>
                         </div>
                     </div>
-
                     <div id="platform-container">
-                        <div class="d-none" id="platformValidationMsg" style="color: red; font-size: small">
-                            Please Select Platform*
+                        <div class="alert alert-danger d-none" id="platformValidationMsg" role="alert" style="font-size: medium">
+                            Please Select Platform *
                         </div>
                         <select id="platform" class="w-100 platforms search-bar d-none" name="platform">
-                            <option value="" selected disabled>Select platform</option>
+                            <option value="" selected disabled>Select Platform</option>
                             <option value="linkedin">LinkedIn</option>
                             <option value="apollo">Apollo</option>
                         </select>
                     </div>
-
-
-
                     <div class="text-center mb-4">
                         <div class="card-body justify-content-center align-items-center drop-zone" id="dropZone">
                             <div class="mx-5">
@@ -193,7 +146,6 @@
                             <div class="progress-bar bg-educ" id="progressBar" style="width: 0%;"></div>
                         </div>
                         <p id="progress-message" class="text-muted d-none mt-2"></p>
-
                         <p id="error-message" class="text-danger d-none mt-2"></p>
                     </div>
                     <div>

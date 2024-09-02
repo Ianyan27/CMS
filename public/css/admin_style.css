@@ -29,14 +29,12 @@ body {
 }
 
 table{
-    min-height: 500px;
-    max-height: 550px;
     overflow-y: auto;
 }
 
 .owner-container{
-    min-height: 350px;
-    max-height: 450px;
+    min-height: 300px;
+    max-height: 400px;
 }
 
 .owner-container div{
@@ -73,15 +71,15 @@ table{
 }
 
 .content-height {
-    min-height: calc(100vh - 82.98px - 56px - 48px); /* Adjusted for navbar, footer, and my-4 margins */
+    min-height: calc(100vh - 105.98px - 56px); /* Adjusted for navbar, footer, and my-4 margins */
 }
 
 /* Responsive Adjustments */
 @media screen and (max-width: 1650px){
-    .dashboard{
+    /* .dashboard{
         min-height: 500px;
         max-height: 675px;
-    }
+    } */
     .container-max-height{
         min-height: 500px;
         max-height: 530px;
@@ -92,16 +90,50 @@ table{
     }
 }
 
-@media screen and (max-width: 925px) {
+@media screen and (max-width: 1150px) {
     .dashboard{
         width: 100%;
-        min-height: 100px;
-        max-height: 150px;
+        /* min-height: 100px;
+        max-height: 150px; */
         text-align: center;
         margin-bottom: 45px;
     }
     .min-height{
         width: 100%;
+    }
+    .table-container{
+        min-height: 225px;
+        max-height: 325px;
+    }
+}
+
+/* Sidebar Toggle */
+@media (max-width: 895px) {
+    .navbar-toggler {
+        display: block;
+        position: relative;
+        z-index: 1050;
+        margin-left: 10px; /* Add margin to push the logo to the right */
+    }
+
+    #side-bar {
+        position: absolute;
+        top: 8%;
+        left: 0;
+        width: 250px;
+        height: 100%;
+        z-index: 1030;
+        background-color: white;
+        transform: translateX(-250px); /* Hidden by default */
+        transition: transform 0.3s ease-in-out;
+    }
+
+    #side-bar.active {
+        transform: translateX(0); /* Slide in on toggle */
+    }
+
+    .content-width {
+        width: 100%; /* Expand content when sidebar is hidden */
     }
 }
 
@@ -267,37 +299,6 @@ tbody {
 
 .navbar-toggler-icon::after {
     bottom: -8px;
-}
-
-
-/* Sidebar Toggle */
-@media (max-width: 768px) {
-    .navbar-toggler {
-        display: block;
-        position: relative;
-        z-index: 1050;
-        margin-left: 10px; /* Add margin to push the logo to the right */
-    }
-
-    #side-bar {
-        position: absolute;
-        top: 8%;
-        left: 0;
-        width: 250px;
-        height: 100%;
-        z-index: 1030;
-        background-color: white;
-        transform: translateX(-250px); /* Hidden by default */
-        transition: transform 0.3s ease-in-out;
-    }
-
-    #side-bar.active {
-        transform: translateX(0); /* Slide in on toggle */
-    }
-
-    .content-width {
-        width: 100%; /* Expand content when sidebar is hidden */
-    }
 }
 
 /* Custom CSS to handle dropdown appearance */

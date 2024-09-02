@@ -4,94 +4,98 @@
 
 @section('content')
     <div class="container-max-height">
-        <form id="hubspotContactsForm">
-            @csrf
-            <div class="table-title d-flex justify-content-between align-items-center mb-4">
-                <div class="d-flex align-items-center">
-                    <h5 class="mr-3 my-2 headings">HubSpot Contact Listing</h5>
-                    <div>
-                    <button class="btn archive-table mx-3" id="show-no-sync">
-                        View Unsynced
-                    </button>
-                    <button class="btn hubspot-btn mx-3" id="show-synced">
-                        View Synced
-                    </button>
-                </div>
-                </div>
-                <div class="d-flex">
-                    <button type="button" class="btn hover-action ml-auto" id="submitContacts">
-                        <i class="fa-brands fa-hubspot" style="margin: 0"></i><span>Batch Sync</span>
-                    </button>
-                </div>
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <h5 class="mr-3 my-2 headings">HubSpot Contact Listing</h5>
+                <button class="btn archive-table mx-3" id="show-no-sync">
+                    View Unsynced
+                </button>
+                <button class="btn hubspot-btn mx-3" id="show-synced">
+                    View Synced
+                </button>
             </div>
-            <!-- Table for No Sync Contacts -->
-            <div class="table-container" id="no-sync" style="">
-                <table class="table table-hover mt-2">
-                    <thead class="text-left font-educ">
+            <div class="d-flex align-items-center mr-3">
+                <form id="hubspotContactsForm">
+                @csrf
+                    <div class="d-flex">
+                        <button type="button" class="btn hover-action ml-auto" id="submitContacts">
+                            <i class="fa-brands fa-hubspot" style="margin: 0"></i><span>Batch Sync</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- Table for No Sync Contacts -->
+        <div class="table-container" id="no-sync" >
+            <table class="table table-hover mt-2">
+                <thead class="text-left font-educ">
+                    <tr class="text-left font-educ">
+                        <th scope="col"></th>
+                        <th scope="col">No#</th> <!-- Index column header -->
+                        <th scope="col">Name
+                            <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name"
+                                onclick="sortTable('name', 'asc'); toggleSort('sortDown-name', 'sortUp-name')"></i>
+                            <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name"
+                                onclick="sortTable('name', 'desc'); toggleSort('sortUp-name', 'sortDown-name')"
+                                style="display: none;"></i>
+                        </th>
+                        <th scope="col">Email
+                            <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-email"
+                                onclick="sortTable('email', 'asc'); toggleSort('sortDown-email', 'sortUp-email')"></i>
+                            <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-email"
+                                onclick="sortTable('email', 'desc'); toggleSort('sortUp-email', 'sortDown-email')"
+                                style="display: none;"></i>
+                        </th>
+                        <th scope="col">Phone</th>
+                    </tr>
+                </thead>
+                <tbody class="text-left bg-row fonts">
+                    @forelse ($hubspotContactsNoSync as $index => $contact)
                         <tr>
-                            <th></th>
-                            <th>No#</th> <!-- Index column header -->
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
+                            <td><input type="checkbox" name="selectedContacts[]" value="{{ $contact->contact_pid }}">
+                            </td>
+                            <td>{{ $index + 1 }}</td> <!-- Index value -->
+                            <td>{{ $contact->name }}</td>
+                            <td>{{ $contact->email }}</td>
+                            <td>{{ $contact->phone }}</td>
                         </tr>
-                    </thead>
-                    <tbody class="text-left bg-row fonts">
-                        @foreach ($hubspotContactsNoSync as $index => $contact)
-                            <tr data-contact-id="{{ $contact->contact_pid }}">
-
-                                <td><input type="checkbox" name="selectedContacts[]" value="{{ $contact->contact_pid }}">
-                                </td>
-                                <td>{{ $index + 1 }}</td> <!-- Index value -->
-                                <td>{{ $contact->name }}</td>
-                                <td>{{ $contact->email }}</td>
-                                <td>{{ $contact->phone }}</td>
-                                <td class="sync-datetime">{{ $contact->datetime_of_hubspot_sync }}</td>
-                            </tr>
-                        @endforeach
-                        @if (count($hubspotContactsNoSync) == 0)
-                            <tr>
-                                <td colspan="5" class="text-center">No contacts found.</td>
-                            </tr>
-                        @endif
-                    </tbody>
-                </table>
-            </div>
-
-
-            <div class="table-container" id="synced" style="display:none;">
-                <table class="table table-hover mt-2">
-                    <thead class="text-left font-educ">
+                    @empty
                         <tr>
-                            <th>No#</th> <!-- Index column header -->
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Synced Time</th>
+                            <td colspan="5" class="text-center">No contacts found.</td>
                         </tr>
-                    </thead>
-                    <tbody class="text-left bg-row fonts">
-                        @foreach ($hubspotContactsSynced as $index => $contact)
-                            <tr data-contact-id="{{ $contact->contact_pid }}">
-                                <td>{{ $index + 1 }}</td> <!-- Index value -->
-                                <td>{{ $contact->name }}</td>
-                                <td>{{ $contact->email }}</td>
-                                <td>{{ $contact->phone }}</td>
-                                <td class="sync-datetime">{{ $contact->datetime_of_hubspot_sync }}</td>
-                            </tr>
-                        @endforeach
-                        @if (count($hubspotContactsSynced) == 0)
-                            <tr>
-                                <td colspan="5" class="text-center">No contacts found.</td>
-                            </tr>
-                        @endif
-                    </tbody>
-                </table>
-            </div>
-
-
-        </form>
-
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        <div class="table-container" id="synced" style="display:none;">
+            <table class="table table-hover mt-2">
+                <thead class="text-left font-educ">
+                    <tr>
+                        <th>No#</th> <!-- Index column header -->
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Synced Time</th>
+                    </tr>
+                </thead>
+                <tbody class="text-left bg-row fonts">
+                    @foreach ($hubspotContactsSynced as $index => $contact)
+                        <tr data-contact-id="{{ $contact->contact_pid }}">
+                            <td>{{ $index + 1 }}</td> <!-- Index value -->
+                            <td>{{ $contact->name }}</td>
+                            <td>{{ $contact->email }}</td>
+                            <td>{{ $contact->phone }}</td>
+                            <td class="sync-datetime">{{ $contact->datetime_of_hubspot_sync }}</td>
+                        </tr>
+                    @endforeach
+                    @if (count($hubspotContactsSynced) == 0)
+                        <tr>
+                            <td colspan="5" class="text-center">No contacts found.</td>
+                        </tr>
+                    @endif
+                </tbody>
+            </table>
+        </div>
         <!-- Pagination -->
         <div aria-label="Page navigation example" class="paginationContainer">
             <ul class="pagination justify-content-center">

@@ -40,53 +40,44 @@
         <div class="col-md-5 border-right" id="contact-detail">
             <div class="table-title d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 ml-3 headings">Sale Agent Detail</h2>
-                <a href="{{ route('owner#update', $editOwner->owner_pid) }}" class="btn hover-action mx-1"
-                    data-toggle="modal" data-target="#editOwnerModal">
+                <a style="padding: 10px 12px;" href="{{ route('owner#update', $editOwner->owner_pid) }}" class="btn hover-action mx-1" data-toggle="modal" data-target="#editOwnerModal">
                     <i class="fa-solid fa-pen-to-square"></i>
                 </a>
             </div>
-            <div class="row mx-1 mb-1 d-flex align-items-center">
-                <div class="col-md-6 d-flex justify-content-center">
-                    <div class="form-group">
-                        <img src="{{ asset('images/user-1.jpg') }}" alt="User Image" id="user-image">
-                    </div>
-                </div>
+            <div class="row mx-1 mb-1">
                 <div class="col-md-6">
                     <div class="form-group mb-3">
-                        <label class="font-educ" for="contact-number">Hubspot Id</label>
-                        <h5 class="fonts" id="contact_number">{{ $editOwner->owner_hubspot_id }}</h5>
+                        <label class="font-educ" for="hubspot-id">Hubspot Id</label>
+                        <h5 class="fonts" id="hubspot-id">{{ $editOwner->owner_hubspot_id }}</h5>
                     </div>
                     <div class="form-group mb-3">
                         <label class="font-educ" for="country">Country</label>
                         <h5 class="fonts" id="country">{{ $editOwner->country }}</h5>
                     </div>
                 </div>
-            </div>
-            <div class="row mx-1 mb-1">
                 <div class="col-md-6">
                     <div class="form-group mb-3">
-                        <label class="font-educ" for="skills">Name</label>
-                        <h5 class="fonts" id="skills">{{ $editOwner->owner_name }}</h5>
+                        <label class="font-educ" for="name">Name</label>
+                        <h5 class="fonts" id="name">{{ $editOwner->owner_name }}</h5>
                     </div>
                     <div class="form-group mb-3">
                         <label class="font-educ" for="email">Email</label>
                         <h5 class="fonts" id="email">{{ $editOwner->owner_email_id }}</h5>
                     </div>
                 </div>
+            </div>
+            <div class="row mx-1 mb-1">
                 <div class="col-md-6">
-                    <div class="form-group">
-                        <label class="font-educ" for="job-role">Business Unit: </label>
-                        <h5 class="fonts" id="job-role">{{ $editOwner->owner_business_unit }}</h5>
+                    <div class="form-group mb-3">
+                        <label class="font-educ" for="business-unit">Business Unit</label>
+                        <h5 class="fonts" id="business-unit">{{ $editOwner->owner_business_unit }}</h5>
                     </div>
                 </div>
             </div>
-        </div>
+        </div>        
         <div class="col-md-7 px-3">
             <div class="d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 ml-2 headings">Sales Engagement</h2>
-                <!-- <a class="btn hover-action font" href=" {{ route('owner#view') }} ">
-                                                        <i class="fa-solid fa-left-long"></i>
-                                                    </a> -->
             </div>
             <div class="row">
                 <div class="col">
@@ -134,7 +125,7 @@
         <div class="table-title d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
                 <h5 class="mr-3 my-2 headings">Contact Listing</h5>
-                <button class="btn hover-action mx-3" id="show-ownerContacts">
+                <button class="btn hover-action mx-3" id="show-contacts">
                     Interested Contacts
                 </button>
                 <button class="archive-table btn mx-3" id="show-archive">
@@ -147,12 +138,12 @@
             <div class="search-box d-flex align-items-center mr-3 mb-2">
                 <input type="search" class="form-control mr-1" placeholder="Search..." id="search-input"
                     aria-label="Search">
-                <button class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search">
+                <button style="padding: 10px 12px;" class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
             </div>
         </div>
-        <div class="">
+        <div class="table-container" id="contacts">
             <table class=" table table-hover mt-2" id="contacts-table">
                 <thead class="text-left font-educ">
                     <tr>
@@ -208,9 +199,10 @@
                     </tr>
                 </thead>
                 <tbody class="text-left bg-row fonts">
+                    <?php $i = 0; ?>
                     @forelse ($ownerContacts as $contact)
                         <tr data-status="{{ $contact['status'] }}">
-                            <td>{{ $contact['contact_pid'] }}</td>
+                            <td>{{ ++$i }}</td>
                             <td>{{ $contact['name'] }}</td>
                             <td>{{ $contact['email'] }}</td>
                             <td>{{ $contact['contact_number'] }}</td>
@@ -266,7 +258,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="">
+        <div class="table-container" id="archive">
             <table class="table table-hover mt-2" id="archive-table">
                 <thead class="text-left font-educ">
                     <tr class="text-left">
@@ -285,7 +277,7 @@
                     </tr>
                 </thead>
                 <tbody class="text-left bg-row">
-                    @foreach ($ownerArchive as $archive)
+                    @forelse ($ownerArchive as $archive)
                         <tr>
                             <td> {{ $archive['contact_archive_pid'] }} </td>
                             <td> {{ $archive['name'] }} </td>
@@ -328,11 +320,15 @@
                                 </a>
                             </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="7" class="text-center"> No Archive Contacts Found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
-        <div class="">
+        <div class="table-container" id="discard">
             <table class="table table-hover mt-2" id="discard-table">
                 <thead class="font-educ text-left">
                     <tr class="font-educ text-left">
@@ -351,7 +347,7 @@
                     </tr>
                 </thead>
                 <tbody class="text-left bg-row">
-                    @foreach ($ownerDiscard as $discard)
+                    @forelse ($ownerDiscard as $discard)
                         <tr>
                             <td> {{ $discard['contact_discard_pid'] }} </td>
                             <td> {{ $discard['name'] }} </td>
@@ -373,7 +369,11 @@
                                 </span>
                             </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="7" class="text-center">No Discard Contacts Found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -426,25 +426,37 @@
         </div>
     </div>
     <script>
-        $(document).ready(function() {
-            $('#archive-table').hide();
-            $('#discard-table').hide();
-            $('#show-ownerContacts').click(function() {
-                $('#ownerContacts-table').show();
-                $('#archive-table').hide();
-                $('#discard-table').hide();
-            });
-            $('#show-archive').click(function() {
-                $('#ownerContacts-table').hide();
-                $('#archive-table').show();
-                $('#discard-table').hide();
-            });
+        const showContactsBtn = document.getElementById('show-contacts');
+        const showArchiveBtn = document.getElementById('show-archive');
+        const showDiscardBtn = document.getElementById('show-discard');
 
-            $('#show-discard').click(function() {
-                $('#ownerContacts-table').hide();
-                $('#archive-table').hide();
-                $('#discard-table').show();
-            });
+        const contactsContainer = document.getElementById('contacts');
+        const archiveContainer = document.getElementById('archive');
+        const discardContainer = document.getElementById('discard');
+
+        // Function to hide all tables
+        function hideAllTables() {
+            contactsContainer.style.display = 'none';
+            archiveContainer.style.display = 'none';
+            discardContainer.style.display = 'none';
+        }
+
+        // Show Contacts Table (default)
+        showContactsBtn.addEventListener('click', function() {
+            hideAllTables();
+            contactsContainer.style.display = 'block';
+        });
+
+        // Show Archive Table
+        showArchiveBtn.addEventListener('click', function() {
+            hideAllTables();
+            archiveContainer.style.display = 'block';
+        });
+
+        // Show Discard Table
+        showDiscardBtn.addEventListener('click', function() {
+            hideAllTables();
+            discardContainer.style.display = 'block';
         });
     </script>
     <script>
