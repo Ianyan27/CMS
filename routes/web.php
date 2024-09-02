@@ -97,5 +97,5 @@ Route::group(['prefix' => 'buh'], function () {
     Route::get('/edit-owner/{owner_pid}', [OwnerController::class, 'editOwner'])->name('owner#update');
     Route::post('/update-owner/{owner_pid}', [OwnerController::class, 'updateOwner'])->name('owner#update-owner');
     Route::delete('/delete-owner/{owner_pid}', [OwnerController::class, 'deleteOwner'])->name('owner#delete');
-
+    Route::get('/view-contact/{contact_pid}', [OwnerController::class, 'viewContact'])->name('owner#view-contact');
 });

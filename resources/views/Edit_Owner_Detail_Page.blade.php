@@ -13,11 +13,11 @@
         <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
-                <div class="modal-content">
+                <div class="modal-content rounded-0">
                     <div class="modal-header"
                         style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
-                border:none;">
-                        <h5 class="modal-title" id="successModalLabel">Success</h5>
+                        border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
+                        <h5 class="modal-title font-educ" id="successModalLabel">Success</h5>
                     </div>
                     <div class="modal-body">
                         {{ session('success') }}
@@ -200,6 +200,7 @@
                                     </div>
                                 </div>
                         </th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody class="text-left bg-row fonts">
@@ -253,10 +254,16 @@
                                     @endif
                                 </span>
                             </td>
+                            <td>
+                                <a href=" {{ route('owner#view-contact', $contact->contact_pid) }} " class="btn hover-action"
+                                    data-toggle="tooltip" title="View" style="padding: 10px 12px;">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="text-center">No ownerContacts found.</td>
+                            <td colspan="9" class="text-center">No ownerContacts found.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -430,6 +437,37 @@
         </div>
     </div>
     <script>
+        window.onload = function() {
+            interestedButton.classList.add('active-interest'); // Add active class to the clicked button
+
+        };
+        // Get the buttons
+        const interestedButton = document.getElementById('show-contacts');
+        const archiveButton = document.getElementById('show-archive');
+        const discardButton = document.getElementById('show-discard');
+
+        // Function to remove active classes from all buttons
+        function clearActiveClasses() {
+            interestedButton.classList.remove('active-interest');
+            archiveButton.classList.remove('active-archive');
+            discardButton.classList.remove('active-discard');
+        }
+
+        // Add click event listeners
+        interestedButton.addEventListener('click', () => {
+            clearActiveClasses(); // Remove all active classes
+            interestedButton.classList.add('active-interest'); // Add active class to the clicked button
+        });
+
+        archiveButton.addEventListener('click', () => {
+            clearActiveClasses();
+            archiveButton.classList.add('active-archive');
+        });
+
+        discardButton.addEventListener('click', () => {
+            clearActiveClasses();
+            discardButton.classList.add('active-discard');
+        });
         const showContactsBtn = document.getElementById('show-contacts');
         const showArchiveBtn = document.getElementById('show-archive');
         const showDiscardBtn = document.getElementById('show-discard');
