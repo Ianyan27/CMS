@@ -13,11 +13,11 @@
         <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
-                <div class="modal-content">
+                <div class="modal-content rounded-0">
                     <div class="modal-header"
                         style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
-                border:none;">
-                        <h5 class="modal-title" id="successModalLabel">Success</h5>
+                        border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
+                        <h5 class="modal-title font-educ" id="successModalLabel">Success</h5>
                     </div>
                     <div class="modal-body">
                         {{ session('success') }}
@@ -85,14 +85,16 @@
                 <div class="col">
                     <div class="d-flex justify-content-center btn-group mb-3" role="group"
                         aria-label="Sales Engagement Buttons">
-                        <button type="button" class="btn activity-button mx-2" data
+                        <button type="button" class="btn hover-action activity-button active mx-2 rounded"
                             onclick="showSection('totalContactsSection')">
                             Total Contacts Allocated
                         </button>
-                        <button type="button" class="btn activity-button mx-2" onclick="showSection('hubspotContactsSection')">
+                        <button type="button" class="btn hover-action activity-button mx-2 rounded" 
+                        onclick="showSection('hubspotContactsSection')">
                             Total Sync HubSpot Contact
                         </button>
-                        <button type="button" class="btn activity-button mx-2" onclick="showSection('engagingContactsSection')">
+                        <button type="button" class="btn hover-action activity-button mx-2 rounded" 
+                        onclick="showSection('engagingContactsSection')">
                             Current Engaging Contact
                         </button>
                     </div>
@@ -198,6 +200,7 @@
                                     </div>
                                 </div>
                         </th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody class="text-left bg-row fonts">
@@ -251,10 +254,16 @@
                                     @endif
                                 </span>
                             </td>
+                            <td>
+                                <a href=" {{ route('owner#view-contact', $contact->contact_pid) }} " class="btn hover-action"
+                                    data-toggle="tooltip" title="View" style="padding: 10px 12px;">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="text-center">No ownerContacts found.</td>
+                            <td colspan="9" class="text-center">No ownerContacts found.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -313,9 +322,9 @@
                                 </span>
                             </td>
                             <td>
-                                {{-- <a href=" {{ route('archive#view', $archive->contact_archive_pid) }} " class="btn hover-action" --}}
+                                {{--<a href=" {{ route('archive#view', $archive->contact_archive_pid) }} " class="btn hover-action"
                                 data-toggle="tooltip" title="View">
-                                <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
+                                <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i> --}}
                                 </a>
                                 <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
                                     <i class="fa-solid fa-pen-to-square"></i>
@@ -428,6 +437,37 @@
         </div>
     </div>
     <script>
+        window.onload = function() {
+            interestedButton.classList.add('active-interest'); // Add active class to the clicked button
+
+        };
+        // Get the buttons
+        const interestedButton = document.getElementById('show-contacts');
+        const archiveButton = document.getElementById('show-archive');
+        const discardButton = document.getElementById('show-discard');
+
+        // Function to remove active classes from all buttons
+        function clearActiveClasses() {
+            interestedButton.classList.remove('active-interest');
+            archiveButton.classList.remove('active-archive');
+            discardButton.classList.remove('active-discard');
+        }
+
+        // Add click event listeners
+        interestedButton.addEventListener('click', () => {
+            clearActiveClasses(); // Remove all active classes
+            interestedButton.classList.add('active-interest'); // Add active class to the clicked button
+        });
+
+        archiveButton.addEventListener('click', () => {
+            clearActiveClasses();
+            archiveButton.classList.add('active-archive');
+        });
+
+        discardButton.addEventListener('click', () => {
+            clearActiveClasses();
+            discardButton.classList.add('active-discard');
+        });
         const showContactsBtn = document.getElementById('show-contacts');
         const showArchiveBtn = document.getElementById('show-archive');
         const showDiscardBtn = document.getElementById('show-discard');
@@ -459,6 +499,20 @@
         showDiscardBtn.addEventListener('click', function() {
             hideAllTables();
             discardContainer.style.display = 'block';
+        });
+        const buttons = document.querySelectorAll('.activity-button');
+
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove 'active' class from all buttons
+                    buttons.forEach(btn => btn.classList.remove('active'));
+
+                    // Add 'active' class to the clicked button
+                    this.classList.add('active');
+
+                    // Show the corresponding section (you likely already have this)
+                    showSection(this.getAttribute('onclick').split("'")[1]);
+                });
         });
     </script>
     <script>

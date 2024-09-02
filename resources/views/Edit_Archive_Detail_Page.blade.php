@@ -44,7 +44,7 @@
         <div class="col-md-5 border-right" id="contact-detail">
             <div class="table-title d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 ml-3 headings">Contact Detail</h2>
-                @if (Auth::check() && Auth::user()->role == 'Sales-Agent')
+                @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
                     <a href="{{ route('archive#edit', $editArchive->contact_archive_pid) }}" class="btn hover-action mx-1"
                         data-toggle="modal" data-target="#editArchiveModal">
                         <i class="fa-solid fa-pen-to-square"></i>
@@ -144,8 +144,8 @@
             {{-- Iterating all the activities from all contacts --}}
             <div class="activities">
                 @forelse ($engagementArchive->groupBy(function ($date) {
-                                                                                            return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
-                                                                                        }) as $month => $activitiesInMonth)
+                                                                                                                return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
+                                                                                                            }) as $month => $activitiesInMonth)
                     <div class="activity-list">
                         <div class="activity-date my-3 ml-3">
                             <span class="text-muted">{{ $month }}</span>
@@ -177,7 +177,7 @@
             <h2 class="ml-2 mb-1 headings">Activity Taken</h2>
         </div>
         <div class="d-flex align-items-center mr-2 mb-2">
-            @if (Auth::check() && Auth::user()->role == 'Sales-Agent')
+            @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
                 <button class="btn hover-action add-activity-button" data-toggle="modal"
                     data-target="#addArchiveActivityModal">
                     <i style="font-size: 22px;" class="fa-solid fa-square-plus p-1"></i>
@@ -194,7 +194,9 @@
                 <th scope="col">Type</th>
                 <th scope="col">Description</th>
                 <th scope="col">Attachment</th>
-                <th scope="col">Action</th>
+                @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+                    <th scope="col">Action</th>
+                @endif
             </tr>
         </thead>
         <tbody class="text-left bg-row">
@@ -220,12 +222,14 @@ $filePath = public_path('attachments/leads/' . $filename);
                             No Image Available
                         @endif
                     </td>
-                    <td>
-                        <a class="btn hover-action" data-toggle="modal"
-                            {{ Auth::user()->role == 'Sales-Agent' ? 'data-target="#updateArchiveActivityModal- $engagement->engagement_archive_pid "' : '' }}>
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </a>
-                    </td>
+                    @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+                        <td>
+                            <a class="btn hover-action" data-toggle="modal"
+                                {{ Auth::user()->role == 'Sales-Agent' ? 'data-target="#updateArchiveActivityModal- $engagement->engagement_archive_pid "' : '' }}>
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+                        </td>
+                    @endif
                 </tr>
             @endforeach
         </tbody>

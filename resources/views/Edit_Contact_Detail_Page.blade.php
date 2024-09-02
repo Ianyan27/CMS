@@ -43,7 +43,7 @@
         <div class="col-md-5 border-right" id="contact-detail">
             <div class="table-title d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 headings">Contact Detail</h2>
-                @if (Auth::check() && Auth::user()->role == 'Sales-Agent')
+                @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
                     <a href="{{ route('contact#edit', $editContact->contact_pid) }}" class="btn hover-action mx-1"
                         data-toggle="modal" data-target="#editContactModal">
                         <i class="fa-solid fa-pen-to-square"></i>
@@ -143,8 +143,8 @@
             {{-- Iterating all the activities from all contacts --}}
             <div class="activities">
                 @forelse ($engagements->groupBy(function ($date) {
-                                                                            return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
-                                                                        }) as $month => $activitiesInMonth)
+                                                                                                    return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
+                                                                                                }) as $month => $activitiesInMonth)
                     <div class="activity-list">
                         <div class="activity-date my-3 ml-3">
                             <span class="text-muted">{{ $month }}</span>
@@ -177,7 +177,7 @@
         </div>
         <div class="d-flex align-items-center mr-2 mb-2">
             <!-- Button to trigger the modal -->
-            @if (Auth::check() && Auth::user()->role == 'Sales-Agent')
+            @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
                 <button class="btn hover-action add-activity-button" data-toggle="modal" data-target="#addActivityModal">
                     <i style="font-size: 22px;" class="fa-solid fa-square-plus p-1"></i>
                 </button>
@@ -194,7 +194,9 @@
                     <th scope="col">Type</th>
                     <th scope="col">Description</th>
                     <th scope="col">Attachment</th>
-                    <th scope="col" class="text-center">Action</th>
+                    @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+                        <th scope="col" class="text-center">Action</th>
+                    @endif
                 </tr>
             </thead>
             <tbody class="text-left bg-row">
@@ -219,14 +221,16 @@ $filePath = public_path('attachments/leads/' . $filename);
                                 No Image Available
                             @endif
                         </td>
-                        <td class="text-center">
-                            <a href="{{ Auth::user()->role == 'Sales-Agent' ? route('contact#update-activity', ['contact_id' => $engagement->fk_engagements__contact_pid, 'activity_id' => $engagement->engagement_pid]) : '#' }}"
-                                data-toggle="modal"
-                                {{ Auth::user()->role == 'Sales-Agent' ? 'data-target="#updateActivityModal- $engagement->engagement_pid "' : '' }}
-                                class="btn hover-action">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </a>
-                        </td>
+                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+                            <td class="text-center">
+                                <a href="{{ Auth::user()->role == 'Sales_Agent' ? route('contact#update-activity', ['contact_id' => $engagement->fk_engagements__contact_pid, 'activity_id' => $engagement->engagement_pid]) : '#' }}"
+                                    data-toggle="modal"
+                                    {{ Auth::user()->role == 'Sales_Agent' ? 'data-target="#updateActivityModal- $engagement->engagement_pid "' : '' }}
+                                    class="btn hover-action">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                            </td>
+                        @endif
                     </tr>
                 @endforeach
             </tbody>
