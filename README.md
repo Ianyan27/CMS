@@ -21,11 +21,6 @@
     ```
 -   Go to php.ini and search for extension=gd, then uncomment it.
 -   Run the command: composer update (to make sure the package installed)
--   Copy the .env.example to .env file:
-
--   ```bash
-      cp .env.example .env
-    ```
 
 ## Run Application:
 
