@@ -75,7 +75,23 @@
                         <tr>
                             <td>{{ $owners->owner_name }}</td>
                             <td>{{ $owners->owner_hubspot_id }}</td>
-                            <td>{{ $owners->country }}</td>
+                            <td>
+                                @inject('countryCodeMapper', 'App\Services\CountryCodeMapper')
+
+                                @php
+                                    // Fetch the country code using the injected service
+                                    $countryCode = $countryCodeMapper->getCountryCode($owners['country']);
+                                @endphp
+
+                                @if ($countryCode)
+                                    <img src="{{ asset('flags/' . strtolower($countryCode) . '.svg') }}"
+                                        alt="{{ $owners['country'] }}" width="20" height="15">
+                                @else
+                                    <!-- Optional: Add a fallback image or text when the country code is not found -->
+                                    <span>No flag available</span>
+                                @endif
+                                {{ $owners['country'] }}
+                            </td>
                             <td class="text-center">{{ $owners->total_assign_contacts }}</td>
                             <td class="text-center">{{ $owners->total_hubspot_sync }}</td>
                             <td class="text-center">{{ $owners->total_in_progress }}</td>
