@@ -44,10 +44,12 @@
         <div class="col-md-5 border-right" id="contact-detail">
             <div class="table-title d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 ml-3 headings">Contact Detail</h2>
-                <a href="{{ route('archive#edit', $editArchive->contact_archive_pid) }}" class="btn hover-action mx-1"
-                    data-toggle="modal" data-target="#editArchiveModal">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                </a>
+                @if (Auth::check() && Auth::user()->role == 'Sales-Agent')
+                    <a href="{{ route('archive#edit', $editArchive->contact_archive_pid) }}" class="btn hover-action mx-1"
+                        data-toggle="modal" data-target="#editArchiveModal">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </a>
+                @endif
             </div>
             <div class="row row-margin-bottom row-border-bottom mx-1">
                 <div class="col-md-6">
@@ -142,8 +144,8 @@
             {{-- Iterating all the activities from all contacts --}}
             <div class="activities">
                 @forelse ($engagementArchive->groupBy(function ($date) {
-                                                    return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
-                                                }) as $month => $activitiesInMonth)
+                                                                                            return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
+                                                                                        }) as $month => $activitiesInMonth)
                     <div class="activity-list">
                         <div class="activity-date my-3 ml-3">
                             <span class="text-muted">{{ $month }}</span>
@@ -175,10 +177,12 @@
             <h2 class="ml-2 mb-1 headings">Activity Taken</h2>
         </div>
         <div class="d-flex align-items-center mr-2 mb-2">
-            <button class="btn hover-action add-activity-button" data-toggle="modal"
-                data-target="#addArchiveActivityModal">
-                <i style="font-size: 22px;" class="fa-solid fa-square-plus p-1"></i>
-            </button>
+            @if (Auth::check() && Auth::user()->role == 'Sales-Agent')
+                <button class="btn hover-action add-activity-button" data-toggle="modal"
+                    data-target="#addArchiveActivityModal">
+                    <i style="font-size: 22px;" class="fa-solid fa-square-plus p-1"></i>
+                </button>
+            @endif
         </div>
     </div>
     <!-- Table -->
@@ -197,15 +201,28 @@
             <?php $i = 0; ?>
 
             @foreach ($engagementArchive as $engagement)
+                @php
+                    // Decode the JSON or handle the attachments array properly
+                    $attachments = json_decode($engagement->attachments, true); // Assuming it's a JSON string
+$filename = $attachments[0] ?? ''; // Get the first filename from the array
+$filePath = public_path('attachments/leads/' . $filename);
+                @endphp
                 <tr>
                     <td> {{ ++$i }} </td>
                     <td> {{ $engagement->date }} </td>
                     <td> {{ $engagement->activity_name }} </td>
                     <td> {{ $engagement->details }} </td>
-                    <td> {{ $engagement->attachments }} </td>
+                    <td>
+                        @if (file_exists($filePath) && $filename)
+                            <img src="{{ asset('attachments/leads/' . $filename) }}" alt="Attachment Image"
+                                style="width: 100px; height: auto;">
+                        @else
+                            No Image Available
+                        @endif
+                    </td>
                     <td>
                         <a class="btn hover-action" data-toggle="modal"
-                            data-target="#updateArchiveActivityModal-{{ $engagement->engagement_archive_pid }}">
+                            {{ Auth::user()->role == 'Sales-Agent' ? 'data-target="#updateArchiveActivityModal- $engagement->engagement_archive_pid "' : '' }}>
                             <i class="fa-solid fa-pen-to-square"></i>
                         </a>
                     </td>
