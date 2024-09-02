@@ -96,4 +96,6 @@ Route::group(['prefix' => 'buh'], function () {
     Route::post('/save-user', [BUHController::class, 'saveUser'])->name('owner#save-user');
     Route::get('/edit-owner/{owner_pid}', [OwnerController::class, 'editOwner'])->name('owner#update');
     Route::post('/update-owner/{owner_pid}', [OwnerController::class, 'updateOwner'])->name('owner#update-owner');
+    Route::delete('/delete-owner/{owner_pid}', [OwnerController::class, 'deleteOwner'])->name('owner#delete');
+
 });

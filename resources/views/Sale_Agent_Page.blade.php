@@ -2,7 +2,6 @@
 
 @extends('layouts.app')
 @extends('layouts.Add_Sales-Agent_Modal')
-@extends('layouts.Delete_Sales-Agent_Prompt_Modal')
 
 @section('content')
     @if (Session::has('success'))
@@ -86,8 +85,8 @@
                                     <i class="fa-solid fa-eye"></i>
                                 </a>
                                 <!-- Delete button triggers the modal -->
-                                <a href="#" class="btn hover-action" style="padding: 10px 12px;" data-toggle="modal"
-                                    data-target="#deleteModal" onclick="setDeleteAction('#')">
+                                <a class="btn hover-action" style="padding: 10px 12px;" data-toggle="modal"
+                                    data-target="#deleteOwnerModal{{ $owners->owner_pid }}">
                                     <i class="fa-solid fa-trash"></i>
                                 </a>
                             </td>
@@ -143,6 +142,32 @@
             </div>
         </div>
     </div>
+    @foreach ($owner as $owners)
+    <div class="modal fade" id="deleteOwnerModal{{ $owners->owner_pid }}" tabindex="-1" 
+        aria-labelledby="deleteOwnerModalLabel{{ $owners->owner_pid }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center">
+                <div class="icon-container mx-auto">
+                    <i class="fa-solid fa-trash"></i>
+                </div>
+                <div class="modal-header border-0">
+                </div>
+                <div class="modal-body">
+                    <p>You are about to delete this Sales Agent</p>
+                    <p class="text-muted">This will delete your sales agent from your list.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <form action="{{ route('owner#delete', $owners->owner_pid) }}" method="post">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+@endforeach
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     @if (Session::has('success'))
         <script type="text/javascript">
