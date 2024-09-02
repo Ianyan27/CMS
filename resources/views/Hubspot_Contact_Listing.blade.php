@@ -51,14 +51,13 @@
                 </thead>
                 <tbody class="text-left bg-row fonts">
                     @forelse ($hubspotContactsNoSync as $index => $contact)
-                        <tr data-contact-id="{{ $contact->contact_pid }}">
+                        <tr>
                             <td><input type="checkbox" name="selectedContacts[]" value="{{ $contact->contact_pid }}">
                             </td>
                             <td>{{ $index + 1 }}</td> <!-- Index value -->
                             <td>{{ $contact->name }}</td>
                             <td>{{ $contact->email }}</td>
                             <td>{{ $contact->phone }}</td>
-                            <td class="sync-datetime">{{ $contact->datetime_of_hubspot_sync }}</td>
                         </tr>
                     @empty
                         <tr>
