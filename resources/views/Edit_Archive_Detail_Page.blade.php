@@ -6,6 +6,7 @@
 @extends('layouts.Add_Archive_Activity_Modal')
 @extends('layouts.Edit_Archive_Activity_Modal')
 @section('content')
+@if (Auth::check() && Auth::user()->role == 'Sales_Agent')
     @if (session('success'))
         <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
         <button id="successModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal"
@@ -234,6 +235,11 @@ $filePath = public_path('attachments/leads/' . $filename);
             @endforeach
         </tbody>
     </table>
+    @else
+        <div class="alert alert-danger text-center mt-5">
+            <strong>Access Denied!</strong> You do not have permission to view this page.
+        </div>
+    @endif
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ URL::asset('js/contact_detail.js') }}"></script>
     <script src="{{ URL::asset('js/status_color.js') }}"></script>

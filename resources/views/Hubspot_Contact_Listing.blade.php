@@ -3,6 +3,7 @@
 @section('title', 'HubSpot Contact Listing Page')
 
 @section('content')
+@if (Auth::check() && Auth::user()->role == 'BUH')
     <div class="container-max-height">
         <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
@@ -143,11 +144,14 @@
             </ul>
         </div>
     </div>
-
+    @else
+        <div class="alert alert-danger text-center mt-5">
+            <strong>Access Denied!</strong> You do not have permission to view this page.
+        </div>
+    @endif
     <script>
         const showNoSyncBtn = document.getElementById('show-no-sync');
         const showSyncedBtn = document.getElementById('show-synced');
-
         const noSyncContainer = document.getElementById('no-sync');
         const syncedContainer = document.getElementById('synced');
 
@@ -156,8 +160,6 @@
             noSyncContainer.style.display = 'none';
             syncedContainer.style.display = 'none';
         }
-
-
 
         // Show No Sync Contacts Table
         showNoSyncBtn.addEventListener('click', function(event) {

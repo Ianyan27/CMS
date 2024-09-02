@@ -3,8 +3,10 @@
 @section('title', 'Import Files Page')
 
 @section('content')
+
+@if (Auth::check() && Auth::user()->role == 'BUH')
     <div class="container-max-height">
-        <div class="row ">
+        <div class="row">
             <div class="col-sm-12">
                 <div class="d-flex justify-content-between">
                     <h5 class="mb-4 font-educ headings">Please Select Platform</h5>
@@ -75,8 +77,11 @@
             </div>
         </div>
     </div>
-    </div>
-    </div>
+    @else
+        <div class="alert alert-danger text-center mt-5">
+            <strong>Access Denied!</strong> You do not have permission to view this page.
+        </div>
+    @endif
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         //-----------declaring----------------//

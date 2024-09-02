@@ -4,6 +4,7 @@
 @extends('layouts.Add_Sales-Agent_Modal')
 
 @section('content')
+@if (Auth::check() && Auth::user()->role == 'BUH')
     @if (Session::has('success'))
         <!-- Success Modal -->
         <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
@@ -184,6 +185,11 @@
         </div>
     </div>
 @endforeach
+@else
+<div class="alert alert-danger text-center mt-5">
+    <strong>Access Denied!</strong> You do not have permission to view this page.
+</div>
+@endif
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     @if (Session::has('success'))
         <script type="text/javascript">

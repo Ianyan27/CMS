@@ -1,11 +1,27 @@
 @section('title', 'User Listing Page')
-
+@if (Auth::check() && Auth::user()->role == 'Admin')
 @extends('layouts.app')
 @section('content')
-    @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
+    @if (Session::has('success'))
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header"
+                    style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+                    border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
+                    <h5 class="modal-title" id="successModalLabel" style="color: #91264c"><strong>Success</strong></h5>
+                </div>
+                <div class="modal-body" style="color: #91264c;border:none;">
+                    {{ Session::get('success') }}
+                </div>
+                <div class="modal-footer" style="border:none;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                        style="background: #91264c; color:white;">OK</button>
+                </div>
+            </div>
         </div>
+    </div>
     @endif
     <div class="container-max-height">
         <div class="d-flex justify-content-between align-items-center">
@@ -275,3 +291,4 @@
     </div>
     </div>
 @endsection
+@endif

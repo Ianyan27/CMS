@@ -197,7 +197,6 @@
 $filename = $attachments[0] ?? ''; // Get the first filename from the array
 $filePath = public_path('attachments/leads/' . $filename);
                 @endphp
-
                 <tr>
                     <td> {{ ++$i }} </td>
                     <td> {{ $engagement->date }} </td>

@@ -147,14 +147,12 @@
                         <div class="activity-date my-3 ml-3">
                             <span class="text-muted">{{ $month }}</span>
                         </div>
-        
                         @php
                             // Collect activity types in the current month
                             $activityTypes = $activitiesInMonth->pluck('activity_name')->map(function($name) {
                                 return strtolower($name);
                             })->unique();
                         @endphp
-        
                         @foreach ($activitiesInMonth as $activity)
                             <div class="activity-item mb-3 mx-3 border-educ rounded p-3"
                                 data-type="{{ strtolower($activity->activity_name) }}">
@@ -166,19 +164,19 @@
                         {{-- No activity messages for specific types --}}
                         <div class="no-activity-message mb-3 mx-3 border-educ rounded p-3 d-none" data-type="meeting">
                             <h5 class="font-educ">Meetings</h5>
-                            <p class="text-muted">No meetings taken for this month.</p>
+                            <p class="text-muted">No meetings taken.</p>
                         </div>
                         <div class="no-activity-message mb-3 mx-3 border-educ rounded p-3 d-none" data-type="email">
                             <h5 class="font-educ">Emails</h5>
-                            <p class="text-muted">No emails taken for this month.</p>
+                            <p class="text-muted">No emails taken.</p>
                         </div>
                         <div class="no-activity-message mb-3 mx-3 border-educ rounded p-3 d-none" data-type="phone">
                             <h5 class="font-educ">Calls</h5>
-                            <p class="text-muted">No calls taken for this month.</p>
+                            <p class="text-muted">No calls taken.</p>
                         </div>
                         <div class="no-activity-message mb-3 mx-3 border-educ rounded p-3 d-none" data-type="whatsapp">
                             <h5 class="font-educ">WhatsApp</h5>
-                            <p class="text-muted">No WhatsApp taken for this month.</p>
+                            <p class="text-muted">No WhatsApp taken.</p>
                         </div>
                     </div>
                 @empty
@@ -277,13 +275,11 @@ $filePath = public_path('attachments/leads/' . $filename);
                 // Check if any activities are visible after filtering
                 let visibleItems = document.querySelectorAll(`.activity-item[data-type="${filter}"]`);
                 let noActivityMessage = document.querySelector(`.no-activity-message[data-type="${filter}"]`);
-    
                 if (visibleItems.length === 0 && noActivityMessage) {
                     noActivityMessage.classList.remove('d-none');
                 } else if (noActivityMessage) {
                     noActivityMessage.classList.add('d-none');
                 }
-    
                 // Hide all no-activity messages except for the current filter
                 document.querySelectorAll('.no-activity-message').forEach(msg => {
                     if (msg.getAttribute('data-type') !== filter) {

@@ -3,6 +3,7 @@
 @extends('layouts.app')
 @extends('layouts.Edit_Owner_Modal')
 @section('content')
+@if (Auth::check() && Auth::user()->role == 'Admin' || Auth::user()->role == 'BUH')
     @if (session('success'))
         <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
         <button id="successModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal"
@@ -436,6 +437,11 @@
             </ul>
         </div>
     </div>
+    @else
+        <div class="alert alert-danger text-center mt-5">
+            <strong>Access Denied!</strong> You do not have permission to view this page.
+        </div>
+    @endif
     <script src="{{ asset('js/show_hide_contacts_table.js') }}"></script>
     <script src="{{asset('js/active_activity_buttons.js')}}"></script>
     <script>

@@ -3,6 +3,7 @@
 @section('title', 'Contact Listing Page')
 
 @section('content')
+@if (Auth::check() && Auth::user()->role == 'Sales_Agent')
     @if (session('success'))
     @elseif (session('error'))
         <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
@@ -343,6 +344,11 @@
             </ul>
         </div>
     </div>
+        @else
+        <div class="alert alert-danger text-center mt-5">
+            <strong>Access Denied!</strong> You do not have permission to view this page.
+        </div>
+    @endif
     <script src=" {{asset('js/show_hide_contacts_table.js')}} "></script>
     <script src=" {{asset('js/active-buttons.js')}} "></script>
 @endsection
