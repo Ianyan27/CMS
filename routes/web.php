@@ -53,7 +53,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::delete('/delete-user/{id}', [AdminController::class, 'deleteUser'])->name('user#delete-user');
     Route::post('/save-user', [AdminController::class, 'saveUser'])->name('user#save-user');
     Route::get('/contacts', [AdminController::class, 'contacts'])->name('admin#contact-listing');
-    Route::get('/view-contacts/{contact_pid}', [AdminController::class, 'viewContacts']);
+    Route::get('/view-contacts/{contact_pid}', [AdminController::class, 'viewContact'])->name('admin#view-contact');
 });
 Route::group(['prefix' => 'sales-agent'], function () {
     Route::get('/', [ContactController::class, 'index'])->name('sales-agent#index');
