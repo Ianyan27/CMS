@@ -299,18 +299,34 @@ class ContactController extends Controller
 
     public function hubspotContacts()
     {
-        // Get HubSpot contacts 
-        $hubspotContacts = Contact::where('status', 'HubSpot Contact')
+        $ownerPid = Auth::user()->id; // Get the authenticated user's ID as owner_pid
+
+        log::info("buh id " . $ownerPid);
+
+        // Get HubSpot contacts using Eloquent with joins and pagination
+        $hubspotContacts = Contact::join('owners as o', 'contacts.fk_contacts__owner_pid', '=', 'o.owner_pid')
+            ->join('users as u', 'o.fk_buh', '=', 'u.id')
+            ->where('u.id', $ownerPid)
+            ->where('contacts.status', 'Hubspot Contact')
+            ->select('contacts.*') // Adjust as necessary
             ->paginate(50);
 
-        // Get HubSpot contacts where datetime_of_hubspot_sync is null
-        $hubspotContactsNoSync = Contact::where('status', 'HubSpot Contact')
-            ->whereNull('datetime_of_hubspot_sync')
+        // Get HubSpot contacts where datetime_of_hubspot_sync is null using the same query structure
+        $hubspotContactsNoSync = Contact::join('owners as o', 'contacts.fk_contacts__owner_pid', '=', 'o.owner_pid')
+            ->join('users as u', 'o.fk_buh', '=', 'u.id')
+            ->where('u.id', $ownerPid)
+            ->where('contacts.status', 'Hubspot Contact')
+            ->whereNull('contacts.datetime_of_hubspot_sync')
+            ->select('contacts.*') // Adjust as necessary
             ->paginate(50);
 
-        // Get HubSpot contacts where datetime_of_hubspot_sync has a value
-        $hubspotContactsSynced = Contact::where('status', 'HubSpot Contact')
-            ->whereNotNull('datetime_of_hubspot_sync')
+        // Get HubSpot contacts where datetime_of_hubspot_sync has a value using the same query structure
+        $hubspotContactsSynced = Contact::join('owners as o', 'contacts.fk_contacts__owner_pid', '=', 'o.owner_pid')
+            ->join('users as u', 'o.fk_buh', '=', 'u.id')
+            ->where('u.id', $ownerPid)
+            ->where('contacts.status', 'Hubspot Contact')
+            ->whereNotNull('contacts.datetime_of_hubspot_sync')
+            ->select('contacts.*') // Adjust as necessary
             ->paginate(50);
 
         // Pass data to view
