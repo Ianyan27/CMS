@@ -26,24 +26,20 @@
             </div>
         </div>
     @endif
-
-    <link rel="stylesheet" href="{{ URL::asset('css/contact-detail.css') }}">
     <div class="container-max-height">
         <div class="table-title d-flex justify-content-between align-items-center mb-3">
             <div class="d-flex align-items-center">
                 <h2 style="margin: 0 0.5rem 0 0.25rem;" class="font-educ headings">Sales Agents</h2>
-                <!-- Search Bar Section -->
                 <button class="btn hover-action add-sales-agent-button" data-toggle="modal"
                     data-target="#addSalesAgentModal" style="padding: 10px 12px;">
                     <i class="fa-solid fa-square-plus"></i>
-                </button>
+                    </button>
             </div>
             <div class="d-flex align-items-center mr-3">
-
                 <div class="search-box d-flex align-items-center ml-3">
                     <input type="search" class="form-control mr-1" placeholder="Search Name" id="search-name"
                         aria-label="Search">
-                    <button style="padding: 10px 12px;" class="btn hover-action" type="button" data-toggle="tooltip"
+                        <button style="padding: 10px 12px;" class="btn hover-action" type="button" data-toggle="tooltip"
                         title="Search">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
@@ -104,49 +100,50 @@
             <ul class="pagination justify-content-center">
                 <!-- Previous Button -->
                 <li class="page-item {{ $owner->onFirstPage() ? 'disabled' : '' }}">
-                    <a class="page-link font-educ" href="{{ $owner->previousPageUrl() }}" aria-label="Previous">&#60;</a>
-                </li>
-                <!-- First Page Button -->
-                @if ($owner->currentPage() > 3)
-                    <li class="page-item">
-                        <a class="page-link font-educ" href="{{ $owner->url(1) }}">1</a>
+                        <a class="page-link font-educ" href="{{ $owner->previousPageUrl() }}" aria-label="Previous">&#60;</a>
                     </li>
-                    <li class="page-item">
-                        <a class="page-link font-educ" href="{{ $owner->url(2) }}">2</a>
+                    <!-- First Page Button -->
+                    @if ($owner->currentPage() > 3)
+                        <li class="page-item">
+                            <a class="page-link font-educ" href="{{ $owner->url(1) }}">1</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link font-educ" href="{{ $owner->url(2) }}">2</a>
+                        </li>
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    @endif
+                    <!-- Middle Page Buttons -->
+                    @for ($i = max($owner->currentPage() - 1, 1); $i <= min($owner->currentPage() + 1, $owner->lastPage()); $i++)
+                        <li class="page-item {{ $i == $owner->currentPage() ? 'active' : '' }}">
+                            <a class="page-link font-educ {{ $i == $owner->currentPage() ? 'active-bg' : '' }}"
+                                href="{{ $owner->url($i) }}">{{ $i }}</a>
+                        </li>
+                    @endfor
+                    <!-- Last Page Button -->
+                    @if ($owner->currentPage() < $owner->lastPage() - 2)
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link font-educ"
+                                href="{{ $owner->url($owner->lastPage() - 1) }}">{{ $owner->lastPage() - 1 }}</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link font-educ"
+                                href="{{ $owner->url($owner->lastPage()) }}">{{ $owner->lastPage() }}</a>
+                        </li>
+                    @endif
+                    <!-- Next Button -->
+                    <li class="page-item {{ !$owner->hasMorePages() ? 'disabled' : '' }}">
+                        <a class="page-link font-educ" href="{{ $owner->nextPageUrl() }}" aria-label="Next">&#62;</a>
                     </li>
-                    <li class="page-item disabled">
-                        <span class="page-link">...</span>
-                    </li>
-                @endif
-                <!-- Middle Page Buttons -->
-                @for ($i = max($owner->currentPage() - 1, 1); $i <= min($owner->currentPage() + 1, $owner->lastPage()); $i++)
-                    <li class="page-item {{ $i == $owner->currentPage() ? 'active' : '' }}">
-                        <a class="page-link font-educ {{ $i == $owner->currentPage() ? 'active-bg' : '' }}"
-                            href="{{ $owner->url($i) }}">{{ $i }}</a>
-                    </li>
-                @endfor
-                <!-- Last Page Button -->
-                @if ($owner->currentPage() < $owner->lastPage() - 2)
-                    <li class="page-item disabled">
-                        <span class="page-link">...</span>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link font-educ"
-                            href="{{ $owner->url($owner->lastPage() - 1) }}">{{ $owner->lastPage() - 1 }}</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link font-educ"
-                            href="{{ $owner->url($owner->lastPage()) }}">{{ $owner->lastPage() }}</a>
-                    </li>
-                @endif
-                <!-- Next Button -->
-                <li class="page-item {{ !$owner->hasMorePages() ? 'disabled' : '' }}">
-                    <a class="page-link font-educ" href="{{ $owner->nextPageUrl() }}" aria-label="Next">&#62;</a>
-                </li>
-            </ul>
+                </ul>
+            </div>
         </div>
     </div>
-    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     @if (Session::has('success'))
         <script type="text/javascript">
             $(document).ready(function() {
@@ -168,27 +165,6 @@
                 } else {
                     row.style.display = 'none'; // Hide the row if it doesn't match
                 }
-            });
-        });
-    </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Dropdown toggle functionality
-            $('.dropdown-toggle').click(function() {
-                $(this).siblings('.dropdown-menu').toggle();
-            });
-            // Hide the dropdown when clicking outside
-            $(document).on('click', function(e) {
-                if (!$(e.target).closest('.dropdown').length) {
-                    $('.dropdown-menu').hide();
-                }
-            });
-            // Handle the filter selection
-            $('.dropdown-item input[type="radio"]').change(function() {
-                var selectedValue = $(this).val();
-                // alert("Selected Filter: " + selectedValue); 
-                $('.dropdown-menu').hide();
             });
         });
     </script>

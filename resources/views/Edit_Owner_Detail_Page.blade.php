@@ -277,7 +277,7 @@
                     </tr>
                 </thead>
                 <tbody class="text-left bg-row">
-                    @foreach ($ownerArchive as $archive)
+                    @forelse ($ownerArchive as $archive)
                         <tr>
                             <td> {{ $archive['contact_archive_pid'] }} </td>
                             <td> {{ $archive['name'] }} </td>
@@ -320,7 +320,11 @@
                                 </a>
                             </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="7" class="text-center"> No Archive Contacts Found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -343,7 +347,7 @@
                     </tr>
                 </thead>
                 <tbody class="text-left bg-row">
-                    @foreach ($ownerDiscard as $discard)
+                    @forelse ($ownerDiscard as $discard)
                         <tr>
                             <td> {{ $discard['contact_discard_pid'] }} </td>
                             <td> {{ $discard['name'] }} </td>
@@ -365,7 +369,11 @@
                                 </span>
                             </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="7" class="text-center">No Discard Contacts Found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

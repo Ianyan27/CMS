@@ -34,16 +34,6 @@
             /* Custom progress bar color */
         }
 
-        .btn-custom {
-            background-color: #870f4a;
-            color: white;
-            border: none;
-        }
-
-        .btn-close-custom {
-            color: #c58ca8;
-        }
-
         .status-text {
             color: green;
         }
@@ -66,19 +56,6 @@
             padding-left: 15px;
         }
 
-        .w-100 {
-            width: 100%;
-        }
-
-        .w-100 {
-            width: 100%;
-        }
-
-        .mb-4 {
-            margin-bottom: 1.5rem;
-        }
-
-
         .radio-btn {
             /* background-color: #8b0045; */
             color: #000000;
@@ -91,16 +68,11 @@
         }
 
         input[type="radio"].radio-circle:checked {
-
             accent-color: #91264c;
         }
 
         input[type="radio"]:checked+label {
             color: #91264c;
-        }
-
-        .d-none {
-            display: none;
         }
 
         .search-bar {
