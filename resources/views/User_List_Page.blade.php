@@ -16,7 +16,7 @@
                 </button>
             </div>
             <div class="search-box d-flex align-items-center mr-3 mb-2">
-                <input type="search" class="form-control mr-1" placeholder="Search..." id="search-input"
+                <input type="search" class="form-control mr-1" placeholder="Search by Email or Name" id="search-input"
                     aria-label="Search">
                 <button class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search">
                     <i class="fa-solid fa-magnifying-glass"></i>
