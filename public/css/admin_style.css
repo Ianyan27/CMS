@@ -206,8 +206,10 @@ tbody {
     color: #1c1c1e;
 }
 
-.activity-button {
-    font-weight: bold;
+.hover-action.active {
+    background-color: #91264c; /* Background color when active */
+    color: white; /* Text color when active */
+    border-color: #91264c; /* Border color when active */
 }
 
 .active-activity-button {

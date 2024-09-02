@@ -85,14 +85,16 @@
                 <div class="col">
                     <div class="d-flex justify-content-center btn-group mb-3" role="group"
                         aria-label="Sales Engagement Buttons">
-                        <button type="button" class="btn activity-button mx-2" data
+                        <button type="button" class="btn hover-action activity-button active mx-2 rounded"
                             onclick="showSection('totalContactsSection')">
                             Total Contacts Allocated
                         </button>
-                        <button type="button" class="btn activity-button mx-2" onclick="showSection('hubspotContactsSection')">
+                        <button type="button" class="btn hover-action activity-button mx-2 rounded" 
+                        onclick="showSection('hubspotContactsSection')">
                             Total Sync HubSpot Contact
                         </button>
-                        <button type="button" class="btn activity-button mx-2" onclick="showSection('engagingContactsSection')">
+                        <button type="button" class="btn hover-action activity-button mx-2 rounded" 
+                        onclick="showSection('engagingContactsSection')">
                             Current Engaging Contact
                         </button>
                     </div>
@@ -313,9 +315,9 @@
                                 </span>
                             </td>
                             <td>
-                                {{-- <a href=" {{ route('archive#view', $archive->contact_archive_pid) }} " class="btn hover-action" --}}
+                                {{--<a href=" {{ route('archive#view', $archive->contact_archive_pid) }} " class="btn hover-action"
                                 data-toggle="tooltip" title="View">
-                                <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
+                                <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i> --}}
                                 </a>
                                 <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
                                     <i class="fa-solid fa-pen-to-square"></i>
@@ -459,6 +461,20 @@
         showDiscardBtn.addEventListener('click', function() {
             hideAllTables();
             discardContainer.style.display = 'block';
+        });
+        const buttons = document.querySelectorAll('.activity-button');
+
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove 'active' class from all buttons
+                    buttons.forEach(btn => btn.classList.remove('active'));
+
+                    // Add 'active' class to the clicked button
+                    this.classList.add('active');
+
+                    // Show the corresponding section (you likely already have this)
+                    showSection(this.getAttribute('onclick').split("'")[1]);
+                });
         });
     </script>
     <script>
