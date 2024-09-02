@@ -26,7 +26,13 @@
         select:hover {
             border-color: #c58ca8;
             box-shadow: 0 0 0 2px rgba(197, 140, 168, 0.5);
-            /* Add shadow similar to focus state */
+            
+        }
+
+        .error-select {
+            border-color: #ff6868;
+            box-shadow: 0 0 0 3px rgba(251, 125, 150, 0.5);
+            color: red;
         }
 
         .progress-bar-custom {
@@ -83,54 +89,58 @@
     <div class="container-max-height">
         <div class="row ">
             <div class="col-sm-12">
-                <form action="{{ route('import') }}" method="POST" enctype="multipart/form-data">
-                    <h5 class="mb-4 font-educ headings">Please Select Data Source</h5>
-                    <div class="alert alert-danger d-none" id="radioValidationMsg" role="alert" style="font-size: medium;">
-                        Please select a data source.
-                    </div>                    
-                    <div class="w-100 mb-4 d-flex justify-content-between align-items-center">
-                        <!-- Radio buttons positioned to the left end -->
-                        <div class="d-flex align-items-center pl-1" id="radio-container">
-                            <input type="radio" name="option" id="platformRadio" value="platform" class="radio-circle ml-1">
-                            <label for="platformRadio" class="radio-btn ">Platform</label>
 
-                            <input type="radio" name="option" id="rawRadio" value="raw" class="radio-circle">
-                            <label for="rawRadio" class="radio-btn ">Raw</label>
+                <div class="d-flex justify-content-between">
+                    <h5 class="mb-4 font-educ headings">Please Select Platform</h5>
+                    <!-- Get CSV Format button positioned to the right end -->
+                    <div id="raw-btn-container">
+                        <button class="btn hover-action" onclick="window.location.href='{{ route('get-csv') }}'">
+                            Get CSV Format
+                        </button>
+                    </div>
+                </div>
+
+
+                <!-- Get CSV Format button positioned to the right end -->
+                <div id="raw-btn-container" class="d-none">
+
+                    <a href="get-csv">
+                        <button class="btn hover-action">
+                            Get CSV Format
+                        </button>
+                    </a>
+                </div>
+
+                <div id="platform-container">
+                    <div class="alert alert-danger d-none" id="platformValidationMsg" role="alert"
+                        style="font-size: medium">
+                        Please Select Platform *
+                    </div>
+                    <select id="platform" class="w-100 platforms search-bar" name="platform">
+                        <option value="" selected disabled>Select Platform</option>
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="apollo">Apollo</option>
+                        <option value="raw">Raw</option>
+                    </select>
+
+                </div>
+                <div class="text-center mb-4">
+                    <div class="card-body justify-content-center align-items-center drop-zone" id="dropZone">
+                        <div class="mx-5">
+                            <h5 class="mb-4 font-educ">Drag and drop your files</h5>
+                            <p class="mb-4" title="The uploaded file must be a file of type: csv">File
+                                formats we support <i class="fas fa-info-circle"></i></p>
                         </div>
-                        <!-- Get CSV Format button positioned to the right end -->
-                        <div id="raw-btn-container" class="d-none">
-                            <button class="btn hover-action" onclick="window.location.href='{{ route('get-csv') }}'">
-                                Get CSV Format
-                            </button>
+                        @csrf
+                        <div>
+                            <input accept=".csv" type="file" name="csv_file" required id="fileInput" class="d-none">
+                        </div>
+                        <div>
+                            <label for="fileInput" class="btn hover-action mt-4">Import Manually</label>
                         </div>
                     </div>
-                    <div id="platform-container">
-                        <div class="alert alert-danger d-none" id="platformValidationMsg" role="alert" style="font-size: medium">
-                            Please Select Platform *
-                        </div>
-                        <select id="platform" class="w-100 platforms search-bar d-none" name="platform">
-                            <option value="" selected disabled>Select Platform</option>
-                            <option value="linkedin">LinkedIn</option>
-                            <option value="apollo">Apollo</option>
-                        </select>
-                    </div>
-                    <div class="text-center mb-4">
-                        <div class="card-body justify-content-center align-items-center drop-zone" id="dropZone">
-                            <div class="mx-5">
-                                <h5 class="mb-4 font-educ">Drag and drop your files</h5>
-                                <p class="mb-4" title="The uploaded file must be a file of type: csv">File
-                                    formats we support <i class="fas fa-info-circle"></i></p>
-                            </div>
-                            @csrf
-                            <div>
-                                <input accept=".csv" type="file" name="csv_file" required id="fileInput" class="d-none">
-                            </div>
-                            <div>
-                                <label for="fileInput" class="btn hover-action mt-4">Import Manually</label>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+                </div>
+
             </div>
         </div>
         <div class="card d-none" id="file-card">
@@ -149,7 +159,7 @@
                         <p id="error-message" class="text-danger d-none mt-2"></p>
                     </div>
                     <div>
-                        <input type="submit" id="submit-btn" class="btn hover-action d-none" style="margin-left: auto">
+                        <input type="submit" id="submit-btn" class="btn hover-action" style="margin-left: auto">
                     </div>
                 </div>
             </div>
@@ -208,57 +218,20 @@
         }
 
         function handlePlatformChange() {
-            const platform = document.getElementById('platform').value;
-            const rawBtnContainer = document.getElementById('raw-btn-container');
 
             checkIfReadyToSubmit();
-
-            // Toggle the raw button container based on the platform selection
-            if (platform === 'raw') {
-                rawBtnContainer.classList.remove('d-none');
-            } else {
-                rawBtnContainer.classList.add('d-none');
-            }
         }
 
         function checkIfReadyToSubmit() {
-            const platform = document.getElementById('platform');
-            const fileInput = document.getElementById(
-                'fileInput'); // Assuming you have an element with this ID for file input
-            const submitBtn = document.getElementById('submit-btn');
-            const platformRadio = document.getElementById('platformRadio');
-            const rawRadio = document.getElementById('rawRadio');
-            const radioValidationMsg = document.getElementById('radioValidationMsg');
-            const platformValidationMsg = document.getElementById('platformValidationMsg');
-
-            if (platformRadio.checked || rawRadio.checked) {
-                if (platformRadio.checked) {
-                    if (platform && platform.value !== "") {
-                        submitBtn.classList.remove('d-none');
-                        radioValidationMsg.classList.add('d-none'); // Hide the validation message
-
-                    } else {
-                        platform.reportValidity(); // Highlight platform dropdown if it's invalid
-                        platform.focus();
-                        platformValidationMsg.classList.remove('d-none');
-                        submitBtn.classList.add('d-none'); // Keep the submit button hidden
-                    }
-                } else {
-                    if (fileInput && fileInput.files.length > 0) {
-                        submitBtn.classList.remove('d-none');
-                        radioValidationMsg.classList.add('d-none'); // Hide the validation message
-
-                    } else {
-                        submitBtn.classList.add('d-none'); // Keep the submit button hidden if no file is selected
-                    }
-                }
-            } else {
-                submitBtn.classList.add('d-none'); // Hide the submit button
-                radioValidationMsg.classList.remove('d-none'); // Show the validation message
-                radioContainer.style.backgroundColor = "#FFCCD4";
-                radioContainer.style.border = "1px solid #FFCCD7";
-                radioContainer.style.borderRadius = "0.375rem";
+            const platformSelect = document.getElementById('platform');
+            if (platformSelect.value) {
+                platformSelect.classList.remove("error-select");
+                submitBtn.classList.remove("d-none");
+            }else{
+                platformSelect.classList.add("error-select");
+                submitBtn.classList.add("d-none");
             }
+
         }
 
 
@@ -269,13 +242,10 @@
             e.preventDefault();
             //create form data
             const formData = new FormData();
+            const platformSelect = document.getElementById('platform');
             formData.append('csv_file', fileInput.files[0]);
-            if (rawRadio.checked) {
-                formData.append('platform', 'raw');
-            } else {
-                const platformSelect = document.getElementById('platform');
-                formData.append('platform', platformSelect.value);
-            }
+            formData.append('platform', platformSelect.value);
+
 
 
             submitBtn.classList.add('d-none');
@@ -436,52 +406,6 @@
             document.getElementById('cancel-btn').addEventListener('click', () => {
                 downloadPrompt.remove();
             });
-        }
-        // Update the JavaScript to toggle classes based on selection
-        document.addEventListener('DOMContentLoaded', function() {
-            const platformRadio = document.getElementById('platformRadio');
-            const rawRadio = document.getElementById('rawRadio');
-            const platformSelect = document.getElementById('platform');
-            const rawBtnContainer = document.getElementById('raw-btn-container');
-            const platformBtn = document.querySelector('label[for="platformRadio"]');
-            const rawBtn = document.querySelector('label[for="rawRadio"]');
-
-            platformRadio.addEventListener('change', function() {
-                if (platformRadio.checked) {
-                    const radioValidationMsg = document.getElementById('radioValidationMsg');
-                    platformSelect.classList.remove('d-none');
-                    platformSelect.style.display = 'block';
-                    rawBtnContainer.style.display = 'none';
-                    radioValidationMsg.classList.add('d-none');
-
-                    platformBtn.classList.add('active');
-                    platformBtn.classList.remove('inactive');
-                    rawBtn.classList.remove('active');
-                    rawBtn.classList.add('inactive');
-
-                    radioContainer.style.backgroundColor = "transparent";
-                    radioContainer.style.border = "none";
-                }
-            });
-
-            rawRadio.addEventListener('change', function() {
-                if (rawRadio.checked) {
-                    const radioValidationMsg = document.getElementById('radioValidationMsg');
-
-                    platformSelect.style.display = 'none';
-                    rawBtnContainer.classList.remove('d-none');
-                    rawBtnContainer.style.display = 'block';
-                    radioValidationMsg.classList.add('d-none');
-
-                    rawBtn.classList.add('active');
-                    rawBtn.classList.remove('inactive');
-                    platformBtn.classList.remove('active');
-                    platformBtn.classList.add('inactive');
-
-                    radioContainer.style.backgroundColor = "transparent";
-                    radioContainer.style.border = "none";
-                }
-            });
-        });
+        }      
     </script>
 @endsection
