@@ -41,7 +41,7 @@
         <div class="col-md-5 border-right" id="contact-detail">
             <div class="table-title d-flex justify-content-between align-items-center my-3">
                 <h2 class="mt-2 ml-3 headings">Contact Detail</h2>
-                @if (Auth::check() && Auth::user()->role == 'Sales-Agent')
+                @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
                     <a href="{{ route('discard#edit', $editDiscard->contact_discard_pid) }}" class="btn hover-action mx-1"
                         data-toggle="modal" data-target="#editDiscardModal">
                         <i class="fa-solid fa-pen-to-square"></i>
@@ -141,8 +141,8 @@
             {{-- Iterating all the activities from all contacts --}}
             <div class="activities">
                 @forelse ($engagementDiscard->groupBy(function ($date) {
-                                                            return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
-                                                        }) as $month => $activitiesInMonth)
+                                                                                return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
+                                                                            }) as $month => $activitiesInMonth)
                     <div class="activity-list">
                         <div class="activity-date my-3 ml-3">
                             <span class="text-muted">{{ $month }}</span>
@@ -183,7 +183,9 @@
                 <th scope="col">Type</th>
                 <th scope="col">Description</th>
                 <th scope="col">Attachment</th>
-                <th scope="col">Action</th>
+                @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+                    <th scope="col">Action</th>
+                @endif
             </tr>
         </thead>
         <tbody class="text-left bg-row">
@@ -209,13 +211,14 @@ $filePath = public_path('attachments/leads/' . $filename);
                             No Image Available
                         @endif
                     </td>
-
-                    <td>
-                        <a class="btn hover-action" href="#" data-toggle="modal"
-                            data-target="#updateActivityModal">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </a>
-                    </td>
+                    @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+                        <td>
+                            <a class="btn hover-action" href="#" data-toggle="modal"
+                                data-target="#updateActivityModal">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+                        </td>
+                    @endif
                 </tr>
             @endforeach
         </tbody>

@@ -344,6 +344,24 @@ tbody {
     border: 1px solid #FF4C4C;
 }
 
+/* Active Effects */
+.active-interest {
+    background-color: #91264c !important;
+    color: white !important;
+}
+
+.active-archive {
+    background-color: #2C3E50 !important;
+    color: #ffffff !important;
+    border: 1px solid #2C3E50;
+}
+
+.active-discard {
+    background-color: #FF4C4C !important;
+    color: #ffffff !important;
+    border: 1px solid #FF4C4C;
+}
+
 /* Icons */
 
 .fa-magnifying-class, 

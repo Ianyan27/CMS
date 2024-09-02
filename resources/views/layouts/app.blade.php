@@ -67,7 +67,7 @@
                             <li
                                 class="{{ Route::currentRouteName() != 'admin#contact-listing' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'admin#contact-listing' ? 'active-link' : '' }}">
                                 <a class="nav-link " href="{{ route('admin#contact-listing') }}">
-                                    <i class="fa-solid fa-user"></i><span>Contacts</span>
+                                    <i class="fa-solid fa-address-book"></i><span>Contacts</span>
                                 </a>
                             </li>
                         @endif
