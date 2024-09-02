@@ -57,17 +57,17 @@
                     <ul class="navbar-nav">
                         @if (Auth::check() && Auth::user()->role == 'Admin')
                             <li
-                                class="{{ Route::currentRouteName() != 'view-user' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'view-user' ? 'active-link' : '' }}">
-                                <a class="nav-link" href="{{ route('view-user') }}">
-                                    <i class="fa-solid fa-user"></i><span>Users</span>
+                                class="{{ Route::currentRouteName() != 'admin#index' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'admin#index' ? 'active-link' : '' }}">
+                                <a class="nav-link" href="{{ route('admin#index') }}">
+                                    <i class="fa-solid fa-user"></i><span>User List</span>
                                 </a>
                             </li>
                         @endif
                         @if (Auth::check() && Auth::user()->role == 'Admin')
                             <li
-                                class="{{ Route::currentRouteName() != 'contact-listing' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'contact-listing' ? 'active-link' : '' }}">
+                                class="{{ Route::currentRouteName() != 'admin#contact-listing' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'admin#contact-listing' ? 'active-link' : '' }}">
                                 <a class="nav-link " href="{{ route('admin#contact-listing') }}">
-                                    <i class="fa-solid fa-user"></i><span>Contacts</span>
+                                    <i class="fa-solid fa-user"></i><span>Contact Listing</span>
                                 </a>
                             </li>
                         @endif
