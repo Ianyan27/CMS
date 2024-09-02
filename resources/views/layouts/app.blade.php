@@ -59,7 +59,7 @@
                             <li
                                 class="{{ Route::currentRouteName() != 'view-user' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'view-user' ? 'active-link' : '' }}">
                                 <a class="nav-link" href="{{ route('view-user') }}">
-                                    <i class="fa-solid fa-user"></i><span>User List</span>
+                                    <i class="fa-solid fa-user"></i><span>Users</span>
                                 </a>
                             </li>
                         @endif
@@ -95,7 +95,7 @@
                             <li
                                 class="{{ Route::currentRouteName() != 'contact-listing' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'contact-listing' ? 'active-link' : '' }}">
                                 <a class="nav-link" href="{{ route('contact-listing') }}">
-                                    <i class="fa-solid fa-address-book"></i><span>Contact Listing</span>
+                                    <i class="fa-solid fa-address-book"></i><span>Contacts</span>
                                 </a>
                             </li>
                         @endif
