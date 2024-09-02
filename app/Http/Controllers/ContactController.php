@@ -74,6 +74,13 @@ class ContactController extends Controller
 
     public function updateContact(Request $request, $contact_pid, $id)
     {
+        //checking for admin role and redirect it
+        $user = Auth::user();
+        if ($user->role === 'Admin') {
+            return redirect()->route('admin#contact-listing')->with('error', 'Admin cannot edit the contact information');
+        }
+
+
         // Find the contact based on the contact_pid
         $contact = Contact::find($contact_pid);
 
@@ -173,6 +180,13 @@ class ContactController extends Controller
 
     public function saveActivity(Request $request, $contact_pid)
     {
+
+        //checking for admin role and redirect it
+        $user = Auth::user();
+        if ($user->role === 'Admin') {
+            return redirect()->route('admin#contact-listing')->with('error', 'Admin cannot save the contact activity');
+        }
+
         // Validate the input data
         $validator = Validator::make($request->all(), [
             'activity-date' => 'required',
@@ -249,6 +263,12 @@ class ContactController extends Controller
 
     public function saveUpdateActivity(Request $request, $contact_pid, $activity_id)
     {
+        //checking for admin role and redirect it
+        $user = Auth::user();
+        if ($user->role === 'Admin') {
+            return redirect()->route('admin#contact-listing')->with('error', 'Admin cannot update the contact activity');
+        }
+
         // Validate the input data
         $validator = Validator::make($request->all(), [
             'activity-date' => 'required|date',

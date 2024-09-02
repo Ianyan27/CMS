@@ -4,23 +4,25 @@
 
 @section('content')
     @if (session('success'))
+    @elseif (session('error'))
         <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
-        <button id="successModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal"
+        <button id="errorModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#errorModal"
             style="display: none;">
             Open Modal
         </button>
-        <!-- Modal -->
-        <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
+
+        <!-- Error Modal -->
+        <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header"
                         style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
                 border:none;">
-                        <h5 class="modal-title font-educ" id="successModalLabel">Success</h5>
+                        <h5 class="modal-title font-educ" id="errorModalLabel">Error</h5>
                     </div>
                     <div class="modal-body">
-                        {{ session('success') }}
+                        {{ session('error') }}
                     </div>
                     <div class="modal-footer" style="border:none">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -31,7 +33,8 @@
         <!-- Script to trigger the modal -->
         <script type="text/javascript">
             window.onload = function() {
-                document.getElementById('successModalBtn').click();
+                document.getElementById('errorModalBtn').click();
+
             };
         </script>
     @endif
