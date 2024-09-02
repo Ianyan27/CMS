@@ -16,17 +16,17 @@
             </div>
             <div class="d-flex align-items-center mr-3">
                 <form id="hubspotContactsForm">
-                @csrf
+                    @csrf
                     <div class="d-flex">
                         <button type="button" class="btn hover-action ml-auto" id="submitContacts">
                             <i class="fa-brands fa-hubspot" style="margin: 0"></i><span>Batch Sync</span>
                         </button>
                     </div>
-                </form>
+
             </div>
         </div>
         <!-- Table for No Sync Contacts -->
-        <div class="table-container" id="no-sync" >
+        <div class="table-container" id="no-sync">
             <table class="table table-hover mt-2">
                 <thead class="text-left font-educ">
                     <tr class="text-left font-educ">
@@ -52,8 +52,8 @@
                 <tbody class="text-left bg-row fonts">
                     @forelse ($hubspotContactsNoSync as $index => $contact)
                         <tr>
-                            <td><input type="checkbox" name="selectedContacts[]" value="{{ $contact->contact_pid }}">
-                            </td>
+                            <td><input type="checkbox" name="selectedContacts[]" value="{{ $contact->contact_pid }}"></td>
+                            <td>{{ $contact->contact_pid }}</td>
                             <td>{{ $index + 1 }}</td> <!-- Index value -->
                             <td>{{ $contact->name }}</td>
                             <td>{{ $contact->email }}</td>
@@ -96,6 +96,7 @@
                 </tbody>
             </table>
         </div>
+        </form>
         <!-- Pagination -->
         <div aria-label="Page navigation example" class="paginationContainer">
             <ul class="pagination justify-content-center">
@@ -177,6 +178,9 @@
         document.getElementById('submitContacts').addEventListener('click', function() {
             const form = document.getElementById('hubspotContactsForm');
             const formData = new FormData(form);
+            // Log all selected contacts
+            const selectedContacts = formData.getAll('selectedContacts[]');
+            console.log(selectedContacts);
 
             fetch('{{ route('submit-hubspot-contacts') }}', {
                     method: 'POST',
