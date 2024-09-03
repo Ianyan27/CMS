@@ -1,4 +1,5 @@
 <!-- Add Sales Agent Modal -->
+
 <div class="modal fade" id="addSalesAgentModal" tabindex="-1" aria-labelledby="addSalesAgentModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -34,6 +35,7 @@
                                 <label for="email" class="font-educ">Email</label>
                                 <input type="email" name="email" class="form-control fonts" id="email"
                                 placeholder="Enter Email" pattern="[a-zA-Z0-9._%+-]+@(lithan\.com|educlass\.com)$" required>
+                                <small id="emailError" class="form-text text-danger"></small>
                             </div>
                         </div>
                         <div class="col-md-6">
