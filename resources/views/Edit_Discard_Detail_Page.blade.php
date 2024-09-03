@@ -142,8 +142,8 @@
                 {{-- Iterating all the activities from all contacts --}}
                 <div class="activities">
                     @forelse ($engagementDiscard->groupBy(function ($date) {
-                                                                                                        return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
-                                                                                                    }) as $month => $activitiesInMonth)
+                                                                                                                            return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
+                                                                                                                        }) as $month => $activitiesInMonth)
                         <div class="activity-list" data-month="{{ $month }}">
                             <div class="activity-date my-3 ml-3">
                                 <span class="text-muted">{{ $month }}</span>
@@ -226,7 +226,7 @@ $filePath = public_path('attachments/leads/' . $filename);
                     <td>
                         @if (file_exists($filePath) && $filename)
                             <img src="{{ asset('attachments/leads/' . $filename) }}" alt="Attachment Image"
-                                style="width: 100px; height: auto;">
+                                style="width: 100px; height: auto; cursor: pointer;">
                         @else
                             No Image Available
                         @endif
@@ -243,6 +243,20 @@ $filePath = public_path('attachments/leads/' . $filename);
             @endforeach
         </tbody>
     </table>
+
+
+    <!-- Bootstrap Modal for Image -->
+    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: max-content">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img id="modalImage" class="img-fluid" src="" alt="Image"
+                        style="max-width: 80vw!important">
+                </div>
+            </div>
+        </div>
+    </div>
 @else
     <div class="alert alert-danger text-center mt-5">
         <strong>Access Denied!</strong> You do not have permission to view this page.
@@ -342,6 +356,16 @@ $filePath = public_path('attachments/leads/' . $filename);
                 // Optional: Update active button style
                 $('.activity-button').removeClass('active-activity-button');
                 $(this).addClass('active-activity-button');
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            // Open the Bootstrap modal with the clicked image
+            $('img').on('click', function() {
+                var src = $(this).attr('src');
+                $('#modalImage').attr('src', src);
+                $('#imageModal').modal('show');
             });
         });
     </script>

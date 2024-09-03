@@ -5,11 +5,8 @@
 @extends('layouts.Edit_Contact_Modal')
 @extends('layouts.Add_Activity_Modal')
 @section('content')
-    @if (
-        (Auth::check() && Auth::user()->role == 'Admin') ||
-            Auth::user()->role == 'BUH' ||
-            Auth::user()->role == 'Sales_Agent')
 
+    @if ((Auth::check() && Auth::user()->role == 'Admin') || Auth::user()->role == 'BUH')
         @if (session('success'))
             <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
             <button id="successModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal"
@@ -235,7 +232,7 @@ $filePath = public_path('attachments/leads/' . $filename);
                             <td>
                                 @if (file_exists($filePath) && $filename)
                                     <img src="{{ asset('attachments/leads/' . $filename) }}" alt="Attachment Image"
-                                        style="width: 100px; height: auto;">
+                                        style="width: 100px; height: auto; cursor: pointer;">
                                 @else
                                     No Image Available
                                 @endif
@@ -258,12 +255,28 @@ $filePath = public_path('attachments/leads/' . $filename);
                     @endforelse
                 </tbody>
             </table>
-        @else
-            <div class="alert alert-danger text-center mt-5">
-                <strong>Access Denied!</strong> You do not have permission to view this page.
-            </div>
+        </div>
+    @else
+        <div class="alert alert-danger text-center mt-5">
+            <strong>Access Denied!</strong> You do not have permission to view this page.
+        </div>
     @endif
     </div>
+
+
+    <!-- Bootstrap Modal for Image -->
+    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: max-content">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img id="modalImage" class="img-fluid" src="" alt="Image"
+                        style="max-width: 80vw!important">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.querySelectorAll('.activity-button').forEach(button => {
             button.addEventListener('click', function() {
@@ -357,6 +370,16 @@ $filePath = public_path('attachments/leads/' . $filename);
                 // Optional: Update active button style
                 $('.activity-button').removeClass('active-activity-button');
                 $(this).addClass('active-activity-button');
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            // Open the Bootstrap modal with the clicked image
+            $('img').on('click', function() {
+                var src = $(this).attr('src');
+                $('#modalImage').attr('src', src);
+                $('#imageModal').modal('show');
             });
         });
     </script>
