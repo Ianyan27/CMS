@@ -44,7 +44,7 @@ class ArchiveController extends Controller{
             if ($request->input('status') === 'InProgress') {
                 $targetModel->fk_contacts__owner_pid = $id;
             } else {
-                $targetModel->fk_contacts__discards_pid = $id;
+                $targetModel->fk_contact_discards__owner_pid = $id;
             }
             $targetModel->save();
     

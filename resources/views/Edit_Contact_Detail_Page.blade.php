@@ -1,12 +1,12 @@
 @section('title', 'Edit Contact Detail Page')
 
 @extends('layouts.app')
+
+@section('content')
 @extends('layouts.Update_Activity_Modal')
 @extends('layouts.Edit_Contact_Modal')
 @extends('layouts.Add_Activity_Modal')
-@section('content')
-
-    @if ((Auth::check() && Auth::user()->role == 'Admin') || Auth::user()->role == 'BUH')
+    @if ((Auth::check() && Auth::user()->role == 'Admin') || Auth::user()->role == 'BUH' || Auth::user()->role == 'Sales_Agent')
         @if (session('success'))
             <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
             <button id="successModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal"
@@ -237,16 +237,14 @@ $filePath = public_path('attachments/leads/' . $filename);
                                     No Image Available
                                 @endif
                             </td>
-                            @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
-                                <td class="text-center">
-                                    <a href="{{ Auth::user()->role == 'Sales_Agent' ? route('contact#update-activity', ['contact_id' => $engagement->fk_engagements__contact_pid, 'activity_id' => $engagement->engagement_pid]) : '#' }}"
-                                        data-toggle="modal"
-                                        {{ Auth::user()->role == 'Sales_Agent' ? 'data-target="#updateActivityModal- $engagement->engagement_pid "' : '' }}
-                                        class="btn hover-action">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </a>
-                                </td>
-                            @endif
+                            <td class="text-center">
+                                <a href="{{ Auth::user()->role == 'Sales_Agent' ? route('contact#update-activity', ['contact_id' => $engagement->fk_engagements__contact_pid, 'activity_id' => $engagement->engagement_pid]) : '#' }}"
+                                    data-toggle="modal"
+                                    {{ Auth::user()->role == 'Sales_Agent' ? 'data-target=#updateActivityModal-' . $engagement->engagement_pid : '' }}
+                                    class="btn hover-action">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                            </td>                            
                         </tr>
                     @empty
                         <tr>

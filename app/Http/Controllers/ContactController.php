@@ -8,7 +8,7 @@ use App\Models\ContactDiscard;
 use App\Models\Engagement;
 use App\Models\EngagementArchive;
 use App\Models\EngagementDiscard;
-use Carbon\Carbon;
+use App\Models\Log as ModelsLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -127,7 +127,7 @@ class ContactController extends Controller
             }
 
             // Delete related logs
-            Log::where('fk_logs__contact_pid', $contact_pid)->delete();
+            ModelsLog::where('fk_logs__contact_pid', $contact_pid)->delete();
 
             // Delete the contact from the current table
             $contact->delete();
@@ -154,17 +154,6 @@ class ContactController extends Controller
             'skills' => $request->input('skills'),
             'status' => $request->input('status')
         ]);
-
-        // Save the log only if the status has changed
-        if ($oldStatus !== $newStatus) {
-            $editContact = $this->saveLog(
-                $contact_pid,
-                'Contact Status Updated',
-                "Status changed from '$oldStatus' to '$newStatus'."
-            );
-
-            Log::info("Edit Contact: " . $editContact);
-        }
 
         // Redirect with a success message
         return redirect()->route('contact#view', [

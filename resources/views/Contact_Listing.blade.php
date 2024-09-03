@@ -4,72 +4,6 @@
 
 @section('content')
     @if ((Auth::check() && Auth::user()->role == 'Sales_Agent') || Auth::user()->role == 'Admin')
-        @if (session('success'))
-            <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
-            <button id="successModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal"
-                style="display: none;">
-                Open Modal
-            </button>
-            <!-- Modal -->
-            <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header"
-                            style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
-                border:none;">
-                            <h5 class="modal-title font-educ" id="successModalLabel">Success</h5>
-                        </div>
-                        <div class="modal-body">
-                            {{ session('success') }}
-                        </div>
-                        <div class="modal-footer" style="border:none">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <!-- Script to trigger the modal -->
-                            <script type="text/javascript">
-                                window.onload = function() {
-                                    document.getElementById('successModalBtn').click();
-                                };
-                            </script>
-
-
-                            {{-- Error pop up --}}
-                        @elseif (session('error'))
-                            <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
-                            <button id="errorModalBtn" type="button" class="btn btn-primary" data-toggle="modal"
-                                data-target="#errorModal" style="display: none;">
-                                Open Modal
-                            </button>
-
-                            <!-- Error Modal -->
-                            <div class="modal fade" id="errorModal" tabindex="-1" role="dialog"
-                                aria-labelledby="errorModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header"
-                                            style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
-                border:none;">
-                                            <h5 class="modal-title font-educ" id="errorModalLabel">Error</h5>
-                                        </div>
-                                        <div class="modal-body">
-                                            {{ session('error') }}
-                                        </div>
-                                        <div class="modal-footer" style="border:none">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-dismiss="modal">Close</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Script to trigger the modal -->
-                            <script type="text/javascript">
-                                window.onload = function() {
-                                    document.getElementById('errorModalBtn').click();
-
-                                };
-                            </script>
-        @endif
-
         <div class="container-max-height">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center">
@@ -221,7 +155,6 @@
                                 </span>
                             </th>
                             <th scope="col">Action
-
                             </th>
                         </tr>
                     </thead>
@@ -235,12 +168,10 @@
                                 <td> {{ $archive['contact_number'] }} </td>
                                 <td>
                                     @inject('countryCodeMapper', 'App\Services\CountryCodeMapper')
-
                                     @php
                                         // Fetch the country code using the injected service
                                         $countryCode = $countryCodeMapper->getCountryCode($archive['country']);
                                     @endphp
-
                                     @if ($countryCode)
                                         <img src="{{ asset('flags/' . strtolower($countryCode) . '.svg') }}"
                                             alt="{{ $archive['country'] }}" width="20" height="15">
@@ -375,11 +306,35 @@
                 </ul>
             </div>
         </div>
+        <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content rounded-0">
+                    <div class="modal-header"
+                        style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+                        border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
+                        <h5 class="modal-title" id="addUserModalLabel" style="color: #91264c;">Success</h5>
+                    </div>
+                    <div class="modal-body">
+                        {{ session('success') }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     @else
         <div class="alert alert-danger text-center mt-5">
             <strong>Access Denied!</strong> You do not have permission to view this page.
         </div>
     @endif
+    <script>
+        $(document).ready(function() {
+            @if(session('success'))
+                $('#successModal').modal('show');
+            @endif
+        });
+    </script>
     <script src=" {{ asset('js/show_hide_contacts_table.js') }} "></script>
     <script src=" {{ asset('js/active_buttons.js') }} "></script>
 @endsection
