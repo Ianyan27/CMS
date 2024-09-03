@@ -142,12 +142,13 @@
                 {{-- Iterating all the activities from all contacts --}}
                 <div class="activities">
                     @forelse ($engagementDiscard->groupBy(function ($date) {
-                                                                                    return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
-                                                                                }) as $month => $activitiesInMonth)
-                        <div class="activity-list">
+                                                                                                        return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
+                                                                                                    }) as $month => $activitiesInMonth)
+                        <div class="activity-list" data-month="{{ $month }}">
                             <div class="activity-date my-3 ml-3">
                                 <span class="text-muted">{{ $month }}</span>
                             </div>
+
                             @foreach ($activitiesInMonth as $activity)
                                 <div class="activity-item mb-3 mx-3 border-educ rounded p-3"
                                     data-type="{{ strtolower($activity->activity_name) }}">
@@ -160,75 +161,188 @@
                                 @endif --}}
                                 </div>
                             @endforeach
+                            {{-- No activity messages for specific types --}}
+                            <div class="no-activity-message mb-3 mx-3 border-educ rounded p-3 d-none" data-type="meeting">
+                                <h5 class="font-educ">Meetings</h5>
+                                <p class="text-muted">No meetings taken.</p>
+                            </div>
+                            <div class="no-activity-message mb-3 mx-3 border-educ rounded p-3 d-none" data-type="email">
+                                <h5 class="font-educ">Emails</h5>
+                                <p class="text-muted">No emails taken.</p>
+                            </div>
+                            <div class="no-activity-message mb-3 mx-3 border-educ rounded p-3 d-none" data-type="phone">
+                                <h5 class="font-educ">Calls</h5>
+                                <p class="text-muted">No calls taken.</p>
+                            </div>
+                            <div class="no-activity-message mb-3 mx-3 border-educ rounded p-3 d-none"
+                                data-type="whatsapp">
+                                <h5 class="font-educ">WhatsApp</h5>
+                                <p class="text-muted">No WhatsApp taken.</p>
+                            </div>
                         </div>
-                    @empty
-                        <div class="no-activities text-center my-4">
-                            <p class="text-muted">No Activities Found</p>
-                        </div>
-                    @endforelse
                 </div>
-            </div>
+            @empty
+                <div class="no-activities text-center my-4">
+                    <p class="text-muted">No Activities Found</p>
+                </div>
+    @endforelse
+    </div>
+    </div>
+    </div>
+    <!-- Activity Taken Section -->
+    <div class="table-title d-flex justify-content-between align-items-center mt-5">
+        <div class="d-flex align-items-center">
+            <h2 class="ml-2 mb-1 headings">Activity Taken</h2>
         </div>
-        <!-- Activity Taken Section -->
-        <div class="table-title d-flex justify-content-between align-items-center mt-5">
-            <div class="d-flex align-items-center">
-                <h2 class="ml-2 mb-1 headings">Activity Taken</h2>
-            </div>
-        </div>
-        <!-- Table -->
-        <table class="table table-hover mt-2">
-            <thead class="font-educ text-left">
-                <tr>
-                    <th scope="col">No</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Type</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Attachment</th>
-                    @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
-                        <th scope="col">Action</th>
-                    @endif
-                </tr>
-            </thead>
-            <tbody class="text-left bg-row">
-                <?php $i = 0; ?>
-                @foreach ($engagementDiscard as $engagement)
-                    @php
-                        // Decode the JSON or handle the attachments array properly
-                        $attachments = json_decode($engagement->attachments, true); // Assuming it's a JSON string
+    </div>
+    <!-- Table -->
+    <table class="table table-hover mt-2">
+        <thead class="font-educ text-left">
+            <tr>
+                <th scope="col">No</th>
+                <th scope="col">Date</th>
+                <th scope="col">Type</th>
+                <th scope="col">Description</th>
+                <th scope="col">Attachment</th>
+                @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+                    <th scope="col">Action</th>
+                @endif
+            </tr>
+        </thead>
+        <tbody class="text-left bg-row">
+            <?php $i = 0; ?>
+            @foreach ($engagementDiscard as $engagement)
+                @php
+                    // Decode the JSON or handle the attachments array properly
+                    $attachments = json_decode($engagement->attachments, true); // Assuming it's a JSON string
 $filename = $attachments[0] ?? ''; // Get the first filename from the array
 $filePath = public_path('attachments/leads/' . $filename);
-                    @endphp
-                    <tr>
-                        <td> {{ ++$i }} </td>
-                        <td> {{ $engagement->date }} </td>
-                        <td> {{ $engagement->activity_name }} </td>
-                        <td> {{ $engagement->details }} </td>
-                        <td>
-                            @if (file_exists($filePath) && $filename)
-                                <img src="{{ asset('attachments/leads/' . $filename) }}" alt="Attachment Image"
-                                    style="width: 100px; height: auto;">
-                            @else
-                                No Image Available
-                            @endif
-                        </td>
-                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
-                            <td>
-                                <a class="btn hover-action" href="#" data-toggle="modal"
-                                    data-target="#updateActivityModal">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </a>
-                            </td>
+                @endphp
+                <tr>
+                    <td> {{ ++$i }} </td>
+                    <td> {{ $engagement->date }} </td>
+                    <td> {{ $engagement->activity_name }} </td>
+                    <td> {{ $engagement->details }} </td>
+                    <td>
+                        @if (file_exists($filePath) && $filename)
+                            <img src="{{ asset('attachments/leads/' . $filename) }}" alt="Attachment Image"
+                                style="width: 100px; height: auto;">
+                        @else
+                            No Image Available
                         @endif
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    @else
-        <div class="alert alert-danger text-center mt-5">
-            <strong>Access Denied!</strong> You do not have permission to view this page.
-        </div>
+                    </td>
+                    @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+                        <td>
+                            <a class="btn hover-action" href="#" data-toggle="modal"
+                                data-target="#updateActivityModal">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+                        </td>
+                    @endif
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+@else
+    <div class="alert alert-danger text-center mt-5">
+        <strong>Access Denied!</strong> You do not have permission to view this page.
+    </div>
     @endif
+
+    <script>
+        document.querySelectorAll('.activity-button').forEach(button => {
+            button.addEventListener('click', function() {
+                let filter = this.getAttribute('data-filter');
+                // Reset active button class
+                document.querySelectorAll('.activity-button').forEach(btn => btn.classList.remove(
+                    'active-activity-button'));
+                this.classList.add('active-activity-button');
+                // Show or hide activities based on filter
+                document.querySelectorAll('.activity-item').forEach(item => {
+                    if (filter === 'all' || item.getAttribute('data-type') === filter) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                // Check if any activities are visible after filtering
+                let visibleItems = document.querySelectorAll(`.activity-item[data-type="${filter}"]`);
+                let noActivityMessage = document.querySelector(
+                    `.no-activity-message[data-type="${filter}"]`);
+                if (visibleItems.length === 0 && noActivityMessage) {
+                    noActivityMessage.classList.remove('d-none');
+                } else if (noActivityMessage) {
+                    noActivityMessage.classList.add('d-none');
+                }
+                // Hide all no-activity messages except for the current filter
+                document.querySelectorAll('.no-activity-message').forEach(msg => {
+                    if (msg.getAttribute('data-type') !== filter) {
+                        msg.classList.add('d-none');
+                    }
+                });
+            });
+        });
+    </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ URL::asset('js/contact_detail.js') }}"></script>
     <script src="{{ URL::asset('js/status_color.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            // Function to show/hide activities and display "No activity" messages based on the filter
+            function filterActivities(filterType) {
+                $('.activity-list').each(function() {
+                    var $list = $(this);
+                    var $activityItems = $list.find('.activity-item');
+                    var $noActivityMessages = $list.find('.no-activity-message');
+                    var $activityDate = $list.find('.activity-date');
+
+                    // Check if there are any visible activity items for the given filter
+                    var hasVisibleActivities = $activityItems.filter(function() {
+                        return $(this).data('type') === filterType || filterType === 'all';
+                    }).length > 0;
+
+                    // Show or hide activity items based on filter
+                    if (filterType === 'all') {
+                        $activityItems.show();
+                    } else {
+                        $activityItems.filter(function() {
+                            return $(this).data('type') === filterType;
+                        }).show();
+                        $activityItems.filter(function() {
+                            return $(this).data('type') !== filterType;
+                        }).hide();
+                    }
+
+                    // Show or hide "No activity" and "activity-date" messages based on the presence of visible activities
+                    if (hasVisibleActivities) {
+                        $noActivityMessages.hide();
+                        $activityDate.show();
+
+                    } else {
+                        $noActivityMessages.filter(function() {
+                            return $(this).data('type') === filterType;
+                        }).show();
+                        $activityDate.hide();
+
+                    }
+                });
+            }
+
+            // Initially show all activities and "No activity" messages
+            filterActivities('all');
+
+            // Set up filter button click handlers
+            $('.activity-button').on('click', function() {
+                // Get the filter type from the button data attribute
+                var filterType = $(this).data('filter');
+
+                // Apply filter based on the button clicked
+                filterActivities(filterType);
+
+                // Optional: Update active button style
+                $('.activity-button').removeClass('active-activity-button');
+                $(this).addClass('active-activity-button');
+            });
+        });
+    </script>
 @endsection

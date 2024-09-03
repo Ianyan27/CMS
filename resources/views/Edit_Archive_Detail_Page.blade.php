@@ -145,9 +145,9 @@
                 {{-- Iterating all the activities from all contacts --}}
                 <div class="activities">
                     @forelse ($engagementArchive->groupBy(function ($date) {
-                                                                                                                            return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
-                                                                                                                        }) as $month => $activitiesInMonth)
-                        <div class="activity-list">
+                                    return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
+                                }) as $month => $activitiesInMonth)
+                        <div class="activity-list" data-month="{{ $month }}">
                             <div class="activity-date my-3 ml-3">
                                 <span class="text-muted">{{ $month }}</span>
                             </div>
@@ -295,4 +295,63 @@ $filePath = public_path('attachments/leads/' . $filename);
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ URL::asset('js/contact_detail.js') }}"></script>
     <script src="{{ URL::asset('js/status_color.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            // Function to show/hide activities and display "No activity" messages based on the filter
+            function filterActivities(filterType) {
+                $('.activity-list').each(function() {
+                    var $list = $(this);
+                    var $activityItems = $list.find('.activity-item');
+                    var $noActivityMessages = $list.find('.no-activity-message');
+                    var $activityDate = $list.find('.activity-date');
+
+                    // Check if there are any visible activity items for the given filter
+                    var hasVisibleActivities = $activityItems.filter(function() {
+                        return $(this).data('type') === filterType || filterType === 'all';
+                    }).length > 0;
+
+                    // Show or hide activity items based on filter
+                    if (filterType === 'all') {
+                        $activityItems.show();
+                    } else {
+                        $activityItems.filter(function() {
+                            return $(this).data('type') === filterType;
+                        }).show();
+                        $activityItems.filter(function() {
+                            return $(this).data('type') !== filterType;
+                        }).hide();
+                    }
+
+                    // Show or hide "No activity" and "activity-date" messages based on the presence of visible activities
+                    if (hasVisibleActivities) {
+                        $noActivityMessages.hide();
+                        $activityDate.show();
+
+                    } else {
+                        $noActivityMessages.filter(function() {
+                            return $(this).data('type') === filterType;
+                        }).show();
+                        $activityDate.hide();
+
+                    }
+                });
+            }
+
+            // Initially show all activities and "No activity" messages
+            filterActivities('all');
+
+            // Set up filter button click handlers
+            $('.activity-button').on('click', function() {
+                // Get the filter type from the button data attribute
+                var filterType = $(this).data('filter');
+
+                // Apply filter based on the button clicked
+                filterActivities(filterType);
+
+                // Optional: Update active button style
+                $('.activity-button').removeClass('active-activity-button');
+                $(this).addClass('active-activity-button');
+            });
+        });
+    </script>
 @endsection
