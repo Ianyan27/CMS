@@ -257,7 +257,7 @@
                         <h5 class="modal-title" id="addUserModalLabel" style="color: #91264c;">Create New User</h5>
                     </div>
                     <div class="modal-body" style="color: #91264c">
-                        <form action="{{ route('user#save-user') }}" method="POST">
+                        <form id="addUserForm" action="{{ route('user#save-user') }}" method="POST">
                             @csrf
                             <div class="form-group">
                                 <label for="name">Name</label>
@@ -271,6 +271,7 @@
                                 <label for="email">Email</label>
                                 <input type="email" class="form-control" id="email" name="email"
                                     value="{{ old('email') }}" required>
+                                <small class="text-danger" id="emailError"></small>
                                 @error('email')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
@@ -295,11 +296,29 @@
                     </div>
                 </div>
             </div>
-        </div>
-        </div>
-    @else
-        <div class="alert alert-danger text-center mt-5">
-            <strong>Access Denied!</strong> You do not have permission to view this page.
-        </div>
+
+            <!-- JavaScript for Validation -->
+            <script>
+                $(document).ready(function() {
+                    $('#addUserForm').on('submit', function(e) {
+                        var email = $('#email').val();
+                        var validDomains = ['lithan.com', 'educlaas.com', 'learning.educlaas.com'];
+                        var emailDomain = email.split('@')[1];
+
+                        if (email && validDomains.indexOf(emailDomain) === -1) {
+                            $('#emailError').text(
+                                'The email address must be one of the following domains: lithan.com, educlaas.com, learning.educlaas.com'
+                            );
+                            e.preventDefault(); // Prevent form submission
+                        } else {
+                            $('#emailError').text(''); // Clear any previous error message
+                        }
+                    });
+                });
+            </script>
+        @else
+            <div class="alert alert-danger text-center mt-5">
+                <strong>Access Denied!</strong> You do not have permission to view this page.
+            </div>
     @endif
 @endsection
