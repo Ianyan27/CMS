@@ -1,7 +1,8 @@
 @section('title', 'User Listing Page')
-@if (Auth::check() && Auth::user()->role == 'Admin')
+
 @extends('layouts.app')
 @section('content')
+@if (Auth::check() && Auth::user()->role == 'Admin')
     @if (Session::has('success'))
     <!-- Success Modal -->
     <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
@@ -290,5 +291,9 @@
         </div>
     </div>
     </div>
+    @else
+        <div class="alert alert-danger text-center mt-5">
+            <strong>Access Denied!</strong> You do not have permission to view this page.
+        </div>
+    @endif
 @endsection
-@endif
