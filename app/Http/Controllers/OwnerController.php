@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Contact;
 use App\Models\ContactArchive;
 use App\Models\ContactDiscard;
+use App\Models\Engagement;
+use App\Models\EngagementArchive;
 use App\Models\Owner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -92,6 +94,23 @@ class OwnerController extends Controller{
     public function deleteOwner($owner_pid){
         Owner::where('owner_pid', $owner_pid)->delete();
         return redirect()->route('owner#view')->with('success', "Owner Deleted Successfully.");
+    }
+
+    public function viewContact($contact_pid){
+        /* Retrieve the contact record with the specified 'contact_pid' and pass
+         it to the 'Edit_Contact_Detail_Page' view for editing. */
+        $editContact = Contact::where('contact_pid', $contact_pid)->first();
+        $user = Auth::user();
+        $engagements = Engagement::where('fk_engagements__contact_pid', $contact_pid)->get();
+        $engagementsArchive = EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $contact_pid)->get();
+        $updateEngagement = $engagements->first();
+        return view('Edit_Contact_Detail_Page')->with([
+            'user' => $user,
+            'editContact' => $editContact,
+            'engagements' => $engagements,
+            'updateEngagement' => $updateEngagement,
+            'engagementArchive' => $engagementsArchive
+        ]);
     }
     
 }

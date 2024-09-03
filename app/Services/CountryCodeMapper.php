@@ -126,7 +126,7 @@ class CountryCodeMapper
             'Montenegro' => 'me',
             'Morocco' => 'ma',
             'Mozambique' => 'mz',
-            'Myanmar (Burma)' => 'mm',
+            'Myanmar' => 'mm',
             'Namibia' => 'na',
             'Nauru' => 'nr',
             'Nepal' => 'np',

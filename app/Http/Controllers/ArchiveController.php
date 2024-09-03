@@ -122,8 +122,7 @@ class ArchiveController extends Controller{
         ]);
     }
 
-    public function updateActivity(Request $request, $contact_archive_pid, $activity_id)
-    {
+    public function updateActivity(Request $request, $contact_archive_pid, $activity_id){
         // Validate the input data
         $validator = Validator::make($request->all(), [
             'activity-date' => 'required|date',

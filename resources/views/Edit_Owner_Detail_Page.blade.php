@@ -3,6 +3,7 @@
 @extends('layouts.app')
 @extends('layouts.Edit_Owner_Modal')
 @section('content')
+@if (Auth::check() && Auth::user()->role == 'Admin' || Auth::user()->role == 'BUH')
     @if (session('success'))
         <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
         <button id="successModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal"
@@ -13,11 +14,11 @@
         <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
-                <div class="modal-content">
+                <div class="modal-content rounded-0">
                     <div class="modal-header"
                         style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
-                border:none;">
-                        <h5 class="modal-title" id="successModalLabel">Success</h5>
+                        border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
+                        <h5 class="modal-title font-educ" id="successModalLabel">Success</h5>
                     </div>
                     <div class="modal-body">
                         {{ session('success') }}
@@ -200,6 +201,7 @@
                                     </div>
                                 </div>
                         </th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody class="text-left bg-row fonts">
@@ -253,10 +255,16 @@
                                     @endif
                                 </span>
                             </td>
+                            <td>
+                                <a href=" {{ route('owner#view-contact', $contact->contact_pid) }} " class="btn hover-action"
+                                    data-toggle="tooltip" title="View" style="padding: 10px 12px;">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="text-center">No ownerContacts found.</td>
+                            <td colspan="9" class="text-center">No ownerContacts found.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -429,53 +437,77 @@
             </ul>
         </div>
     </div>
+    @else
+        <div class="alert alert-danger text-center mt-5">
+            <strong>Access Denied!</strong> You do not have permission to view this page.
+        </div>
+    @endif
+    <script src="{{ asset('js/show_hide_contacts_table.js') }}"></script>
+    <script src="{{asset('js/active_activity_buttons.js')}}"></script>
     <script>
-        const showContactsBtn = document.getElementById('show-contacts');
-        const showArchiveBtn = document.getElementById('show-archive');
-        const showDiscardBtn = document.getElementById('show-discard');
+        window.onload = function() {
+            interestedButton.classList.add('active-interest'); // Add active class to the clicked button
 
-        const contactsContainer = document.getElementById('contacts');
-        const archiveContainer = document.getElementById('archive');
-        const discardContainer = document.getElementById('discard');
+        };
+        // Get the buttons
+        const interestedButton = document.getElementById('show-contacts');
+        const archiveButton = document.getElementById('show-archive');
+        const discardButton = document.getElementById('show-discard');
 
-        // Function to hide all tables
-        function hideAllTables() {
-            contactsContainer.style.display = 'none';
-            archiveContainer.style.display = 'none';
-            discardContainer.style.display = 'none';
+        // Function to remove active classes from all buttons
+        function clearActiveClasses() {
+            interestedButton.classList.remove('active-interest');
+            archiveButton.classList.remove('active-archive');
+            discardButton.classList.remove('active-discard');
         }
 
-        // Show Contacts Table (default)
-        showContactsBtn.addEventListener('click', function() {
-            hideAllTables();
-            contactsContainer.style.display = 'block';
+        // Add click event listeners
+        interestedButton.addEventListener('click', () => {
+            clearActiveClasses(); // Remove all active classes
+            interestedButton.classList.add('active-interest'); // Add active class to the clicked button
         });
 
-        // Show Archive Table
-        showArchiveBtn.addEventListener('click', function() {
-            hideAllTables();
-            archiveContainer.style.display = 'block';
+        archiveButton.addEventListener('click', () => {
+            clearActiveClasses();
+            archiveButton.classList.add('active-archive');
         });
 
-        // Show Discard Table
-        showDiscardBtn.addEventListener('click', function() {
-            hideAllTables();
-            discardContainer.style.display = 'block';
+        discardButton.addEventListener('click', () => {
+            clearActiveClasses();
+            discardButton.classList.add('active-discard');
         });
-        const buttons = document.querySelectorAll('.activity-button');
+        // const showContactsBtn = document.getElementById('show-contacts');
+        // const showArchiveBtn = document.getElementById('show-archive');
+        // const showDiscardBtn = document.getElementById('show-discard');
 
-            buttons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Remove 'active' class from all buttons
-                    buttons.forEach(btn => btn.classList.remove('active'));
+        // const contactsContainer = document.getElementById('contacts');
+        // const archiveContainer = document.getElementById('archive');
+        // const discardContainer = document.getElementById('discard');
 
-                    // Add 'active' class to the clicked button
-                    this.classList.add('active');
+        // // Function to hide all tables
+        // function hideAllTables() {
+        //     contactsContainer.style.display = 'none';
+        //     archiveContainer.style.display = 'none';
+        //     discardContainer.style.display = 'none';
+        // }
 
-                    // Show the corresponding section (you likely already have this)
-                    showSection(this.getAttribute('onclick').split("'")[1]);
-                });
-        });
+        // // Show Contacts Table (default)
+        // showContactsBtn.addEventListener('click', function() {
+        //     hideAllTables();
+        //     contactsContainer.style.display = 'block';
+        // });
+
+        // // Show Archive Table
+        // showArchiveBtn.addEventListener('click', function() {
+        //     hideAllTables();
+        //     archiveContainer.style.display = 'block';
+        // });
+
+        // // Show Discard Table
+        // showDiscardBtn.addEventListener('click', function() {
+        //     hideAllTables();
+        //     discardContainer.style.display = 'block';
+        // });
     </script>
     <script>
         function showSection(sectionId) {

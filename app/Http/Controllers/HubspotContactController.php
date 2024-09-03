@@ -9,6 +9,7 @@ use GuzzleHttp\Client;
 class HubspotContactController extends Controller{
     public function submitHubspotContacts(Request $request){
         $selectedContacts = $request->input('selectedContacts');
+        log::info($selectedContacts);
 
         if ($selectedContacts) {
             // Retrieve contacts with the selected IDs
