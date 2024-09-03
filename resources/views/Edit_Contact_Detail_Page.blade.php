@@ -5,7 +5,8 @@
 @extends('layouts.Edit_Contact_Modal')
 @extends('layouts.Add_Activity_Modal')
 @section('content')
-@if (Auth::check() && Auth::user()->role == 'Admin' || Auth::user()->role == 'BUH')
+@if (Auth::check() && Auth::user()->role == 'Admin' || Auth::user()->role == 'BUH' || Auth::user()->role == 'Sales_Agent')
+
     @if (session('success'))
         <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
         <button id="successModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal"

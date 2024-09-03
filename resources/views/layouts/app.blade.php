@@ -25,27 +25,27 @@
                 <button class="navbar-toggler" type="button">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-
             </div>
-            <div class="col-auto d-flex align-items-center">
+            <div class="col d-flex align-items-center">
                 <div class="logo ms-2">
                     <img src="{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}" alt="Logo"
                         class="img-fluid" style="max-height: 50px;">
                 </div>
-            </div>
-            <div class="col d-flex justify-content-end align-items-center">
-                <div class="dropdown">
-                    <button class="btn hover-action dropdown-toggle" type="button" id="dropdownMenuButton"
-                        aria-haspopup="true" aria-expanded="false" style="border:none;">
-                        <i class="fa-solid fa-user" style="padding: 0 5px 0 0;"></i>{{ Auth::user()->name }}
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="padding: 5px 0;">
-                        <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                            @csrf
-                            <button type="submit" class="dropdown-item btn discard-table" style="padding: 6px 20px;">
-                                <i class="fa-solid fa-right-from-bracket" style="padding: 0 10px 0 0;"></i> Logout
-                            </button>
-                        </form>
+                <!-- Empty space to allow the username to align right -->
+                <div class="ms-auto d-flex align-items-center">
+                    <div class="dropdown">
+                        <button class="btn hover-action dropdown-toggle" type="button" id="dropdownMenuButton"
+                            aria-haspopup="true" aria-expanded="false" style="border:none;">
+                            <i class="fa-solid fa-user" style="padding: 0 5px 0 0;"></i>{{ Auth::user()->name }}
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="padding: 5px 0;">
+                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="dropdown-item btn discard-table" style="padding: 6px 20px;">
+                                    <i class="fa-solid fa-right-from-bracket" style="padding: 0 10px 0 0;"></i> Logout
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
