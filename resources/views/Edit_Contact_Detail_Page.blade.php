@@ -144,8 +144,8 @@
                 </div>
                 <div class="activities">
                     @forelse ($engagements->groupBy(function ($date) {
-                                                                                return \Carbon\Carbon::parse($date->date)->format('F Y');
-                                                                            }) as $month => $activitiesInMonth)
+                                                                                                                                                                    return \Carbon\Carbon::parse($date->date)->format('F Y');
+                                                                                                                                                                }) as $month => $activitiesInMonth)
                         <div class="activity-list" data-month="{{ $month }}">
                             <div class="activity-date my-3 ml-3">
                                 <span class="text-muted">{{ $month }}</span>

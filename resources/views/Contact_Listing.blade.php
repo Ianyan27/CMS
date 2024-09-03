@@ -84,7 +84,7 @@
                         </tr>
                     </thead>
                     <tbody class="text-left bg-row fonts">
-                        <?php $i = 0; ?>
+                        <?php $i = ($contacts->currentPage() - 1) * $contacts->perPage(); ?>
                         @forelse ($contacts as $contact)
                             <tr data-status="{{ $contact['status'] }}">
                                 <td>{{ ++$i }}</td>
@@ -159,7 +159,7 @@
                         </tr>
                     </thead>
                     <tbody class="text-left bg-row">
-                        <?php $i = 0; ?>
+                        <?php $i = ($contacts->currentPage() - 1) * $contacts->perPage(); ?>
                         @forelse ($contactArchive as $archive)
                             <tr>
                                 <td> {{ ++$i }} </td>
@@ -200,7 +200,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7"> No Archive Contacts</td>
+                                <td colspan="7" class="text-center"> No Archive Contacts</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -226,8 +226,8 @@
                         </tr>
                     </thead>
                     <tbody class="text-left bg-row">
-                        <?php $i = 0; ?>
-                        @foreach ($contactDiscard as $discard)
+                        <?php $i = ($contacts->currentPage() - 1) * $contacts->perPage(); ?>
+                        @forelse ($contactDiscard as $discard)
                             <tr>
                                 <td> {{ ++$i }} </td>
                                 <td> {{ $discard['name'] }} </td>
@@ -255,7 +255,12 @@
                                     </a>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="7" class="text-center">No Discard Contacts</td>
+                            </tr>
+                        @endforelse
+
                     </tbody>
                 </table>
             </div>
