@@ -5,6 +5,7 @@
 @extends('layouts.Edit_Contact_Modal')
 @extends('layouts.Add_Activity_Modal')
 @section('content')
+@if (Auth::check() && Auth::user()->role == 'Admin' || Auth::user()->role == 'BUH')
     @if (session('success'))
         <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
         <button id="successModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal"
@@ -256,6 +257,11 @@ $filePath = public_path('attachments/leads/' . $filename);
                 @endforelse
             </tbody>
         </table>
+        @else
+        <div class="alert alert-danger text-center mt-5">
+            <strong>Access Denied!</strong> You do not have permission to view this page.
+        </div>
+    @endif
     </div>
     <script>
         document.querySelectorAll('.activity-button').forEach(button => {
