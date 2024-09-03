@@ -14,19 +14,22 @@ use Illuminate\Support\Facades\Auth;
 class AdminController extends Controller
 {
 
-    public function index(){
+    public function index()
+    {
         $userData = User::paginate(10);
         return view('User_List_Page', [
             'userData' => $userData
         ]);
     }
 
-    public function viewUser(){
+    public function viewUser()
+    {
         $userData = User::paginate(10);
         return view('User_List_Page', ['userData' => $userData]);
     }
 
-    public function contacts(){
+    public function contacts()
+    {
         $contacts = Contact::paginate(10);
         $contactArchive = ContactArchive::paginate(10);
         $contactDiscard = ContactDiscard::paginate(10);
@@ -37,11 +40,30 @@ class AdminController extends Controller
         ]);
     }
 
-    public function saveUser(Request $request){
+    public function saveUser(Request $request)
+    {
 
+        // Define the allowed email domains
+        $allowedDomains = ['lithan.com', 'educlaas.com', 'learning.educlaas.com'];
+        $domainRegex = implode('|', array_map(function ($domain) {
+            return preg_quote($domain, '/');
+        }, $allowedDomains));
+
+        // Validate the request
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                'unique:users',
+                function ($attribute, $value, $fail) use ($domainRegex) {
+                    if (!preg_match('/@(' . $domainRegex . ')$/', $value)) {
+                        $fail('The email address must be one of the following domains: ' . str_replace('|', ', ', $domainRegex));
+                    }
+                }
+            ],
             'password' => 'required|string|min:8|confirmed',
         ]);
 
@@ -55,12 +77,14 @@ class AdminController extends Controller
         return redirect()->route('admin#index')->with('success', 'User created successfully');
     }
 
-    public function editUser($id){
+    public function editUser($id)
+    {
         $editUser = User::find($id);
         return view('Edit_User_Detail_Page', ['editUser' => $editUser]);
     }
 
-    public function updateUser(Request $request, $id){
+    public function updateUser(Request $request, $id)
+    {
         $updateUser = User::find($id);
         $updateUser->update([
             $updateUser->name = $request->input('name'),
@@ -71,12 +95,14 @@ class AdminController extends Controller
         return redirect()->route('admin#index')->with('success', 'User updated successfully');
     }
 
-    public function deleteUser($id){
+    public function deleteUser($id)
+    {
         User::where('id', $id)->delete();
         return redirect()->route('admin#index')->with('success', 'User Deleted Successfully');
     }
 
-    public function viewContact($contact_pid){
+    public function viewContact($contact_pid)
+    {
         /* Retrieve the contact record with the specified 'contact_pid' and pass
          it to the 'Edit_Contact_Detail_Page' view for editing. */
         $editContact = Contact::where('contact_pid', $contact_pid)->first();

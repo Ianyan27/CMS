@@ -108,34 +108,7 @@ table{
 }
 
 /* Sidebar Toggle */
-@media (max-width: 895px) {
-    .navbar-toggler {
-        display: block;
-        position: relative;
-        z-index: 1050;
-        margin-left: 10px; /* Add margin to push the logo to the right */
-    }
 
-    #side-bar {
-        position: absolute;
-        top: 8%;
-        left: 0;
-        width: 250px;
-        height: 100%;
-        z-index: 1030;
-        background-color: white;
-        transform: translateX(-250px); /* Hidden by default */
-        transition: transform 0.3s ease-in-out;
-    }
-
-    #side-bar.active {
-        transform: translateX(0); /* Slide in on toggle */
-    }
-
-    .content-width {
-        width: 100%; /* Expand content when sidebar is hidden */
-    }
-}
 
 /* Typography */
 tbody {
@@ -276,7 +249,6 @@ tbody {
 .nav-item:hover {
     background-color: #91264c;
 }
-
 .nav-item:hover .nav-link span,
 .nav-item:hover .nav-link i {
     color: white; /* This turns both the text and the icon white */
@@ -316,6 +288,62 @@ tbody {
 
 .navbar-toggler-icon::after {
     bottom: -8px;
+}
+@media (max-width: 895px) {
+    .navbar-toggler {
+        display: block;
+        position: relative;
+        z-index: 1050;
+        margin-left: 10px; /* Add margin to push the logo to the right */
+    }
+
+    #side-bar {
+        position: absolute;
+        top: 8%;
+        left: 0;
+        width: 250px;
+        height: 100%;
+        z-index: 1030;
+        background-color: white;
+        transform: translateX(-250px); /* Hidden by default */
+        transition: transform 0.3s ease-in-out;
+    }
+
+    #side-bar.active {
+        transform: translateX(0); /* Slide in on toggle */
+    }
+
+    .content-width {
+        width: 100%; /* Expand content when sidebar is hidden */
+    }
+}
+@media (max-width: 1080px) {
+    .navbar-toggler {
+        display: block;
+        position: relative;
+        z-index: 1050;
+        margin-left: 10px; /* Add margin to push the logo to the right */
+    }
+
+    #side-bar {
+        position: absolute;
+        top: 8%;
+        left: 0;
+        width: 250px;
+        height: 100%;
+        z-index: 1030;
+        background-color: white;
+        transform: translateX(-250px); /* Hidden by default */
+        transition: transform 0.3s ease-in-out;
+    }
+
+    #side-bar.active {
+        transform: translateX(0); /* Slide in on toggle */
+    }
+
+    .content-width {
+        width: 100%; /* Expand content when sidebar is hidden */
+    }
 }
 
 /* Custom CSS to handle dropdown appearance */
