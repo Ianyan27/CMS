@@ -249,7 +249,22 @@ tbody {
 .hubspot-btn:hover {
     background-color: #ff7a59;
     color: #ffffff;
+    border: 1px solid #ff7a59;
 }
+
+.archive-table:hover,
+    .archive-table.active {
+        background-color: #2C3E50;
+        color: #ffffff;
+        border: 1px solid #2C3E50;
+    }
+
+    .hubspot-btn:hover,
+    .hubspot-btn.active {
+        background-color: #ff7a59;
+        color: #ffffff;
+        border: 1px solid #ff7a59;
+    }
 
 .nav-item i {
     width: 40px;

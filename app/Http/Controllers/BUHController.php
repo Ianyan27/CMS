@@ -154,15 +154,21 @@ class BUHController extends Controller
     public function saveUser(Request $request){
 
         $validator = Validator::make($request->all(), [
-            'agentName' => 'required',
-            'email' => 'required',
-            'hubspotId' => 'required',
-            'businessUnit' => 'required',
-            'country' => 'required'
-        ]);
-
+            'agentName' => 'required|string|max:255',
+            'email' => [
+                'required',
+                'email',
+                'regex:/^[a-zA-Z0-9._%+-]+@(lithan\.com|educlass\.com)$/',
+            ],
+            'hubspotId' => 'required|string|max:100',
+            'businessUnit' => 'required|string|max:255',
+            'country' => 'required|string|max:100',
+        ]);     
+        
         if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
         }
 
         $user = new User();

@@ -8,7 +8,7 @@
         <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
                 <h5 class="mr-3 my-2 headings">HubSpot Contact Listing</h5>
-                <button class="btn archive-table mx-3" id="show-no-sync">
+                <button class="btn archive-table mx-3 active" id="show-no-sync">
                     View Unsynced
                 </button>
                 <button class="btn hubspot-btn mx-3" id="show-synced">
@@ -150,6 +150,29 @@
         </div>
     @endif
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        const showNoSyncBtn = document.getElementById('show-no-sync');
+        const showSyncedBtn = document.getElementById('show-synced');
+
+        function updateActiveButton(buttonToActivate) {
+            showNoSyncBtn.classList.remove('active');
+            showSyncedBtn.classList.remove('active');
+            buttonToActivate.classList.add('active');
+        }
+
+        showNoSyncBtn.addEventListener('click', function() {
+            updateActiveButton(showNoSyncBtn);
+            // Add your code to show "Unsynced" content here
+        });
+
+        showSyncedBtn.addEventListener('click', function() {
+            updateActiveButton(showSyncedBtn);
+            // Add your code to show "Synced" content here
+        });
+
+        // Initial state
+        updateActiveButton(showNoSyncBtn); // Default to "Unsynced" active
+    });
         const showNoSyncBtn = document.getElementById('show-no-sync');
         const showSyncedBtn = document.getElementById('show-synced');
         const noSyncContainer = document.getElementById('no-sync');
