@@ -3,40 +3,71 @@
 @section('title', 'Contact Listing Page')
 
 @section('content')
+
+    {{-- Success pop up --}}
     @if (session('success'))
-    @elseif (session('error'))
         <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
-        <button id="errorModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#errorModal"
+        <button id="successModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal"
             style="display: none;">
             Open Modal
         </button>
-
-        <!-- Error Modal -->
-        <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel"
+        <!-- Modal -->
+        <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header"
                         style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
                 border:none;">
-                        <h5 class="modal-title font-educ" id="errorModalLabel">Error</h5>
+                        <h5 class="modal-title font-educ" id="successModalLabel">Success</h5>
                     </div>
                     <div class="modal-body">
-                        {{ session('error') }}
+                        {{ session('success') }}
                     </div>
                     <div class="modal-footer" style="border:none">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Script to trigger the modal -->
-        <script type="text/javascript">
-            window.onload = function() {
-                document.getElementById('errorModalBtn').click();
+                        <!-- Script to trigger the modal -->
+                        <script type="text/javascript">
+                            window.onload = function() {
+                                document.getElementById('successModalBtn').click();
+                            };
+                        </script>
 
-            };
-        </script>
+
+                        {{-- Error pop up --}}
+                    @elseif (session('error'))
+                        <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
+                        <button id="errorModalBtn" type="button" class="btn btn-primary" data-toggle="modal"
+                            data-target="#errorModal" style="display: none;">
+                            Open Modal
+                        </button>
+
+                        <!-- Error Modal -->
+                        <div class="modal fade" id="errorModal" tabindex="-1" role="dialog"
+                            aria-labelledby="errorModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header"
+                                        style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+                border:none;">
+                                        <h5 class="modal-title font-educ" id="errorModalLabel">Error</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        {{ session('error') }}
+                                    </div>
+                                    <div class="modal-footer" style="border:none">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Script to trigger the modal -->
+                        <script type="text/javascript">
+                            window.onload = function() {
+                                document.getElementById('errorModalBtn').click();
+
+                            };
+                        </script>
     @endif
 
     <div class="container-max-height">
@@ -94,11 +125,12 @@
                             <i style="cursor: pointer;" class="fa-solid fa-filter" id="filterIcon"
                                 onclick="toggleFilter()"></i>
                             <!-- Filter Container -->
-                            <div id="filterContainer" class="filter-popup container rounded-bottom" style="display: none;">
+                            <div id="filterContainer" class="filter-popup container rounded-bottom"
+                                style="display: none;">
                                 <div class="row">
                                     <div class="filter-option">
-                                        <input class="ml-3" type="checkbox" id="new" name="status" value="New"
-                                            onclick="applyFilter()">
+                                        <input class="ml-3" type="checkbox" id="new" name="status"
+                                            value="New" onclick="applyFilter()">
                                         <label for="new" style= "color: #318FFC;">New</label>
                                     </div>
                                     <div class="filter-option">
