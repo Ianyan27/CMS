@@ -372,16 +372,36 @@
     `;
             const bodyContent = `
     <div style="padding : 20px" class="fonts">
-        <ul style="padding-left: 20px;">
-            <li>Total Rows: ${total_count}</li>
-            <li>Imported Rows: ${valid_count}</li> 
-            <li>Invalid Rows: ${invalid_count}
-                ${invalid_rows_link ? `<a href="${invalid_rows_link}" id="download-invalid-btn" style="color: #007bff; text-decoration: underline;">Download</a>` : ''}
-            </li> 
-            <li>Duplicate Rows: ${duplicate_count}
-                ${duplicate_rows_link ? `<a href="${duplicate_rows_link}" id="download-duplicate-btn" style="color: #007bff; text-decoration: underline;">Download</a>` : ''}
-            </li>    
-        </ul>
+        
+         
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <p style="margin: 5px 0; font-size: 16px;">Total Rows:</p>
+        <strong>${total_count}</strong>
+    </div>
+    <hr style="margin: 10px 0;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <p style="margin: 5px 0; font-size: 16px;">Successfully Imported Rows:</p>
+        <strong>${valid_count}</strong>
+    </div>
+    <hr style="margin: 10px 0;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <p style="margin: 5px 0; font-size: 16px;">Invalid Rows:</p>
+        <div style="display: flex; align-items: center;">
+            <strong>${invalid_count}</strong>
+            ${invalid_rows_link ? `<a href="${invalid_rows_link}" id="download-invalid-btn" style="color: #007bff; text-decoration: underline; margin-left: 10px;">Download</a>` : ''}
+        </div>
+    </div>
+    <hr style="margin: 10px 0;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <p style="margin: 5px 0; font-size: 16px;">Duplicate Rows:</p>
+        ${duplicate_rows_link ? `<a href="${duplicate_rows_link}" id="download-duplicate-btn" style="color: #007bff; text-decoration: underline; margin-left: 10px;">Download</a>` : ''}
+       
+        <div style="display: flex; align-items: center;">
+            <strong>${duplicate_count}</strong>
+             </div>
+    </div>
+    <hr style="margin: 10px 0;">
+        
         <div class="text-end">
             <button id="cancel-btn" class="btn" style="background-color: #6c757d; color: white; padding: 5px 10px; border-radius: 4px;">Close</button>
         </div>
