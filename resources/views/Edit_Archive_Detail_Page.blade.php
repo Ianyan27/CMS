@@ -145,8 +145,8 @@
                 {{-- Iterating all the activities from all contacts --}}
                 <div class="activities">
                     @forelse ($engagementArchive->groupBy(function ($date) {
-                                                                return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
-                                                            }) as $month => $activitiesInMonth)
+                                    return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
+                                }) as $month => $activitiesInMonth)
                         <div class="activity-list" data-month="{{ $month }}">
                             <div class="activity-date my-3 ml-3">
                                 <span class="text-muted">{{ $month }}</span>
@@ -234,21 +234,24 @@ $filePath = public_path('attachments/leads/' . $filename);
                         <td> {{ $engagement->activity_name }} </td>
                         <td> {{ $engagement->details }} </td>
                         <td>
-                            @if (file_exists($filePath) && $filename)
-                                <img src="{{ asset('attachments/leads/' . $filename) }}" alt="Attachment Image"
+                            @if ($filename)
+                                <img src="{{ $filename }}" alt="Attachment Image"
                                     style="width: 100px; height: auto; cursor: pointer;">
                             @else
                                 No Image Available
                             @endif
                         </td>
-                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+                        @if (Auth::user()->role == 'Sales_Agent')
                             <td>
-                                <a class="btn hover-action" data-toggle="modal"
-                                    {{ Auth::user()->role == 'Sales-Agent' ? 'data-target="#updateArchiveActivityModal- $engagement->engagement_archive_pid "' : '' }}>
+                                <a href="{{ Auth::user()->role == 'Sales_Agent' ? route('archive#edit', ['contact_archive_pid' => $engagement->engagement_archive_pid]) : '#' }}"
+                                    data-toggle="modal"
+                                    {{ Auth::user()->role == 'Sales_Agent' ? 'data-target=#updateArchiveActivityModal-' . $engagement->engagement_archive_pid : '' }}
+                                    class="btn hover-action">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
                             </td>
                         @endif
+
                     </tr>
                 @endforeach
             </tbody>
