@@ -13,53 +13,56 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class ArchiveController extends Controller{
-    public function viewArchive($id) {
+class ArchiveController extends Controller
+{
+    public function viewArchive($id)
+    {
         $editArchive = ContactArchive::where('contact_archive_pid', $id)->first();
         $user = Auth::user();
         $engagementArchive = EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $id)->get();
-        
+
         // Pass the entire engagement collection to the view, not just the first record.
         return view('Edit_Archive_Detail_Page')->with([
-            'editArchive' => $editArchive, 
+            'editArchive' => $editArchive,
             'engagementArchive' => $engagementArchive,
             'user' => $user,
             'updateEngagement' => $engagementArchive
         ]);
     }
-    
 
-    public function updateArchive(Request $request, $contact_archive_pid, $id) {
+
+    public function updateArchive(Request $request, $contact_archive_pid, $id)
+    {
         $archive = ContactArchive::find($contact_archive_pid);
-    
+
         if (!$archive) {
             return redirect()->back()->with('error', 'Contact archive not found.');
         }
-    
+
         if (in_array($request->input('status'), ['InProgress', 'Discard'])) {
             $targetModel = $request->input('status') === 'InProgress' ? new Contact() : new ContactDiscard();
             $targetModel->fill($archive->toArray());
             $targetModel->status = $request->input('status');
-            
+
             if ($request->input('status') === 'InProgress') {
                 $targetModel->fk_contacts__owner_pid = $id;
             } else {
                 $targetModel->fk_contact_discards__owner_pid = $id;
             }
             $targetModel->save();
-    
+
             // Assign the correct primary key to $newContactId
             $newContactId = $request->input('status') === 'InProgress'
-                            ? $targetModel->contact_pid
-                            : $targetModel->contact_discard_pid;
-    
+                ? $targetModel->contact_pid
+                : $targetModel->contact_discard_pid;
+
             $activities = EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $contact_archive_pid)->get();
             $targetActivity = $request->input('status') === 'InProgress' ? new Engagement() : new EngagementDiscard();
-    
+
             foreach ($activities as $activity) {
                 $newActivity = $targetActivity->newInstance();
                 $newActivity->fill($activity->toArray());
-    
+
                 if ($request->input('status') === 'InProgress') {
                     $newActivity->fk_engagements__contact_pid = $newContactId;
                 } else {
@@ -67,20 +70,20 @@ class ArchiveController extends Controller{
                 }
                 $newActivity->save();
             }
-    
+
             // Delete the archived engagements after moving
             EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $contact_archive_pid)->delete();
-    
+
             // Finally, delete the archive
             $archive->delete();
-    
+
             return redirect()->route('contact-listing')->with('success', 'Contact moved to ' . $request->input('status') . ' successfully.');
         }
-    
+
         // Your existing logic for updating the archive
         $oldStatus = $archive->status;
         $newStatus = $request->input('status');
-    
+
         $archive->update([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
@@ -92,7 +95,7 @@ class ArchiveController extends Controller{
             'skills' => $request->input('skills'),
             'status' => $request->input('status'),
         ]);
-    
+
         if ($oldStatus !== $newStatus) {
             $this->saveLog(
                 $contact_archive_pid,
@@ -100,14 +103,15 @@ class ArchiveController extends Controller{
                 "Status changed from '$oldStatus' to '$newStatus'."
             );
         }
-    
+
         return redirect()->route('archive#view', [
             'contact_archive_pid' => $contact_archive_pid
         ])->with('success', 'Contact updated successfully.');
     }
-    
-    
-    private function saveLog($contact_archive_pid, $action_type, $action_description){
+
+
+    private function saveLog($contact_archive_pid, $action_type, $action_description)
+    {
 
         $ownerPid = Auth::user()->id; // Get the authenticated user's ID as owner_pid
 
@@ -122,7 +126,8 @@ class ArchiveController extends Controller{
         ]);
     }
 
-    public function updateActivity(Request $request, $contact_archive_pid, $activity_id){
+    public function updateActivity(Request $request, $contact_archive_pid, $activity_id)
+    {
         // Validate the input data
         $validator = Validator::make($request->all(), [
             'activity-date' => 'required|date',
@@ -168,9 +173,10 @@ class ArchiveController extends Controller{
             ->with('success', 'Activity updated successfully.');
     }
 
-    public function saveActivity(Request $request, $contact_archive_pid){
+    public function saveActivity(Request $request, $contact_archive_pid)
+    {
         // Validate the input data
-        
+
         $validator = Validator::make($request->all(), [
             'activity-date' => 'required',
             'activity-name' => 'required',

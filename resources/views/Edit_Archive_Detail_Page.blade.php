@@ -145,8 +145,8 @@
                 {{-- Iterating all the activities from all contacts --}}
                 <div class="activities">
                     @forelse ($engagementArchive->groupBy(function ($date) {
-                                                            return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
-                                                        }) as $month => $activitiesInMonth)
+                                                                return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
+                                                            }) as $month => $activitiesInMonth)
                         <div class="activity-list" data-month="{{ $month }}">
                             <div class="activity-date my-3 ml-3">
                                 <span class="text-muted">{{ $month }}</span>
