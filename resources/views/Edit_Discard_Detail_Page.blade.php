@@ -43,10 +43,10 @@
                 <div class="table-title d-flex justify-content-between align-items-center my-3">
                     <h2 class="mt-2 ml-3 headings">Contact Detail</h2>
                     @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
-                        <a href="{{ route('discard#edit', $editDiscard->contact_discard_pid) }}"
+                        <!-- <a href="{{ route('discard#edit', $editDiscard->contact_discard_pid) }}"
                             class="btn hover-action mx-1" data-toggle="modal" data-target="#editDiscardModal">
                             <i class="fa-solid fa-pen-to-square"></i>
-                        </a>
+                        </a> -->
                     @endif
                 </div>
                 <div class="row row-margin-bottom row-border-bottom mx-1">
