@@ -147,8 +147,8 @@
                 </div>
                 <div class="activities">
                     @forelse ($engagements->groupBy(function ($date) {
-                                                                                                                                                                                                return \Carbon\Carbon::parse($date->date)->format('F Y');
-                                                                                                                                                                                            }) as $month => $activitiesInMonth)
+                                    return \Carbon\Carbon::parse($date->date)->format('F Y');
+                                  }) as $month => $activitiesInMonth)
                         <div class="activity-list" data-month="{{ $month }}">
                             <div class="activity-date my-3 ml-3">
                                 <span class="text-muted">{{ $month }}</span>
@@ -239,14 +239,17 @@ $filename = $attachments[0] ?? ''; // Get the first filename from the array
                                     No Image Available
                                 @endif
                             </td>
-                            <td class="text-center">
-                                <a href="{{ Auth::user()->role == 'Sales_Agent' ? route('contact#update-activity', ['contact_id' => $engagement->fk_engagements__contact_pid, 'activity_id' => $engagement->engagement_pid]) : '#' }}"
-                                    data-toggle="modal"
-                                    {{ Auth::user()->role == 'Sales_Agent' ? 'data-target=#updateActivityModal-' . $engagement->engagement_pid : '' }}
-                                    class="btn hover-action">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </a>
-                            </td>
+                            @if (Auth::user()->role == 'Sales_Agent')
+                                <td>
+                                    <a href="{{ Auth::user()->role == 'Sales_Agent' ? route('contact#update-activity', ['contact_id' => $engagement->fk_engagements__contact_pid, 'activity_id' => $engagement->engagement_pid]) : '#' }}"
+                                        data-toggle="modal"
+                                        {{ Auth::user()->role == 'Sales_Agent' ? 'data-target=#updateActivityModal-' . $engagement->engagement_pid : '' }}
+                                        class="btn hover-action">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                </td>
+                            @endif
+
                         </tr>
                     @empty
                         <tr>
