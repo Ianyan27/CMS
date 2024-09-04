@@ -35,7 +35,9 @@
                             <div class="form-group">
                                 <label for="email" class="font-educ">Email</label>
                                 <input type="email" name="email" class="form-control fonts" id="email"
-                                placeholder="Enter Email" pattern="[a-zA-Z0-9._%+-]+@(lithan\.com|educlass\.com)$" required>
+                                placeholder="Enter Email" 
+                                pattern="[a-zA-Z0-9._%+-]+@(lithan\.com|educlaas\.com|learning\.educlaas\.com)$" 
+                                required>
                                 <small id="emailError" class="form-text text-danger"></small>
                             </div>
                         </div>

@@ -11,6 +11,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class BUHController extends Controller
@@ -151,43 +152,69 @@ class BUHController extends Controller
         return stream_get_contents($csv);
     }
 
-    public function saveUser(Request $request){
-
+    public function saveUser(Request $request) {
+        $allowedDomains = ['lithan.com', 'educlaas.com', 'learning.educlaas.com'];
+        $domainRegex = implode('|', array_map(function ($domain) {
+            return preg_quote($domain, '/');
+        }, $allowedDomains));
+    
         $validator = Validator::make($request->all(), [
             'agentName' => 'required|string|max:255',
             'email' => [
                 'required',
+                'string',
                 'email',
-                'regex:/^[a-zA-Z0-9._%+-]+@(lithan\.com|educlass\.com)$/',
+                'max:255',
+                'unique:users',
+                function ($attribute, $value, $fail) use ($domainRegex) {
+                    if (!preg_match('/@(' . $domainRegex . ')$/', $value)) {
+                        $fail('The email address must be one of the following domains: ' . str_replace('|', ', ', $domainRegex));
+                    }
+                }
             ],
             'hubspotId' => 'required|string|max:100',
             'businessUnit' => 'required|string|max:255',
             'country' => 'required|string|max:100',
-        ]);     
-        
+            'fk_buh' => 'required|integer'
+        ]);
+    
+        Log::info('Processing user registration for email: ' . $request->input('email'));
+    
         if ($validator->fails()) {
+            Log::error('Validation failed for email: ' . $request->input('email'));
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
         }
-
-        $user = new User();
-
-        $user->name = $request->input('agentName');
-        $user->email = $request->input('email');
-        $user->role = $request->input('role');
-        $user->save();
-
-        $saleAgent = new Owner();
-        $saleAgent->owner_name = $request->input('agentName');
-        $saleAgent->owner_email_id = $request->input('email');
-        $saleAgent->fk_buh = $request->input('fk_buh');
-        $saleAgent->owner_hubspot_id = $request->input('hubspotId');
-        $saleAgent->owner_business_unit = $request->input('businessUnit');
-        $saleAgent->country = $request->input('country');
-        $saleAgent->owner_pid = $user->id;
-        $saleAgent->save();
-
-        return redirect()->route('owner#view')->with('success', 'Sale Agent successfully added');
+    
+        DB::beginTransaction();
+    
+        try {
+            $user = User::create([
+                'name' => $request->input('agentName'),
+                'email' => $request->input('email'),
+                'role' => $request->input('role')
+            ]);
+    
+            $saleAgent = Owner::create([
+                'owner_name' => $request->input('agentName'),
+                'owner_email_id' => $request->input('email'),
+                'fk_buh' => $request->input('fk_buh'),
+                'owner_hubspot_id' => $request->input('hubspotId'),
+                'owner_business_unit' => $request->input('businessUnit'),
+                'country' => $request->input('country'),
+                'owner_pid' => $user->id
+            ]);
+    
+            DB::commit();
+    
+            Log::info('Successfully saved user and sale agent for email: ' . $user->email);
+    
+            return redirect()->route('owner#view')->with('success', 'Sale Agent successfully added');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Failed to save user and sale agent for email: ' . $request->input('email') . '. Error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to add Sale Agent. Please try again.');
+        }
     }
 }

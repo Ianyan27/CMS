@@ -8,6 +8,7 @@ use App\Models\ContactDiscard;
 use App\Models\Engagement;
 use App\Models\EngagementArchive;
 use App\Models\Owner;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -99,6 +100,7 @@ class OwnerController extends Controller{
 
     public function deleteOwner($owner_pid){
         Owner::where('owner_pid', $owner_pid)->delete();
+        User::where('fk_buh', $owner_pid)->delete();
         return redirect()->route('owner#view')->with('success', "Owner Deleted Successfully.");
     }
 

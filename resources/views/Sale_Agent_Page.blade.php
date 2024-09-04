@@ -4,6 +4,29 @@
 @extends('layouts.Add_Sales-Agent_Modal')
 
 @section('content')
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header"
+                    style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+                border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
+                    <h5 class="modal-title" id="successModalLabel" style="color: #91264c"><strong>Error</strong>
+                    </h5>
+                </div>
+                <div class="modal-body" style="color: #91264c;border:none;">
+                    @if ($errors->any())
+                        @foreach ($errors->all() as $error)
+                            {{ $error }}
+                        @endforeach
+                    @endif
+                </div>
+                <div class="modal-footer" style="border:none;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                        style="background: #91264c; color:white;">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
     @if (Auth::check() && Auth::user()->role == 'BUH')
         @if (Session::has('success'))
             <!-- Success Modal -->
@@ -66,9 +89,10 @@
                                     onclick="sortByColumn('country', 'desc'); toggleSort('sortUp-country', 'sortDown-country')"
                                     style="display: none;"></i>
                             </th>
-                            <th class="text-center" data-toggle="tooltip" title="Total Assigned Contacts">{{ $owners->total_assign_contacts }}</th>
-                            <th class="text-center" data-toggle="tooltip" title="Total HubSpot Sync">{{ $owners->total_hubspot_sync }}</th>
-                            <th class="text-center" data-toggle="tooltip" title="Total In Progress">{{ $owners->total_in_progress }}</th>
+                            <th scope="col" class="text-center" data-toggle="tooltip" data-placement="top" title="Total contacts in Interested, Archive, and Discard tables">Total Assign Contacts</th>
+                            <th scope="col" class="text-center" data-toggle="tooltip" data-placement="top" title="Total contacts synced in HubSpot">Total Hubspot Sync</th>
+                            <th scope="col" class="text-center" data-toggle="tooltip" data-placement="top" title="Total engaging contacts">Total In Progress</th>
+
                             <th scope="col ">Action</th>
                         </tr>
                     </thead>
@@ -216,6 +240,14 @@
                 }
             });
         });
+        document.addEventListener('DOMContentLoaded', function () {
+            @if ($errors->any())
+                var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+                errorModal.show();
+            @endif
+        });
+    </script>
+    <script>
         $(document).ready(function() {
             $('#addSalesAgentForm').on('submit', function(e) {
                 var email = $('#email').val();
@@ -224,11 +256,11 @@
                 var isValid = validDomains.indexOf(emailDomain) !== -1;
 
                 if (email && !isValid) {
-                    e.preventDefault(); // Prevent form submission
+                    
                     $('#emailError').text(
                         'The email address must be one of the following domains: lithan.com, educlaas.com, learning.educlaas.com'
                     );
-                    $('#errorModal').modal('show'); // Show the error modal
+                    e.preventDefault(); // Prevent form submission
                 } else {
                     $('#emailError').text(''); // Clear any previous error message
                 }
@@ -246,5 +278,4 @@
     $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip(); 
 });
-
 </script>
