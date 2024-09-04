@@ -66,9 +66,9 @@
                                     onclick="sortByColumn('country', 'desc'); toggleSort('sortUp-country', 'sortDown-country')"
                                     style="display: none;"></i>
                             </th>
-                            <th scope="col" class="text-center">Total Assign Contacts</th>
-                            <th scope="col" class="text-center">Total Hubspot Sync</th>
-                            <th scope="col" class="text-center">Total In Progress</th>
+                            <th class="text-center" data-toggle="tooltip" title="Total Assigned Contacts">{{ $owners->total_assign_contacts }}</th>
+                            <th class="text-center" data-toggle="tooltip" title="Total HubSpot Sync">{{ $owners->total_hubspot_sync }}</th>
+                            <th class="text-center" data-toggle="tooltip" title="Total In Progress">{{ $owners->total_in_progress }}</th>
                             <th scope="col ">Action</th>
                         </tr>
                     </thead>
@@ -94,7 +94,7 @@
                                     @endif
                                     {{ $owners['country'] }}
                                 </td>
-                                <td class="text-center"> {{ $owners->total_assign_contacts }} </td>
+                                <td class="text-center">{{ $owners->total_assign_contacts }}</td>
                                 <td class="text-center">{{ $owners->total_hubspot_sync }}</td>
                                 <td class="text-center">{{ $owners->total_in_progress }}</td>
                                 <td>
@@ -241,3 +241,10 @@
         });
     </script>
 @endsection
+
+<script>
+    $(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip(); 
+});
+
+</script>
