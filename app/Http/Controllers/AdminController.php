@@ -43,9 +43,27 @@ class AdminController extends Controller
     public function saveUser(Request $request)
     {
 
+        // Define the allowed email domains
+        $allowedDomains = ['lithan.com', 'educlaas.com', 'learning.educlaas.com'];
+        $domainRegex = implode('|', array_map(function ($domain) {
+            return preg_quote($domain, '/');
+        }, $allowedDomains));
+
+        // Validate the request
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                'unique:users',
+                function ($attribute, $value, $fail) use ($domainRegex) {
+                    if (!preg_match('/@(' . $domainRegex . ')$/', $value)) {
+                        $fail('The email address must be one of the following domains: ' . str_replace('|', ', ', $domainRegex));
+                    }
+                }
+            ],
             'password' => 'required|string|min:8|confirmed',
         ]);
 

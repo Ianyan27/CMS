@@ -15,8 +15,7 @@ class AuthController extends Controller
 {
 
     // Redirect to Microsoft OAuth page
-    public function redirectToMicrosoft()
-    {
+    public function redirectToMicrosoft(){
         /**
          * Re login method
          */
@@ -36,8 +35,7 @@ class AuthController extends Controller
     }
 
     // Handle the callback from Microsoft
-    public function handleMicrosoftCallback()
-    {
+    public function handleMicrosoftCallback(){
         try {
             // Retrieve the user from Microsoft
             $microsoftUser = Socialite::driver('microsoft')->user();
@@ -74,8 +72,7 @@ class AuthController extends Controller
     }
 
 
-    public function microsoftLogin(Request $request)
-    {
+    public function microsoftLogin(Request $request){
         // Validate the input
         $request->validate([
             'email' => 'required|email'
@@ -133,8 +130,7 @@ class AuthController extends Controller
     }
 
 
-    public function logout(Request $request)
-    {
+    public function logout(Request $request){
 
         $request->session()->forget(['name', 'email', 'role']);
 

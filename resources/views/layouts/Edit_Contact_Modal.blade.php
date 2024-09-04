@@ -103,6 +103,11 @@ aria-hidden="true">
                                     Archive
                                 </option>
                             </select>
+                            @if ($errors->has('status'))
+                                <div class="text-danger">
+                                    {{ $errors->first('status') }}
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>

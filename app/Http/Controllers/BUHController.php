@@ -16,12 +16,11 @@ use Illuminate\Support\Facades\Log;
 class BUHController extends Controller
 {
 
-    public function index()
-    {
+    public function index(){
         return view('csv_import_form');
     }
-    public function import(Request $request)
-    {
+
+    public function import(Request $request){
         set_time_limit(300);
         // Validate the uploaded file
         $fileValidator = Validator::make($request->all(), [
@@ -45,19 +44,19 @@ class BUHController extends Controller
         $file = $request->file('csv_file');
         $platform = $request->input('platform'); // Get the platform value
 
-         // Get the BUH ID from the logged-in user
-         $buhId = Auth::user()->id;
+        // Get the BUH ID from the logged-in user
+        $buhId = Auth::user()->id;
 
          // Retrieve owners (sales agents) under the specified BUH
-         $owners = Owner::where('fk_buh', $buhId)->get();
-         Log::info('Total owners retrieved for BUH ID ' . $buhId . ':', ['count' => $owners->count()]);
+        $owners = Owner::where('fk_buh', $buhId)->get();
+        Log::info('Total owners retrieved for BUH ID ' . $buhId . ':', ['count' => $owners->count()]);
 
-         if ($owners->isEmpty()) {
+        if ($owners->isEmpty()) {
             return response()->json([
                 'success' => false,
                 'message' => "No sales agent is assigned. Please make sure to assign the appropriate sales agents to continue."
             ], 500);
-         }
+        }
 
         try {
             // Store the file in public storage
@@ -118,8 +117,7 @@ class BUHController extends Controller
         ]);
     }
 
-    private function exportCsv($fileName, $data)
-    {
+    private function exportCsv($fileName, $data){
         try {
             $csvContent = $this->arrayToCsv($data);
             // Save the file to the 'public' disk
@@ -133,8 +131,7 @@ class BUHController extends Controller
         }
     }
 
-    private function arrayToCsv(array $array)
-    {
+    private function arrayToCsv(array $array){
         $csv = fopen('php://temp', 'r+');
 
         foreach ($array as $row) {
@@ -154,19 +151,24 @@ class BUHController extends Controller
         return stream_get_contents($csv);
     }
 
-    public function saveUser(Request $request)
-    {
+    public function saveUser(Request $request){
 
         $validator = Validator::make($request->all(), [
-            'agentName' => 'required',
-            'email' => 'required',
-            'hubspotId' => 'required',
-            'businessUnit' => 'required',
-            'country' => 'required'
-        ]);
-
+            'agentName' => 'required|string|max:255',
+            'email' => [
+                'required',
+                'email',
+                'regex:/^[a-zA-Z0-9._%+-]+@(lithan\.com|educlass\.com)$/',
+            ],
+            'hubspotId' => 'required|string|max:100',
+            'businessUnit' => 'required|string|max:255',
+            'country' => 'required|string|max:100',
+        ]);     
+        
         if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
         }
 
         $user = new User();

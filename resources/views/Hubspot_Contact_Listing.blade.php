@@ -3,11 +3,12 @@
 @section('title', 'HubSpot Contact Listing Page')
 
 @section('content')
+@if (Auth::check() && Auth::user()->role == 'BUH')
     <div class="container-max-height">
         <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
                 <h5 class="mr-3 my-2 headings">HubSpot Contact Listing</h5>
-                <button class="btn archive-table mx-3" id="show-no-sync">
+                <button class="btn archive-table mx-3 active" id="show-no-sync">
                     View Unsynced
                 </button>
                 <button class="btn hubspot-btn mx-3" id="show-synced">
@@ -22,7 +23,6 @@
                             <i class="fa-brands fa-hubspot" style="margin: 0"></i><span>Batch Sync</span>
                         </button>
                     </div>
-
             </div>
         </div>
         <!-- Table for No Sync Contacts -->
@@ -53,7 +53,6 @@
                     @forelse ($hubspotContactsNoSync as $index => $contact)
                         <tr>
                             <td><input type="checkbox" name="selectedContacts[]" value="{{ $contact->contact_pid }}"></td>
-                            <td>{{ $contact->contact_pid }}</td>
                             <td>{{ $index + 1 }}</td> <!-- Index value -->
                             <td>{{ $contact->name }}</td>
                             <td>{{ $contact->email }}</td>
@@ -145,11 +144,37 @@
             </ul>
         </div>
     </div>
-
+    @else
+        <div class="alert alert-danger text-center mt-5">
+            <strong>Access Denied!</strong> You do not have permission to view this page.
+        </div>
+    @endif
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
         const showNoSyncBtn = document.getElementById('show-no-sync');
         const showSyncedBtn = document.getElementById('show-synced');
 
+        function updateActiveButton(buttonToActivate) {
+            showNoSyncBtn.classList.remove('active');
+            showSyncedBtn.classList.remove('active');
+            buttonToActivate.classList.add('active');
+        }
+
+        showNoSyncBtn.addEventListener('click', function() {
+            updateActiveButton(showNoSyncBtn);
+            // Add your code to show "Unsynced" content here
+        });
+
+        showSyncedBtn.addEventListener('click', function() {
+            updateActiveButton(showSyncedBtn);
+            // Add your code to show "Synced" content here
+        });
+
+        // Initial state
+        updateActiveButton(showNoSyncBtn); // Default to "Unsynced" active
+    });
+        const showNoSyncBtn = document.getElementById('show-no-sync');
+        const showSyncedBtn = document.getElementById('show-synced');
         const noSyncContainer = document.getElementById('no-sync');
         const syncedContainer = document.getElementById('synced');
 
@@ -158,8 +183,6 @@
             noSyncContainer.style.display = 'none';
             syncedContainer.style.display = 'none';
         }
-
-
 
         // Show No Sync Contacts Table
         showNoSyncBtn.addEventListener('click', function(event) {

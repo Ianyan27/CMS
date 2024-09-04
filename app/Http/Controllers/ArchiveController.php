@@ -10,56 +10,80 @@ use App\Models\EngagementArchive;
 use App\Models\EngagementDiscard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
-class ArchiveController extends Controller{
-    public function viewArchive($id) {
+class ArchiveController extends Controller
+{
+    public function viewArchive($id)
+    {
         $editArchive = ContactArchive::where('contact_archive_pid', $id)->first();
         $user = Auth::user();
         $engagementArchive = EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $id)->get();
-        
+
+        // Decrypt images in engagements
+        foreach ($engagementArchive as $engagement) {
+            if ($engagement->attachments) {
+                try {
+                    // Decrypt the attachment and base64 encode it for browser display
+                    $attachmentsArray = json_decode($engagement->attachments, true); // Decode JSON to array if stored as JSON
+                    foreach ($attachmentsArray as &$attachment) {
+                        $attachment = 'data:image/jpeg;base64,' . base64_encode(Crypt::decrypt($attachment));
+                    }
+                    // Convert array back to JSON for the frontend if needed
+                    $engagement->attachments = json_encode($attachmentsArray);
+                } catch (\Exception $e) {
+                    // Handle the case where decryption fails
+                    $engagement->attachments = null;
+                    Log::error('Failed to decrypt attachment for engagement ID: ' . $engagement->id . ' Error: ' . $e->getMessage());
+                }
+            }
+        }
+
         // Pass the entire engagement collection to the view, not just the first record.
         return view('Edit_Archive_Detail_Page')->with([
-            'editArchive' => $editArchive, 
+            'editArchive' => $editArchive,
             'engagementArchive' => $engagementArchive,
             'user' => $user,
             'updateEngagement' => $engagementArchive
         ]);
     }
-    
 
-    public function updateArchive(Request $request, $contact_archive_pid, $id) {
+
+    public function updateArchive(Request $request, $contact_archive_pid, $id)
+    {
         $archive = ContactArchive::find($contact_archive_pid);
-    
+
         if (!$archive) {
             return redirect()->back()->with('error', 'Contact archive not found.');
         }
-    
+
         if (in_array($request->input('status'), ['InProgress', 'Discard'])) {
             $targetModel = $request->input('status') === 'InProgress' ? new Contact() : new ContactDiscard();
             $targetModel->fill($archive->toArray());
             $targetModel->status = $request->input('status');
-            
+
             if ($request->input('status') === 'InProgress') {
                 $targetModel->fk_contacts__owner_pid = $id;
             } else {
-                $targetModel->fk_contacts__discards_pid = $id;
+                $targetModel->fk_contact_discards__owner_pid = $id;
             }
             $targetModel->save();
-    
+
             // Assign the correct primary key to $newContactId
             $newContactId = $request->input('status') === 'InProgress'
-                            ? $targetModel->contact_pid
-                            : $targetModel->contact_discard_pid;
-    
+                ? $targetModel->contact_pid
+                : $targetModel->contact_discard_pid;
+
             $activities = EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $contact_archive_pid)->get();
             $targetActivity = $request->input('status') === 'InProgress' ? new Engagement() : new EngagementDiscard();
-    
+
             foreach ($activities as $activity) {
                 $newActivity = $targetActivity->newInstance();
                 $newActivity->fill($activity->toArray());
-    
+
                 if ($request->input('status') === 'InProgress') {
                     $newActivity->fk_engagements__contact_pid = $newContactId;
                 } else {
@@ -67,20 +91,20 @@ class ArchiveController extends Controller{
                 }
                 $newActivity->save();
             }
-    
+
             // Delete the archived engagements after moving
             EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $contact_archive_pid)->delete();
-    
+
             // Finally, delete the archive
             $archive->delete();
-    
+
             return redirect()->route('contact-listing')->with('success', 'Contact moved to ' . $request->input('status') . ' successfully.');
         }
-    
+
         // Your existing logic for updating the archive
         $oldStatus = $archive->status;
         $newStatus = $request->input('status');
-    
+
         $archive->update([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
@@ -92,7 +116,7 @@ class ArchiveController extends Controller{
             'skills' => $request->input('skills'),
             'status' => $request->input('status'),
         ]);
-    
+
         if ($oldStatus !== $newStatus) {
             $this->saveLog(
                 $contact_archive_pid,
@@ -100,14 +124,15 @@ class ArchiveController extends Controller{
                 "Status changed from '$oldStatus' to '$newStatus'."
             );
         }
-    
+
         return redirect()->route('archive#view', [
             'contact_archive_pid' => $contact_archive_pid
         ])->with('success', 'Contact updated successfully.');
     }
-    
-    
-    private function saveLog($contact_archive_pid, $action_type, $action_description){
+
+
+    private function saveLog($contact_archive_pid, $action_type, $action_description)
+    {
 
         $ownerPid = Auth::user()->id; // Get the authenticated user's ID as owner_pid
 
@@ -129,7 +154,7 @@ class ArchiveController extends Controller{
             'activity-date' => 'required|date',
             'activity-name' => 'required|string',
             'activity-details' => 'required|string',
-            'activity-attachments.*' => 'nullable|file|mimes:jpg,jpeg,png,bmp,gif,svg,pdf'
+            'activity-attachments.*' => 'nullable|file|mimes:jpg,jpeg,png'
         ]);
 
         if ($validator->fails()) {
@@ -144,13 +169,23 @@ class ArchiveController extends Controller{
         // Handle file upload if a new file is provided
         if ($request->hasFile('activity-attachments')) {
             $attachments = [];
+
+            // Loop through each file
             foreach ($request->file('activity-attachments') as $file) {
-                $filename = uniqid() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('/attachments/leads'), $filename);
-                $attachments[] = $filename;
+                // Read the file content
+                $fileContent = file_get_contents($file->getRealPath());
+
+                // Encrypt the file content
+                $encryptedContent = Crypt::encrypt($fileContent);
+
+                // Store the encrypted content
+                $attachments[] = $encryptedContent;
             }
-            $engagement->attachments = json_encode($attachments); // Save as a JSON array
+
+            // Convert attachments to JSON format and save in the database
+            $engagement->attachments = json_encode($attachments);
         }
+
 
         // Update the engagement with new data
         $engagement->date = $request->input('activity-date');
@@ -169,9 +204,10 @@ class ArchiveController extends Controller{
             ->with('success', 'Activity updated successfully.');
     }
 
-    public function saveActivity(Request $request, $contact_archive_pid){
+    public function saveActivity(Request $request, $contact_archive_pid)
+    {
         // Validate the input data
-        
+
         $validator = Validator::make($request->all(), [
             'activity-date' => 'required',
             'activity-name' => 'required',
@@ -189,9 +225,13 @@ class ArchiveController extends Controller{
         // Handle file upload if a new file is provided
         if ($request->hasFile('activity-attachments')) {
             $imageFile = $request->file('activity-attachments');
-            $imageName = uniqid() . '_' . $imageFile->getClientOriginalName();
-            $imageFile->move(public_path('/attachments/leads'), $imageName);
-            $engagement->attachments = json_encode([$imageName]); // Save as a JSON array
+            $imageContent = file_get_contents($imageFile);
+            $encryptedImage = Crypt::encrypt($imageContent); // Encrypt the image content
+            // Encrypt the image content
+            $encryptedImage = Crypt::encrypt($imageContent);
+
+            // Save as a JSON array
+            $engagement->attachments = json_encode([$encryptedImage]);
         }
 
         // Assign engagement data from request
