@@ -312,6 +312,7 @@ class ContactController extends Controller
             ->where('engagement_pid', $activity_id)
             ->firstOrFail();
 
+        // Handle file upload if a new file is provided
         if ($request->hasFile('activity-attachments')) {
             $attachments = [];
 
