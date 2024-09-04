@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Contact;
 use App\Models\ContactArchive;
 use App\Models\ContactDiscard;
+use App\Models\Engagement;
+use App\Models\EngagementArchive;
 use App\Models\Owner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,7 +36,10 @@ class OwnerController extends Controller{
 
         // Get the total contacts count allocated to this owner
         $totalContacts = Contact::where('fk_contacts__owner_pid', $owner_pid)->count();
+        $totalArchive = ContactArchive::where('fk_contact_archives__owner_pid', $owner_pid)->count();
+        $totalDiscard = ContactDiscard::where('fk_contact_discards__owner_pid', $owner_pid)->count();
 
+        $totalContact = $totalContacts + $totalArchive + $totalDiscard;
         // Get the count of contacts where status is 'HubSpot'
         $hubspotContactsCount = Contact::where('fk_contacts__owner_pid', $owner_pid)
             ->where('status', 'HubSpot Contact')
@@ -46,8 +51,11 @@ class OwnerController extends Controller{
             ->count();
 
         // Update the 'total_hubspot_sync' column in the 'owners' table
+        $editOwner->total_assign_contacts = $totalContact;
         $editOwner->total_hubspot_sync = $hubspotContactsCount;
         $editOwner->total_in_progress = $hubspotCurrentEngagingContact;
+        $editOwner->total_archive_contacts = $totalArchive;
+        $editOwner->total_discard_contacts = $totalDiscard;
         $editOwner->save();
 
         // Get the contacts
@@ -92,6 +100,23 @@ class OwnerController extends Controller{
     public function deleteOwner($owner_pid){
         Owner::where('owner_pid', $owner_pid)->delete();
         return redirect()->route('owner#view')->with('success', "Owner Deleted Successfully.");
+    }
+
+    public function viewContact($contact_pid){
+        /* Retrieve the contact record with the specified 'contact_pid' and pass
+         it to the 'Edit_Contact_Detail_Page' view for editing. */
+        $editContact = Contact::where('contact_pid', $contact_pid)->first();
+        $user = Auth::user();
+        $engagements = Engagement::where('fk_engagements__contact_pid', $contact_pid)->get();
+        $engagementsArchive = EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $contact_pid)->get();
+        $updateEngagement = $engagements->first();
+        return view('Edit_Contact_Detail_Page')->with([
+            'user' => $user,
+            'editContact' => $editContact,
+            'engagements' => $engagements,
+            'updateEngagement' => $updateEngagement,
+            'engagementArchive' => $engagementsArchive
+        ]);
     }
     
 }

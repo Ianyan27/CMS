@@ -93,8 +93,8 @@ table{
 @media screen and (max-width: 1150px) {
     .dashboard{
         width: 100%;
-        /* min-height: 100px;
-        max-height: 150px; */
+        min-height: 100px;
+        max-height: 150px;
         text-align: center;
         margin-bottom: 45px;
     }
@@ -108,34 +108,7 @@ table{
 }
 
 /* Sidebar Toggle */
-@media (max-width: 895px) {
-    .navbar-toggler {
-        display: block;
-        position: relative;
-        z-index: 1050;
-        margin-left: 10px; /* Add margin to push the logo to the right */
-    }
 
-    #side-bar {
-        position: absolute;
-        top: 8%;
-        left: 0;
-        width: 250px;
-        height: 100%;
-        z-index: 1030;
-        background-color: white;
-        transform: translateX(-250px); /* Hidden by default */
-        transition: transform 0.3s ease-in-out;
-    }
-
-    #side-bar.active {
-        transform: translateX(0); /* Slide in on toggle */
-    }
-
-    .content-width {
-        width: 100%; /* Expand content when sidebar is hidden */
-    }
-}
 
 /* Typography */
 tbody {
@@ -249,7 +222,22 @@ tbody {
 .hubspot-btn:hover {
     background-color: #ff7a59;
     color: #ffffff;
+    border: 1px solid #ff7a59;
 }
+
+.archive-table:hover,
+    .archive-table.active {
+        background-color: #2C3E50;
+        color: #ffffff;
+        border: 1px solid #2C3E50;
+    }
+
+    .hubspot-btn:hover,
+    .hubspot-btn.active {
+        background-color: #ff7a59;
+        color: #ffffff;
+        border: 1px solid #ff7a59;
+    }
 
 .nav-item i {
     width: 40px;
@@ -261,7 +249,6 @@ tbody {
 .nav-item:hover {
     background-color: #91264c;
 }
-
 .nav-item:hover .nav-link span,
 .nav-item:hover .nav-link i {
     color: white; /* This turns both the text and the icon white */
@@ -301,6 +288,62 @@ tbody {
 
 .navbar-toggler-icon::after {
     bottom: -8px;
+}
+@media (max-width: 895px) {
+    .navbar-toggler {
+        display: block;
+        position: relative;
+        z-index: 1050;
+        margin-left: 10px; /* Add margin to push the logo to the right */
+    }
+
+    #side-bar {
+        position: absolute;
+        top: 8%;
+        left: 0;
+        width: 250px;
+        height: 100%;
+        z-index: 1030;
+        background-color: white;
+        transform: translateX(-250px); /* Hidden by default */
+        transition: transform 0.3s ease-in-out;
+    }
+
+    #side-bar.active {
+        transform: translateX(0); /* Slide in on toggle */
+    }
+
+    .content-width {
+        width: 100%; /* Expand content when sidebar is hidden */
+    }
+}
+@media (max-width: 1080px) {
+    .navbar-toggler {
+        display: block;
+        position: relative;
+        z-index: 1050;
+        margin-left: 10px; /* Add margin to push the logo to the right */
+    }
+
+    #side-bar {
+        position: absolute;
+        top: 8%;
+        left: 0;
+        width: 250px;
+        height: 100%;
+        z-index: 1030;
+        background-color: white;
+        transform: translateX(-250px); /* Hidden by default */
+        transition: transform 0.3s ease-in-out;
+    }
+
+    #side-bar.active {
+        transform: translateX(0); /* Slide in on toggle */
+    }
+
+    .content-width {
+        width: 100%; /* Expand content when sidebar is hidden */
+    }
 }
 
 /* Custom CSS to handle dropdown appearance */
@@ -598,3 +641,84 @@ th, label{
     background-color:  #91264c;
     color: white;
 }
+
+        /* Custom styling for the select box */
+        select {
+            appearance: none;
+            background-color: transparent;
+            padding: 0.5rem;
+            border: 1px solid #c58ca8;
+            /* Similar color to the one in the image */
+            border-radius: 0.5rem;
+            outline: none;
+            color: #660634;
+            /* Text color similar to the border */
+            font-size: 1rem;
+            background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' width=\'24\' height=\'24\' fill=\'%23c58ca8\'%3e%3cpath d=\'M7.4 8.8l3.6 3.6 3.6-3.6 1.4 1.4-5 5-5-5z\'/%3e%3c/svg%3e');
+            /* Dropdown arrow */
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            background-size: 1rem;
+        }
+
+        select:hover {
+            border-color: #c58ca8;
+            box-shadow: 0 0 0 2px rgba(197, 140, 168, 0.5);
+            
+        }
+
+        .error-select {
+            border-color: #ff6868;
+            box-shadow: 0 0 0 3px rgba(251, 125, 150, 0.5);
+            color: red;
+        }
+
+        .progress-bar-custom {
+            background-color: #870f4a;
+            /* Custom progress bar color */
+        }
+
+        .status-text {
+            color: green;
+        }
+
+        .drop-zone {
+            border: 1px dashed gray;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .drop-zone.dragover {
+            background-color: #f2e6ec;
+        }
+
+        select,
+        option {
+            padding-left: 15px;
+        }
+
+        .radio-btn {
+            /* background-color: #8b0045; */
+            color: #000000;
+            padding: 5px 10px;
+            margin-right: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: medium;
+            font-weight: normal;
+        }
+
+        input[type="radio"].radio-circle:checked {
+            accent-color: #91264c;
+        }
+
+        input[type="radio"]:checked+label {
+            color: #91264c;
+        }
+
+        .search-bar {
+            margin-bottom: 10px;
+        }

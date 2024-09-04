@@ -3,93 +3,11 @@
 @section('title', 'Import Files Page')
 
 @section('content')
-    <style>
-        /* Custom styling for the select box */
-        select {
-            appearance: none;
-            background-color: transparent;
-            padding: 0.5rem;
-            border: 1px solid #c58ca8;
-            /* Similar color to the one in the image */
-            border-radius: 0.5rem;
-            outline: none;
-            color: #660634;
-            /* Text color similar to the border */
-            font-size: 1rem;
-            background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' width=\'24\' height=\'24\' fill=\'%23c58ca8\'%3e%3cpath d=\'M7.4 8.8l3.6 3.6 3.6-3.6 1.4 1.4-5 5-5-5z\'/%3e%3c/svg%3e');
-            /* Dropdown arrow */
-            background-repeat: no-repeat;
-            background-position: right 0.5rem center;
-            background-size: 1rem;
-        }
 
-        select:hover {
-            border-color: #c58ca8;
-            box-shadow: 0 0 0 2px rgba(197, 140, 168, 0.5);
-            
-        }
-
-        .error-select {
-            border-color: #ff6868;
-            box-shadow: 0 0 0 3px rgba(251, 125, 150, 0.5);
-            color: red;
-        }
-
-        .progress-bar-custom {
-            background-color: #870f4a;
-            /* Custom progress bar color */
-        }
-
-        .status-text {
-            color: green;
-        }
-
-        .drop-zone {
-            border: 1px dashed gray;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            text-align: center;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .drop-zone.dragover {
-            background-color: #f2e6ec;
-        }
-
-        select,
-        option {
-            padding-left: 15px;
-        }
-
-        .radio-btn {
-            /* background-color: #8b0045; */
-            color: #000000;
-            padding: 5px 10px;
-            margin-right: 5px;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: medium;
-            font-weight: normal;
-        }
-
-        input[type="radio"].radio-circle:checked {
-            accent-color: #91264c;
-        }
-
-        input[type="radio"]:checked+label {
-            color: #91264c;
-        }
-
-        .search-bar {
-            margin-bottom: 10px;
-        }
-    </style>
-
+@if (Auth::check() && Auth::user()->role == 'BUH')
     <div class="container-max-height">
-        <div class="row ">
+        <div class="row">
             <div class="col-sm-12">
-
                 <div class="d-flex justify-content-between">
                     <h5 class="mb-4 font-educ headings">Please Select Platform</h5>
                     <!-- Get CSV Format button positioned to the right end -->
@@ -99,18 +17,14 @@
                         </button>
                     </div>
                 </div>
-
-
                 <!-- Get CSV Format button positioned to the right end -->
                 <div id="raw-btn-container" class="d-none">
-
                     <a href="get-csv">
                         <button class="btn hover-action">
                             Get CSV Format
                         </button>
                     </a>
                 </div>
-
                 <div id="platform-container">
                     <div class="alert alert-danger d-none" id="platformValidationMsg" role="alert"
                         style="font-size: medium">
@@ -122,7 +36,6 @@
                         <option value="apollo">Apollo</option>
                         <option value="raw">Raw</option>
                     </select>
-
                 </div>
                 <div class="text-center mb-4">
                     <div class="card-body justify-content-center align-items-center drop-zone" id="dropZone">
@@ -140,7 +53,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
         <div class="card d-none" id="file-card">
@@ -165,8 +77,11 @@
             </div>
         </div>
     </div>
-    </div>
-    </div>
+    @else
+        <div class="alert alert-danger text-center mt-5">
+            <strong>Access Denied!</strong> You do not have permission to view this page.
+        </div>
+    @endif
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         //-----------declaring----------------//

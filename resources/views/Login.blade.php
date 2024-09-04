@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +12,6 @@
         rel="stylesheet">
     <link rel="stylesheet" href="{{ URL::asset('css/admin_style.css') }}">
 </head>
-
 <body>
     <div class="container-fluid d-flex flex-column" style="min-height: 100vh; padding: 0; overflow-x: hidden;">
         <div class="row shadow-sm py-3" style="margin: 0;">
@@ -43,7 +41,6 @@
             © 2024 eduCLaaS Pte Ltd. All rights reserved.
         </footer>
     </div>
-
     <!-- Login Modal -->
     <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel"
         aria-hidden="true">
@@ -71,7 +68,6 @@
             </div>
         </div>
     </div>
-
     <!-- Error Modal -->
     @if ($errors->any())
         <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel"
@@ -97,13 +93,11 @@
             </div>
         </div>
     @endif
-
     <!-- Scripts -->
     <script src="https://kit.fontawesome.com/4d2a01d4ef.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
     <!-- Show Error Modal if there are errors -->
     @if ($errors->any())
         <script>
