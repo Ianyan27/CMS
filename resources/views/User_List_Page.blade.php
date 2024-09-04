@@ -71,7 +71,7 @@
                         </tr>
                     </thead>
                     <tbody class="text-left bg-row fonts">
-                        <?php $i = 1; ?>
+                        <?php $i = ($userData->currentPage() - 1) * $userData->perPage() + 1; ?>
                         @forelse ($userData as $user)
                             <tr>
                                 <td>{{ $i++ }}</td>
