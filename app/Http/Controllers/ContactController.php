@@ -132,7 +132,7 @@ class ContactController extends Controller
         $rules = [
             'status' => function ($attribute, $value, $fail) use ($activitiesCount) {
                 if (in_array($value, ['InProgress', 'HubSpot Contact', 'Archive', 'Discard']) && $activitiesCount === 0) {
-                    $fail('Status cannot be updated to ' . $value . ' because there are no engagement activities associated with this contact.');
+                    $fail('Status cannot be updated: No engagement activities for this contact.');
                 }
             }
         ];
