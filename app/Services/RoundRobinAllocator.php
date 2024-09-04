@@ -17,11 +17,11 @@ class RoundRobinAllocator
             $buhId = Auth::user()->id;
 
             // Retrieve owners (sales agents) under the specified BUH
-            $owners = Owner::where('fk_buh', $buhId)->get();
+            $owners = Owner::where('fk_buh', $buhId)->get()->sortBy('owner_pid')->values(); // Ensure sorted order
             Log::info('Total owners retrieved for BUH ID ' . $buhId . ':', ['count' => $owners->count()]);
 
             if ($owners->isEmpty()) {
-                throw new \Exception("No sales agent is assigned. Please make sure to assign the appropriate sales agents to continue." . $buhId);
+                throw new \Exception("No sales agent is assigned. Please make sure to assign the appropriate sales agents to continue. BUH ID: " . $buhId);
             }
 
             // Get unassigned contacts
@@ -35,6 +35,7 @@ class RoundRobinAllocator
                 ->first();
             Log::info('Last assigned owner_pid for BUH ID ' . $buhId . ':', ['owner_pid' => $lastAssignedOwner ? $lastAssignedOwner->fk_contacts__owner_pid : 'None']);
 
+            // Determine the next owner to start with
             $nextOwnerPid = $this->determineNextOwnerPid($lastAssignedOwner, $owners);
             Log::info('Starting allocation with owner_pid:', ['next_owner_pid' => $nextOwnerPid]);
 
@@ -52,7 +53,6 @@ class RoundRobinAllocator
                         'contact_id' => $contact->id,
                         'owner_pid' => $owner->owner_pid,
                     ]);
-
 
                     // Update the `total_assign_contacts` count for the assigned owner
                     $owner->total_assign_contacts = Contact::where('fk_contacts__owner_pid', $owner->owner_pid)->count();
@@ -98,7 +98,7 @@ class RoundRobinAllocator
         // Find the index of the current owner_pid in the owners collection
         $currentIndex = $owners->pluck('owner_pid')->search($currentOwnerPid);
 
-        // Get the next index, and wrap around if necessary
+        // Ensure the owner list is sorted and cycle correctly
         $nextIndex = ($currentIndex + 1) % $owners->count();
 
         // Get the next owner_pid
