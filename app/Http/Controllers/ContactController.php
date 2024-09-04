@@ -132,7 +132,7 @@ class ContactController extends Controller
         $rules = [
             'status' => function ($attribute, $value, $fail) use ($activitiesCount) {
                 if (in_array($value, ['InProgress', 'HubSpot Contact', 'Archive', 'Discard']) && $activitiesCount === 0) {
-                    $fail('Status cannot be updated to ' . $value . ' because there are no engagement activities associated with this contact.');
+                    $fail('Status cannot be updated: No engagement activities for this contact.');
                 }
             }
         ];
@@ -228,7 +228,19 @@ class ContactController extends Controller
             'activity-attachments' => 'required|file|mimes:jpeg,png,jpg'
         ]);
 
+        // Handle validation errors
         if ($validator->fails()) {
+            // Check if the error is related to the file type
+            if ($validator->errors()->has('activity-attachments')) {
+                $attachmentErrors = $validator->errors()->get('activity-attachments');
+                if (in_array('The activity attachments must be a file of type: jpeg, png, jpg.', $attachmentErrors)) {
+                    // Specific error message for invalid file type
+                    return back()->withErrors(['activity-attachments' => 'Only image files (JPEG, PNG, JPG) are allowed.'])
+                        ->withInput();
+                }
+            }
+
+            // Return back with general validation errors
             return back()->withErrors($validator)->withInput();
         }
 
@@ -300,7 +312,7 @@ class ContactController extends Controller
 
     public function saveUpdateActivity(Request $request, $contact_pid, $activity_id)
     {
-        //checking for admin role and redirect it
+        // Checking for admin role and redirecting if needed
         $user = Auth::user();
         if ($user->role === 'Admin') {
             return redirect()->route('admin#contact-listing')->with('error', 'Admin cannot update the contact activity');
@@ -311,10 +323,12 @@ class ContactController extends Controller
             'activity-date' => 'required|date',
             'activity-name' => 'required|string',
             'activity-details' => 'required|string',
-            'activity-attachments.*' => 'nullable|file|mimes:jpeg,png,jpg'
+            'activity-attachments' => 'nullable|file|mimes:jpeg,png,jpg'
         ]);
 
+        // Handle validation errors
         if ($validator->fails()) {
+            // If the validation fails, return the errors
             return back()->withErrors($validator)->withInput();
         }
 
@@ -325,22 +339,16 @@ class ContactController extends Controller
 
         // Handle file upload if a new file is provided
         if ($request->hasFile('activity-attachments')) {
-            $attachments = [];
+            $file = $request->file('activity-attachments');
 
-            // Loop through each file
-            foreach ($request->file('activity-attachments') as $file) {
-                // Read the file content
-                $fileContent = file_get_contents($file->getRealPath());
+            // Read the file content
+            $fileContent = file_get_contents($file->getRealPath());
 
-                // Encrypt the file content
-                $encryptedContent = Crypt::encrypt($fileContent);
+            // Encrypt the file content
+            $encryptedContent = Crypt::encrypt($fileContent);
 
-                // Store the encrypted content
-                $attachments[] = $encryptedContent;
-            }
-
-            // Convert attachments to JSON format and save in the database
-            $engagement->attachments = json_encode($attachments);
+            // Store the encrypted content
+            $engagement->attachments = json_encode([$encryptedContent]);
         }
 
         // Update the engagement with new data
@@ -350,18 +358,18 @@ class ContactController extends Controller
         $engagement->save();
 
         // Log the update action
-        $actionType = 'Activity Updated'; // Example action type
-        $actionDescription = "Updated activity: {$request->input('activity-name')} with details: {$request->input('activity-details')}"; // Example action description
+        $actionType = 'Activity Updated';
+        $actionDescription = "Updated activity: {$request->input('activity-name')} with details: {$request->input('activity-details')}";
 
-        $ediActivity = $this->saveLog($contact_pid, $actionType, $actionDescription);
+        $editActivity = $this->saveLog($contact_pid, $actionType, $actionDescription);
 
-        Log::info("Edit Activity: " . $ediActivity);
-
+        Log::info("Edit Activity: " . $editActivity);
 
         // Redirect to the contact view page with a success message
         return redirect()->route('contact#view', ['contact_pid' => $contact_pid])
             ->with('success', 'Activity updated successfully.');
     }
+
 
     public function hubspotContacts()
     {

@@ -6,6 +6,7 @@
     @extends('layouts.Update_Activity_Modal')
     @extends('layouts.Edit_Contact_Modal')
     @extends('layouts.Add_Activity_Modal')
+    @extends('layouts.Attachment_Error_Modal')
     @if (
         (Auth::check() && Auth::user()->role == 'Admin') ||
             Auth::user()->role == 'BUH' ||
@@ -147,8 +148,8 @@
                 </div>
                 <div class="activities">
                     @forelse ($engagements->groupBy(function ($date) {
-                                    return \Carbon\Carbon::parse($date->date)->format('F Y');
-                                  }) as $month => $activitiesInMonth)
+                                                                    return \Carbon\Carbon::parse($date->date)->format('F Y');
+                                                                  }) as $month => $activitiesInMonth)
                         <div class="activity-list" data-month="{{ $month }}">
                             <div class="activity-date my-3 ml-3">
                                 <span class="text-muted">{{ $month }}</span>
@@ -240,7 +241,7 @@ $filename = $attachments[0] ?? ''; // Get the first filename from the array
                                 @endif
                             </td>
                             @if (Auth::user()->role == 'Sales_Agent')
-                                <td>
+                                <td class="text-center">
                                     <a href="{{ Auth::user()->role == 'Sales_Agent' ? route('contact#update-activity', ['contact_id' => $engagement->fk_engagements__contact_pid, 'activity_id' => $engagement->engagement_pid]) : '#' }}"
                                         data-toggle="modal"
                                         {{ Auth::user()->role == 'Sales_Agent' ? 'data-target=#updateActivityModal-' . $engagement->engagement_pid : '' }}
@@ -391,6 +392,16 @@ $filename = $attachments[0] ?? ''; // Get the first filename from the array
                 $('#modalImage').attr('src', src);
                 $('#imageModal').modal('show');
             });
+
+            /**
+             * Show the error for attachments
+             */
+            // Check if there are any errors related to the file upload
+            @if ($errors->has('activity-attachments'))
+                // Show the error modal if there are file upload errors
+                $('#errorModal').modal('show');
+            @endif
+
         });
     </script>
 @endsection

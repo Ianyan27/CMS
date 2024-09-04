@@ -54,6 +54,12 @@
                                     onclick="sortTable('country', 'desc'); toggleSort('sortUp-country', 'sortDown-country')"
                                     style="display: none;"></i>
                             </th>
+                            @if (Auth::user()->role === 'Admin')
+                                <!-- Display Sales Agent only for Admins -->
+                                <th>
+                                    Sales Agent
+                                </th>
+                            @endif
                             <th class=" position-relative" scope="col">
                                 Status
                                 <i style="cursor: pointer;" class="fa-solid fa-filter" id="filterIcon"
@@ -97,6 +103,10 @@
                                         alt="{{ $contact['country'] }}" width="20" height="15">
                                     {{ $contact['country'] }}
                                 </td>
+                                @if (Auth::user()->role === 'Admin')
+                                    <!-- Display Sales Agent only for Admins -->
+                                    <td>{{ $contact->owner->owner_name ?? 'Not Assigned' }}</td>
+                                @endif
                                 <td>
                                     <span class="status-indicator"
                                         style="background-color:

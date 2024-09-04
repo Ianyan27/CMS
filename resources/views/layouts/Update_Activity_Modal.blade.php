@@ -67,7 +67,7 @@
                                                 for="activity-attachment-{{ $engagement->engagement_pid }}">Attachment</label>
                                             <input type="file"
                                                 id="activity-attachment-{{ $engagement->engagement_pid }}" multiple
-                                                accept="image/*" style="display: none;" name="activity-attachments[]">
+                                                accept="image/*" style="display: none;" name="activity-attachments">
                                             <button type="button" class="btn hover-action"
                                                 onclick="document.getElementById('activity-attachment-{{ $engagement->engagement_pid }}').click();"
                                                 style="width: max-content">

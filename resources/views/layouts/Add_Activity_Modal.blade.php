@@ -1,10 +1,9 @@
 <!-- Add Activity Modal -->
-<div class="modal fade" id="addActivityModal" tabindex="-1" aria-labelledby="addActivityModalLabel"
-aria-hidden="true">
+<div class="modal fade" id="addActivityModal" tabindex="-1" aria-labelledby="addActivityModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content rounded-0">
             <div class="modal-header d-flex justify-content-between align-items-center"
-            style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+                style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
                         border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
                 <h5 class="modal-title" id="editContactModalLabel">
                     <strong>Add New Activity</strong>
@@ -45,11 +44,14 @@ aria-hidden="true">
                                 <div class="attachment-container">
                                     <label class="font-educ my-1" for="activity-attachment">Attachment</label>
                                     <input type="file" id="activity-attachment" multiple accept="image/*"
-                                        style="display: none;" name="activity-attachments">
+                                        style="opacity: 0; position: absolute; left: -9999px;"
+                                        name="activity-attachments">
                                     <button type="button" class="btn hover-action"
-                                        onclick="document.getElementById('activity-attachment').click();">
+                                        onclick="$('#activity-attachment').click();">
                                         <i class="fa-solid fa-upload"></i> Upload
                                     </button>
+                                    <div id="attachment-error" class="text-danger mt-2" style="display: none;">
+                                        Attachment is required.</div>
                                 </div>
                                 <div id="file-names" class="file-list"></div> <!-- Display filenames here -->
                             </div>
@@ -60,7 +62,7 @@ aria-hidden="true">
                             <div class="form-group">
                                 <label class="font-educ" for="activity-description">Description</label>
                                 <textarea style="height: 100px; " class="form-control fonts" id="activity-description" rows="3"
-                                    name="activity-details"></textarea>
+                                    name="activity-details" required></textarea>
                             </div>
                         </div>
                     </div>
