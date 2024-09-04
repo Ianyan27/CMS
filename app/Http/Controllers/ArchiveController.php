@@ -10,7 +10,9 @@ use App\Models\EngagementArchive;
 use App\Models\EngagementDiscard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class ArchiveController extends Controller
@@ -20,6 +22,25 @@ class ArchiveController extends Controller
         $editArchive = ContactArchive::where('contact_archive_pid', $id)->first();
         $user = Auth::user();
         $engagementArchive = EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $id)->get();
+
+        // Decrypt images in engagements
+        foreach ($engagementArchive as $engagement) {
+            if ($engagement->attachments) {
+                try {
+                    // Decrypt the attachment and base64 encode it for browser display
+                    $attachmentsArray = json_decode($engagement->attachments, true); // Decode JSON to array if stored as JSON
+                    foreach ($attachmentsArray as &$attachment) {
+                        $attachment = 'data:image/jpeg;base64,' . base64_encode(Crypt::decrypt($attachment));
+                    }
+                    // Convert array back to JSON for the frontend if needed
+                    $engagement->attachments = json_encode($attachmentsArray);
+                } catch (\Exception $e) {
+                    // Handle the case where decryption fails
+                    $engagement->attachments = null;
+                    Log::error('Failed to decrypt attachment for engagement ID: ' . $engagement->id . ' Error: ' . $e->getMessage());
+                }
+            }
+        }
 
         // Pass the entire engagement collection to the view, not just the first record.
         return view('Edit_Archive_Detail_Page')->with([
@@ -133,7 +154,7 @@ class ArchiveController extends Controller
             'activity-date' => 'required|date',
             'activity-name' => 'required|string',
             'activity-details' => 'required|string',
-            'activity-attachments.*' => 'nullable|file|mimes:jpg,jpeg,png,bmp,gif,svg,pdf'
+            'activity-attachments.*' => 'nullable|file|mimes:jpg,jpeg,png'
         ]);
 
         if ($validator->fails()) {
@@ -148,13 +169,23 @@ class ArchiveController extends Controller
         // Handle file upload if a new file is provided
         if ($request->hasFile('activity-attachments')) {
             $attachments = [];
+
+            // Loop through each file
             foreach ($request->file('activity-attachments') as $file) {
-                $filename = uniqid() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('/attachments/leads'), $filename);
-                $attachments[] = $filename;
+                // Read the file content
+                $fileContent = file_get_contents($file->getRealPath());
+
+                // Encrypt the file content
+                $encryptedContent = Crypt::encrypt($fileContent);
+
+                // Store the encrypted content
+                $attachments[] = $encryptedContent;
             }
-            $engagement->attachments = json_encode($attachments); // Save as a JSON array
+
+            // Convert attachments to JSON format and save in the database
+            $engagement->attachments = json_encode($attachments);
         }
+
 
         // Update the engagement with new data
         $engagement->date = $request->input('activity-date');
@@ -194,9 +225,13 @@ class ArchiveController extends Controller
         // Handle file upload if a new file is provided
         if ($request->hasFile('activity-attachments')) {
             $imageFile = $request->file('activity-attachments');
-            $imageName = uniqid() . '_' . $imageFile->getClientOriginalName();
-            $imageFile->move(public_path('/attachments/leads'), $imageName);
-            $engagement->attachments = json_encode([$imageName]); // Save as a JSON array
+            $imageContent = file_get_contents($imageFile);
+            $encryptedImage = Crypt::encrypt($imageContent); // Encrypt the image content
+            // Encrypt the image content
+            $encryptedImage = Crypt::encrypt($imageContent);
+
+            // Save as a JSON array
+            $engagement->attachments = json_encode([$encryptedImage]);
         }
 
         // Assign engagement data from request
