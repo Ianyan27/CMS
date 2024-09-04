@@ -109,112 +109,108 @@ class ContactController extends Controller
         ]);
     }
 
-    public function updateContact(Request $request, $contact_pid, $id)
-{
-    // Checking for admin role and redirect if true
-    $user = Auth::user();
-    if ($user->role === 'Admin') {
-        return redirect()->route('admin#contact-listing')->with('error', 'Admin cannot edit the contact information');
-    }
+    public function updateContact(Request $request, $contact_pid, $id){
+        // Checking for admin role and redirect if true
+        $user = Auth::user();
+        if ($user->role === 'Admin') {
+            return redirect()->route('admin#contact-listing')->with('error', 'Admin cannot edit the contact information');
+        }
 
-    // Find the contact based on the contact_pid
-    $contact = Contact::find($contact_pid);
+        // Find the contact based on the contact_pid
+        $contact = Contact::find($contact_pid);
 
-    // Check if the contact exists
-    if (!$contact) {
-        return redirect()->route('contact-listing')->with('error', 'Contact not found.');
-    }
+        // Check if the contact exists
+        if (!$contact) {
+            return redirect()->route('contact-listing')->with('error', 'Contact not found.');
+        }
 
-    // Fetch engagement activities associated with the contact
-    $activitiesCount = Engagement::where('fk_engagements__contact_pid', $contact_pid)->count();
+        // Fetch engagement activities associated with the contact
+        $activities = Engagement::where('fk_engagements__contact_pid', $contact_pid)->get();
+        $activitiesCount = $activities->count();
 
-    // Validation rules
-    $rules = [
-        'status' => function ($attribute, $value, $fail) use ($activitiesCount) {
-            if (in_array($value, ['InProgress', 'HubSpot Contact', 'Archive', 'Discard']) && $activitiesCount === 0) {
-                $fail('Status cannot be updated to ' . $value . ' because there are no engagement activities associated with this contact.');
+        // Validation rules
+        $rules = [
+            'status' => function ($attribute, $value, $fail) use ($activitiesCount) {
+                if (in_array($value, ['InProgress', 'HubSpot Contact', 'Archive', 'Discard']) && $activitiesCount === 0) {
+                    $fail('Status cannot be updated to ' . $value . ' because there are no engagement activities associated with this contact.');
+                }
             }
-        }
-    ];
+        ];
 
-    // Validate the request with the custom rules
-    $request->validate($rules);
+        // Validate the request with the custom rules
+        $request->validate($rules);
 
-    // Update contact details if validation passes
-    $contact->update([
-        'name' => $request->input('name'),
-        'email' => $request->input('email'),
-        'contact_number' => $request->input('contact_number'),
-        'address' => $request->input('address'),
-        'country' => $request->input('country'),
-        'qualification' => $request->input('qualification'),
-        'job_role' => $request->input('job_role'),
-        'skills' => $request->input('skills'),
-        'status' => $request->input('status') // Update the status here as well
-    ]);
+        // Update contact details if validation passes
+        $contact->update([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'contact_number' => $request->input('contact_number'),
+            'address' => $request->input('address'),
+            'country' => $request->input('country'),
+            'qualification' => $request->input('qualification'),
+            'job_role' => $request->input('job_role'),
+            'skills' => $request->input('skills'),
+            'status' => $request->input('status') // Update the status here as well
+        ]);
 
-    // Handle the "Archive" and "Discard" status cases after updating details
-    if (in_array($request->input('status'), ['Archive', 'Discard'])) {
-        // Determine the target model based on the status
-        $targetContactModel = $request->input('status') === 'Archive' ? new ContactArchive() : new ContactDiscard();
+        // Handle the "Archive" and "Discard" status cases after updating details
+        if (in_array($request->input('status'), ['Archive', 'Discard'])) {
+            // Determine the target model based on the status
+            $targetContactModel = $request->input('status') === 'Archive' ? new ContactArchive() : new ContactDiscard();
 
-        // Copy the contact data to the new table
-        $targetContactModel->fill($contact->toArray());
-        $targetContactModel->status = $request->input('status'); // Explicitly set the status
+            // Copy the contact data to the new table
+            $targetContactModel->fill($contact->toArray());
+            $targetContactModel->status = $request->input('status'); // Explicitly set the status
 
-        // Set the owner PID based on the user who updated the contact
-        if ($request->input('status') === 'Archive') {
-            $targetContactModel->fk_contact_archives__owner_pid = $id;
-        } else {
-            $targetContactModel->fk_contact_discards__owner_pid = $id;
-        }
-
-        $targetContactModel->save();
-
-        // Get the new contact ID from the archive or discard table
-        $newContactId = $request->input('status') === 'Archive'
-            ? $targetContactModel->contact_archive_pid
-            : $targetContactModel->contact_discard_pid;
-
-        // Move related activities
-        $targetActivityModel = $request->input('status') === 'Archive' ? new EngagementArchive() : new EngagementDiscard();
-
-        foreach ($activities as $activity) {
-            $newActivity = $targetActivityModel->newInstance(); // Create a new instance for each activity
-            $newActivity->fill($activity->toArray());
-
-            // Set the foreign key to reference the newly created contact
+            // Set the owner PID based on the user who updated the contact
             if ($request->input('status') === 'Archive') {
-                $newActivity->fk_engagement_archives__contact_archive_pid = $newContactId;
+                $targetContactModel->fk_contact_archives__owner_pid = $id;
             } else {
-                $newActivity->fk_engagement_discards__contact_discard_pid = $newContactId;
+                $targetContactModel->fk_contact_discards__owner_pid = $id;
             }
 
-            $newActivity->save();
+            $targetContactModel->save();
+
+            // Get the new contact ID from the archive or discard table
+            $newContactId = $request->input('status') === 'Archive'
+                ? $targetContactModel->contact_archive_pid
+                : $targetContactModel->contact_discard_pid;
+
+            // Move related activities
+            $targetActivityModel = $request->input('status') === 'Archive' ? new EngagementArchive() : new EngagementDiscard();
+
+            foreach ($activities as $activity) {
+                $newActivity = $targetActivityModel->newInstance(); // Create a new instance for each activity
+                $newActivity->fill($activity->toArray());
+
+                // Set the foreign key to reference the newly created contact
+                if ($request->input('status') === 'Archive') {
+                    $newActivity->fk_engagement_archives__contact_archive_pid = $newContactId;
+                } else {
+                    $newActivity->fk_engagement_discards__contact_discard_pid = $newContactId;
+                }
+
+                $newActivity->save();
+            }
+
+            // Delete related logs
+            ModelsLog::where('fk_logs__contact_pid', $contact_pid)->delete();
+
+            // Delete the contact from the current table
+            $contact->delete();
+
+            // Delete the engagement activities from the current table
+            Engagement::where('fk_engagements__contact_pid', $contact_pid)->delete();
+
+            // Redirect with a success message
+            return redirect()->route('contact-listing')->with('success', 'Contact and activities moved to ' . $request->input('status') . ' successfully.');
         }
 
-        // Delete related logs
-        ModelsLog::where('fk_logs__contact_pid', $contact_pid)->delete();
-
-        // Delete the contact from the current table
-        $contact->delete();
-
-        // Delete the engagement activities from the current table
-        Engagement::where('fk_engagements__contact_pid', $contact_pid)->delete();
-
-        // Redirect with a success message
-        return redirect()->route('contact-listing')->with('success', 'Contact and activities moved to ' . $request->input('status') . ' successfully.');
+        // If status is not "Archive" or "Discard", just redirect after updating
+        return redirect()->route('contact#view', [
+            'contact_pid' => $contact_pid
+        ])->with('success', 'Contact updated successfully.');
     }
-
-    // If status is not "Archive" or "Discard", just redirect after updating
-    return redirect()->route('contact#view', [
-        'contact_pid' => $contact_pid
-    ])->with('success', 'Contact updated successfully.');
-}
-
-    
-
-
 
     public function saveActivity(Request $request, $contact_pid){
 

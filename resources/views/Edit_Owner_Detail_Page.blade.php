@@ -88,15 +88,15 @@
                         aria-label="Sales Engagement Buttons">
                         <button type="button" class="btn hover-action activity-button active mx-2 rounded"
                             onclick="showSection('totalContactsSection')">
-                            Total Contacts Allocated
+                            Total Interested Contacts
                         </button>
                         <button type="button" class="btn hover-action activity-button mx-2 rounded" 
                         onclick="showSection('hubspotContactsSection')">
-                            Total Sync HubSpot Contact
+                            Total HubSpot Contacts
                         </button>
                         <button type="button" class="btn hover-action activity-button mx-2 rounded" 
                         onclick="showSection('engagingContactsSection')">
-                            Current Engaging Contact
+                            Current Engaging Contacts
                         </button>
                     </div>
                 </div>
@@ -107,19 +107,19 @@
                     <div id="totalContactsSection" class="text-center py-3 section-content">
                         <span class="d-block font-educ"
                             style="font-size: 2rem; font-weight: 500;">{{ $totalContacts }}</span>
-                        <h3 class="font-educ" style="font-size: 2.5rem; font-weight:450;">Total Contacts Allocated</h3>
+                        <h3 class="font-educ" style="font-size: 2.5rem; font-weight:450;">Total Intrested Contacts</h3>
                     </div>
                     <!-- Section for Total Sync HubSpot Contact -->
                     <div id="hubspotContactsSection" class="text-center py-3 section-content" style="display: none;">
                         <span class="d-block font-educ"
                             style="font-size: 2rem; font-weight: 500;">{{ $hubspotContactsCount }}</span>
-                        <h3 class="font-educ" style="font-size: 2.5rem; font-weight:450;">Total Sync HubSpot Contact</h3>
+                        <h3 class="font-educ" style="font-size: 2.5rem; font-weight:450;">Total HubSpot Contacts</h3>
                     </div>
                     <!-- Section for Current Engaging Contact -->
                     <div id="engagingContactsSection" class="text-center py-3 section-content" style="display: none;">
                         <span class="d-block font-educ"
                             style="font-size: 2rem; font-weight: 500;">{{ $hubspotCurrentEngagingContact }}</span>
-                        <h3 class="font-educ" style="font-size: 2.5rem; font-weight:450;">Current Engaging Contact</h3>
+                        <h3 class="font-educ" style="font-size: 2.5rem; font-weight:450;">Current Engaging Contacts</h3>
                     </div>
                 </div>
             </div>
@@ -289,9 +289,10 @@
                     </tr>
                 </thead>
                 <tbody class="text-left bg-row">
+                    <?php $i = 0 ?>
                     @forelse ($ownerArchive as $archive)
                         <tr>
-                            <td> {{ $archive['contact_archive_pid'] }} </td>
+                            <td> {{ ++$i }} </td>
                             <td> {{ $archive['name'] }} </td>
                             <td> {{ $archive['email'] }} </td>
                             <td> {{ $archive['contact_number'] }} </td>
@@ -359,9 +360,10 @@
                     </tr>
                 </thead>
                 <tbody class="text-left bg-row">
+                    <?php $i = 0 ?>
                     @forelse ($ownerDiscard as $discard)
                         <tr>
-                            <td> {{ $discard['contact_discard_pid'] }} </td>
+                            <td> {{ ++$i }} </td>
                             <td> {{ $discard['name'] }} </td>
                             <td> {{ $discard['email'] }} </td>
                             <td> {{ $discard['contact_number'] }} </td>

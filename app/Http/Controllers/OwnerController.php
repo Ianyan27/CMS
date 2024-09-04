@@ -36,7 +36,10 @@ class OwnerController extends Controller{
 
         // Get the total contacts count allocated to this owner
         $totalContacts = Contact::where('fk_contacts__owner_pid', $owner_pid)->count();
+        $totalArchive = ContactArchive::where('fk_contact_archives__owner_pid', $owner_pid)->count();
+        $totalDiscard = ContactDiscard::where('fk_contact_discards__owner_pid', $owner_pid)->count();
 
+        $totalContact = $totalContacts + $totalArchive + $totalDiscard;
         // Get the count of contacts where status is 'HubSpot'
         $hubspotContactsCount = Contact::where('fk_contacts__owner_pid', $owner_pid)
             ->where('status', 'HubSpot Contact')
@@ -48,8 +51,11 @@ class OwnerController extends Controller{
             ->count();
 
         // Update the 'total_hubspot_sync' column in the 'owners' table
+        $editOwner->total_assign_contacts = $totalContact;
         $editOwner->total_hubspot_sync = $hubspotContactsCount;
         $editOwner->total_in_progress = $hubspotCurrentEngagingContact;
+        $editOwner->total_archive_contacts = $totalArchive;
+        $editOwner->total_discard_contacts = $totalDiscard;
         $editOwner->save();
 
         // Get the contacts

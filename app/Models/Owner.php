@@ -16,7 +16,9 @@ class Owner extends Model
         'owner_business_unit',
         'country',
         'total_in_progress',
-        'total_hubspot_sync'
+        'total_hubspot_sync',
+        'total_archive_contacts',
+        'total_discard_contacts'
     ];
 
     public function contacts()
