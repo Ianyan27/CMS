@@ -94,7 +94,9 @@
                                     @endif
                                     {{ $owners['country'] }}
                                 </td>
-                                <td class="text-center"> {{ $owners->total_assign_contacts }} </td>
+                                @inject('contactModel', 'App\Models\Contact')
+                                <td class="text-center">
+                                    {{ $contactModel->where('fk_contacts__owner_pid', $owners->owner_pid)->count() }}</td>
                                 <td class="text-center">{{ $owners->total_hubspot_sync }}</td>
                                 <td class="text-center">{{ $owners->total_in_progress }}</td>
                                 <td>
