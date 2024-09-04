@@ -154,10 +154,22 @@ class ArchiveController extends Controller
             'activity-date' => 'required|date',
             'activity-name' => 'required|string',
             'activity-details' => 'required|string',
-            'activity-attachments.*' => 'nullable|file|mimes:jpg,jpeg,png'
+            'activity-attachments' => 'nullable|file|mimes:jpg,jpeg,png'
         ]);
 
+        // Handle validation errors
         if ($validator->fails()) {
+            // Check if the error is related to the file type
+            if ($validator->errors()->has('activity-attachments')) {
+                $attachmentErrors = $validator->errors()->get('activity-attachments');
+                if (in_array('The activity attachments must be a file of type: jpeg, png, jpg.', $attachmentErrors)) {
+                    // Specific error message for invalid file type
+                    return back()->withErrors(['activity-attachments' => 'Only image files (JPEG, PNG, JPG) are allowed.'])
+                        ->withInput();
+                }
+            }
+
+            // Return back with general validation errors
             return back()->withErrors($validator)->withInput();
         }
 
@@ -168,24 +180,17 @@ class ArchiveController extends Controller
 
         // Handle file upload if a new file is provided
         if ($request->hasFile('activity-attachments')) {
-            $attachments = [];
+            $file = $request->file('activity-attachments');
 
-            // Loop through each file
-            foreach ($request->file('activity-attachments') as $file) {
-                // Read the file content
-                $fileContent = file_get_contents($file->getRealPath());
+            // Read the file content
+            $fileContent = file_get_contents($file->getRealPath());
 
-                // Encrypt the file content
-                $encryptedContent = Crypt::encrypt($fileContent);
+            // Encrypt the file content
+            $encryptedContent = Crypt::encrypt($fileContent);
 
-                // Store the encrypted content
-                $attachments[] = $encryptedContent;
-            }
-
-            // Convert attachments to JSON format and save in the database
-            $engagement->attachments = json_encode($attachments);
+            // Store the encrypted content
+            $engagement->attachments = json_encode([$encryptedContent]);
         }
-
 
         // Update the engagement with new data
         $engagement->date = $request->input('activity-date');
@@ -193,16 +198,16 @@ class ArchiveController extends Controller
         $engagement->activity_name = $request->input('activity-name');
         $engagement->save();
 
-        // // Log the update action
-        // $actionType = 'Activity Updated'; // Example action type
-        // $actionDescription = "Updated activity: {$request->input('activity-name')} with details: {$request->input('activity-details')}"; // Example action description
-
-        // $this->saveLog($contact_pid, $actionType, $actionDescription);
+        // Log the update action if needed
+        // $actionType = 'Activity Updated';
+        // $actionDescription = "Updated activity: {$request->input('activity-name')} with details: {$request->input('activity-details')}";
+        // $this->saveLog($contact_archive_pid, $actionType, $actionDescription);
 
         // Redirect to the contact view page with a success message
         return redirect()->route('archive#view', ['contact_archive_pid' => $contact_archive_pid])
             ->with('success', 'Activity updated successfully.');
     }
+
 
     public function saveActivity(Request $request, $contact_archive_pid)
     {
@@ -212,10 +217,22 @@ class ArchiveController extends Controller
             'activity-date' => 'required',
             'activity-name' => 'required',
             'activity-details' => 'required',
-            'activity-attachments' => 'required|file'
+            'activity-attachments' => 'required|file|mimes:jpg,jpeg,png'
         ]);
 
+        // Handle validation errors
         if ($validator->fails()) {
+            // Check if the error is related to the file type
+            if ($validator->errors()->has('activity-attachments')) {
+                $attachmentErrors = $validator->errors()->get('activity-attachments');
+                if (in_array('The activity attachments must be a file of type: jpeg, png, jpg.', $attachmentErrors)) {
+                    // Specific error message for invalid file type
+                    return back()->withErrors(['activity-attachments' => 'Only image files (JPEG, PNG, JPG) are allowed.'])
+                        ->withInput();
+                }
+            }
+
+            // Return back with general validation errors
             return back()->withErrors($validator)->withInput();
         }
 
