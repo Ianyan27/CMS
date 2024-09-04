@@ -227,7 +227,9 @@
 
                 if (email && !isValid) {
                     e.preventDefault(); // Prevent form submission
-                    $('#emailError').text('The email address must be one of the following domains: lithan.com, educlaas.com, learning.educlaas.com');
+                    $('#emailError').text(
+                        'The email address must be one of the following domains: lithan.com, educlaas.com, learning.educlaas.com'
+                    );
                     $('#errorModal').modal('show'); // Show the error modal
                 } else {
                     $('#emailError').text(''); // Clear any previous error message
@@ -235,7 +237,7 @@
             });
 
             // Optional: Clear the error message when the modal is hidden
-            $('#errorModal').on('hidden.bs.modal', function () {
+            $('#errorModal').on('hidden.bs.modal', function() {
                 $('#emailError').text('');
             });
         });

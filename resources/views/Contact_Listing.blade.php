@@ -159,7 +159,7 @@
                         </tr>
                     </thead>
                     <tbody class="text-left bg-row">
-                        <?php $i = ($contacts->currentPage() - 1) * $contacts->perPage(); ?>
+                        <?php $i = ($contactArchive->currentPage() - 1) * $contactArchive->perPage(); ?>
                         @forelse ($contactArchive as $archive)
                             <tr>
                                 <td> {{ ++$i }} </td>
@@ -226,7 +226,7 @@
                         </tr>
                     </thead>
                     <tbody class="text-left bg-row">
-                        <?php $i = ($contacts->currentPage() - 1) * $contacts->perPage(); ?>
+                        <?php $i = ($contactDiscard->currentPage() - 1) * $contactDiscard->perPage(); ?>
                         @forelse ($contactDiscard as $discard)
                             <tr>
                                 <td> {{ ++$i }} </td>
@@ -311,7 +311,8 @@
                 </ul>
             </div>
         </div>
-        <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content rounded-0">
                     <div class="modal-header"
@@ -335,7 +336,7 @@
     @endif
     <script>
         $(document).ready(function() {
-            @if(session('success'))
+            @if (session('success'))
                 $('#successModal').modal('show');
             @endif
         });

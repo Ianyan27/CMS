@@ -3,10 +3,13 @@
 @extends('layouts.app')
 
 @section('content')
-@extends('layouts.Update_Activity_Modal')
-@extends('layouts.Edit_Contact_Modal')
-@extends('layouts.Add_Activity_Modal')
-    @if ((Auth::check() && Auth::user()->role == 'Admin') || Auth::user()->role == 'BUH' || Auth::user()->role == 'Sales_Agent')
+    @extends('layouts.Update_Activity_Modal')
+    @extends('layouts.Edit_Contact_Modal')
+    @extends('layouts.Add_Activity_Modal')
+    @if (
+        (Auth::check() && Auth::user()->role == 'Admin') ||
+            Auth::user()->role == 'BUH' ||
+            Auth::user()->role == 'Sales_Agent')
         @if (session('success'))
             <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
             <button id="successModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal"
@@ -144,8 +147,8 @@
                 </div>
                 <div class="activities">
                     @forelse ($engagements->groupBy(function ($date) {
-                                                                                                                                                                    return \Carbon\Carbon::parse($date->date)->format('F Y');
-                                                                                                                                                                }) as $month => $activitiesInMonth)
+                                    return \Carbon\Carbon::parse($date->date)->format('F Y');
+                                  }) as $month => $activitiesInMonth)
                         <div class="activity-list" data-month="{{ $month }}">
                             <div class="activity-date my-3 ml-3">
                                 <span class="text-muted">{{ $month }}</span>
@@ -222,7 +225,6 @@
                             // Decode the JSON or handle the attachments array properly
                             $attachments = json_decode($engagement->attachments, true); // Assuming it's a JSON string
 $filename = $attachments[0] ?? ''; // Get the first filename from the array
-$filePath = public_path('attachments/leads/' . $filename);
                         @endphp
                         <tr>
                             <td>{{ ++$i }}</td>
@@ -230,21 +232,24 @@ $filePath = public_path('attachments/leads/' . $filename);
                             <td>{{ $engagement->activity_name }}</td>
                             <td>{{ $engagement->details }}</td>
                             <td>
-                                @if (file_exists($filePath) && $filename)
-                                    <img src="{{ asset('attachments/leads/' . $filename) }}" alt="Attachment Image"
+                                @if ($filename)
+                                    <img src="{{ $filename }}" alt="Attachment Image"
                                         style="width: 100px; height: auto; cursor: pointer;">
                                 @else
                                     No Image Available
                                 @endif
                             </td>
-                            <td class="text-center">
-                                <a href="{{ Auth::user()->role == 'Sales_Agent' ? route('contact#update-activity', ['contact_id' => $engagement->fk_engagements__contact_pid, 'activity_id' => $engagement->engagement_pid]) : '#' }}"
-                                    data-toggle="modal"
-                                    {{ Auth::user()->role == 'Sales_Agent' ? 'data-target=#updateActivityModal-' . $engagement->engagement_pid : '' }}
-                                    class="btn hover-action">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </a>
-                            </td>                            
+                            @if (Auth::user()->role == 'Sales_Agent')
+                                <td>
+                                    <a href="{{ Auth::user()->role == 'Sales_Agent' ? route('contact#update-activity', ['contact_id' => $engagement->fk_engagements__contact_pid, 'activity_id' => $engagement->engagement_pid]) : '#' }}"
+                                        data-toggle="modal"
+                                        {{ Auth::user()->role == 'Sales_Agent' ? 'data-target=#updateActivityModal-' . $engagement->engagement_pid : '' }}
+                                        class="btn hover-action">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                </td>
+                            @endif
+
                         </tr>
                     @empty
                         <tr>

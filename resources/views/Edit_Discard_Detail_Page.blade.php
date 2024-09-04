@@ -3,7 +3,10 @@
 @extends('layouts.app')
 @extends('layouts.Edit_Discard_Modal')
 @section('content')
-    @if ((Auth::check() && Auth::user()->role == 'Admin') || Auth::user()->role == 'BUH' || Auth::user()->role == 'Sales_Agent')
+    @if (
+        (Auth::check() && Auth::user()->role == 'Admin') ||
+            Auth::user()->role == 'BUH' ||
+            Auth::user()->role == 'Sales_Agent')
         @if (session('success'))
             <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
             <button id="successModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal"
@@ -44,9 +47,9 @@
                     <h2 class="mt-2 ml-3 headings">Contact Detail</h2>
                     @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
                         <!-- <a href="{{ route('discard#edit', $editDiscard->contact_discard_pid) }}"
-                            class="btn hover-action mx-1" data-toggle="modal" data-target="#editDiscardModal">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </a> -->
+                                                                    class="btn hover-action mx-1" data-toggle="modal" data-target="#editDiscardModal">
+                                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                                </a> -->
                     @endif
                 </div>
                 <div class="row row-margin-bottom row-border-bottom mx-1">
@@ -142,8 +145,8 @@
                 {{-- Iterating all the activities from all contacts --}}
                 <div class="activities">
                     @forelse ($engagementDiscard->groupBy(function ($date) {
-                                                                                                                            return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
-                                                                                                                        }) as $month => $activitiesInMonth)
+                                            return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
+                                        }) as $month => $activitiesInMonth)
                         <div class="activity-list" data-month="{{ $month }}">
                             <div class="activity-date my-3 ml-3">
                                 <span class="text-muted">{{ $month }}</span>
@@ -204,9 +207,9 @@
                 <th scope="col">Type</th>
                 <th scope="col">Description</th>
                 <th scope="col">Attachment</th>
-                @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+                {{-- @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
                     <th scope="col">Action</th>
-                @endif
+                @endif --}}
             </tr>
         </thead>
         <tbody class="text-left bg-row">
@@ -224,21 +227,21 @@ $filePath = public_path('attachments/leads/' . $filename);
                     <td> {{ $engagement->activity_name }} </td>
                     <td> {{ $engagement->details }} </td>
                     <td>
-                        @if (file_exists($filePath) && $filename)
-                            <img src="{{ asset('attachments/leads/' . $filename) }}" alt="Attachment Image"
+                        @if ($filename)
+                            <img src="{{ $filename }}" alt="Attachment Image"
                                 style="width: 100px; height: auto; cursor: pointer;">
                         @else
                             No Image Available
                         @endif
                     </td>
-                    @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+                    {{-- @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
                         <td>
                             <a class="btn hover-action" href="#" data-toggle="modal"
                                 data-target="#updateActivityModal">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
                         </td>
-                    @endif
+                    @endif --}}
                 </tr>
             @endforeach
         </tbody>
