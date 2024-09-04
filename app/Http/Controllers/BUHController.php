@@ -64,7 +64,7 @@ class BUHController extends Controller
             //$filePath = Storage::disk('public')->putFile('csv_uploads', $file);
             // Import the data into the database using the ContactsImport class
             $import = new ContactsImport($platform);
-            Excel::import($import, $file);
+            Excel::import($import, $file);   
             $allocator = new RoundRobinAllocator();
             $allocator->allocate();
         } catch (\Exception $e) {
