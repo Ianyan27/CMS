@@ -12,13 +12,15 @@ use App\Models\Log as ModelsLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class ContactController extends Controller
 {
 
-    public function index(){
+    public function index()
+    {
         // Get the logged-in user (sales agent)
         $user = Auth::user();
 
@@ -35,7 +37,8 @@ class ContactController extends Controller
         ]);
     }
 
-    public function contactsByOwner(){
+    public function contactsByOwner()
+    {
         // Get the logged-in user (sales agent)
         $user = Auth::user();
 
@@ -52,14 +55,51 @@ class ContactController extends Controller
         ]);
     }
 
-    public function viewContact($contact_pid){
+    public function viewContact($contact_pid)
+    {
         /* Retrieve the contact record with the specified 'contact_pid' and pass
          it to the 'Edit_Contact_Detail_Page' view for editing. */
+
+        // Retrieve the contact record with the specified 'contact_pid'
         $editContact = Contact::where('contact_pid', $contact_pid)->first();
+
+        // Check if the contact exists
+        if (!$editContact) {
+            return redirect()->route('contacts.list')->with('error', 'Contact not found.');
+        }
+
+        // Retrieve the authenticated user
         $user = Auth::user();
+
+        // Retrieve all engagements for the contact
         $engagements = Engagement::where('fk_engagements__contact_pid', $contact_pid)->get();
+
+        // Decrypt images in engagements
+        foreach ($engagements as $engagement) {
+            if ($engagement->attachments) {
+                try {
+                    // Decrypt the attachment and base64 encode it for browser display
+                    $attachmentsArray = json_decode($engagement->attachments, true); // Decode JSON to array if stored as JSON
+                    foreach ($attachmentsArray as &$attachment) {
+                        $attachment = 'data:image/jpeg;base64,' . base64_encode(Crypt::decrypt($attachment));
+                    }
+                    // Convert array back to JSON for the frontend if needed
+                    $engagement->attachments = json_encode($attachmentsArray);
+                } catch (\Exception $e) {
+                    // Handle the case where decryption fails
+                    $engagement->attachments = null;
+                    Log::error('Failed to decrypt attachment for engagement ID: ' . $engagement->id . ' Error: ' . $e->getMessage());
+                }
+            }
+        }
+
+        // Retrieve engagements archived for the contact
         $engagementsArchive = EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $contact_pid)->get();
+
+        // Use the first engagement for updates if available
         $updateEngagement = $engagements->first();
+
+        // Pass data to the view
         return view('Edit_Contact_Detail_Page')->with([
             'user' => $user,
             'editContact' => $editContact,
@@ -69,21 +109,22 @@ class ContactController extends Controller
         ]);
     }
 
-    public function updateContact(Request $request, $contact_pid, $id){
+    public function updateContact(Request $request, $contact_pid, $id)
+    {
         // Checking for admin role and redirect if true
         $user = Auth::user();
         if ($user->role === 'Admin') {
             return redirect()->route('admin#contact-listing')->with('error', 'Admin cannot edit the contact information');
         }
-    
+
         // Find the contact based on the contact_pid
         $contact = Contact::find($contact_pid);
-    
+
         // Check if the contact exists
         if (!$contact) {
             return redirect()->route('contact-listing')->with('error', 'Contact not found.');
         }
-    
+
         // Update contact details regardless of the status
         $contact->update([
             'name' => $request->input('name'),
@@ -96,70 +137,71 @@ class ContactController extends Controller
             'skills' => $request->input('skills'),
             'status' => $request->input('status') // Update the status here as well
         ]);
-    
+
         // Handle the "Archive" and "Discard" status cases after updating details
         if (in_array($request->input('status'), ['Archive', 'Discard'])) {
             // Determine the target model based on the status
             $targetContactModel = $request->input('status') === 'Archive' ? new ContactArchive() : new ContactDiscard();
-    
+
             // Copy the contact data to the new table
             $targetContactModel->fill($contact->toArray());
             $targetContactModel->status = $request->input('status'); // Explicitly set the status
-    
+
             // Set the owner PID based on the user who updated the contact
             if ($request->input('status') === 'Archive') {
                 $targetContactModel->fk_contact_archives__owner_pid = $id;
             } else {
                 $targetContactModel->fk_contact_discards__owner_pid = $id;
             }
-    
+
             $targetContactModel->save();
-    
+
             // Get the new contact ID from the archive or discard table
             $newContactId = $request->input('status') === 'Archive'
                 ? $targetContactModel->contact_archive_pid
                 : $targetContactModel->contact_discard_pid;
-    
+
             // Move related activities
             $activities = Engagement::where('fk_engagements__contact_pid', $contact_pid)->get();
             $targetActivityModel = $request->input('status') === 'Archive' ? new EngagementArchive() : new EngagementDiscard();
-    
+
             foreach ($activities as $activity) {
                 $newActivity = $targetActivityModel->newInstance(); // Create a new instance for each activity
                 $newActivity->fill($activity->toArray());
-    
+
                 // Set the foreign key to reference the newly created contact
                 if ($request->input('status') === 'Archive') {
                     $newActivity->fk_engagement_archives__contact_archive_pid = $newContactId;
                 } else {
                     $newActivity->fk_engagement_discards__contact_discard_pid = $newContactId;
                 }
-    
+
                 $newActivity->save();
             }
-    
+
             // Delete related logs
             ModelsLog::where('fk_logs__contact_pid', $contact_pid)->delete();
-    
+
             // Delete the contact from the current table
             $contact->delete();
-    
+
             // Delete the engagement activities from the current table
             Engagement::where('fk_engagements__contact_pid', $contact_pid)->delete();
-    
+
             // Redirect with a success message
             return redirect()->route('contact-listing')->with('success', 'Contact and activities moved to ' . $request->input('status') . ' successfully.');
         }
-    
+
         // If status is not "Archive" or "Discard", just redirect after updating
         return redirect()->route('contact#view', [
             'contact_pid' => $contact_pid
         ])->with('success', 'Contact updated successfully.');
-    }    
+    }
 
 
 
-    public function saveActivity(Request $request, $contact_pid){
+    public function saveActivity(Request $request, $contact_pid)
+    {
 
         //checking for admin role and redirect it
         $user = Auth::user();
@@ -172,7 +214,7 @@ class ContactController extends Controller
             'activity-date' => 'required',
             'activity-name' => 'required',
             'activity-details' => 'required',
-            'activity-attachments' => 'required|file'
+            'activity-attachments' => 'required|file|mimes:jpeg,png,jpg'
         ]);
 
         if ($validator->fails()) {
@@ -185,9 +227,13 @@ class ContactController extends Controller
         // Handle file upload if a new file is provided
         if ($request->hasFile('activity-attachments')) {
             $imageFile = $request->file('activity-attachments');
-            $imageName = uniqid() . '_' . $imageFile->getClientOriginalName();
-            $imageFile->move(public_path('/attachments/leads'), $imageName);
-            $engagement->attachments = json_encode([$imageName]); // Save as a JSON array
+            $imageContent = file_get_contents($imageFile);
+            $encryptedImage = Crypt::encrypt($imageContent); // Encrypt the image content
+            // Encrypt the image content
+            $encryptedImage = Crypt::encrypt($imageContent);
+
+            // Save as a JSON array
+            $engagement->attachments = json_encode([$encryptedImage]);
         }
 
         // Assign engagement data from request
@@ -217,7 +263,8 @@ class ContactController extends Controller
     }
 
 
-    public function editActivity($fk_engagements__contact_pid, $activity_id){
+    public function editActivity($fk_engagements__contact_pid, $activity_id)
+    {
         // Fetch all activities related to the contact ID
         $updateEngagements = Engagement::where('fk_engagements__contact_pid', $fk_engagements__contact_pid)->get();
 
@@ -240,7 +287,8 @@ class ContactController extends Controller
         ]);
     }
 
-    public function saveUpdateActivity(Request $request, $contact_pid, $activity_id){
+    public function saveUpdateActivity(Request $request, $contact_pid, $activity_id)
+    {
         //checking for admin role and redirect it
         $user = Auth::user();
         if ($user->role === 'Admin') {
@@ -252,7 +300,7 @@ class ContactController extends Controller
             'activity-date' => 'required|date',
             'activity-name' => 'required|string',
             'activity-details' => 'required|string',
-            'activity-attachments.*' => 'nullable|file|mimes:jpg,jpeg,png,bmp,gif,svg,pdf'
+            'activity-attachments.*' => 'nullable|file|mimes:jpeg,png,jpg'
         ]);
 
         if ($validator->fails()) {
@@ -264,15 +312,23 @@ class ContactController extends Controller
             ->where('engagement_pid', $activity_id)
             ->firstOrFail();
 
-        // Handle file upload if a new file is provided
         if ($request->hasFile('activity-attachments')) {
             $attachments = [];
+
+            // Loop through each file
             foreach ($request->file('activity-attachments') as $file) {
-                $filename = uniqid() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('/attachments/leads'), $filename);
-                $attachments[] = $filename;
+                // Read the file content
+                $fileContent = file_get_contents($file->getRealPath());
+
+                // Encrypt the file content
+                $encryptedContent = Crypt::encrypt($fileContent);
+
+                // Store the encrypted content
+                $attachments[] = $encryptedContent;
             }
-            $engagement->attachments = json_encode($attachments); // Save as a JSON array
+
+            // Convert attachments to JSON format and save in the database
+            $engagement->attachments = json_encode($attachments);
         }
 
         // Update the engagement with new data
@@ -295,7 +351,8 @@ class ContactController extends Controller
             ->with('success', 'Activity updated successfully.');
     }
 
-    public function hubspotContacts(){
+    public function hubspotContacts()
+    {
         $ownerPid = Auth::user()->id; // Get the authenticated user's ID as owner_pid
 
         log::info("buh id " . $ownerPid);
@@ -334,7 +391,8 @@ class ContactController extends Controller
         ]);
     }
 
-    private function saveLog($contact_pid, $action_type, $action_description){
+    private function saveLog($contact_pid, $action_type, $action_description)
+    {
 
         $ownerPid = Auth::user()->id; // Get the authenticated user's ID as owner_pid
 
