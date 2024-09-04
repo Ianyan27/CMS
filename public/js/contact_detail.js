@@ -114,5 +114,5 @@ $(document).ready(function () {
         validateFileInput('#addActivityForm', '#activity-attachment', '#attachment-error');
 
         // Validate second form with different IDs for inputs
-        validateFileInput('#addArchiveActivityForm', '#activity-attachment-archive', '#attachment-error-archive');
+        validateFileInput('#addArchiveActivityForm', '#activity-attachment', '#attachment-error-archive');
 });
