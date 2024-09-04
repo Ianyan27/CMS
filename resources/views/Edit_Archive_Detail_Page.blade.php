@@ -221,7 +221,7 @@
             <tbody class="text-left bg-row">
                 <?php $i = 0; ?>
 
-                @foreach ($engagementArchive as $engagement)
+                @forelse ($engagementArchive as $engagement)
                     @php
                         // Decode the JSON or handle the attachments array properly
                         $attachments = json_decode($engagement->attachments, true); // Assuming it's a JSON string
@@ -250,7 +250,11 @@ $filePath = public_path('attachments/leads/' . $filename);
                             </td>
                         @endif
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="6" class="text-center">No Activities Taken</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
 
