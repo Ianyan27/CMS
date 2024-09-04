@@ -5,6 +5,7 @@
 @extends('layouts.Edit_Archive_Modal')
 @extends('layouts.Add_Archive_Activity_Modal')
 @extends('layouts.Edit_Archive_Activity_Modal')
+@extends('layouts.Attachment_Error_Modal')
 @section('content')
     @if ((Auth::check() && Auth::user()->role == 'Sales_Agent') || Auth::user()->role == 'Admin')
         @if (session('success'))
@@ -145,8 +146,8 @@
                 {{-- Iterating all the activities from all contacts --}}
                 <div class="activities">
                     @forelse ($engagementArchive->groupBy(function ($date) {
-                                    return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
-                                }) as $month => $activitiesInMonth)
+                                                return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
+                                            }) as $month => $activitiesInMonth)
                         <div class="activity-list" data-month="{{ $month }}">
                             <div class="activity-date my-3 ml-3">
                                 <span class="text-muted">{{ $month }}</span>
@@ -383,6 +384,15 @@ $filePath = public_path('attachments/leads/' . $filename);
                 $('#modalImage').attr('src', src);
                 $('#imageModal').modal('show');
             });
+
+            /**
+             * Show the error for attachments
+             */
+            // Check if there are any errors related to the file upload
+            @if ($errors->has('activity-attachments'))
+                // Show the error modal if there are file upload errors
+                $('#errorModal').modal('show');
+            @endif
         });
     </script>
 @endsection
