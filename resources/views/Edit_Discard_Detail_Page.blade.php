@@ -200,55 +200,60 @@
     </div>
     <!-- Table -->
     <table class="table table-hover mt-2">
-        <thead class="font-educ text-left">
+    <thead class="font-educ text-left">
+        <tr>
+            <th scope="col">No</th>
+            <th scope="col">Date</th>
+            <th scope="col">Type</th>
+            <th scope="col">Description</th>
+            <th scope="col">Attachment</th>
+            <th scope="col">Created Date</th>
+            <th scope="col">Modified Date</th>
+            {{-- @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+                <th scope="col">Action</th>
+            @endif --}}
+        </tr>
+    </thead>
+    <tbody class="text-left bg-row">
+        <?php $i = 0; ?>
+        @foreach ($engagementDiscard as $engagement)
+            @php
+                // Decode the JSON or handle the attachments array properly
+                $attachments = json_decode($engagement->attachments, true); // Assuming it's a JSON string
+                $filename = $attachments[0] ?? ''; // Get the first filename from the array
+                $filePath = public_path('attachments/leads/' . $filename);
+            @endphp
             <tr>
-                <th scope="col">No</th>
-                <th scope="col">Date</th>
-                <th scope="col">Type</th>
-                <th scope="col">Description</th>
-                <th scope="col">Attachment</th>
+                <td> {{ ++$i }} </td>
+                <td> {{ $engagement->date }} </td>
+                <td> {{ $engagement->activity_name }} </td>
+                <td> {{ $engagement->details }} </td>
+                <td>
+                    @if ($filename)
+                        <a href="#table-container" id="attachmentImage"
+                            style="width: 100px; height: auto; cursor: pointer;"
+                            data-image-url="{{ $filename }}">
+                            View Attachment
+                        </a>
+                    @else
+                        No Image Available
+                    @endif
+                </td>
+                <td>{{ \Carbon\Carbon::parse($engagement->created_at)->format('Y-m-d H:i:s') }}</td> <!-- Created Date -->
+                <td>{{ \Carbon\Carbon::parse($engagement->updated_at)->format('Y-m-d H:i:s') }}</td> <!-- Modified Date -->
                 {{-- @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
-                    <th scope="col">Action</th>
+                    <td>
+                        <a class="btn hover-action" href="#" data-toggle="modal"
+                            data-target="#updateActivityModal">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+                    </td>
                 @endif --}}
             </tr>
-        </thead>
-        <tbody class="text-left bg-row">
-            <?php $i = 0; ?>
-            @foreach ($engagementDiscard as $engagement)
-                @php
-                    // Decode the JSON or handle the attachments array properly
-                    $attachments = json_decode($engagement->attachments, true); // Assuming it's a JSON string
-$filename = $attachments[0] ?? ''; // Get the first filename from the array
-$filePath = public_path('attachments/leads/' . $filename);
-                @endphp
-                <tr>
-                    <td> {{ ++$i }} </td>
-                    <td> {{ $engagement->date }} </td>
-                    <td> {{ $engagement->activity_name }} </td>
-                    <td> {{ $engagement->details }} </td>
-                    <td>
-                        @if ($filename)
-                            <a href="#table-container" id="attachmentImage"
-                                style="width: 100px; height: auto; cursor: pointer;"
-                                data-image-url="{{ $filename }}">
-                                View Attachment
-                            </a>
-                        @else
-                            No Image Available
-                        @endif
-                    </td>
-                    {{-- @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
-                        <td>
-                            <a class="btn hover-action" href="#" data-toggle="modal"
-                                data-target="#updateActivityModal">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </a>
-                        </td>
-                    @endif --}}
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+        @endforeach
+    </tbody>
+</table>
+
 
 
     <!-- Bootstrap Modal for Image -->
