@@ -148,8 +148,8 @@
                 </div>
                 <div class="activities">
                     @forelse ($engagements->groupBy(function ($date) {
-                                                                    return \Carbon\Carbon::parse($date->date)->format('F Y');
-                                                                  }) as $month => $activitiesInMonth)
+                                                                                                                                                                    return \Carbon\Carbon::parse($date->date)->format('F Y');
+                                                                                                                                                                  }) as $month => $activitiesInMonth)
                         <div class="activity-list" data-month="{{ $month }}">
                             <div class="activity-date my-3 ml-3">
                                 <span class="text-muted">{{ $month }}</span>
@@ -205,7 +205,7 @@
             </div>
         </div>
         <!-- Table -->
-        <div class="table-container" style="max-height: 350px; overflow-y:auto;">
+        <div class="table-container" style="max-height: 350px; overflow-y:auto;" id="table-container">
             <table class="table table-hover mt-2">
                 <thead class="font-educ text-left">
                     <tr>
@@ -234,8 +234,11 @@ $filename = $attachments[0] ?? ''; // Get the first filename from the array
                             <td>{{ $engagement->details }}</td>
                             <td>
                                 @if ($filename)
-                                    <img src="{{ $filename }}" alt="Attachment Image"
-                                        style="width: 100px; height: auto; cursor: pointer;">
+                                    <a href="#table-container" id="attachmentImage"
+                                        style="width: 100px; height: auto; cursor: pointer;"
+                                        data-image-url="{{ $filename }}">
+                                        View Attachment
+                                    </a>
                                 @else
                                     No Image Available
                                 @endif
@@ -319,7 +322,7 @@ $filename = $attachments[0] ?? ''; // Get the first filename from the array
     <script src="{{ URL::asset('js/contact_detail.js') }}"></script>
     <script src="{{ URL::asset('js/status_color.js') }}"></script>
     <script>
-        @if ($errors->any())
+        @if ($errors->has('status'))
             $(document).ready(function() {
                 $('#editContactModal').modal('show');
             });
@@ -386,10 +389,18 @@ $filename = $attachments[0] ?? ''; // Get the first filename from the array
     </script>
     <script>
         $(document).ready(function() {
-            // Open the Bootstrap modal with the clicked image
-            $('img').on('click', function() {
-                var src = $(this).attr('src');
-                $('#modalImage').attr('src', src);
+            /**
+             * Image Modal
+             */
+            // Event listener for clicking on the filename span
+            $('#attachmentImage').on('click', function() {
+                // Get the image URL from the data attribute
+                var imageUrl = $(this).data('image-url');
+
+                // Set the src attribute of the modal image to the image URL
+                $('#modalImage').attr('src', imageUrl);
+
+                // Show the modal
                 $('#imageModal').modal('show');
             });
 

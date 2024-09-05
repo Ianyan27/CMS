@@ -146,8 +146,8 @@
                 {{-- Iterating all the activities from all contacts --}}
                 <div class="activities">
                     @forelse ($engagementArchive->groupBy(function ($date) {
-                                                return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
-                                            }) as $month => $activitiesInMonth)
+                                                        return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
+                                                    }) as $month => $activitiesInMonth)
                         <div class="activity-list" data-month="{{ $month }}">
                             <div class="activity-date my-3 ml-3">
                                 <span class="text-muted">{{ $month }}</span>
@@ -236,8 +236,11 @@ $filePath = public_path('attachments/leads/' . $filename);
                         <td> {{ $engagement->details }} </td>
                         <td>
                             @if ($filename)
-                                <img src="{{ $filename }}" alt="Attachment Image"
-                                    style="width: 100px; height: auto; cursor: pointer;">
+                                <a href="#table-container" id="attachmentImage"
+                                    style="width: 100px; height: auto; cursor: pointer;"
+                                    data-image-url="{{ $filename }}">
+                                    View Attachment
+                                </a>
                             @else
                                 No Image Available
                             @endif
@@ -378,13 +381,19 @@ $filePath = public_path('attachments/leads/' . $filename);
     </script>
     <script>
         $(document).ready(function() {
-            // Open the Bootstrap modal with the clicked image
-            $('img').on('click', function() {
-                var src = $(this).attr('src');
-                $('#modalImage').attr('src', src);
+            $('#attachmentImage').on('click', function() {
+                /**
+                 * Image Modal
+                 */
+                // Get the image URL from the data attribute
+                var imageUrl = $(this).data('image-url');
+
+                // Set the src attribute of the modal image to the image URL
+                $('#modalImage').attr('src', imageUrl);
+
+                // Show the modal
                 $('#imageModal').modal('show');
             });
-
             /**
              * Show the error for attachments
              */

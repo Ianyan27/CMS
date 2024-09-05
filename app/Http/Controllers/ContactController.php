@@ -109,7 +109,8 @@ class ContactController extends Controller
         ]);
     }
 
-    public function updateContact(Request $request, $contact_pid, $id){
+    public function updateContact(Request $request, $contact_pid, $id)
+    {
         // Checking for admin role and redirect if true
         $user = Auth::user();
         if ($user->role === 'Admin') {
@@ -212,7 +213,8 @@ class ContactController extends Controller
         ])->with('success', 'Contact updated successfully.');
     }
 
-    public function saveActivity(Request $request, $contact_pid){
+    public function saveActivity(Request $request, $contact_pid)
+    {
 
         //checking for admin role and redirect it
         $user = Auth::user();
@@ -328,7 +330,17 @@ class ContactController extends Controller
 
         // Handle validation errors
         if ($validator->fails()) {
-            // If the validation fails, return the errors
+            // Check if the error is related to the file type
+            if ($validator->errors()->has('activity-attachments')) {
+                $attachmentErrors = $validator->errors()->get('activity-attachments');
+                if (in_array('The activity attachments must be a file of type: jpeg, png, jpg.', $attachmentErrors)) {
+                    // Specific error message for invalid file type
+                    return back()->withErrors(['activity-attachments' => 'Only image files (JPEG, PNG, JPG) are allowed.'])
+                        ->withInput();
+                }
+            }
+
+            // Return back with general validation errors
             return back()->withErrors($validator)->withInput();
         }
 
