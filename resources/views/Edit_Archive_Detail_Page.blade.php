@@ -409,4 +409,13 @@
             @endif
         });
     </script>
+    <script>
+        document.addEventListener('click', function(event) {
+        if (event.target && event.target.id === 'attachmentImage') {
+            const imageUrl = event.target.getAttribute('data-image-url');
+            document.getElementById('modalImage').src = imageUrl;
+            $('#imageModal').modal('show');
+        }
+    });
+    </script>
 @endsection
