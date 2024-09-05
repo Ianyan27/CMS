@@ -210,63 +210,68 @@
         </div>
         <!-- Table -->
         <table class="table table-hover mt-2">
-            <thead class="font-educ text-left">
-                <tr>
-                    <th scope="col">No</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Type</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Attachment</th>
-                    @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
-                        <th scope="col">Action</th>
+    <thead class="font-educ text-left">
+        <tr>
+            <th scope="col">No</th>
+            <th scope="col">Date</th>
+            <th scope="col">Created Date</th>
+            <th scope="col">Modified Date</th>
+            <th scope="col">Type</th>
+            <th scope="col">Description</th>
+            <th scope="col">Attachment</th>
+           
+            @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+                <th scope="col">Action</th>
+            @endif
+        </tr>
+    </thead>
+    <tbody class="text-left bg-row">
+        <?php $i = 0; ?>
+
+        @forelse ($engagementArchive as $engagement)
+            @php
+                // Decode the JSON or handle the attachments array properly
+                $attachments = json_decode($engagement->attachments, true); // Assuming it's a JSON string
+                $filename = $attachments[0] ?? ''; // Get the first filename from the array
+                $filePath = public_path('attachments/leads/' . $filename);
+            @endphp
+            <tr>
+                <td>{{ ++$i }}</td>
+                <td>{{ $engagement->date }}</td>
+                <td>{{ \Carbon\Carbon::parse($engagement->created_at)->format('Y-m-d H:i:s') }}</td> <!-- Created Date -->
+                <td>{{ \Carbon\Carbon::parse($engagement->updated_at)->format('Y-m-d H:i:s') }}</td> <!-- Modified Date -->
+                <td>{{ $engagement->activity_name }}</td>
+                <td>{{ $engagement->details }}</td>
+                <td>
+                    @if ($filename)
+                        <a href="#table-container" id="attachmentImage"
+                            style="width: 100px; height: auto; cursor: pointer;"
+                            data-image-url="{{ $filename }}">
+                            View Attachment
+                        </a>
+                    @else
+                        No Image Available
                     @endif
-                </tr>
-            </thead>
-            <tbody class="text-left bg-row">
-                <?php $i = 0; ?>
-
-                @forelse ($engagementArchive as $engagement)
-                    @php
-                        // Decode the JSON or handle the attachments array properly
-                        $attachments = json_decode($engagement->attachments, true); // Assuming it's a JSON string
-$filename = $attachments[0] ?? ''; // Get the first filename from the array
-$filePath = public_path('attachments/leads/' . $filename);
-                    @endphp
-                    <tr>
-                        <td> {{ ++$i }} </td>
-                        <td> {{ $engagement->date }} </td>
-                        <td> {{ $engagement->activity_name }} </td>
-                        <td> {{ $engagement->details }} </td>
-                        <td>
-                            @if ($filename)
-                                <a href="#table-container" id="attachmentImage"
-                                    style="width: 100px; height: auto; cursor: pointer;"
-                                    data-image-url="{{ $filename }}">
-                                    View Attachment
-                                </a>
-                            @else
-                                No Image Available
-                            @endif
-                        </td>
-                        @if (Auth::user()->role == 'Sales_Agent')
-                            <td>
-                                <a href="{{ Auth::user()->role == 'Sales_Agent' ? route('archive#edit', ['contact_archive_pid' => $engagement->engagement_archive_pid]) : '#' }}"
-                                    data-toggle="modal"
-                                    {{ Auth::user()->role == 'Sales_Agent' ? 'data-target=#updateArchiveActivityModal-' . $engagement->engagement_archive_pid : '' }}
-                                    class="btn hover-action">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </a>
-                            </td>
-                        @endif
-
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="6" class="text-center">No Activities Taken</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                </td>
+               
+                @if (Auth::user()->role == 'Sales_Agent')
+                    <td>
+                        <a href="{{ Auth::user()->role == 'Sales_Agent' ? route('archive#edit', ['contact_archive_pid' => $engagement->engagement_archive_pid]) : '#' }}"
+                            data-toggle="modal"
+                            {{ Auth::user()->role == 'Sales_Agent' ? 'data-target=#updateArchiveActivityModal-' . $engagement->engagement_archive_pid : '' }}
+                            class="btn hover-action">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+                    </td>
+                @endif
+            </tr>
+        @empty
+            <tr>
+                <td colspan="8" class="text-center">No Activities Taken</td>
+            </tr>
+        @endforelse
+    </tbody>
+</table>
 
         <!-- Bootstrap Modal for Image -->
         <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
