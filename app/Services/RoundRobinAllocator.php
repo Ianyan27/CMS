@@ -12,9 +12,11 @@ class RoundRobinAllocator
 {
     public function allocate()
     {
+        // Get the BUH ID from the logged-in user
+        $buhId = Auth::user()->id;
+
         try {
-            // Get the BUH ID from the logged-in user
-            $buhId = Auth::user()->id;
+
 
             // Retrieve owners (sales agents) under the specified BUH
             $owners = Owner::where('fk_buh', $buhId)->get()->sortBy('owner_pid')->values(); // Ensure sorted order
