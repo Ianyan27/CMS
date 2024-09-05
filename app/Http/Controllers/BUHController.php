@@ -216,5 +216,29 @@ class BUHController extends Controller
             Log::error('Failed to save user and sale agent for email: ' . $request->input('email') . '. Error: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to add Sale Agent. Please try again.');
         }
+    }    
+    public function deleteOwner($owner_pid){
+        DB::beginTransaction();
+        try {
+            // Delete the Owner record
+            $owner = Owner::where('owner_pid', $owner_pid)->first();
+            
+            if (!$owner) {
+                return redirect()->back()->with('error', 'Owner not found.');
+            }
+    
+            // Delete the associated User record
+            User::where('id', $owner_pid)->delete();
+    
+            // Finally, delete the Owner record
+            $owner->delete();
+    
+            DB::commit();
+            return redirect()->route('owner#view')->with('success', "Owner and associated User deleted successfully.");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Failed to delete owner and user with owner_pid: ' . $owner_pid . '. Error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to delete Owner. Please try again.');
+        }
     }
 }

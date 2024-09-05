@@ -11,6 +11,8 @@ use App\Models\Owner;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class OwnerController extends Controller{
 
@@ -97,13 +99,7 @@ class OwnerController extends Controller{
 
         return redirect()->route('owner#view-owner', ['owner_pid' => $owner_pid])->with('success', 'Sale Agent updated successfully.');
     }
-
-    public function deleteOwner($owner_pid){
-        Owner::where('owner_pid', $owner_pid)->delete();
-        User::where('fk_buh', $owner_pid)->delete();
-        return redirect()->route('owner#view')->with('success', "Owner Deleted Successfully.");
-    }
-
+    
     public function viewContact($contact_pid){
         /* Retrieve the contact record with the specified 'contact_pid' and pass
          it to the 'Edit_Contact_Detail_Page' view for editing. */
