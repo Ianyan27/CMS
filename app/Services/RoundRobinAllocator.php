@@ -12,41 +12,38 @@ class RoundRobinAllocator
 {
     public function allocate()
     {
-        // Get the BUH ID from the logged-in user
-        $buhId = Auth::user()->id;
+        $buhId = Auth::user()->id;  // Get BUH ID from the logged-in user
 
         try {
-
-
-            // Retrieve owners (sales agents) under the specified BUH
-            $owners = Owner::where('fk_buh', $buhId)->get()->sortBy('owner_pid')->values(); // Ensure sorted order
+            // Retrieve owners under the specified BUH, sorted by owner_pid
+            $owners = Owner::where('fk_buh', $buhId)->get()->sortBy('owner_pid')->values();
             Log::info('Total owners retrieved for BUH ID ' . $buhId . ':', ['count' => $owners->count()]);
 
             if ($owners->isEmpty()) {
-                throw new \Exception("No sales agent is assigned. Please make sure to assign the appropriate sales agents to continue. BUH ID: " . $buhId);
+                throw new \Exception("No sales agents assigned. Please assign the appropriate sales agents. BUH ID: " . $buhId);
             }
 
-            // Get unassigned contacts
+            // Retrieve unassigned contacts
             $contacts = Contact::whereNull('fk_contacts__owner_pid')->get();
             Log::info('Total unassigned contacts:', ['count' => $contacts->count()]);
 
-            // Get the last assigned owner_pid for this BUH
-            $lastAssignedOwner = Contact::whereNotNull('fk_contacts__owner_pid')
+            // Get the last assigned contact for the BUH
+            $lastAssignedContact = Contact::whereNotNull('fk_contacts__owner_pid')
                 ->whereIn('fk_contacts__owner_pid', $owners->pluck('owner_pid'))
-                ->orderBy('date_of_allocation', 'desc')
+                ->orderBy('contact_pid', 'desc')
                 ->first();
-            Log::info('Last assigned owner_pid for BUH ID ' . $buhId . ':', ['owner_pid' => $lastAssignedOwner ? $lastAssignedOwner->fk_contacts__owner_pid : 'None']);
 
-            // Determine the next owner to start with
-            $nextOwnerPid = $this->determineNextOwnerPid($lastAssignedOwner, $owners);
+            // Determine the next owner PID to start with
+            $nextOwnerPid = $this->determineNextOwnerPid($lastAssignedContact, $owners);
             Log::info('Starting allocation with owner_pid:', ['next_owner_pid' => $nextOwnerPid]);
 
+            // Allocate each unassigned contact
             foreach ($contacts as $contact) {
                 // Find the owner with the calculated next owner_pid
                 $owner = $owners->firstWhere('owner_pid', $nextOwnerPid);
 
                 if ($owner) {
-                    // Assign the contact to this owner
+                    // Assign the contact to the owner
                     $contact->fk_contacts__owner_pid = $owner->owner_pid;
                     $contact->date_of_allocation = Carbon::now();
                     $contact->save();
@@ -56,16 +53,16 @@ class RoundRobinAllocator
                         'owner_pid' => $owner->owner_pid,
                     ]);
 
-                    // Update the `total_assign_contacts` count for the assigned owner
+                    // Update the total assigned contacts count for the owner
                     $owner->total_assign_contacts = Contact::where('fk_contacts__owner_pid', $owner->owner_pid)->count();
                     $owner->save();
 
                     Log::info('Updated owner details:', [
                         'owner_pid' => $owner->owner_pid,
-                        'total_assign_contacts' => $owner->total_assign_contacts
+                        'total_assign_contacts' => $owner->total_assign_contacts,
                     ]);
 
-                    // Calculate the next owner_pid for the next iteration
+                    // Get the next owner PID for the next contact
                     $nextOwnerPid = $this->getNextOwnerPid($nextOwnerPid, $owners);
                     Log::info('Next owner_pid calculated:', ['next_owner_pid' => $nextOwnerPid]);
                 }
@@ -79,33 +76,60 @@ class RoundRobinAllocator
         }
     }
 
+
     private function determineNextOwnerPid($lastAssignedOwner, $owners)
     {
+        // If there is no previously assigned owner, start with the first owner in the sorted list
         if (!$lastAssignedOwner) {
-            // If no contacts have been assigned yet, start with the first owner in the list
             $firstOwnerPid = $owners->first()->owner_pid;
             Log::info('No previous owner found. Starting with owner_pid ' . $firstOwnerPid);
             return $firstOwnerPid;
         }
 
+        // Retrieve the last owner PID
         $lastOwnerPid = $lastAssignedOwner->fk_contacts__owner_pid;
         Log::info('Determining next owner_pid based on last owner_pid:', ['last_owner_pid' => $lastOwnerPid]);
 
-        // Determine the next owner_pid based on the last one
-        return $this->getNextOwnerPid($lastOwnerPid, $owners);
+        // Use the getNextOwnerPid function to find the next owner PID
+        $nextOwnerPid = $this->getNextOwnerPid($lastOwnerPid, $owners);
+
+        Log::info('Next owner_pid determined successfully', [
+            'last_owner_pid' => $lastOwnerPid,
+            'next_owner_pid' => $nextOwnerPid
+        ]);
+
+        return $nextOwnerPid;
     }
+
 
     private function getNextOwnerPid($currentOwnerPid, $owners)
     {
+        Log::info('Finding next owner PID', [
+            'current_owner_pid' => $currentOwnerPid,
+            'total_owners_count' => $owners->count(),
+            'owner_pids' => $owners->pluck('owner_pid')->toArray()
+        ]);
+
         // Find the index of the current owner_pid in the owners collection
         $currentIndex = $owners->pluck('owner_pid')->search($currentOwnerPid);
 
-        // Ensure the owner list is sorted and cycle correctly
+        // If the current owner PID is not found, start from the first owner
+        if ($currentIndex === false) {
+            Log::warning('Current owner PID not found in owners list, starting with the first owner.');
+            $currentIndex = -1; // Set to -1 so next index will be 0
+        }
+
+        // Calculate the next index using modulo to wrap around the collection
         $nextIndex = ($currentIndex + 1) % $owners->count();
 
-        // Get the next owner_pid
+        // Get the next owner PID
         $nextOwnerPid = $owners[$nextIndex]->owner_pid;
-        Log::info('Calculated next owner_pid:', ['currentOwnerPid' => $currentOwnerPid, 'nextOwnerPid' => $nextOwnerPid]);
+
+        Log::info('Next owner PID calculated successfully', [
+            'current_owner_pid' => $currentOwnerPid,
+            'next_owner_pid' => $nextOwnerPid,
+            'next_index' => $nextIndex
+        ]);
 
         return $nextOwnerPid;
     }
