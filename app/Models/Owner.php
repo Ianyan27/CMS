@@ -18,7 +18,8 @@ class Owner extends Model
         'total_in_progress',
         'total_hubspot_sync',
         'total_archive_contacts',
-        'total_discard_contacts'
+        'total_discard_contacts',
+        'fk_buh'
     ];
 
     public function contacts()

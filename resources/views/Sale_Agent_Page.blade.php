@@ -4,31 +4,31 @@
 @extends('layouts.Add_Sales-Agent_Modal')
 
 @section('content')
-    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header"
-                    style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
-                border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
-                    <h5 class="modal-title" id="successModalLabel" style="color: #91264c"><strong>Error</strong>
-                    </h5>
-                </div>
-                <div class="modal-body" style="color: #91264c;border:none;">
-                    @if ($errors->any())
-                        @foreach ($errors->all() as $error)
-                            {{ $error }}
-                        @endforeach
-                    @endif
-                </div>
-                <div class="modal-footer" style="border:none;">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                        style="background: #91264c; color:white;">OK</button>
+    @if (Auth::check() && Auth::user()->role == 'BUH')
+        @if ($errors->any())
+            <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header"
+                            style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+                        border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
+                            <h5 class="modal-title" id="errorModalLabel" style="color: #91264c"><strong>Error</strong>
+                            </h5>
+                        </div>
+                        <div class="modal-body" style="color: #91264c;border:none;">
+                            @foreach ($errors->all() as $error)
+                                <p>{{ $error }}</p>
+                            @endforeach
+                        </div>
+                        <div class="modal-footer" style="border:none;">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                style="background: #91264c; color:white;">OK</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-    @if (Auth::check() && Auth::user()->role == 'BUH')
-        @if (Session::has('success'))
+        @endif 
+    @if (Session::has('success'))
             <!-- Success Modal -->
             <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
                 <div class="modal-dialog">

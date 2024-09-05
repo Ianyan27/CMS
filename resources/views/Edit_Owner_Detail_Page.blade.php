@@ -205,7 +205,7 @@
                     </tr>
                 </thead>
                 <tbody class="text-left bg-row fonts">
-                    <?php $i = 0; ?>
+                    <?php $i = ($ownerContacts->currentPage() - 1) * $ownerContacts->perPage(); ?>
                     @forelse ($ownerContacts as $contact)
                         <tr data-status="{{ $contact['status'] }}">
                             <td>{{ ++$i }}</td>
@@ -289,7 +289,7 @@
                     </tr>
                 </thead>
                 <tbody class="text-left bg-row">
-                    <?php $i = 0 ?>
+                    <?php $i = ($ownerArchive->currentPage() - 1) * $ownerArchive->perPage(); ?>
                     @forelse ($ownerArchive as $archive)
                         <tr>
                             <td> {{ ++$i }} </td>
@@ -360,7 +360,7 @@
                     </tr>
                 </thead>
                 <tbody class="text-left bg-row">
-                    <?php $i = 0 ?>
+                    <?php $i = ($ownerDiscard->currentPage() - 1) * $ownerDiscard->perPage(); ?>
                     @forelse ($ownerDiscard as $discard)
                         <tr>
                             <td> {{ ++$i }} </td>

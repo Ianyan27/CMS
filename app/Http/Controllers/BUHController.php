@@ -193,9 +193,10 @@ class BUHController extends Controller
             $user = User::create([
                 'name' => $request->input('agentName'),
                 'email' => $request->input('email'),
-                'role' => $request->input('role')
+                'role' => $request->input('role'),
+                'password' => bcrypt($request->password),
             ]);
-    
+            Log::info("Foreign key for BUH " . $request->input('fk_buh'));
             $saleAgent = Owner::create([
                 'owner_name' => $request->input('agentName'),
                 'owner_email_id' => $request->input('email'),
@@ -226,10 +227,6 @@ class BUHController extends Controller
             if (!$owner) {
                 return redirect()->back()->with('error', 'Owner not found.');
             }
-    
-            // Delete the associated User record
-            User::where('id', $owner_pid)->delete();
-    
             // Finally, delete the Owner record
             $owner->delete();
     

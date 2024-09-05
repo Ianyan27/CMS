@@ -147,7 +147,7 @@ tbody {
 
 /* Borders */
 .border-educ {
-    border: 1px solid #91264c;
+    border: 1px dashed #91264c;
 }
 
 .border-right {
