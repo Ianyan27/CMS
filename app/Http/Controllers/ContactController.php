@@ -9,6 +9,7 @@ use App\Models\Engagement;
 use App\Models\EngagementArchive;
 use App\Models\EngagementDiscard;
 use App\Models\Log as ModelsLog;
+use App\Models\Owner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -20,22 +21,32 @@ class ContactController extends Controller
 {
 
     public function index()
-    {
-        // Get the logged-in user (sales agent)
-        $user = Auth::user();
+{
+    // Get the logged-in user (sales agent)
+    $user = Auth::user();
+    
+    // Fetch the owner record associated with the logged-in user's email
+    $owner = Owner::where('owner_email_id', $user->email)->first();
 
-        // Get contacts related to this sales agent
-        $contacts = Contact::where('fk_contacts__owner_pid', $user->id)->paginate(50);
-        $contactArchive = ContactArchive::where('fk_contact_archives__owner_pid', $user->id)->paginate(50);
-        $contactDiscard = ContactDiscard::where('fk_contact_discards__owner_pid', $user->id)->paginate(50);
-
-        // Pass the data to the view
-        return view('Contact_Listing', [
-            'contacts' => $contacts,
-            'contactArchive' => $contactArchive,
-            'contactDiscard' => $contactDiscard
-        ]);
+    // Check if an owner was found
+    if (!$owner) {
+        // Handle the case where no matching owner is found
+        return redirect()->back()->with('error', 'No owner found for the logged-in user.');
     }
+
+    // Query the contacts, archive, and discard records using the owner's ID
+    $contacts = Contact::where('fk_contacts__owner_pid', $owner->owner_pid)->paginate(50);
+    $contactArchive = ContactArchive::where('fk_contact_archives__owner_pid', $owner->owner_pid)->paginate(50);
+    $contactDiscard = ContactDiscard::where('fk_contact_discards__owner_pid', $owner->owner_pid)->paginate(50);
+
+    // Pass the data to the view
+    return view('Contact_Listing', [
+        'contacts' => $contacts,
+        'contactArchive' => $contactArchive,
+        'contactDiscard' => $contactDiscard
+    ]);
+}
+
 
     public function contactsByOwner()
     {
