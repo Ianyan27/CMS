@@ -76,7 +76,7 @@ class ContactController extends Controller
 
         // Check if the contact exists
         if (!$editContact) {
-            return redirect()->route('contacts.list')->with('error', 'Contact not found.');
+            return redirect()->route('contacts-listing')->with('error', 'Contact not found.');
         }
 
         // Retrieve the authenticated user
@@ -225,78 +225,72 @@ class ContactController extends Controller
     }
 
     public function saveActivity(Request $request, $contact_pid)
-    {
-
-        //checking for admin role and redirect it
-        $user = Auth::user();
-        if ($user->role === 'Admin') {
-            return redirect()->route('admin#contact-listing')->with('error', 'Admin cannot save the contact activity');
-        }
-
-        // Validate the input data
-        $validator = Validator::make($request->all(), [
-            'activity-date' => 'required',
-            'activity-name' => 'required',
-            'activity-details' => 'required',
-            'activity-attachments' => 'required|file|mimes:jpeg,png,jpg'
-        ]);
-
-        // Handle validation errors
-        if ($validator->fails()) {
-            // Check if the error is related to the file type
-            if ($validator->errors()->has('activity-attachments')) {
-                $attachmentErrors = $validator->errors()->get('activity-attachments');
-                if (in_array('The activity attachments must be a file of type: jpeg, png, jpg.', $attachmentErrors)) {
-                    // Specific error message for invalid file type
-                    return back()->withErrors(['activity-attachments' => 'Only image files (JPEG, PNG, JPG) are allowed.'])
-                        ->withInput();
-                }
-            }
-
-            // Return back with general validation errors
-            return back()->withErrors($validator)->withInput();
-        }
-
-        // Create a new Engagement record
-        $engagement = new Engagement();
-
-        // Handle file upload if a new file is provided
-        if ($request->hasFile('activity-attachments')) {
-            $imageFile = $request->file('activity-attachments');
-            $imageContent = file_get_contents($imageFile);
-            $encryptedImage = Crypt::encrypt($imageContent); // Encrypt the image content
-            // Encrypt the image content
-            $encryptedImage = Crypt::encrypt($imageContent);
-
-            // Save as a JSON array
-            $engagement->attachments = json_encode([$encryptedImage]);
-        }
-
-        // Assign engagement data from request
-        $engagement->date = $request->input('activity-date');
-        $engagement->details = $request->input('activity-details');
-        $engagement->activity_name = $request->input('activity-name');
-        $engagement->fk_engagements__contact_pid = $contact_pid;
-        $engagement->save();
-
-        // Update contact status
-        $contact = Contact::find($contact_pid);
-        if ($contact) {
-            $contact->status = "InProgress";
-            $contact->save();
-        }
-
-        // Save activity to the logs table
-        $actionType = 'Save New Activity'; // Use a valid ENUM value
-        $actionDescription = "Added a new activity: {$request->input('activity-name')} with details: {$request->input('activity-details')}";
-
-        $saveActivity = $this->saveLog($contact_pid, $actionType, $actionDescription);
-        Log::info("Save Activity: " . $saveActivity);
-
-        // Redirect to the contact view page with a success message
-        return redirect()->route('contact#view', ['contact_pid' => $contact_pid])
-            ->with('success', 'Activity added successfully.');
+{
+    // Checking for admin role and redirecting if true
+    $user = Auth::user();
+    if ($user->role === 'Admin') {
+        return redirect()->route('admin#contact-listing')->with('error', 'Admin cannot save the contact activity');
     }
+
+    // Validate the input data
+    $validator = Validator::make($request->all(), [
+        'activity-date' => 'required',
+        'activity-name' => 'required',
+        'activity-details' => 'required',
+        'activity-attachments' => 'required|file|mimes:jpeg,png,jpg'
+    ]);
+
+    // Handle validation errors
+    if ($validator->fails()) {
+        if ($validator->errors()->has('activity-attachments')) {
+            $attachmentErrors = $validator->errors()->get('activity-attachments');
+            if (in_array('The activity attachments must be a file of type: jpeg, png, jpg.', $attachmentErrors)) {
+                return back()->withErrors(['activity-attachments' => 'Only image files (JPEG, PNG, JPG) are allowed.'])
+                    ->withInput();
+            }
+        }
+        return back()->withErrors($validator)->withInput();
+    }
+
+    // Check if the contact exists
+    $contact = Contact::find($contact_pid);
+    if (!$contact) {
+        return back()->with('error', 'The specified contact does not exist.');
+    }
+
+    // Create a new Engagement record
+    $engagement = new Engagement();
+
+    // Handle file upload if a new file is provided
+    if ($request->hasFile('activity-attachments')) {
+        $imageFile = $request->file('activity-attachments');
+        $imageContent = file_get_contents($imageFile);
+        $encryptedImage = Crypt::encrypt($imageContent);
+        $engagement->attachments = json_encode([$encryptedImage]);
+    }
+
+    // Assign engagement data from request
+    $engagement->date = $request->input('activity-date');
+    $engagement->details = $request->input('activity-details');
+    $engagement->activity_name = $request->input('activity-name');
+    $engagement->fk_engagements__contact_pid = $contact_pid;
+    $engagement->save();
+
+    // Update contact status
+    $contact->status = "InProgress";
+    $contact->save();
+
+    // Save activity to the logs table
+    $actionType = 'Save New Activity';
+    $actionDescription = "Added a new activity: {$request->input('activity-name')} with details: {$request->input('activity-details')}";
+
+    $saveActivity = $this->saveLog($contact_pid, $actionType, $actionDescription);
+    Log::info("Save Activity: " . $saveActivity);
+
+    // Redirect to the contact view page with a success message
+    return redirect()->route('contact#view', ['contact_pid' => $contact_pid])
+        ->with('success', 'Activity added successfully.');
+}
 
 
     public function editActivity($fk_engagements__contact_pid, $activity_id)
