@@ -67,11 +67,14 @@ class AdminController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
+        // hard code role
+        $role = " ";
         // Create a new user
         User::create([
             'role' => null,
             'name' => $request->name,
             'email' => $request->email,
+            'role' => $role,
             'password' => bcrypt($request->password), // Encrypt the password
         ]);
         return redirect()->route('admin#index')->with('success', 'User created successfully');
