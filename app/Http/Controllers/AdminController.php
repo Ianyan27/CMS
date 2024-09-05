@@ -80,8 +80,7 @@ class AdminController extends Controller
         return redirect()->route('admin#index')->with('success', 'User created successfully');
     }
 
-    public function editUser($id)
-    {
+    public function editUser($id){
         $editUser = User::find($id);
         return view('Edit_User_Detail_Page', ['editUser' => $editUser]);
     }

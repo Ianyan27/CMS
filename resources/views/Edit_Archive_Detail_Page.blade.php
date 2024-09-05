@@ -7,7 +7,10 @@
 @extends('layouts.Edit_Archive_Activity_Modal')
 @extends('layouts.Attachment_Error_Modal')
 @section('content')
-    @if ((Auth::check() && Auth::user()->role == 'Sales_Agent') || Auth::user()->role == 'Admin')
+    @if (
+        (Auth::check() && Auth::user()->role == 'Sales_Agent') || 
+            Auth::user()->role == 'Admin' ||
+            Auth::user()->role == 'BUH')
         @if (session('success'))
             <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
             <button id="successModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal"

@@ -41,7 +41,7 @@
         @endif
         {{-- css will edit to css file soon --}}
         <link rel="stylesheet" href="{{ URL::asset('css/contact_detail.css') }}">
-        <div class="row border-educ rounded h-auto">
+        <div class="row border-educ rounded">
             <div class="col-md-5 border-right" id="contact-detail">
                 <div class="table-title d-flex justify-content-between align-items-center my-3">
                     <h2 class="mt-2 ml-3 headings">Contact Detail</h2>
@@ -145,8 +145,8 @@
                 {{-- Iterating all the activities from all contacts --}}
                 <div class="activities">
                     @forelse ($engagementDiscard->groupBy(function ($date) {
-                                                    return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
-                                                }) as $month => $activitiesInMonth)
+                            return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
+                            }) as $month => $activitiesInMonth)
                         <div class="activity-list" data-month="{{ $month }}">
                             <div class="activity-date my-3 ml-3">
                                 <span class="text-muted">{{ $month }}</span>
@@ -183,72 +183,73 @@
                                 <p class="text-muted">No WhatsApp taken.</p>
                             </div>
                         </div>
+                    </div>
+                    @empty
+                        <div class="no-activities text-center my-4">
+                            <p class="text-muted">No Activities Found</p>
+                        </div>
+                    @endforelse
                 </div>
-            @empty
-                <div class="no-activities text-center my-4">
-                    <p class="text-muted">No Activities Found</p>
+            </div>
+            <!-- Activity Taken Section -->
+            <div class="table-title d-flex justify-content-between align-items-center mt-5">
+                <div class="d-flex align-items-center">
+                    <h2 class="ml-2 mb-1 headings">Activity Taken</h2>
                 </div>
-    @endforelse
-    </div>
-    </div>
-    </div>
-    <!-- Activity Taken Section -->
-    <div class="table-title d-flex justify-content-between align-items-center mt-5">
-        <div class="d-flex align-items-center">
-            <h2 class="ml-2 mb-1 headings">Activity Taken</h2>
+            </div>
+            <!-- Table -->
+            <table class="table table-hover mt-2">
+                <thead class="font-educ text-left">
+                    <tr>
+                        <th scope="col">No</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Attachment</th>
+                        {{-- @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+                            <th scope="col">Action</th>
+                        @endif --}}
+                    </tr>
+                </thead>
+                <tbody class="text-left bg-row">
+                    <?php $i = 0; ?>
+                    @forelse ($engagementDiscard as $engagement)
+                        @php
+                            // Decode the JSON or handle the attachments array properly
+                            $attachments = json_decode($engagement->attachments, true); // Assuming it's a JSON string
+                        $filename = $attachments[0] ?? ''; // Get the first filename from the array
+                        $filePath = public_path('attachments/leads/' . $filename);
+                        @endphp
+                        <tr>
+                            <td> {{ ++$i }} </td>
+                            <td> {{ $engagement->date }} </td>
+                            <td> {{ $engagement->activity_name }} </td>
+                            <td> {{ $engagement->details }} </td>
+                            <td>
+                                @if ($filename)
+                                    <a href="#table-container" id="attachmentImage"
+                                        style="width: 100px; height: auto; cursor: pointer;"
+                                        data-image-url="{{ $filename }}">
+                                        View Attachment
+                                    </a>
+                                @else
+                                    No Image Available
+                                @endif
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center">No Activity Taken.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
-    </div>
-    <!-- Table -->
-    <table class="table table-hover mt-2">
-        <thead class="font-educ text-left">
-            <tr>
-                <th scope="col">No</th>
-                <th scope="col">Date</th>
-                <th scope="col">Type</th>
-                <th scope="col">Description</th>
-                <th scope="col">Attachment</th>
-                {{-- @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
-                    <th scope="col">Action</th>
-                @endif --}}
-            </tr>
-        </thead>
-        <tbody class="text-left bg-row">
-            <?php $i = 0; ?>
-            @foreach ($engagementDiscard as $engagement)
-                @php
-                    // Decode the JSON or handle the attachments array properly
-                    $attachments = json_decode($engagement->attachments, true); // Assuming it's a JSON string
-$filename = $attachments[0] ?? ''; // Get the first filename from the array
-$filePath = public_path('attachments/leads/' . $filename);
-                @endphp
-                <tr>
-                    <td> {{ ++$i }} </td>
-                    <td> {{ $engagement->date }} </td>
-                    <td> {{ $engagement->activity_name }} </td>
-                    <td> {{ $engagement->details }} </td>
-                    <td>
-                        @if ($filename)
-                            <a href="#table-container" id="attachmentImage"
-                                style="width: 100px; height: auto; cursor: pointer;"
-                                data-image-url="{{ $filename }}">
-                                View Attachment
-                            </a>
-                        @else
-                            No Image Available
-                        @endif
-                    </td>
-                    {{-- @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
-                        <td>
-                            <a class="btn hover-action" href="#" data-toggle="modal"
-                                data-target="#updateActivityModal">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </a>
-                        </td>
-                    @endif --}}
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+        @else
+        <div class="alert alert-danger text-center mt-5">
+            <strong>Access Denied!</strong> You do not have permission to view this page.
+        </div>
+        @endif
 
 
     <!-- Bootstrap Modal for Image -->
@@ -263,11 +264,6 @@ $filePath = public_path('attachments/leads/' . $filename);
             </div>
         </div>
     </div>
-@else
-    <div class="alert alert-danger text-center mt-5">
-        <strong>Access Denied!</strong> You do not have permission to view this page.
-    </div>
-    @endif
 
     <script>
         document.querySelectorAll('.activity-button').forEach(button => {

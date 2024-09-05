@@ -8,6 +8,7 @@ use App\Models\ContactDiscard;
 use App\Models\Engagement;
 use App\Models\EngagementArchive;
 use App\Models\EngagementDiscard;
+use App\Models\Owner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -17,11 +18,11 @@ use Illuminate\Support\Facades\Validator;
 
 class ArchiveController extends Controller
 {
-    public function viewArchive($id)
-    {
-        $editArchive = ContactArchive::where('contact_archive_pid', $id)->first();
+    public function viewArchive($contact_archive_pid){
+        $editArchive = ContactArchive::where('contact_archive_pid', $contact_archive_pid)->first();
         $user = Auth::user();
-        $engagementArchive = EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $id)->get();
+        $owner = Owner::where('owner_email_id', $user->email)->first();
+        $engagementArchive = EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $contact_archive_pid)->get();
 
         // Decrypt images in engagements
         foreach ($engagementArchive as $engagement) {
@@ -46,19 +47,31 @@ class ArchiveController extends Controller
         return view('Edit_Archive_Detail_Page')->with([
             'editArchive' => $editArchive,
             'engagementArchive' => $engagementArchive,
-            'user' => $user,
+            'owner' => $owner,
             'updateEngagement' => $engagementArchive
         ]);
     }
 
 
-    public function updateArchive(Request $request, $contact_archive_pid, $id)
-    {
+    public function updateArchive(Request $request, $contact_archive_pid, $owner_pid){
+        $user = Auth::user();
         $archive = ContactArchive::find($contact_archive_pid);
-
+        $owner = Owner::where('owner_email_id', $user->email)->first();
         if (!$archive) {
             return redirect()->back()->with('error', 'Contact archive not found.');
         }
+
+        $archive->update([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'contact_number' => $request->input('contact_number'),
+            'address' => $request->input('address'),
+            'country' => $request->input('country'),
+            'qualification' => $request->input('qualification'),
+            'job_role' => $request->input('job_role'),
+            'skills' => $request->input('skills'),
+            'status' => $request->input('status'),
+        ]);
 
         if (in_array($request->input('status'), ['InProgress', 'Discard'])) {
             $targetModel = $request->input('status') === 'InProgress' ? new Contact() : new ContactDiscard();
@@ -66,9 +79,9 @@ class ArchiveController extends Controller
             $targetModel->status = $request->input('status');
 
             if ($request->input('status') === 'InProgress') {
-                $targetModel->fk_contacts__owner_pid = $id;
+                $targetModel->fk_contacts__owner_pid = $owner_pid;
             } else {
-                $targetModel->fk_contact_discards__owner_pid = $id;
+                $targetModel->fk_contact_discards__owner_pid = $owner_pid;
             }
             $targetModel->save();
 
@@ -105,18 +118,6 @@ class ArchiveController extends Controller
         $oldStatus = $archive->status;
         $newStatus = $request->input('status');
 
-        $archive->update([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'contact_number' => $request->input('contact_number'),
-            'address' => $request->input('address'),
-            'country' => $request->input('country'),
-            'qualification' => $request->input('qualification'),
-            'job_role' => $request->input('job_role'),
-            'skills' => $request->input('skills'),
-            'status' => $request->input('status'),
-        ]);
-
         if ($oldStatus !== $newStatus) {
             $this->saveLog(
                 $contact_archive_pid,
@@ -131,8 +132,7 @@ class ArchiveController extends Controller
     }
 
 
-    private function saveLog($contact_archive_pid, $action_type, $action_description)
-    {
+    private function saveLog($contact_archive_pid, $action_type, $action_description){
 
         $ownerPid = Auth::user()->id; // Get the authenticated user's ID as owner_pid
 

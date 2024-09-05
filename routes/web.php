@@ -84,7 +84,7 @@ Route::group(['prefix' => 'sales-agent'], function () {
     Route::get('/edit-contact/{contact_pid}', [
         ContactController::class, 'editContact'
         ])->name('contact#edit');
-    Route::post('/save-contact/{contact_pid}/{id}', [
+    Route::post('/save-contact/{contact_pid}/{owner_pid}', [
         ContactController::class, 'updateContact'
         ])->name('contact#update-contact');
     Route::get('/edit-archive/{contact_archive_pid}', [
@@ -93,7 +93,7 @@ Route::group(['prefix' => 'sales-agent'], function () {
     Route::get('/view-archive/{contact_archive_pid}', [
         ArchiveController::class, 'viewArchive'
         ])->name('archive#view');
-    Route::post('/save-archive/{contact_archive_pid}/{id}', [
+    Route::post('/save-archive/{contact_archive_pid}/{owner_pid}', [
         ArchiveController::class, 'updateArchive'
         ])->name('archive#update-archive');
     Route::get('/edit-discard/{contact_discard_pid}', [

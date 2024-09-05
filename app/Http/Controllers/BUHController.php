@@ -165,7 +165,7 @@ class BUHController extends Controller
                 'string',
                 'email',
                 'max:255',
-                'unique:users',
+                // 'unique:users',
                 function ($attribute, $value, $fail) use ($domainRegex) {
                     if (!preg_match('/@(' . $domainRegex . ')$/', $value)) {
                         $fail('The email address must be one of the following domains: ' . str_replace('|', ', ', $domainRegex));

@@ -14,7 +14,7 @@
             </div>
             <div class="modal-body">
                 <form
-                    action="{{ route('archive#update-archive', ['contact_archive_pid' => $editArchive->contact_archive_pid, 'id' => $user->id]) }}"
+                    action="{{ route('archive#update-archive', ['contact_archive_pid' => $editArchive->contact_archive_pid, 'owner_pid' => $owner->owner_pid]) }}"
                     method="POST" id="editContactForm">
                     @csrf
                     <div class="row">

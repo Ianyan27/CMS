@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+
 class ContactController extends Controller
 {
 
@@ -48,22 +49,32 @@ class ContactController extends Controller
 }
 
 
-    public function contactsByOwner()
-    {
-        // Get the logged-in user (sales agent)
-        $user = Auth::user();
+    public function contactsByOwner(){
 
-        // Get contacts related to this sales agent
-        $contacts = Contact::where('fk_contacts__owner_pid', $user->id)->paginate(50);
-        $contactArchive = ContactArchive::where('fk_contact_archives__owner_pid', $user->id)->paginate(50);
-        $contactDiscard = ContactDiscard::where('fk_contact_discards__owner_pid', $user->id)->paginate(50);
+        $user = Auth::user();
+        
+        // Fetch the owner record associated with the logged-in user's email
+        $owner = Owner::where('owner_email_id', $user->email)->first();
+
+        // Check if an owner was found
+        if (!$owner) {
+            // Handle the case where no matching owner is found
+            return redirect()->back()->with('error', 'No owner found for the logged-in user.');
+        }
+
+        // Query the contacts, archive, and discard records using the owner's ID
+        $contacts = Contact::where('fk_contacts__owner_pid', $owner->owner_pid)->paginate(50);
+        $contactArchive = ContactArchive::where('fk_contact_archives__owner_pid', $owner->owner_pid)->paginate(50);
+        $contactDiscard = ContactDiscard::where('fk_contact_discards__owner_pid', $owner->owner_pid)->paginate(50);
 
         // Pass the data to the view
         return view('Contact_Listing', [
+            'owner' => $owner,
             'contacts' => $contacts,
             'contactArchive' => $contactArchive,
             'contactDiscard' => $contactDiscard
         ]);
+        // Get the logged-in user (sales agent)
     }
 
     public function viewContact($contact_pid)
@@ -81,6 +92,7 @@ class ContactController extends Controller
 
         // Retrieve the authenticated user
         $user = Auth::user();
+        $owner = Owner::where('owner_email_id', $user->email)->first();
 
         // Retrieve all engagements for the contact
         $engagements = Engagement::where('fk_engagements__contact_pid', $contact_pid)->get();
@@ -112,7 +124,7 @@ class ContactController extends Controller
 
         // Pass data to the view
         return view('Edit_Contact_Detail_Page')->with([
-            'user' => $user,
+            'owner' => $owner,
             'editContact' => $editContact,
             'engagements' => $engagements,
             'updateEngagement' => $updateEngagement,
@@ -120,10 +132,10 @@ class ContactController extends Controller
         ]);
     }
 
-    public function updateContact(Request $request, $contact_pid, $id)
-    {
+    public function updateContact(Request $request, $contact_pid, $owner_pid){
         // Checking for admin role and redirect if true
         $user = Auth::user();
+        $owner = Owner::where('owner_email_id', $user->email)->first();
         if ($user->role === 'Admin') {
             return redirect()->route('admin#contact-listing')->with('error', 'Admin cannot edit the contact information');
         }
@@ -133,6 +145,7 @@ class ContactController extends Controller
 
         // Check if the contact exists
         if (!$contact) {
+            Log::error('Contact not found', ['contact_pid' => $contact_pid]);
             return redirect()->route('contact-listing')->with('error', 'Contact not found.');
         }
 
@@ -152,6 +165,20 @@ class ContactController extends Controller
         // Validate the request with the custom rules
         $request->validate($rules);
 
+        // Check if the owner exists
+        $owner = Owner::find($owner_pid);
+        if (!$owner) {
+            Log::error('Owner not found', ['owner_id' => $owner_pid]);
+            return redirect()->route('contact-listing')->with('error', 'Owner not found.');
+        }
+
+        // Log the owner and contact details
+        Log::info('Updating contact', [
+            'contact_pid' => $contact_pid,
+            'owner_pid' => $owner_pid,
+            'status' => $request->input('status')
+        ]);
+
         // Update contact details if validation passes
         $contact->update([
             'name' => $request->input('name'),
@@ -162,63 +189,81 @@ class ContactController extends Controller
             'qualification' => $request->input('qualification'),
             'job_role' => $request->input('job_role'),
             'skills' => $request->input('skills'),
-            'status' => $request->input('status') // Update the status here as well
+            'status' => $request->input('status')
         ]);
 
         // Handle the "Archive" and "Discard" status cases after updating details
         if (in_array($request->input('status'), ['Archive', 'Discard'])) {
-            // Determine the target model based on the status
             $targetContactModel = $request->input('status') === 'Archive' ? new ContactArchive() : new ContactDiscard();
-
-            // Copy the contact data to the new table
             $targetContactModel->fill($contact->toArray());
-            $targetContactModel->status = $request->input('status'); // Explicitly set the status
+            $targetContactModel->status = $request->input('status');
 
-            // Set the owner PID based on the user who updated the contact
+            // Set the owner PID
             if ($request->input('status') === 'Archive') {
-                $targetContactModel->fk_contact_archives__owner_pid = $id;
+                $targetContactModel->fk_contact_archives__owner_pid = $owner_pid;
             } else {
-                $targetContactModel->fk_contact_discards__owner_pid = $id;
+                $targetContactModel->fk_contact_discards__owner_pid = $owner_pid;
             }
 
-            $targetContactModel->save();
+            Log::info('Saving contact to archive/discard', [
+                'model' => $request->input('status') === 'Archive' ? 'ContactArchive' : 'ContactDiscard',
+                'owner_pid' => $owner_pid
+            ]);
 
-            // Get the new contact ID from the archive or discard table
+            try {
+                $targetContactModel->save();
+            } catch (\Exception $e) {
+                Log::error('Failed to save contact to archive/discard', [
+                    'error' => $e->getMessage(),
+                    'owner_pid' => $owner_pid
+                ]);
+                return redirect()->route('contact-listing')->with('error', 'Failed to save contact to archive/discard.');
+            }
+
             $newContactId = $request->input('status') === 'Archive'
                 ? $targetContactModel->contact_archive_pid
                 : $targetContactModel->contact_discard_pid;
 
-            // Move related activities
             $targetActivityModel = $request->input('status') === 'Archive' ? new EngagementArchive() : new EngagementDiscard();
 
             foreach ($activities as $activity) {
-                $newActivity = $targetActivityModel->newInstance(); // Create a new instance for each activity
+                $newActivity = $targetActivityModel->newInstance();
                 $newActivity->fill($activity->toArray());
 
-                // Set the foreign key to reference the newly created contact
                 if ($request->input('status') === 'Archive') {
                     $newActivity->fk_engagement_archives__contact_archive_pid = $newContactId;
                 } else {
                     $newActivity->fk_engagement_discards__contact_discard_pid = $newContactId;
                 }
 
-                $newActivity->save();
+                try {
+                    $newActivity->save();
+                } catch (\Exception $e) {
+                    Log::error('Failed to save engagement activity to archive/discard', [
+                        'error' => $e->getMessage(),
+                        'activity_id' => $activity->id,
+                        'contact_id' => $newContactId
+                    ]);
+                    return redirect()->route('contact-listing')->with('error', 'Failed to save engagement activities.');
+                }
             }
 
-            // Delete related logs
             ModelsLog::where('fk_logs__contact_pid', $contact_pid)->delete();
-
-            // Delete the contact from the current table
             $contact->delete();
-
-            // Delete the engagement activities from the current table
             Engagement::where('fk_engagements__contact_pid', $contact_pid)->delete();
 
-            // Redirect with a success message
+            Log::info('Contact and activities moved successfully', [
+                'contact_pid' => $contact_pid,
+                'status' => $request->input('status')
+            ]);
+
             return redirect()->route('contact-listing')->with('success', 'Contact and activities moved to ' . $request->input('status') . ' successfully.');
         }
 
-        // If status is not "Archive" or "Discard", just redirect after updating
+        Log::info('Contact updated successfully', [
+            'contact_pid' => $contact_pid
+        ]);
+
         return redirect()->route('contact#view', [
             'contact_pid' => $contact_pid
         ])->with('success', 'Contact updated successfully.');
@@ -428,19 +473,30 @@ class ContactController extends Controller
         ]);
     }
 
-    private function saveLog($contact_pid, $action_type, $action_description)
-    {
+    private function saveLog($contact_pid, $action_type, $action_description){
+    $ownerEmail = Auth::user()->email; // Get the authenticated user's ID as owner_pid
 
-        $ownerPid = Auth::user()->id; // Get the authenticated user's ID as owner_pid
-
-        DB::table('logs')->insert([
-            'fk_logs__contact_pid' => $contact_pid,
-            'fk_logs__owner_pid' => $ownerPid,
-            'action_type' => $action_type, // Ensure this value is one of the allowed ENUM values
-            'action_description' => $action_description,
-            'activity_datetime' => now(),
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+    // Check if the owner exists in the owners table
+    $ownerExists = DB::table('owners')->where('owner_email_id', $ownerEmail)->exists();
+    $ownerDetails = DB::table('owners')->where('owner_email_id', $ownerEmail)->first();
+    if (!$ownerExists) {
+        // Handle the case where the owner is not found
+        Log::error("Invalid Email {$ownerEmail}");
+        return false;
     }
+
+    // Insert the log record
+    DB::table('logs')->insert([
+        'fk_logs__contact_pid' => $contact_pid,
+        'fk_logs__owner_pid' => $ownerDetails->owner_pid,
+        'action_type' => $action_type, // Ensure this value is one of the allowed ENUM values
+        'action_description' => $action_description,
+        'activity_datetime' => now(),
+        'created_at' => now(),
+        'updated_at' => now()
+    ]);
+
+    return true;
+}
+
 }

@@ -24,7 +24,7 @@
                     <div class="modal-content rounded-0">
                         <div class="modal-header"
                             style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
-                border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
+                            border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
                             <h5 class="modal-title font-educ" id="successModalLabel">Success</h5>
                         </div>
                         <div class="modal-body" style="color: #91264c">
@@ -148,8 +148,8 @@
                 </div>
                 <div class="activities">
                     @forelse ($engagements->groupBy(function ($date) {
-                                                                                                                                                                    return \Carbon\Carbon::parse($date->date)->format('F Y');
-                                                                                                                                                                  }) as $month => $activitiesInMonth)
+                        return \Carbon\Carbon::parse($date->date)->format('F Y');
+                        }) as $month => $activitiesInMonth)
                         <div class="activity-list" data-month="{{ $month }}">
                             <div class="activity-date my-3 ml-3">
                                 <span class="text-muted">{{ $month }}</span>
