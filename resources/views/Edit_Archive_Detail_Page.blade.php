@@ -21,10 +21,10 @@
             <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
                 aria-hidden="true">
                 <div class="modal-dialog" role="document">
-                    <div class="modal-content">
+                    <div class="modal-content rounded-0">
                         <div class="modal-header"
                             style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
-                border:none;">
+                            border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
                             <h5 class="modal-title font-educ" id="successModalLabel">Success</h5>
                         </div>
                         <div class="modal-body" style="color: #91264c">

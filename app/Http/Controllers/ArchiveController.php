@@ -134,11 +134,11 @@ class ArchiveController extends Controller
 
     private function saveLog($contact_archive_pid, $action_type, $action_description){
 
-        $ownerPid = Auth::user()->id; // Get the authenticated user's ID as owner_pid
-
-        DB::table('logs')->insert([
-            'fk_logs__contact_pid' => $contact_archive_pid,
-            'fk_logs__owner_pid' => $ownerPid,
+        $user = Auth::user()->email; // Get the authenticated user's ID as owner_pid
+        $owner = Owner::where('owner_email_id', $user)->first();
+        DB::table('archive__logs')->insert([
+            'fk_logs__archive_contact_pid' => $contact_archive_pid,
+            'fk_logs__owner_pid' => $owner->owner_pid,
             'action_type' => $action_type, // Ensure this value is one of the allowed ENUM values
             'action_description' => $action_description,
             'activity_datetime' => now(),
@@ -209,8 +209,7 @@ class ArchiveController extends Controller
     }
 
 
-    public function saveActivity(Request $request, $contact_archive_pid)
-    {
+    public function saveActivity(Request $request, $contact_archive_pid){
         // Validate the input data
 
         $validator = Validator::make($request->all(), [
@@ -258,11 +257,11 @@ class ArchiveController extends Controller
         $engagement->fk_engagement_archives__contact_archive_pid = $contact_archive_pid;
         $engagement->save();
 
-        // // Save activity to the logs table
-        // $actionType = 'Updated'; // Use a valid ENUM value
-        // $actionDescription = "Added a new activity: {$request->input('activity-name')} with details: {$request->input('activity-details')}";
+        // Save activity to the logs table
+        $actionType = 'Updated'; // Use a valid ENUM value
+        $actionDescription = "Added a new activity: {$request->input('activity-name')} with details: {$request->input('activity-details')}";
 
-        // $this->saveLog($contact_archive_pid, $actionType, $actionDescription);
+        $this->saveLog($contact_archive_pid, $actionType, $actionDescription);
 
         // Redirect to the contact view page with a success message
         return redirect()->route('archive#view', ['contact_archive_pid' => $contact_archive_pid])
