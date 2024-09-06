@@ -11,12 +11,15 @@ use App\Models\Owner;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class OwnerController extends Controller{
+class OwnerController extends Controller
+{
 
-    public function owner(){
+    public function owner()
+    {
         // Get the current authenticated user
         $user = Auth::user();
         // Check if the user is a BUH or Admin
@@ -27,13 +30,47 @@ class OwnerController extends Controller{
             // If the user is Admin, show all owners
             $owner = Owner::paginate(10);
         }
+
+        // Get Hubspot sales agents
+        $hubspotSalesAgents = $this->getHubspotSalesAgents();
+
         // Return the view with the appropriate data
         return view('Sale_Agent_Page', [
-            'owner' => $owner, 'user' => $user
+            'owner' => $owner,
+            'user' => $user,
+            'hubspotSalesAgents' => $hubspotSalesAgents
         ]);
     }
 
-    public function viewOwner($owner_pid){
+    protected function getHubspotSalesAgents()
+    {
+        try {
+            $client = new Client();
+            $response = $client->request('GET', 'https://api.hubapi.com/settings/v3/users/', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . env('HUBSPOT_API_KEY'),
+                    'Content-Type'  => 'application/json',  
+                ],
+                'verify' => false
+            ]);
+
+            $hubspotSalesAgents = json_decode($response->getBody(), true);
+
+            // Paginate the Hubspot sales agents
+            $hubspotSalesAgents = collect($hubspotSalesAgents);
+
+            return $hubspotSalesAgents;
+        } catch (\Exception $e) {
+            // Handle any errors that occur during the request
+            Log::error($e->getMessage());
+            return [];
+        }
+    }
+
+
+
+    public function viewOwner($owner_pid)
+    {
         // Execute the queries to get the actual data
         $editOwner = Owner::where('owner_pid', $owner_pid)->first();
 
@@ -88,7 +125,8 @@ class OwnerController extends Controller{
         ]);
     }
 
-    public function updateOwner(Request $request, $owner_pid){
+    public function updateOwner(Request $request, $owner_pid)
+    {
 
         $owner = Owner::find($owner_pid);
 
@@ -99,8 +137,9 @@ class OwnerController extends Controller{
 
         return redirect()->route('owner#view-owner', ['owner_pid' => $owner_pid])->with('success', 'Sale Agent updated successfully.');
     }
-    
-    public function viewContact($contact_pid){
+
+    public function viewContact($contact_pid)
+    {
         /* Retrieve the contact record with the specified 'contact_pid' and pass
          it to the 'Edit_Contact_Detail_Page' view for editing. */
         $editContact = Contact::where('contact_pid', $contact_pid)->first();
@@ -116,5 +155,4 @@ class OwnerController extends Controller{
             'engagementArchive' => $engagementsArchive
         ]);
     }
-    
 }

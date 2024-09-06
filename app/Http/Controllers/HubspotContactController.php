@@ -21,7 +21,7 @@ class HubspotContactController extends Controller{
                     'properties' => [
                         'firstname' => $contact->name,
                         'email' => $contact->email,
-                        'phone' => $contact->phone,
+                        'phone' => $contact->contact_number,
                         'address' => $contact->address,
                         'country' => $contact->country,
                         'qualification' => $contact->qualification,
