@@ -14,14 +14,24 @@
                     style="height: 30px;">
             </div>
             <div class="modal-body">
-                <form action=" {{ route('owner#save-user') }} " method="POST" id="addSalesAgentForm" enctype="multipart/form-data">
+                <form action=" {{ route('owner#save-user') }} " method="POST" id="addSalesAgentForm"
+                    enctype="multipart/form-data">
                     @csrf
                     <div class="row row-margin-bottom row-border-bottom">
                         <div class="-col-md-6">
                             <div class="form-group">
                                 <input type="hidden" name="fk_buh" value=" {{ $user->id }} " readonly>
-                                <input type="hidden" name="role" value="Sales_Agent"/>
-                                <input type="hidden" name="password" value="creatingtestaccount"/>
+                                <input type="hidden" name="role" value="Sales_Agent" />
+                                <input type="hidden" name="password" value="creatingtestaccount" />
+                            </div>
+                            <div>
+                                <label for="teamMembers">Select Your Sale Agent:</label>
+                                <select name="team_member" id="teamMembers">
+                                    <option value="" selected disabled>Select Your Sale Agent</option>
+                                    @foreach ($hubspotSalesAgents['results'] as $agent)
+                                        <option value="{{ $agent['id'] }}">{{ $agent['firstName'] }} {{ $agent['lastName'] }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -35,9 +45,9 @@
                             <div class="form-group">
                                 <label for="email" class="font-educ">Email</label>
                                 <input type="email" name="email" class="form-control fonts" id="email"
-                                placeholder="Enter Email" 
-                                pattern="[a-zA-Z0-9._%+-]+@(lithan\.com|educlaas\.com|learning\.educlaas\.com)$" 
-                                required>
+                                    placeholder="Enter Email"
+                                    pattern="[a-zA-Z0-9._%+-]+@(lithan\.com|educlaas\.com|learning\.educlaas\.com)$"
+                                    required>
                                 <small id="emailError" class="form-text text-danger"></small>
                             </div>
                         </div>
@@ -48,7 +58,7 @@
                                     placeholder="Enter your HubSpot ID" required pattern="\d+"
                                     title="Please enter your numeric HubSpot ID.">
                                 <small class="form-text text-muted">Your HubSpot ID is a numeric value.</small>
-                            </div>                            
+                            </div>
                         </div>
                     </div>
                     <div class="row row-margin-bottom ">
@@ -208,7 +218,8 @@
                                     <option value="Rwanda">Rwanda</option>
                                     <option value="Saint Kitts and Nevis">Saint Kitts and Nevis</option>
                                     <option value="Saint Lucia">Saint Lucia</option>
-                                    <option value="Saint Vincent and the Grenadines">Saint Vincent and the Grenadines</option>
+                                    <option value="Saint Vincent and the Grenadines">Saint Vincent and the Grenadines
+                                    </option>
                                     <option value="Samoa">Samoa</option>
                                     <option value="San Marino">San Marino</option>
                                     <option value="Sao Tome and Principe">Sao Tome and Principe</option>
@@ -258,13 +269,14 @@
                                     <option value="Yemen">Yemen</option>
                                     <option value="Zambia">Zambia</option>
                                     <option value="Zimbabwe">Zimbabwe</option>
-                                </select>                                
+                                </select>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer" style="border: none">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn" style="background: #91264c; color: white;">Save</button>
+                        <button type="submit" class="btn"
+                            style="background: #91264c; color: white;">Save</button>
                     </div>
                 </form>
             </div>
