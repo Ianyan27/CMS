@@ -5,8 +5,8 @@
 
 @section('content')
     @if (Auth::check() && Auth::user()->role == 'BUH')
-        @if ($errors->any())
-            <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+        @if ($errors->any() || session('error'))
+            <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="false">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header"
@@ -16,9 +16,7 @@
                             </h5>
                         </div>
                         <div class="modal-body" style="color: #91264c;border:none;">
-                            @foreach ($errors->all() as $error)
-                                <p>{{ $error }}</p>
-                            @endforeach
+                            {{ session('error') }}
                         </div>
                         <div class="modal-footer" style="border:none;">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal"
@@ -27,8 +25,8 @@
                     </div>
                 </div>
             </div>
-        @endif 
-    @if (Session::has('success'))
+        @endif
+        @if (Session::has('success'))
             <!-- Success Modal -->
             <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -89,9 +87,12 @@
                                     onclick="sortByColumn('country', 'desc'); toggleSort('sortUp-country', 'sortDown-country')"
                                     style="display: none;"></i>
                             </th>
-                            <th scope="col" class="text-center" data-toggle="tooltip" data-placement="top" title="Total contacts in Interested, Archive, and Discard tables">Total Assign Contacts</th>
-                            <th scope="col" class="text-center" data-toggle="tooltip" data-placement="top" title="Total contacts synced in HubSpot">Total Hubspot Sync</th>
-                            <th scope="col" class="text-center" data-toggle="tooltip" data-placement="top" title="Total engaging contacts">Total In Progress</th>
+                            <th scope="col" class="text-center" data-toggle="tooltip" data-placement="top"
+                                title="Total contacts in Interested, Archive, and Discard tables">Total Assign Contacts</th>
+                            <th scope="col" class="text-center" data-toggle="tooltip" data-placement="top"
+                                title="Total contacts synced in HubSpot">Total Hubspot Sync</th>
+                            <th scope="col" class="text-center" data-toggle="tooltip" data-placement="top"
+                                title="Total engaging contacts">Total In Progress</th>
 
                             <th scope="col ">Action</th>
                         </tr>
@@ -124,8 +125,9 @@
                                 <td class="text-center">{{ $owners->total_hubspot_sync }}</td>
                                 <td class="text-center">{{ $owners->total_in_progress }}</td>
                                 <td>
-                                    <a href="{{ route('owner#view-owner', $owners->owner_pid) }}" class="btn hover-action"
-                                        data-toggle="tooltip" title="View" style="padding: 10px 12px;">
+                                    <a href="{{ route('owner#view-owner', $owners->owner_pid) }}"
+                                        class="btn hover-action" data-toggle="tooltip" title="View"
+                                        style="padding: 10px 12px;">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
                                     <!-- Delete button triggers the modal -->
@@ -242,7 +244,7 @@
                 }
             });
         });
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             @if ($errors->any())
                 var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
                 errorModal.show();
@@ -258,7 +260,7 @@
                 var isValid = validDomains.indexOf(emailDomain) !== -1;
 
                 if (email && !isValid) {
-                    
+
                     $('#emailError').text(
                         'The email address must be one of the following domains: lithan.com, educlaas.com, learning.educlaas.com'
                     );
@@ -274,10 +276,31 @@
             });
         });
     </script>
-@endsection
+    <script>
+        $(document).ready(function() {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
 
-<script>
-    $(document).ready(function(){
-    $('[data-toggle="tooltip"]').tooltip(); 
-});
-</script>
+    <script>
+        $(document).ready(function() {
+            $('#teamMembers').change(function() {
+                // Get the selected option
+                var selectedOption = $(this).find('option:selected');
+
+                // Extract data attributes
+                var agentName = selectedOption.data('name');
+                var agentEmail = selectedOption.data('email');
+                var hubspotId = selectedOption.data('hubspot-id');
+
+                // Populate the fields with the selected agent's data
+                $('#agentName').val(agentName);
+                $('#email').val(agentEmail);
+                $('#hubspotId').val(hubspotId);
+            });
+
+            // show modal error
+            $("#errorModal").modal('show');
+        });
+    </script>
+@endsection
