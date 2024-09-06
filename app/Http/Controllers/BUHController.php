@@ -17,11 +17,13 @@ use Illuminate\Support\Facades\Log;
 class BUHController extends Controller
 {
 
-    public function index(){
+    public function index()
+    {
         return view('csv_import_form');
     }
 
-    public function import(Request $request){
+    public function import(Request $request)
+    {
         set_time_limit(300);
         // Validate the uploaded file
         $fileValidator = Validator::make($request->all(), [
@@ -48,7 +50,7 @@ class BUHController extends Controller
         // Get the BUH ID from the logged-in user
         $buhId = Auth::user()->id;
 
-         // Retrieve owners (sales agents) under the specified BUH
+        // Retrieve owners (sales agents) under the specified BUH
         $owners = Owner::where('fk_buh', $buhId)->get();
         Log::info('Total owners retrieved for BUH ID ' . $buhId . ':', ['count' => $owners->count()]);
 
@@ -64,7 +66,7 @@ class BUHController extends Controller
             //$filePath = Storage::disk('public')->putFile('csv_uploads', $file);
             // Import the data into the database using the ContactsImport class
             $import = new ContactsImport($platform);
-            Excel::import($import, $file);   
+            Excel::import($import, $file);
             $allocator = new RoundRobinAllocator();
             $allocator->allocate();
         } catch (\Exception $e) {
@@ -113,12 +115,13 @@ class BUHController extends Controller
                 'invalid_count' => $invalidCount,
                 'duplicate_count' => $duplicateCount,
                 'file_links' => $fileLinks
-               // 'uploaded_file_path' => Storage::url($filePath) // Provide URL to the uploaded file
+                // 'uploaded_file_path' => Storage::url($filePath) // Provide URL to the uploaded file
             ]
         ]);
     }
 
-    private function exportCsv($fileName, $data){
+    private function exportCsv($fileName, $data)
+    {
         try {
             $csvContent = $this->arrayToCsv($data);
             // Save the file to the 'public' disk
@@ -132,7 +135,8 @@ class BUHController extends Controller
         }
     }
 
-    private function arrayToCsv(array $array){
+    private function arrayToCsv(array $array)
+    {
         $csv = fopen('php://temp', 'r+');
 
         foreach ($array as $row) {
@@ -152,12 +156,14 @@ class BUHController extends Controller
         return stream_get_contents($csv);
     }
 
-    public function saveUser(Request $request) {
+    public function saveUser(Request $request)
+    {
         $allowedDomains = ['lithan.com', 'educlaas.com', 'learning.educlaas.com'];
         $domainRegex = implode('|', array_map(function ($domain) {
             return preg_quote($domain, '/');
         }, $allowedDomains));
-    
+
+        // Validation rules
         $validator = Validator::make($request->all(), [
             'agentName' => 'required|string|max:255',
             'email' => [
@@ -165,7 +171,10 @@ class BUHController extends Controller
                 'string',
                 'email',
                 'max:255',
-                // 'unique:users',
+                // Uncomment and modify this line if you want to ensure email uniqueness
+                // Rule::unique('users')->where(function ($query) use ($request) {
+                //     return $query->where('role', 'Sales_Agent');
+                // }),
                 function ($attribute, $value, $fail) use ($domainRegex) {
                     if (!preg_match('/@(' . $domainRegex . ')$/', $value)) {
                         $fail('The email address must be one of the following domains: ' . str_replace('|', ', ', $domainRegex));
@@ -175,28 +184,39 @@ class BUHController extends Controller
             'hubspotId' => 'required|string|max:100',
             'businessUnit' => 'required|string|max:255',
             'country' => 'required|string|max:100',
-            'fk_buh' => 'required|integer'
+            'fk_buh' => 'required|integer',
         ]);
-    
+
         Log::info('Processing user registration for email: ' . $request->input('email'));
-    
+
         if ($validator->fails()) {
-            Log::error('Validation failed for email: ' . $request->input('email'));
+            Log::error('Validation failed for email: ' . $request->input('email'), $validator->errors()->toArray());
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
         }
-    
+
+        // Begin a database transaction
         DB::beginTransaction();
-    
+
         try {
+            // Check if the email already exists for the Sales_Agent role
+            $existingUser = User::where('email', $request->input('email'))->where('role', 'Sales_Agent')->first();
+            if ($existingUser) {
+                throw new \Exception('A Sales Agent with this email already exists.');
+            }
+
+            // Create the user
             $user = User::create([
                 'name' => $request->input('agentName'),
                 'email' => $request->input('email'),
                 'role' => $request->input('role'),
-                'password' => bcrypt($request->password),
+                'password' => bcrypt($request->password), // Consider using a more secure password generator
             ]);
-            Log::info("Foreign key for BUH " . $request->input('fk_buh'));
+
+            Log::info("Created User ID: {$user->id} for email: " . $request->input('email'));
+
+            // Create the owner (sale agent)
             $saleAgent = Owner::create([
                 'owner_name' => $request->input('agentName'),
                 'owner_email_id' => $request->input('email'),
@@ -206,30 +226,32 @@ class BUHController extends Controller
                 'country' => $request->input('country'),
                 'owner_pid' => $user->id
             ]);
-    
+
             DB::commit();
-    
+
             Log::info('Successfully saved user and sale agent for email: ' . $user->email);
-    
+
             return redirect()->route('owner#view')->with('success', 'Sale Agent successfully added');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Failed to save user and sale agent for email: ' . $request->input('email') . '. Error: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Failed to add Sale Agent. Please try again.');
+            return redirect()->back()->with('error', 'A user with this email already exists. Please use a different email address.')->withInput();
         }
-    }    
-    public function deleteOwner($owner_pid){
+    }
+
+    public function deleteOwner($owner_pid)
+    {
         DB::beginTransaction();
         try {
             // Delete the Owner record
             $owner = Owner::where('owner_pid', $owner_pid)->first();
-            
+
             if (!$owner) {
                 return redirect()->back()->with('error', 'Owner not found.');
             }
             // Finally, delete the Owner record
             $owner->delete();
-    
+
             DB::commit();
             return redirect()->route('owner#view')->with('success', "Owner and associated User deleted successfully.");
         } catch (\Exception $e) {
