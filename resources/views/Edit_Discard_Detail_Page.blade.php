@@ -203,6 +203,8 @@
                     <tr>
                         <th scope="col">No</th>
                         <th scope="col">Date</th>
+                        <th scope="col">Created Date</th>
+                        <th scope="col">Modified Date</th>
                         <th scope="col">Type</th>
                         <th scope="col">Description</th>
                         <th scope="col">Attachment</th>
@@ -223,6 +225,8 @@
                         <tr>
                             <td> {{ ++$i }} </td>
                             <td> {{ $engagement->date }} </td>
+                            <td>{{ \Carbon\Carbon::parse($engagement->created_at)->format('Y-m-d H:i:s') }}</td> <!-- Created Date -->
+                            <td>{{ \Carbon\Carbon::parse($engagement->updated_at)->format('Y-m-d H:i:s') }}</td> <!-- Modified Date -->
                             <td> {{ $engagement->activity_name }} </td>
                             <td> {{ $engagement->details }} </td>
                             <td>
