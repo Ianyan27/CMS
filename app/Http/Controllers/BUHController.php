@@ -7,12 +7,16 @@ use App\Models\User;
 use App\Services\RoundRobinAllocator;
 use Illuminate\Http\Request;
 use App\Imports\ContactsImport;
+use App\Models\Contact;
+use App\Models\TransferContacts;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\ValidationException;
 
 class BUHController extends Controller
 {
@@ -260,4 +264,136 @@ class BUHController extends Controller
             return redirect()->back()->with('error', 'Failed to delete Owner. Please try again.');
         }
     }
+
+    public function transferContact($owner_pid) {
+        $user = Auth::user()->email;
+        $ownerList = Owner::all(); // Fetch all owners
+        $owner = Owner::where('owner_pid', $owner_pid)->first(); // Fetch the current owner
+        $viewContact = Contact::where('fk_contacts__owner_pid', $owner_pid)->paginate(50);
+    
+        // Debugging
+        // dd($owner);
+    
+        return view('Transfer_Contacts_Page', [
+            'user' => $user,
+            'owner' => $owner,
+            'ownerList' => $ownerList,
+            'viewContact' => $viewContact
+        ]);
+    }
+
+    public function transfer(Request $request){
+        try {
+            // Validate the input
+            $validated = $request->validate([
+                'transferMethod' => 'required|string',
+                'contact_pid' => 'nullable|array',
+                'contact_pid.*' => 'exists:contacts,contact_pid',
+            ]);
+
+            // Determine the selected transfer method
+            $transferMethod = $validated['transferMethod'];
+            $selectedContacts = $validated['contact_pid'] ?? [];
+
+            // If "Select all Contacts" is chosen, get all contact PIDs
+            if ($transferMethod === 'Select all Contacts') {
+                $selectedContacts = Contact::pluck('contact_pid')->toArray();
+            }
+
+            if (empty($selectedContacts)) {
+                return redirect()->back()->with('warning', 'Please select at least one contact to transfer.');
+            }
+
+            $totalContacts = count($selectedContacts);
+            Session::put('progress', 0);
+
+            foreach ($selectedContacts as $index => $contactPid) {
+                $contact = Contact::where('contact_pid', $contactPid)->first();
+
+                if ($contact) {
+                    // Transfer logic
+                    $transferContact = new TransferContacts();
+                    $transferContact->name = $contact->name;
+                    $transferContact->email = $contact->email;
+                    $transferContact->contact_number = $contact->contact_number;
+                    $transferContact->address = $contact->address;
+                    $transferContact->country = $contact->country;
+                    $transferContact->qualification = $contact->qualification;
+                    $transferContact->job_role = $contact->job_role;
+                    $transferContact->company_name = $contact->company_name;
+                    $transferContact->skills = $contact->skills;
+                    $transferContact->social_profile = $contact->social_profile;
+                    $transferContact->status = $contact->status;
+                    $transferContact->source = $contact->source;
+                    $transferContact->datetime_of_hubspot_sync = $contact->datetime_of_hubspot_sync;
+                    $transferContact->save();
+                    $contact->delete();
+                }
+
+                // Update progress
+                $progress = intval((($index + 1) / $totalContacts) * 100);
+                Session::put('progress', $progress);
+            }
+
+            // Ensure progress reaches 100% after completion
+            Session::put('progress', 100);
+
+            return redirect()->back()->with('success', 'Contact Successfully Transferred.');
+        } catch (ValidationException $e) {
+            return redirect()->back()->with('error', 'Contact Transfer Failed.');
+        }
+    }
+    
+    public function getContacts($owner_pid) {
+        try {
+            Log::info('Transferring contacts to sales agent with PID: ' . $owner_pid);
+
+            // Retrieve all contacts from TransferContacts table
+            $transferContacts = TransferContacts::all();
+
+            // Check if there are contacts to transfer
+            if ($transferContacts->isEmpty()) {
+                Log::warning('No contacts found in TransferContacts table.');
+                return redirect()->back()->with('warning', 'No contacts found to transfer.');
+            }
+
+            // Loop through each contact and assign it to the selected sales agent
+            foreach ($transferContacts as $transferContact) {
+                // Create a new Contact instance
+                $contact = new Contact();
+                $contact->fk_contacts__owner_pid = $owner_pid;
+                $contact->name = $transferContact->name;
+                $contact->email = $transferContact->email;
+                $contact->contact_number = $transferContact->contact_number;
+                $contact->address = $transferContact->address;
+                $contact->country = $transferContact->country;
+                $contact->qualification = $transferContact->qualification;
+                $contact->job_role = $transferContact->job_role;
+                $contact->company_name = $transferContact->company_name;
+                $contact->skills = $transferContact->skills;
+                $contact->social_profile = $transferContact->social_profile;
+                $contact->status = $transferContact->status;
+                $contact->source = $transferContact->source;
+                $contact->datetime_of_hubspot_sync = $transferContact->datetime_of_hubspot_sync;
+
+                // Save the new contact to the Contacts table
+                if ($contact->save()) {
+                    Log::info('Contact transferred successfully: ' . $contact->name);
+
+                    // Delete the transferred contact from the TransferContacts table
+                    $transferContact->delete();
+                    Log::info('Transferred contact deleted: ' . $transferContact->name);
+                } else {
+                    Log::warning('Failed to save transferred contact: ' . $contact->name);
+                }
+            }
+
+            return redirect()->back()->with('success', 'Contacts assigned to sales agent successfully!');
+        } catch (\Exception $e) {
+            // Handle any unexpected exceptions
+            Log::error('An error occurred during the contact transfer process:', ['exception' => $e->getMessage()]);
+            return redirect()->back()->with('error', 'An error occurred while assigning contacts to the sales agent.');
+        }
+    }
+
 }

@@ -125,9 +125,11 @@
                                 <td class="text-center">{{ $owners->total_hubspot_sync }}</td>
                                 <td class="text-center">{{ $owners->total_in_progress }}</td>
                                 <td>
-                                    <a href="{{ route('owner#view-owner', $owners->owner_pid) }}"
-                                        class="btn hover-action" data-toggle="tooltip" title="View"
-                                        style="padding: 10px 12px;">
+                                    <a href=" {{ route('owner#transfer-contact', $owners->owner_pid) }} " class="btn hover-action" style="padding: 10px 12px;">
+                                        <i class="fa-solid fa-right-left"></i>
+                                    </a>
+                                    <a href="{{ route('owner#view-owner', $owners->owner_pid) }}" class="btn hover-action"
+                                        data-toggle="tooltip" title="View" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
                                     <!-- Delete button triggers the modal -->
