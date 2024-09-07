@@ -170,4 +170,13 @@ Route::group(['prefix' => 'buh'], function () {
     Route::get('/view-contact/{contact_pid}', [
         OwnerController::class, 'viewContact'
         ])->name('owner#view-contact');
+    Route::get('/transfer-contacts/{owner_pid}', [
+        BUHController::class, 'transferContact'
+    ])->name('owner#transfer-contact');
+    Route::post('/transfer', [
+        BUHController::class, 'transfer'
+    ])->name('owner#transfer');
+    Route::post('/get-contacts/{owner_pid}', [
+        BUHController::class, 'getContacts'
+    ])->name('owner#get-contacts');
 });
