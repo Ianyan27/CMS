@@ -17,8 +17,8 @@ body {
 }
 
 .container-max-height{
-    min-height: 700px;
-    max-height: 730px;
+    min-height: 650px;
+    max-height: 700px;
 }
 
 .table-container{
@@ -203,6 +203,23 @@ tbody {
     background-color: #ff9c84;
 }
 
+.inactive-btn{
+    background-color: #FF4C4C;
+    color: #ffffff;
+    border: 1px solid #FF4C4C;
+}
+
+.active-btn {
+    background-color: #28a745; 
+    color: #ffffff;            
+    border: 1px solid #28a745; 
+}
+.active-btn:hover {
+    background-color: #28a745; 
+    color: #ffffff;            
+    border: 1px solid #28a745; 
+}
+
 /* Dashboard & Navigation */
 .dashboard {
     background-color: white;
@@ -381,7 +398,8 @@ tbody {
     border: 1px solid #2C3E50;
 }
 
-.discard-table:hover {
+.discard-table:hover,
+.inactive-btn:hover {
     background-color: #FF4C4C;
     color: #ffffff;
     border: 1px solid #FF4C4C;

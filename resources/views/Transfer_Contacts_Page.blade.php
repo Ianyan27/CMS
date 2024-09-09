@@ -21,8 +21,6 @@
             line-height: 25px;
             border-radius: 5px;
         }
-
-
 </style>
 @section('content')
 @if (Auth::check() && Auth::user()->role == 'BUH')
@@ -92,35 +90,54 @@
         </div>
     @endif
     <div class="container-max-height">
-        <form action=" {{ route('owner#transfer') }} " method="POST">
+        <form class="transfer-form-container" action=" {{ route('owner#transfer') }} " method="POST">
             <input type="hidden" name="owner_pid" value=" {{ $owner->owner_pid }} " readonly>
             @csrf
+            <div class="d-flex justify-content-start align-items-center mb-3">
+                <div class="d-flex justify-content-between align-items-center p-2 border rounded">
+                    <span class="font-weight-bold" style="margin: 0px 1rem 0 0.25rem;">Name: {{$owner->owner_name}}</span>
+                    <button class="btn hover-action">
+                        Total Contacts: {{$countAllContacts}}
+                    </button>
+                    <span 
+                        class="mx-4 btn 
+                            @if ($owner->status === 'inactive')
+                                inactive-btn
+                            @elseif ($owner->status === 'active')
+                                active-btn
+                            @endif
+                        ">
+                        Status: 
+                        @if ($owner->status === 'inactive')
+                            Inactive
+                        @elseif ($owner->status === 'active')
+                            Active
+                        @endif
+                    </span>
+
+                    @if ($owner->status === 'inactive')
+                        <button type="button" class="btn active-btn" onclick="updateStatusOwner({{ $owner->owner_pid }})">
+                            Activate Sales Agent
+                        </button>
+                    @elseif ($owner->status === 'active')
+                        <button type="button" class="btn inactive-btn" onclick="updateStatusOwner({{ $owner->owner_pid }})">
+                            Deactivate Sales Agent
+                        </button>
+                    @endif
+                </div>
+            </div>
             <div class="table-title d-flex justify-content-between align-items-center mb-3">
                 <div class="d-flex align-items-center">
                     <h2 style="margin: 0 0.5rem 0 0.25rem;" class="font-educ headings">Transferable Contacts</h2>
                     <button type="button" class="btn btn-danger mx-4" data-toggle="modal" data-target="#transferContact">
                         Transfer Contacts <i class="fa-solid fa-right-left"></i>
                     </button>
-                    <button class="btn btn-primary">
-                        {{ $owner->status }}
-                    </button>
-                    @if ($owner->status === 'inactive')
-                        <button type="button" class="btn hover-action mx-4" onclick="updateStatusOwner( {{ $owner->owner_pid }} )">
-                            Activate Sale Agent.
-                        </button>
-                    @endif
-                    
-                    @if ($owner->status === 'active')
-                        <button type="button" class="btn discard-table mx-4" onclick="updateStatusOwner({{ $owner->owner_pid }})">
-                            Deactivate Sales Agent.
-                        </button>
-                    @endif
                 </div>
                 <div class="d-flex align-items-center mr-3">
                     <div class="search-box d-flex align-items-center mr-3 mb-2">
                         <input type="search" class="form-control mr-1" placeholder="Search Name or Email..." id="search-input"
                             aria-label="Search">
-                        <button class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search">
+                        <button style="padding: 10px 12px;" class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search">
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </button>
                     </div>

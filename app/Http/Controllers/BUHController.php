@@ -277,6 +277,7 @@ class BUHController extends Controller
         $discardedContacts = ContactDiscard::where('fk_contact_discards__owner_pid', $owner_pid)->get();
         
         $allContacts = $contacts->concat($archivedContacts)->concat($discardedContacts);
+        $countAllContacts = $allContacts->count();
         
         $perPage = 50;
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
@@ -290,6 +291,7 @@ class BUHController extends Controller
             'owner' => $owner,
             'viewContact' => $paginatedContacts,
             'isEmpty' => $isEmpty,
+            'countAllContacts' => $countAllContacts
         ]);
     }
 
@@ -443,7 +445,6 @@ class BUHController extends Controller
         try {
             // Call the allocate method to assign contacts
             $allocator->allocate();
-
             // If allocation is successful, redirect back with a success message
             return redirect()->back()->with('success', 'Contacts successfully assigned.');
         } catch (\Exception $e) {
