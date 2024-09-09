@@ -101,6 +101,7 @@
                                 title="Total contacts synced in HubSpot">Total Hubspot Sync</th>
                             <th scope="col" class="text-center" data-toggle="tooltip" data-placement="top"
                                 title="Total engaging contacts">Total In Progress</th>
+                            <th scope="col">Status</th>
                             <th scope="col" class="text-center">Action</th>
                         </tr>
                     </thead>
@@ -127,10 +128,18 @@
                                     {{ $owners['country'] }}
                                 </td>
                                 @inject('contactModel', 'App\Models\Contact')
+                                @inject('contactArchiveModel', 'App\Models\ContactArchive')
+                                @inject('contactDiscardModel', 'App\Models\ContactDiscard')
                                 <td class="text-center">
-                                    {{ $contactModel->where('fk_contacts__owner_pid', $owners->owner_pid)->count() }}</td>
+                                    {{
+                                        $contactModel->where('fk_contacts__owner_pid', $owners->owner_pid)->count() +
+                                        $contactArchiveModel->where('fk_contact_archives__owner_pid', $owners->owner_pid)->count() +
+                                        $contactDiscardModel->where('fk_contact_discards__owner_pid', $owners->owner_pid)->count()
+                                    }}
+                                </td>
                                 <td class="text-center">{{ $owners->total_hubspot_sync }}</td>
                                 <td class="text-center">{{ $owners->total_in_progress }}</td>
+                                <td > {{ $owners->status }} </td>
                                 <td class="d-flex justify-content-between align-items-center">
                                     <a href=" {{ route('owner#transfer-contact', $owners->owner_pid) }} " class="btn hover-action" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-right-left"></i>

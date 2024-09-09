@@ -16,8 +16,7 @@ use Illuminate\Support\Facades\Log;
 class OwnerController extends Controller
 {
 
-    public function owner()
-    {
+    public function owner(){
         // Get the current authenticated user
         $user = Auth::user();
         // Check if the user is a BUH or Admin
@@ -25,6 +24,8 @@ class OwnerController extends Controller
             // If the user is BUH, filter owners by the BUH's fk_buh
             $owner = Owner::where('fk_buh', $user->id)->paginate(10);
             $contact = Contact::where('fk_contacts__owner_pid', null)->count();
+            // $archiveContact = ContactArchive::where('fk_contact_archives__owner_pid', null)->count();
+            // $discardContact = ContactDiscard::where('fk_contact_discards__owner_pid', null)->count();
             Log::info("Total of unassigned contacts: " . $contact);
         } else {
             // If the user is Admin, show all owners
@@ -70,8 +71,8 @@ class OwnerController extends Controller
 
 
 
-    public function viewOwner($owner_pid)
-    {
+    public function viewOwner($owner_pid){
+        $owner = Owner::where('owner_pid', $owner_pid)->first();
         // Execute the queries to get the actual data
         $editOwner = Owner::where('owner_pid', $owner_pid)->first();
 
@@ -122,7 +123,8 @@ class OwnerController extends Controller
             'hubspotCurrentEngagingContact' => $hubspotCurrentEngagingContact,
             'ownerContacts' => $ownerContacts,
             'ownerArchive' => $ownerArchive,
-            'ownerDiscard' => $ownerDiscard
+            'ownerDiscard' => $ownerDiscard,
+            'owner' => $owner
         ]);
     }
 
@@ -139,12 +141,13 @@ class OwnerController extends Controller
         return redirect()->route('owner#view-owner', ['owner_pid' => $owner_pid])->with('success', 'Sale Agent updated successfully.');
     }
 
-    public function viewContact($contact_pid)
-    {
+    public function viewContact($contact_pid){
+        $user = Auth::user();
         /* Retrieve the contact record with the specified 'contact_pid' and pass
          it to the 'Edit_Contact_Detail_Page' view for editing. */
+        $owner = Owner::where('owner_email_id',$user->email)->first();
         $editContact = Contact::where('contact_pid', $contact_pid)->first();
-        $user = Auth::user();
+        
         $engagements = Engagement::where('fk_engagements__contact_pid', $contact_pid)->get();
         $engagementsArchive = EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $contact_pid)->get();
         $updateEngagement = $engagements->first();
@@ -153,7 +156,8 @@ class OwnerController extends Controller
             'editContact' => $editContact,
             'engagements' => $engagements,
             'updateEngagement' => $updateEngagement,
-            'engagementArchive' => $engagementsArchive
+            'engagementArchive' => $engagementsArchive,
+            'owner'=> $owner
         ]);
     }
 }

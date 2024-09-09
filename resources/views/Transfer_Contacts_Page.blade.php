@@ -27,7 +27,6 @@
 @section('content')
 @if (Auth::check() && Auth::user()->role == 'BUH')
     @if (Session::has('success'))
-        <!-- Success Modal -->
         <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content rounded-0">
@@ -60,7 +59,29 @@
                         </h5>
                     </div>
                     <div class="modal-body" style="color: #91264c;border:none;">
-                        {{ session('warning') }}
+                        {{ Session::get('warning') }}
+                    </div>
+                    <div class="modal-footer" style="border:none;">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                            style="background: #91264c; color:white;">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+    @if (Session::has('error'))
+        <!-- Success Modal -->
+        <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content rounded-0">
+                    <div class="modal-header"
+                        style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+                    border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
+                        <h5 class="modal-title" id="errorModalLabel" style="color: #91264c"><strong>Error</strong>
+                        </h5>
+                    </div>
+                    <div class="modal-body" style="color: #91264c;border:none;">
+                        {{ Session::get('error') }}
                     </div>
                     <div class="modal-footer" style="border:none;">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal"
@@ -80,10 +101,19 @@
                     <button type="button" class="btn btn-danger mx-4" data-toggle="modal" data-target="#transferContact">
                         Transfer Contacts <i class="fa-solid fa-right-left"></i>
                     </button>
-                    @if ($isEmpty)
-                    <button type="button" class="btn discard-table mx-4" onclick="updateStatusOwner({{ $owner->owner_pid }})">
-                        Remove Sales Agent.
+                    <button class="btn btn-primary">
+                        {{ $owner->status }}
                     </button>
+                    @if ($owner->status === 'inactive')
+                        <button type="button" class="btn hover-action mx-4" onclick="updateStatusOwner( {{ $owner->owner_pid }} )">
+                            Activate Sale Agent.
+                        </button>
+                    @endif
+                    
+                    @if ($owner->status === 'active')
+                        <button type="button" class="btn discard-table mx-4" onclick="updateStatusOwner({{ $owner->owner_pid }})">
+                            Deactivate Sales Agent.
+                        </button>
                     @endif
                 </div>
                 <div class="d-flex align-items-center mr-3">
@@ -127,7 +157,11 @@
                         @forelse ($viewContact as $contact)
                             <tr>
                                 <td>
-                                    <input class="contact-checkbox" type="checkbox" name="contact_pid[]" value=" {{ $contact->contact_pid }} ">
+                                    <input class="contact-checkbox" type="checkbox" name="contact_pid[]" value=" {{ 
+                                        $contact->contact_pid ?? 
+                                        $contact->contact_archive_pid ?? 
+                                        $contact->contact_discard_pid 
+                                        }} ">
                                 </td>
                                 <td>{{ ++$i }}</td>
                                 <td>{{ $contact->name }}</td>
@@ -324,7 +358,7 @@
         </div>
 @endif
     @if (Session::has('success'))
-        <script type="text/javascript">
+        <script>
             $(document).ready(function() {
                 $('#successModal').modal('show');
             });
@@ -335,6 +369,9 @@
             $('#errorModal').modal('show');
             @if (Session::has('warning'))
                 $('#warningModal').modal('show');
+            @endif
+            @if (Session::has('error'))
+                $('#errorModal').modal('show');
             @endif
         });
     </script>
