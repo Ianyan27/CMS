@@ -8,11 +8,9 @@ use App\Models\ContactDiscard;
 use App\Models\Engagement;
 use App\Models\EngagementArchive;
 use App\Models\Owner;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class OwnerController extends Controller
@@ -26,6 +24,8 @@ class OwnerController extends Controller
         if ($user->role == 'BUH') {
             // If the user is BUH, filter owners by the BUH's fk_buh
             $owner = Owner::where('fk_buh', $user->id)->paginate(10);
+            $contact = Contact::where('fk_contacts__owner_pid', null)->count();
+            Log::info("Total of unassigned contacts: " . $contact);
         } else {
             // If the user is Admin, show all owners
             $owner = Owner::paginate(10);
@@ -38,7 +38,8 @@ class OwnerController extends Controller
         return view('Sale_Agent_Page', [
             'owner' => $owner,
             'user' => $user,
-            'hubspotSalesAgents' => $hubspotSalesAgents
+            'hubspotSalesAgents' => $hubspotSalesAgents,
+            'contact' => $contact
         ]);
     }
 

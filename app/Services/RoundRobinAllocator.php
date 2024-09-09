@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Contact;
 use App\Models\Owner;
+use App\Models\TransferContacts;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -16,7 +17,11 @@ class RoundRobinAllocator
 
         try {
             // Retrieve owners under the specified BUH, sorted by owner_pid
-            $owners = Owner::where('fk_buh', $buhId)->get()->sortBy('owner_pid')->values();
+            $owners = Owner::where('fk_buh', $buhId)
+                            ->where('status', 'active')
+                            ->get()
+                            ->sortBy('owner_pid')
+                            ->values();
             Log::info('Total owners retrieved for BUH ID ' . $buhId . ':', ['count' => $owners->count()]);
 
             if ($owners->isEmpty()) {

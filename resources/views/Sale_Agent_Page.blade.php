@@ -30,7 +30,7 @@
             <!-- Success Modal -->
             <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
-                    <div class="modal-content">
+                    <div class="modal-content rounded-0">
                         <div class="modal-header"
                             style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
                         border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
@@ -56,6 +56,14 @@
                         data-target="#addSalesAgentModal" style="padding: 10px 12px;">
                         <i class="fa-solid fa-square-plus"></i>
                     </button>
+                    @if ($contact > 0)
+                        <form class="m-0" action=" {{ route('owner#assign-contact') }} " method="POST">
+                            @csrf
+                            <button type="submit" class="btn archive-table mx-5">
+                                Assign Contacts
+                            </button>
+                        </form>
+                    @endif
                 </div>
                 <div class="d-flex align-items-center mr-3">
                     <div class="search-box d-flex align-items-center ml-3">
@@ -93,8 +101,7 @@
                                 title="Total contacts synced in HubSpot">Total Hubspot Sync</th>
                             <th scope="col" class="text-center" data-toggle="tooltip" data-placement="top"
                                 title="Total engaging contacts">Total In Progress</th>
-
-                            <th scope="col ">Action</th>
+                            <th scope="col" class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody class="text-left fonts">
@@ -124,7 +131,7 @@
                                     {{ $contactModel->where('fk_contacts__owner_pid', $owners->owner_pid)->count() }}</td>
                                 <td class="text-center">{{ $owners->total_hubspot_sync }}</td>
                                 <td class="text-center">{{ $owners->total_in_progress }}</td>
-                                <td>
+                                <td class="d-flex justify-content-between align-items-center">
                                     <a href=" {{ route('owner#transfer-contact', $owners->owner_pid) }} " class="btn hover-action" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-right-left"></i>
                                     </a>

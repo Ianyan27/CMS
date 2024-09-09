@@ -2,6 +2,28 @@
 
 @extends('layouts.app')
 
+<style>
+    .progress-container {
+            width: 100%;
+            background-color: #f3f3f3;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            height: 25px;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: #4caf50;
+            text-align: center;
+            color: white;
+            line-height: 25px;
+            border-radius: 5px;
+        }
+
+
+</style>
 @section('content')
 @if (Auth::check() && Auth::user()->role == 'BUH')
     @if (Session::has('success'))
@@ -50,6 +72,7 @@
     @endif
     <div class="container-max-height">
         <form action=" {{ route('owner#transfer') }} " method="POST">
+            <input type="hidden" name="owner_pid" value=" {{ $owner->owner_pid }} " readonly>
             @csrf
             <div class="table-title d-flex justify-content-between align-items-center mb-3">
                 <div class="d-flex align-items-center">
@@ -57,9 +80,11 @@
                     <button type="button" class="btn btn-danger mx-4" data-toggle="modal" data-target="#transferContact">
                         Transfer Contacts <i class="fa-solid fa-right-left"></i>
                     </button>
-                    <button type="button" class="btn hover-action" onclick="transferContacts({{ $owner->owner_pid }})">
-                        Get Contacts
+                    @if ($isEmpty)
+                    <button type="button" class="btn discard-table mx-4" onclick="updateStatusOwner({{ $owner->owner_pid }})">
+                        Remove Sales Agent.
                     </button>
+                    @endif
                 </div>
                 <div class="d-flex align-items-center mr-3">
                     <div class="search-box d-flex align-items-center mr-3 mb-2">
@@ -128,7 +153,7 @@
                                     <span class="status-indicator"
                                         style="background-color:
                                         @if ($contact['status'] === 'HubSpot Contact') #FFE8E2;color:#FF5C35;
-                                        @elseif ($contact['status'] === 'discard')
+                                        @elseif ($contact['status'] === 'Discard')
                                             #FF7F86; color: #BD000C;
                                         @elseif ($contact['status'] === 'InProgress')
                                             #FFF3CD; color: #FF8300;
@@ -139,7 +164,7 @@
                                         ">
                                         @if ($contact['status'] === 'HubSpot Contact')
                                             HubSpot
-                                        @elseif ($contact['status'] === 'discard')
+                                        @elseif ($contact['status'] === 'Discard')
                                             Discard
                                         @elseif ($contact['status'] === 'InProgress')
                                             In Progress
@@ -151,10 +176,10 @@
                                     </span> 
                                 </td>
                                 <td>
-                                    <a href=" {{ route('owner#view-contact', $contact->contact_pid) }} "
+                                    {{-- <a href=" {{ route('owner#view-contact', $contact->contact_pid) }} "
                                         class="btn hover-action" data-toggle="tooltip" title="View">
                                         <i class="fa-solid fa-eye"></i>
-                                    </a>
+                                    </a> --}}
                                 </td>
                             </tr>
                         @empty
@@ -206,8 +231,8 @@
                                     </div>
                                 </div>
                                 <!-- Progress Bar -->
-                                <div class="progress my-3">
-                                    <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                                <div class="progress-container">
+                                    <div class="progress-bar" id="progress-bar">0%</div>
                                 </div>
                             </div>
                             <div class="modal-footer" style="border:none;">
@@ -298,7 +323,6 @@
             <strong>Access Denied!</strong> You do not have permission to view this page.
         </div>
 @endif
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     @if (Session::has('success'))
         <script type="text/javascript">
             $(document).ready(function() {
@@ -309,83 +333,12 @@
     <script>
         $(document).ready(function() {
             $('#errorModal').modal('show');
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
             @if (Session::has('warning'))
                 $('#warningModal').modal('show');
             @endif
         });
     </script>
-</script>
-    </script>
     <script>
-        function transferContacts(ownerPid) {
-            
-            // Construct URL directly
-            let url = `/buh/get-contacts/${ownerPid}`;
-            
-            // Create a form dynamically
-            let form = document.createElement('form');
-            form.method = 'POST';
-            form.action = url;
-            
-            // Add CSRF token
-            let csrfToken = document.createElement('input');
-            csrfToken.type = 'hidden';
-            csrfToken.name = '_token';
-            csrfToken.value = '{{ csrf_token() }}';
-            form.appendChild(csrfToken);
-            
-            // Submit the form
-            document.body.appendChild(form);
-            form.submit();
-        }
-    </script>
-    <script>
-        document.getElementById('select-all').addEventListener('click', function(event) {
-            const checkboxes = document.querySelectorAll('.contact-checkbox');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = event.target.checked;
-            });
-        });
-        document.addEventListener('DOMContentLoaded', function() {
-            const checkboxes = document.querySelectorAll('.contact-checkbox');
-            const selectedCount = document.getElementById('selectedCount');
-            
-            // Function to update the count
-            function updateCount() {
-                const checkedCount = document.querySelectorAll('.contact-checkbox:checked').length;
-                selectedCount.textContent = checkedCount;
-            }
-
-            // Attach the updateCount function to each checkbox
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', updateCount);
-            });
-
-            // Also update the count if the "Select All" checkbox is clicked
-            document.getElementById('select-all').addEventListener('change', updateCount);
-        });
-
-    </script>
-    <script>
-        document.getElementById('search-name').addEventListener('keyup', function() {
-            var input = this.value.toLowerCase();
-            var rows = document.querySelectorAll('#sales-agents-table tbody tr');
-
-            rows.forEach(function(row) {
-                var nameCell = row.querySelector('td:nth-child(1)'); // Target the first column (Name)
-                var nameText = nameCell.textContent || nameCell.innerText;
-
-                if (nameText.toLowerCase().includes(input)) {
-                    row.style.display = ''; // Show the row if it matches the search input
-                } else {
-                    row.style.display = 'none'; // Hide the row if it doesn't match
-                }
-            });
-        });
         document.addEventListener('DOMContentLoaded', function () {
             @if ($errors->any())
                 var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
@@ -393,4 +346,9 @@
             @endif
         });
     </script>
+    <script src=" {{ asset('js/progress_bar.js') }} "></script>
+    <script src=" {{ asset('js/transfer_contact.js') }} "></script>
+    <script src=" {{ asset('js/checkbox_table.js') }} "></script>
+    <script src=" {{ asset('js/search_name.js') }} "></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 @endsection

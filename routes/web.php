@@ -13,6 +13,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\HubspotContactController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 
 // Default Route
 Route::get('/', function () {
@@ -176,7 +177,14 @@ Route::group(['prefix' => 'buh'], function () {
     Route::post('/transfer', [
         BUHController::class, 'transfer'
     ])->name('owner#transfer');
-    Route::post('/get-contacts/{owner_pid}', [
-        BUHController::class, 'getContacts'
-    ])->name('owner#get-contacts');
+    Route::post('/assign-contact', [
+        BUHController::class, 'assignContacts'
+    ])->name('owner#assign-contact');
+    Route::post('/update-status-owner/{owner_pid}', [
+        BUHController::class, 'updateStatusOwner'
+    ])->name('owner#update-status-owner');
+    Route::get('/progress', [
+        BUHController::class, 'getProgress'
+    ])->name('progress');
+    
 });
