@@ -53,6 +53,8 @@
                                     </button>
                                     <div id="attachment-error-archive" class="text-danger mt-2" style="display: none;">
                                         Attachment is required.</div>
+                                    <div id="attachment-wrong" class="text-danger mt-2" style="display: none;">
+                                        Please upload only image files.</div>
                                 </div>
                                 <div id="file-names" class="file-list"></div> <!-- Display filenames here -->
                             </div>
@@ -76,3 +78,37 @@
         </div>
     </div>
 </div>
+<script>
+    document.getElementById('activity-attachment').addEventListener('change', function(event) {
+        const allowedExtensions = ['image/jpeg', 'image/png', 'image/jpg'];
+        const files = event.target.files;
+        let valid = true;
+
+        // Check each file type
+        for (let i = 0; i < files.length; i++) {
+            if (!allowedExtensions.includes(files[i].type)) {
+                valid = false;
+                break;
+            }
+        }
+
+        if (!valid) {
+            // Show error message
+            document.getElementById('attachment-wrong').style.display = 'block';
+            // Clear the file input
+            event.target.value = '';
+        } else {
+            // Hide error message
+            document.getElementById('attachment-wrong').style.display = 'none';
+        }
+    });
+
+    function validateFile() {
+        const fileInput = document.getElementById('activity-attachment');
+        if (fileInput.files.length === 0) {
+            document.getElementById('attachment-wrong').style.display = 'block';
+            return false;
+        }
+        document.getElementById('addActivityForm').submit();
+    }
+</script>
