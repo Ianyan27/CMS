@@ -101,13 +101,33 @@
                                 title="Total contacts synced in HubSpot">Total Hubspot Sync</th>
                             <th scope="col" class="text-center" data-toggle="tooltip" data-placement="top"
                                 title="Total engaging contacts">Total In Progress</th>
-                            <th scope="col">Status</th>
+                            <th class="position-relative" scope="col">
+                                Status
+                                <i style="cursor: pointer;" class="fa-solid fa-filter" id="filterIcon"
+                                    onclick="toggleFilterStatus()"></i>
+                                <!-- Filter Container -->
+                                <div id="filterStatusContainer" class="filter-popup container rounded-bottom"
+                                    style="display: none;">
+                                    <div class="row">
+                                        <div class="filter-option">
+                                            <input class="ml-3" type="checkbox" id="active" name="status"
+                                                value="active" onclick="applyStatusFilter()">
+                                            <label for="active" style= "color: #006400;">Active</label>
+                                        </div>
+                                        <div class="filter-option">
+                                            <input class="ml-3" type="checkbox" id="inactive" name="status"
+                                                value="inactive" onclick="applyStatusFilter()">
+                                            <label for="inactive" style="color: #8b0000;">Inactive</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th>
                             <th scope="col" class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody class="text-left fonts">
                         @foreach ($owner as $owners)
-                            <tr>
+                            <tr data-status="{{ $owners->status }}">
                                 <td>{{ $owners->owner_name }}</td>
                                 <td>{{ $owners->owner_hubspot_id }}</td>
                                 <td>
@@ -151,8 +171,6 @@
                                             Inactive
                                         @endif
                                     </span>
-
-
                                 </td>
                                 <td class="d-flex justify-content-between align-items-center">
                                     <a href=" {{ route('owner#transfer-contact', $owners->owner_pid) }} " class="btn hover-action" 
@@ -254,6 +272,7 @@
         </div>
     @endif
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src=" {{asset('js/filter_status.js')}} "></script>
     @if (Session::has('success'))
         <script type="text/javascript">
             $(document).ready(function() {
