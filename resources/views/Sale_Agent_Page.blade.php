@@ -56,14 +56,7 @@
                         data-target="#addSalesAgentModal" style="padding: 10px 12px;">
                         <i class="fa-solid fa-square-plus"></i>
                     </button>
-                    @if ($contact > 0)
-                        <form class="m-0" action=" {{ route('owner#assign-contact') }} " method="POST">
-                            @csrf
-                            <button type="submit" class="btn archive-table mx-5">
-                                Assign Contacts
-                            </button>
-                        </form>
-                    @endif
+
                 </div>
                 <div class="d-flex align-items-center mr-3">
                     <div class="search-box d-flex align-items-center ml-3">
@@ -151,20 +144,17 @@
                                 @inject('contactArchiveModel', 'App\Models\ContactArchive')
                                 @inject('contactDiscardModel', 'App\Models\ContactDiscard')
                                 <td class="text-center">
-                                    {{
-                                        $contactModel->where('fk_contacts__owner_pid', $owners->owner_pid)->count() +
+                                    {{ $contactModel->where('fk_contacts__owner_pid', $owners->owner_pid)->count() +
                                         $contactArchiveModel->where('fk_contact_archives__owner_pid', $owners->owner_pid)->count() +
-                                        $contactDiscardModel->where('fk_contact_discards__owner_pid', $owners->owner_pid)->count()
-                                    }}
+                                        $contactDiscardModel->where('fk_contact_discards__owner_pid', $owners->owner_pid)->count() }}
                                 </td>
                                 <td class="text-center">{{ $owners->total_hubspot_sync }}</td>
                                 <td class="text-center">{{ $owners->total_in_progress }}</td>
                                 <td>
-                                    <span class="status-indicator" 
+                                    <span class="status-indicator"
                                         style="background-color:  
-                                            @if ($owners->status === 'active')#90ee90; color: #006400;
-                                            @elseif($owners->status === 'inactive')#ff7f7f; color: #8b0000;
-                                            @endif"> 
+                                            @if ($owners->status === 'active') #90ee90; color: #006400;
+                                            @elseif($owners->status === 'inactive')#ff7f7f; color: #8b0000; @endif">
                                         @if ($owners->status === 'active')
                                             Active
                                         @elseif ($owners->status === 'inactive')
@@ -173,15 +163,15 @@
                                     </span>
                                 </td>
                                 <td class="d-flex justify-content-between align-items-center">
-                                    <a href=" {{ route('owner#transfer-contact', $owners->owner_pid) }} " class="btn hover-action" 
-                                        style="padding: 10px 12px;">
+                                    <a href=" {{ route('owner#transfer-contact', $owners->owner_pid) }} "
+                                        class="btn hover-action" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-right-left"></i>
                                     </a>
-                                    <a href="{{ route('owner#view-owner', $owners->owner_pid) }}" class="btn hover-action" 
-                                        style="padding: 10px 12px;">
+                                    <a href="{{ route('owner#view-owner', $owners->owner_pid) }}"
+                                        class="btn hover-action" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
-                                    
+
                                     <a class="btn hover-action" style="padding: 10px 12px;" data-toggle="modal"
                                         data-target="#deleteOwnerModal{{ $owners->owner_pid }}">
                                         <i class="fa-solid fa-trash"></i>

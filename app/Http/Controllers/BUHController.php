@@ -14,6 +14,7 @@ use App\Models\Contact;
 use App\Models\ContactArchive;
 use App\Models\ContactDiscard;
 use App\Models\Log as ModelsLog;
+use App\Models\MovedContact;
 use App\Models\TransferContacts;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Maatwebsite\Excel\Facades\Excel;
@@ -79,7 +80,7 @@ class BUHController extends Controller
             $import = new ContactsImport($platform);
             Excel::import($import, $file);
             $allocator = new RoundRobinAllocator();
-            $allocator->allocate();
+            $allocator->allocate(Contact::class);
         } catch (\Exception $e) {
 
             return response()->json([
@@ -167,7 +168,8 @@ class BUHController extends Controller
         return stream_get_contents($csv);
     }
 
-    public function saveUser(Request $request){
+    public function saveUser(Request $request)
+    {
 
         $allowedDomains = ['lithan.com', 'educlaas.com', 'learning.educlaas.com'];
         $domainRegex = implode('|', array_map(function ($domain) {
@@ -269,22 +271,23 @@ class BUHController extends Controller
         }
     }
 
-    public function transferContact($owner_pid) {
+    public function transferContact($owner_pid)
+    {
         Session::put('progress', 0);
         $owner = Owner::where('owner_pid', $owner_pid)->first();
         $contacts = Contact::where('fk_contacts__owner_pid', $owner_pid)->get();
         $archivedContacts = ContactArchive::where('fk_contact_archives__owner_pid', $owner_pid)->get();
         $discardedContacts = ContactDiscard::where('fk_contact_discards__owner_pid', $owner_pid)->get();
-        
+
         $allContacts = $contacts->concat($archivedContacts)->concat($discardedContacts);
         $countAllContacts = $allContacts->count();
-        
+
         $perPage = 50;
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $currentPageItems = $allContacts->slice(($currentPage - 1) * $perPage, $perPage)->all();
         $paginatedContacts = new LengthAwarePaginator($currentPageItems, $allContacts->count(), $perPage);
         $paginatedContacts->setPath(request()->url());
-        
+
         // Determine if the combined collection is empty
         $isEmpty = $allContacts->isEmpty();
         return view('Transfer_Contacts_Page', [
@@ -296,7 +299,8 @@ class BUHController extends Controller
     }
 
 
-    public function transfer(Request $request){
+    public function transfer(Request $request)
+    {
         set_time_limit(300);
         $owner_pid = $request->input('owner_pid');
         try {
@@ -304,7 +308,7 @@ class BUHController extends Controller
             $validated = $request->validate([
                 'transferMethod' => 'required|string',
                 'contact_pid' => 'nullable|array',
-                'contact_pid.*' => ['required', 'string', new ContactExistInAnyTable],
+                'contact_pid.*' => ['required', 'string'],
             ]);
 
             // Determine the selected transfer method
@@ -314,12 +318,18 @@ class BUHController extends Controller
             Log::info('Selected Transfer Method: ' . $transferMethod);
             Log::info('Owner PID: ' . $owner_pid);
 
+            // **Check if the sales agent is inactive**
+            $owner = Owner::where('owner_pid', $owner_pid)->first();
+
+            Log::info("Owner Status: " . $owner->status);
+            if ($owner->status === 'active') {
+                Log::error('Sales agent is inactive or not found. Transfer cannot proceed.', ['owner_pid' => $owner_pid]);
+                return redirect()->back()->with('error', 'The selected sales agent status is active. Please deactivate sales agent.');
+            }
+
             // If "Select all Contacts" is chosen, get all contact PIDs associated with the provided owner_pid
             if ($transferMethod === 'Select all Contacts') {
-                $selectedContacts = Contact::where('fk_contacts__owner_pid', $owner_pid)->pluck('contact_pid')
-                    ->merge(ContactArchive::where('fk_contact_archives__owner_pid', $owner_pid)->pluck('contact_archive_pid'))
-                    ->merge(ContactDiscard::where('fk_contact_discards__owner_pid', $owner_pid)->pluck('contact_discard_pid'))
-                    ->toArray();
+                $selectedContacts = Contact::where('fk_contacts__owner_pid', $owner_pid)->pluck('contact_pid')->toArray();
             }
 
             // Check if there are any contacts selected
@@ -335,76 +345,41 @@ class BUHController extends Controller
 
             foreach (array_chunk($selectedContacts, $batchSize) as $contactsBatch) {
                 foreach ($contactsBatch as $contact_pid) {
-                    // Search for the contact in all three tables, filtering by owner_pid
-                    Log::info('Searching for contact PID: ' . $contact_pid);
+                    // Find the contact in the contacts table
                     $contact = Contact::where('contact_pid', $contact_pid)
-                                        ->where('fk_contacts__owner_pid', $owner_pid)
-                                        ->first()
-                                    ?? ContactArchive::where('contact_archive_pid', $contact_pid)
-                                                    ->where('fk_contact_archives__owner_pid', $owner_pid)
-                                                    ->first()
-                                    ?? ContactDiscard::where('contact_discard_pid', $contact_pid)
-                                                    ->where('fk_contact_discards__owner_pid', $owner_pid)
-                                                    ->first();
+                        ->where('fk_contacts__owner_pid', $owner_pid)
+                        ->first();
 
                     if ($contact) {
                         Log::info('Processing contact PID: ' . $contact_pid);
-                        Log::info('Contact before update: ', $contact->toArray());
+                        Log::info('Contact before move: ', $contact->toArray());
 
-                        // Move the contact based on its status
                         try {
-                            if ($contact instanceof Contact) {
-                                if (in_array($contact->status, ['New', 'InProgress', 'HubSpot Contact'])) {
-                                    $contact->fk_contacts__owner_pid = null;
-                                    $contact->save();
-                                    Log::info('Contact PID: ' . $contact_pid . ' owner removed.');
-                                } else{
-                                    throw new \Exception('Unexpected status: ' . $contact->status);
-                                }
-                            } elseif ($contact instanceof ContactArchive) {
-                                $transferArchive = new Contact();
-                                $transferArchive->fk_contacts__owner_pid = null;
-                                $transferArchive->name = $contact->name;
-                                $transferArchive->email = $contact->email;
-                                $transferArchive->contact_number = $contact->contact_number;
-                                $transferArchive->address = $contact->address;
-                                $transferArchive->qualification = $contact->qualification;
-                                $transferArchive->country = $contact->country;
-                                $transferArchive->job_role = $contact->job_role;
-                                $transferArchive->company_name = $contact->qualification;
-                                $transferArchive->skills = $contact->skills;
-                                $transferArchive->social_profile = $contact->social_profile;
-                                $transferArchive->source = $contact->source;
-                                $transferArchive->datetime_of_hubspot_sync = $contact->datetime_of_hubspot_sync;
-                                $transferArchive->status = $contact->status;
+                            // Move the contact to moved_contacts table
+                            $movedContact = new MovedContact();
+                            $movedContact->fk_contacts__owner_pid = null;
+                            $movedContact->date_of_allocation = $contact->date_of_allocation;
+                            $movedContact->name = $contact->name;
+                            $movedContact->email = $contact->email;
+                            $movedContact->contact_number = $contact->contact_number;
+                            $movedContact->address = $contact->address;
+                            $movedContact->country = $contact->country;
+                            $movedContact->qualification = $contact->qualification;
+                            $movedContact->job_role = $contact->job_role;
+                            $movedContact->company_name = $contact->company_name;
+                            $movedContact->skills = $contact->skills;
+                            $movedContact->social_profile = $contact->social_profile;
+                            $movedContact->status = $contact->status;
+                            $movedContact->source = $contact->source;
+                            $movedContact->datetime_of_hubspot_sync = $contact->datetime_of_hubspot_sync;
+                            $movedContact->save();
 
-                                $transferArchive->save();
+                            // Delete the original contact
+                            $contact->delete();
 
-                                $contact->delete();
-
-                                Log::info('Contact PID: ' . $contact_pid . ' owner removed from archive/discard.');
-                            } else{
-                                $transferArchive = new Contact();
-                                $transferArchive->fk_contacts__owner_pid = null;
-                                $transferArchive->name = $contact->name;
-                                $transferArchive->email = $contact->email;
-                                $transferArchive->contact_number = $contact->contact_number;
-                                $transferArchive->address = $contact->address;
-                                $transferArchive->qualification = $contact->qualification;
-                                $transferArchive->country = $contact->country;
-                                $transferArchive->job_role = $contact->job_role;
-                                $transferArchive->company_name = $contact->qualification;
-                                $transferArchive->skills = $contact->skills;
-                                $transferArchive->social_profile = $contact->social_profile;
-                                $transferArchive->source = $contact->source;
-                                $transferArchive->datetime_of_hubspot_sync = $contact->datetime_of_hubspot_sync;
-                                $transferArchive->status = $contact->status;
-                                $transferArchive->save();
-                                $contact->delete();
-                                Log::info('Contact PID: ' . $contact_pid . ' owner removed from archive/discard.');
-                            }
+                            Log::info('Contact PID: ' . $contact_pid . ' moved to moved_contacts table.');
                         } catch (\Exception $e) {
-                            Log::error('Failed to process contact PID: ' . $contact_pid . ' - Error: ' . $e->getMessage());
+                            Log::error('Failed to move contact PID: ' . $contact_pid . ' - Error: ' . $e->getMessage());
                         }
 
                         // Update the processed contacts count
@@ -414,7 +389,7 @@ class BUHController extends Controller
                         Session::put('progress', $progress);
                         Log::info('Progress updated to: ' . $progress);
                     } else {
-                        Log::warning('Contact PID: ' . $contact_pid . ' not found in any table.');
+                        Log::warning('Contact PID: ' . $contact_pid . ' not found in the contacts table.');
                     }
                 }
                 // Simulate processing delay
@@ -424,26 +399,65 @@ class BUHController extends Controller
             // Ensure progress reaches 100% after completion
             Session::put('progress', 100);
 
-            // Update the owner's total assigned contacts
-            $totalAssignedContacts = Contact::where('fk_contacts__owner_pid', $owner_pid)->count()
-                + ContactArchive::where('fk_contact_archives__owner_pid', $owner_pid)->count()
-                + ContactDiscard::where('fk_contact_discards__owner_pid', $owner_pid)->count();
-            Owner::where('owner_pid', $owner_pid)->update(['total_assign_contacts' => $totalAssignedContacts]);
-            Log::info('Contact Successfully removed/moved');
-            return redirect()->back()->with('success', 'Contacts successfully removed/moved and owner\'s total assigned contacts updated.');
+            // Instantiate the RoundRobinAllocator
+            $allocator = new RoundRobinAllocator();
+            // Call the assignContacts method to assign contacts back to the contacts table using round-robin
+            $this->assignContacts($allocator);
+            Log::info('Contacts successfully moved.');
+            return redirect()->back()->with('success', 'Contacts successfully moved to the moved_contacts table.');
         } catch (ValidationException $e) {
             Log::error("Validation error during contact transfer: " . $e->getMessage());
             return redirect()->back()->with('error', 'Contact transfer failed.');
         } catch (\Exception $e) {
             Log::error("General error during contact transfer: " . $e->getMessage(), ['exception' => $e]);
-            return redirect()->back()->with('error', 'An unexpected error occurred.');
+            return redirect()->back()->with('error', 'An unexpected error occurred.' . $e);
         }
     }
 
-    public function assignContacts(RoundRobinAllocator $allocator){
+    public function assignContacts(RoundRobinAllocator $allocator)
+    {
         set_time_limit(300);
         try {
-            // Call the allocate method to assign contacts
+            // Retrieve all contacts from moved_contacts table
+            $movedContacts = MovedContact::all();
+
+            // Check if there are contacts to move
+            if ($movedContacts->isEmpty()) {
+                Log::warning('No contacts found in MovedContacts table.');
+                return redirect()->back()->with('warning', 'No contacts found to assign.');
+            }
+
+            // Loop through each contact and move to Contacts table
+            foreach ($movedContacts as $movedContact) {
+                // Create a new Contact instance
+                $contact = new Contact();
+                $contact->name = $movedContact->name;
+                $contact->email = $movedContact->email;
+                $contact->contact_number = $movedContact->contact_number;
+                $contact->address = $movedContact->address;
+                $contact->country = $movedContact->country;
+                $contact->qualification = $movedContact->qualification;
+                $contact->job_role = $movedContact->job_role;
+                $contact->company_name = $movedContact->company_name;
+                $contact->skills = $movedContact->skills;
+                $contact->social_profile = $movedContact->social_profile;
+                $contact->status = $movedContact->status;
+                $contact->source = $movedContact->source;
+                $contact->datetime_of_hubspot_sync = $movedContact->datetime_of_hubspot_sync;
+
+                // Save the new contact to the Contacts table
+                if ($contact->save()) {
+                    Log::info('Contact moved successfully: ' . $contact->name);
+
+                    // Delete the moved contact from the MovedContacts table
+                    $movedContact->delete();
+                    Log::info('Moved contact deleted: ' . $movedContact->name);
+                } else {
+                    Log::warning('Failed to save moved contact: ' . $contact->name);
+                }
+            }
+
+            // After moving contacts, call the allocate method to assign contacts using round-robin
             $allocator->allocate();
             // If allocation is successful, redirect back with a success message
             return redirect()->back()->with('success', 'Contacts successfully assigned.');
@@ -455,7 +469,8 @@ class BUHController extends Controller
     }
 
 
-    public function updateStatusOwner($owner_pid){
+    public function updateStatusOwner($owner_pid)
+    {
         try {
             // Retrieve the owner by their primary ID (assuming owner_pid is the primary key)
             $owner = Owner::find($owner_pid);
@@ -485,8 +500,8 @@ class BUHController extends Controller
 
 
 
-    public function getProgress() {
+    public function getProgress()
+    {
         return response()->json(['progress' => Session::get('progress', 0)]);
     }
-    
 }

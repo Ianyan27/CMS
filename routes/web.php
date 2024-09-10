@@ -48,78 +48,104 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/view-user', function () {
 
 Route::group(['prefix' => 'admin'], function () {
     Route::get('/', [
-        AdminController::class, 'index'
-        ])->name('admin#index');
+        AdminController::class,
+        'index'
+    ])->name('admin#index');
     Route::get('/view-user', [
-        AdminController::class, 'viewUser'
-        ])->name('admin#view-user');
+        AdminController::class,
+        'viewUser'
+    ])->name('admin#view-user');
     Route::get('/edit-user/{id}', [
-        AdminController::class, 'editUser'
-        ])->name('user#edit-user');
+        AdminController::class,
+        'editUser'
+    ])->name('user#edit-user');
     Route::post('/update-user/{id}', [
-        AdminController::class, 'updateUser'
-        ])->name('user#update-user');
+        AdminController::class,
+        'updateUser'
+    ])->name('user#update-user');
     Route::delete('/delete-user/{id}', [
-        AdminController::class, 'deleteUser'
-        ])->name('user#delete-user');
+        AdminController::class,
+        'deleteUser'
+    ])->name('user#delete-user');
     Route::post('/save-user', [
-        AdminController::class, 'saveUser'
-        ])->name('user#save-user');
+        AdminController::class,
+        'saveUser'
+    ])->name('user#save-user');
     Route::get('/contacts', [
-        AdminController::class, 'contacts'
-        ])->name('admin#contact-listing');
+        AdminController::class,
+        'contacts'
+    ])->name('admin#contact-listing');
     Route::get('/view-contacts/{contact_pid}', [
-        AdminController::class, 'viewContact'
-        ])->name('admin#view-contact');
+        AdminController::class,
+        'viewContact'
+    ])->name('admin#view-contact');
 });
 Route::group(['prefix' => 'sales-agent'], function () {
     Route::get('/', [
-        ContactController::class, 'index'
-        ])->name('sales-agent#index');
+        ContactController::class,
+        'index'
+    ])->name('sales-agent#index');
     Route::get('/contact-listing', [
-        ContactController::class, 'contactsByOwner'
-        ])->name('contact-listing');
+        ContactController::class,
+        'contactsByOwner'
+    ])->name('contact-listing');
     Route::get('view-contact/{contact_pid}', [
-        ContactController::class, 'viewContact'
-        ])->name('contact#view');
+        ContactController::class,
+        'viewContact'
+    ])->name('contact#view');
     Route::get('/edit-contact/{contact_pid}', [
-        ContactController::class, 'editContact'
-        ])->name('contact#edit');
+        ContactController::class,
+        'editContact'
+    ])->name('contact#edit');
     Route::post('/save-contact/{contact_pid}/{owner_pid}', [
-        ContactController::class, 'updateContact'
-        ])->name('contact#update-contact');
+        ContactController::class,
+        'updateContact'
+    ])->name('contact#update-contact');
     Route::get('/edit-archive/{contact_archive_pid}', [
-        ArchiveController::class, 'editArchive'
-        ])->name('archive#edit');
+        ArchiveController::class,
+        'editArchive'
+    ])->name('archive#edit');
     Route::get('/view-archive/{contact_archive_pid}', [
-        ArchiveController::class, 'viewArchive'
-        ])->name('archive#view');
+        ArchiveController::class,
+        'viewArchive'
+    ])->name('archive#view');
     Route::post('/save-archive/{contact_archive_pid}/{owner_pid}', [
-        ArchiveController::class, 'updateArchive'
-        ])->name('archive#update-archive');
+        ArchiveController::class,
+        'updateArchive'
+    ])->name('archive#update-archive');
     Route::get('/edit-discard/{contact_discard_pid}', [
-        DiscardController::class, 'editDiscard'
-        ])->name('discard#edit');
+        DiscardController::class,
+        'editDiscard'
+    ])->name('discard#edit');
     Route::get('/view-discard/{contact_discard_pid}', [
-        DiscardController::class, 'viewDiscard'
-        ])->name('discard#view');
+        DiscardController::class,
+        'viewDiscard'
+    ])->name('discard#view');
     Route::post('/save-discard/{contact_discard_pid}', [
-        DiscardController::class, 'updateDiscard'
-        ])->name('discard#update-discard');
+        DiscardController::class,
+        'updateDiscard'
+    ])->name('discard#update-discard');
     Route::post('/save-activity/{contact_pid}', [
-        ContactController::class, 'saveActivity'
-        ])->name('contact#save-activity');
+        ContactController::class,
+        'saveActivity'
+    ])->name('contact#save-activity');
     Route::post('/save-archive-activity/{contact_archive_pid}', [
-        ArchiveController::class, 'saveActivity'
-        ])->name('archive#save-activity');
+        ArchiveController::class,
+        'saveActivity'
+    ])->name('archive#save-activity');
     Route::get('/edit-activity/{contact_id}/{activity_id}', [
-        ContactController::class, 'editActivity'
-        ])->name('contact#update-activity');
+        ContactController::class,
+        'editActivity'
+    ])->name('contact#update-activity');
     Route::post('/contact/{contact_pid}/activity/{activity_id}/update', [
-        ContactController::class, 'saveUpdateActivity'])
+        ContactController::class,
+        'saveUpdateActivity'
+    ])
         ->name('contact#save-update-activity');
     Route::post('/archive/{contact_archive_pid}/activity/{activity_id}/update', [
-        ArchiveController::class, 'updateActivity'])->name('archive#update-activity');
+        ArchiveController::class,
+        'updateActivity'
+    ])->name('archive#update-activity');
     Route::post('/save-discard-activity/{contact_discard_pid}', [
         DiscardController::class,
         'saveDiscardActivity'
@@ -128,63 +154,79 @@ Route::group(['prefix' => 'sales-agent'], function () {
 
 Route::group(['prefix' => 'buh'], function () {
     Route::get('/', [
-        BUHController::class, 'index'
-        ])->name('buh#index');
+        BUHController::class,
+        'index'
+    ])->name('buh#index');
     Route::get('/view-user', [
-        UserController::class, 'viewUser'
+        UserController::class,
+        'viewUser'
     ])->name('view-user');
     Route::get('/import-csv', function () {
         return view('csv_import_form');
     })->name('importcsv');
     Route::post('/import', [
-        BUHController::class, 'import'
+        BUHController::class,
+        'import'
     ])->name('import');
     //get csv format
     Route::get('/get-csv', [
-        CSVDownloadController::class, 'downloadCSV'
+        CSVDownloadController::class,
+        'downloadCSV'
     ])->name('get-csv');
     //HubspotS
     Route::get('/hubspot-contact', [
-        ContactController::class, 'hubspotContacts'
-        ])->name('hubspot-contact');
+        ContactController::class,
+        'hubspotContacts'
+    ])->name('hubspot-contact');
     Route::post('/submit-hubspot-contacts', [
-        HubspotContactController::class, 'submitHubspotContacts'
-        ])->name('submit-hubspot-contacts');
+        HubspotContactController::class,
+        'submitHubspotContacts'
+    ])->name('submit-hubspot-contacts');
     Route::get('/owner', [
-        OwnerController::class, 'owner'
-        ])->name('owner#view');
+        OwnerController::class,
+        'owner'
+    ])->name('owner#view');
     Route::get('/view-owner/{owner_pid}', [
-        OwnerController::class, 'viewOwner'
-        ])->name('owner#view-owner');
+        OwnerController::class,
+        'viewOwner'
+    ])->name('owner#view-owner');
     Route::post('/save-user', [
-        BUHController::class, 'saveUser'
-        ])->name('owner#save-user');
+        BUHController::class,
+        'saveUser'
+    ])->name('owner#save-user');
     Route::get('/edit-owner/{owner_pid}', [
-        OwnerController::class, 'editOwner'
-        ])->name('owner#update');
+        OwnerController::class,
+        'editOwner'
+    ])->name('owner#update');
     Route::post('/update-owner/{owner_pid}', [
-        OwnerController::class, 'updateOwner'
-        ])->name('owner#update-owner');
+        OwnerController::class,
+        'updateOwner'
+    ])->name('owner#update-owner');
     Route::delete('/delete-owner/{owner_pid}', [
-        BUHController::class, 'deleteOwner'
-        ])->name('owner#delete');
+        BUHController::class,
+        'deleteOwner'
+    ])->name('owner#delete');
     Route::get('/view-contact/{contact_pid}', [
-        OwnerController::class, 'viewContact'
-        ])->name('owner#view-contact');
+        OwnerController::class,
+        'viewContact'
+    ])->name('owner#view-contact');
     Route::get('/transfer-contacts/{owner_pid}', [
-        BUHController::class, 'transferContact'
+        BUHController::class,
+        'transferContact'
     ])->name('owner#transfer-contact');
     Route::post('/transfer', [
-        BUHController::class, 'transfer'
+        BUHController::class,
+        'transfer'
     ])->name('owner#transfer');
-    Route::post('/assign-contact', [
-        BUHController::class, 'assignContacts'
-    ])->name('owner#assign-contact');
+    // Route::post('/assign-contact', [
+    //     BUHController::class, 'assignContacts'
+    // ])->name('owner#assign-contact');
     Route::post('/update-status-owner/{owner_pid}', [
-        BUHController::class, 'updateStatusOwner'
+        BUHController::class,
+        'updateStatusOwner'
     ])->name('owner#update-status-owner');
     Route::get('/progress', [
-        BUHController::class, 'getProgress'
+        BUHController::class,
+        'getProgress'
     ])->name('progress');
-    
 });
