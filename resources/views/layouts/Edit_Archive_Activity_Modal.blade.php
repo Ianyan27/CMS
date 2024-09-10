@@ -74,6 +74,9 @@
                                             style="width: max-content">
                                             <i class="fa-solid fa-upload"></i> Upload
                                         </button>
+                                        <div id="attachment-wrong-{{ $engagement->engagement_archive_pid }}"
+                                            class="text-danger mt-2" style="display: none;">
+                                            Please upload only image files.</div>
                                         <div id="file-names-{{ $engagement->engagement_archive_pid }}"
                                             class="file-list">
                                         </div> <!-- Display filenames here -->
@@ -115,6 +118,71 @@
                     listItem.classList.add("file-name"); // Add the "file-name" class
                     listItem.textContent = fileList[i].name; // Set the text content
                     output.appendChild(listItem); // Append the element to the output
+                }
+            });
+    </script>
+    <script>
+        // JavaScript for Validating Attachment Types
+        document.getElementById('activity-attachment-{{ $engagement->engagement_archive_pid }}').addEventListener('change',
+            function(event) {
+                const allowedExtensions = ['image/jpeg', 'image/png', 'image/jpg']; // Define allowed image types
+                const files = event.target.files;
+                let valid = true;
+
+                // Check each file type to ensure it's an allowed image type
+                for (let i = 0; i < files.length; i++) {
+                    if (!allowedExtensions.includes(files[i].type)) {
+                        valid = false;
+                        break;
+                    }
+                }
+
+                const attachmentWrong = document.getElementById(
+                    'attachment-wrong-{{ $engagement->engagement_archive_pid }}'); // Use dynamic ID
+                const output = document.getElementById('file-names-{{ $engagement->engagement_archive_pid }}');
+
+                if (!valid) {
+                    // Show error message if an invalid file is detected
+                    attachmentWrong.style.display = 'block';
+                    // Clear the file input to prevent uploading wrong files
+                    event.target.value = '';
+                    // Clear the filenames display
+                    output.innerHTML = '';
+                } else {
+                    // Hide error message if all files are valid
+                    attachmentWrong.style.display = 'none';
+
+                    // Display the filenames of valid image files
+                    output.innerHTML = '';
+                    for (let i = 0; i < files.length; i++) {
+                        var listItem = document.createElement('div'); // Create the div element
+                        listItem.classList.add("file-name"); // Add the "file-name" class
+                        listItem.textContent = files[i].name; // Set the text content
+                        output.appendChild(listItem); // Append the element to the output
+                    }
+                }
+
+
+            });
+
+        // Prevent form submission if attachments are invalid
+        document.getElementById('updateActivityForm-{{ $engagement->engagement_archive_pid }}').addEventListener('submit',
+            function(event) {
+                const fileInput = document.getElementById(
+                    'activity-attachment-{{ $engagement->engagement_archive_pid }}');
+                const attachmentWrong = document.getElementById(
+                    'attachment-wrong-{{ $engagement->engagement_archive_pid }}');
+
+                const attachmentBool = attachmentWrong.style.display === 'block';
+                const checkFileLength = fileInput.files.length > 0
+
+                // console.log(checkFileLength);
+                console.log(attachmentBool);
+
+                // Check if files are present and if any are invalid
+                if (attachmentBool === true) {
+                    event.preventDefault(); // Stop form submission
+                    // alert("test true")
                 }
             });
     </script>

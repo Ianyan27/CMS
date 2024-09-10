@@ -60,21 +60,21 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="font-educ" for="name">Name</label>
-                            <h5 class="fonts p-1" id="name">{{ $editContact->name }}</h5>
+                            <h5 class="fonts p-1 text-truncate" id="name">{{ $editContact->name }}</h5>
                         </div>
                         <div class="form-group">
                             <label class="font-educ" for="contact-number">Contact Number</label>
-                            <h5 class="fonts p-1" id="contact_number">{{ $editContact->contact_number }}</h5>
+                            <h5 class="fonts p-1 text-truncate" id="contact_number">{{ $editContact->contact_number }}</h5>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="font-educ" for="email">Email</label>
-                            <h5 class="fonts p-1" id="email">{{ $editContact->email }}</h5>
+                            <h5 class="fonts p-1 text-truncate" id="email">{{ $editContact->email }}</h5>
                         </div>
                         <div class="form-group">
                             <label class="font-educ" for="country">Country</label>
-                            <h5 class="fonts p-1" id="country">{{ $editContact->country }}</h5>
+                            <h5 class="fonts p-1 text-truncate" id="country">{{ $editContact->country }}</h5>
                         </div>
                     </div>
                 </div>
@@ -82,17 +82,17 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="font-educ" for="address">Address</label>
-                            <h5 class="fonts p-1" id="address" style="min-height: 103px;">{{ $editContact->address }}</h5>
+                            <h5 class="fonts p-1 text-truncate" id="address" style="min-height: 103px;">{{ $editContact->address }}</h5>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="font-educ" for="date-of-allocation">Date of Allocation</label>
-                            <h5 class="fonts p-1" id="date-of-allocation">{{ $editContact->date_of_allocation }}</h5>
+                            <h5 class="fonts p-1 text-truncate" id="date-of-allocation">{{ $editContact->date_of_allocation }}</h5>
                         </div>
                         <div class="form-group">
                             <label class="font-educ" for="qualification">Qualification</label>
-                            <h5 class="fonts p-1" id="qualification">{{ $editContact->qualification }}</h5>
+                            <h5 class="fonts p-1 text-truncate" id="qualification">{{ $editContact->qualification }}</h5>
                         </div>
                     </div>
                 </div>
@@ -100,21 +100,21 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="font-educ" for="skills">Skills</label>
-                            <h5 class="fonts p-1" id="skills">{{ $editContact->skills }}</h5>
+                            <h5 class="fonts p-1 text-truncate" id="skills">{{ $editContact->skills }}</h5>
                         </div>
                         <div class="form-group">
                             <label class="font-educ" for="source">Source</label>
-                            <h5 class="fonts p-1" id="source">{{ $editContact->source }}</h5>
+                            <h5 class="fonts p-1 text-truncate" id="source">{{ $editContact->source }}</h5>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="font-educ" for="job-role">Job Role</label>
-                            <h5 class="fonts p-1" id="job-role">{{ $editContact->job_role }}</h5>
+                            <h5 class="fonts p-1 text-truncate" id="job-role">{{ $editContact->job_role }}</h5>
                         </div>
                         <div class="form-group">
                             <label class="font-educ" for="status">Status</label>
-                            <h5 class="fonts p-1 rounded" id="status">
+                            <h5 class="fonts p-1 rounded text-truncate" id="status">
                                 {{ trim(
                                     $editContact->status === 'HubSpot Contact'
                                         ? 'HubSpot'

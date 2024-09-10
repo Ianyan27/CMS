@@ -30,7 +30,7 @@
             <!-- Success Modal -->
             <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
-                    <div class="modal-content">
+                    <div class="modal-content rounded-0">
                         <div class="modal-header"
                             style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
                         border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
@@ -56,6 +56,7 @@
                         data-target="#addSalesAgentModal" style="padding: 10px 12px;">
                         <i class="fa-solid fa-square-plus"></i>
                     </button>
+
                 </div>
                 <div class="d-flex align-items-center mr-3">
                     <div class="search-box d-flex align-items-center ml-3">
@@ -93,13 +94,33 @@
                                 title="Total contacts synced in HubSpot">Total Hubspot Sync</th>
                             <th scope="col" class="text-center" data-toggle="tooltip" data-placement="top"
                                 title="Total engaging contacts">Total In Progress</th>
-
-                            <th scope="col ">Action</th>
+                            <th class="position-relative" scope="col">
+                                Status
+                                <i style="cursor: pointer;" class="fa-solid fa-filter" id="filterIcon"
+                                    onclick="toggleFilterStatus()"></i>
+                                <!-- Filter Container -->
+                                <div id="filterStatusContainer" class="filter-popup container rounded-bottom"
+                                    style="display: none;">
+                                    <div class="row">
+                                        <div class="filter-option">
+                                            <input class="ml-3" type="checkbox" id="active" name="status"
+                                                value="active" onclick="applyStatusFilter()">
+                                            <label for="active" style= "color: #006400;">Active</label>
+                                        </div>
+                                        <div class="filter-option">
+                                            <input class="ml-3" type="checkbox" id="inactive" name="status"
+                                                value="inactive" onclick="applyStatusFilter()">
+                                            <label for="inactive" style="color: #8b0000;">Inactive</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th>
+                            <th scope="col" class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody class="text-left fonts">
                         @foreach ($owner as $owners)
-                            <tr>
+                            <tr data-status="{{ $owners->status }}">
                                 <td>{{ $owners->owner_name }}</td>
                                 <td>{{ $owners->owner_hubspot_id }}</td>
                                 <td>
@@ -120,19 +141,37 @@
                                     {{ $owners['country'] }}
                                 </td>
                                 @inject('contactModel', 'App\Models\Contact')
+                                @inject('contactArchiveModel', 'App\Models\ContactArchive')
+                                @inject('contactDiscardModel', 'App\Models\ContactDiscard')
                                 <td class="text-center">
-                                    {{ $contactModel->where('fk_contacts__owner_pid', $owners->owner_pid)->count() }}</td>
+                                    {{ $contactModel->where('fk_contacts__owner_pid', $owners->owner_pid)->count() +
+                                        $contactArchiveModel->where('fk_contact_archives__owner_pid', $owners->owner_pid)->count() +
+                                        $contactDiscardModel->where('fk_contact_discards__owner_pid', $owners->owner_pid)->count() }}
+                                </td>
                                 <td class="text-center">{{ $owners->total_hubspot_sync }}</td>
                                 <td class="text-center">{{ $owners->total_in_progress }}</td>
                                 <td>
-                                    <a href=" {{ route('owner#transfer-contact', $owners->owner_pid) }} " class="btn hover-action" style="padding: 10px 12px;">
+                                    <span class="status-indicator"
+                                        style="background-color:  
+                                            @if ($owners->status === 'active') #90ee90; color: #006400;
+                                            @elseif($owners->status === 'inactive')#ff7f7f; color: #8b0000; @endif">
+                                        @if ($owners->status === 'active')
+                                            Active
+                                        @elseif ($owners->status === 'inactive')
+                                            Inactive
+                                        @endif
+                                    </span>
+                                </td>
+                                <td class="d-flex justify-content-between align-items-center">
+                                    <a href=" {{ route('owner#transfer-contact', $owners->owner_pid) }} "
+                                        class="btn hover-action" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-right-left"></i>
                                     </a>
-                                    <a href="{{ route('owner#view-owner', $owners->owner_pid) }}" class="btn hover-action"
-                                        data-toggle="tooltip" title="View" style="padding: 10px 12px;">
+                                    <a href="{{ route('owner#view-owner', $owners->owner_pid) }}"
+                                        class="btn hover-action" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
-                                    <!-- Delete button triggers the modal -->
+
                                     <a class="btn hover-action" style="padding: 10px 12px;" data-toggle="modal"
                                         data-target="#deleteOwnerModal{{ $owners->owner_pid }}">
                                         <i class="fa-solid fa-trash"></i>
@@ -223,6 +262,7 @@
         </div>
     @endif
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src=" {{asset('js/filter_status.js')}} "></script>
     @if (Session::has('success'))
         <script type="text/javascript">
             $(document).ready(function() {

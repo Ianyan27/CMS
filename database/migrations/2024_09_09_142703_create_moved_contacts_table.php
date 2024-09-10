@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transfer_contacts', function (Blueprint $table) {
-            $table->id('id');
+        Schema::create('moved_contacts', function (Blueprint $table) {
+            $table->id('moved_contact_id'); // Primary key
+            $table->foreignId('fk_contacts__owner_pid')->nullable()->constrained('owners', 'owner_pid')->onDelete('cascade');
+            $table->dateTime('date_of_allocation')->nullable();
             $table->string('name');
             $table->string('email')->unique();
             $table->string('contact_number', 50)->nullable();
@@ -26,7 +28,7 @@ return new class extends Migration
             $table->enum('status', ['New', 'InProgress', 'HubSpot Contact', 'Archive', 'Discard']);
             $table->string('source')->nullable();
             $table->dateTime('datetime_of_hubspot_sync')->nullable();
-            $table->timestamps();
+            $table->timestamps(); // created_at and updated_at columns
         });
     }
 
@@ -35,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transfer_contacts');
+        Schema::dropIfExists('moved_contacts');
     }
 };

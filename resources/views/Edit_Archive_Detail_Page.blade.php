@@ -60,21 +60,21 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="font-educ" for="name">Name</label>
-                            <h5 class=" fonts" id="name">{{ $editArchive->name }}</h5>
+                            <h5 class="fonts text-truncate" id="name">{{ $editArchive->name }}</h5>
                         </div>
                         <div class="form-group">
                             <label class="font-educ" for="contact-number">Contact Number</label>
-                            <h5 class=" fonts" id="contact_number">{{ $editArchive->contact_number }}</h5>
+                            <h5 class="fonts text-truncate" id="contact_number">{{ $editArchive->contact_number }}</h5>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="font-educ" for="email">Email</label>
-                            <h5 class=" fonts" id="email">{{ $editArchive->email }}</h5>
+                            <h5 class="fonts text-truncate" id="email">{{ $editArchive->email }}</h5>
                         </div>
                         <div class="form-group">
                             <label class="font-educ" for="country">Country</label>
-                            <h5 class=" fonts" id="country">{{ $editArchive->country }}</h5>
+                            <h5 class="fonts text-truncate" id="country">{{ $editArchive->country }}</h5>
                         </div>
                     </div>
                 </div>
@@ -82,17 +82,17 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="font-educ" for="address">Address</label>
-                            <h5 class=" fonts" id="address" style="height: 125px;">{{ $editArchive->address }}</h5>
+                            <h5 class="fonts text-truncate" id="address" style="height: 125px;">{{ $editArchive->address }}</h5>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="font-educ" for="date-of-allocation">Date of Allocation</label>
-                            <h5 class=" fonts" id="date-of-allocation">{{ $editArchive->date_of_allocation }}</h5>
+                            <h5 class="fonts text-truncate" id="date-of-allocation">{{ $editArchive->date_of_allocation }}</h5>
                         </div>
                         <div class="form-group">
                             <label class="font-educ" for="qualification">Qualification</label>
-                            <h5 class=" fonts" id="qualification">{{ $editArchive->qualification }}</h5>
+                            <h5 class="fonts text-truncate" id="qualification">{{ $editArchive->qualification }}</h5>
                         </div>
                     </div>
                 </div>
@@ -100,17 +100,17 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="font-educ" for="skills">Skills</label>
-                            <h5 class=" fonts" id="skills">{{ $editArchive->skills }}</h5>
+                            <h5 class="fonts text-truncate" id="skills">{{ $editArchive->skills }}</h5>
                         </div>
                         <div class="form-group">
                             <label class="font-educ" for="source">Source</label>
-                            <h5 class=" fonts" id="source">{{ $editArchive->source }}</h5>
+                            <h5 class="fonts text-truncate" id="source">{{ $editArchive->source }}</h5>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="font-educ" for="job-role">Job Role</label>
-                            <h5 class=" fonts" id="job-role">{{ $editArchive->job_role }}</h5>
+                            <h5 class="fonts text-truncate" id="job-role">{{ $editArchive->job_role }}</h5>
                         </div>
                         <div class="form-group">
                             <label class="font-educ" for="status">Status</label>

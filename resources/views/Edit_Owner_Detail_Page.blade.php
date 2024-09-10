@@ -52,22 +52,22 @@
                     <div class="col-md-6">
                         <div class="form-group mb-3">
                             <label class="font-educ" for="name">Name</label>
-                            <h5 class="fonts" id="name">{{ $editOwner->owner_name }}</h5>
+                            <h5 class="fonts text-truncate" id="name">{{ $editOwner->owner_name }}</h5>
                         </div>
                         <div class="form-group mb-3">
                             <label class="font-educ" for="email">Email</label>
-                            <h5 class="fonts" id="email">{{ $editOwner->owner_email_id }}</h5>
+                            <h5 class="fonts text-truncate" id="email">{{ $editOwner->owner_email_id }}</h5>
                         </div>
 
                     </div>
                     <div class="col-md-6">
                         <div class="form-group mb-3">
                             <label class="font-educ" for="business-unit">Business Unit</label>
-                            <h5 class="fonts" id="business-unit">{{ $editOwner->owner_business_unit }}</h5>
+                            <h5 class="fonts text-truncate" id="business-unit">{{ $editOwner->owner_business_unit }}</h5>
                         </div>
                         <div class="form-group mb-3">
                             <label class="font-educ" for="country">Country</label>
-                            <h5 class="fonts" id="country">{{ $editOwner->country }}</h5>
+                            <h5 class="fonts text-truncate" id="country">{{ $editOwner->country }}</h5>
                         </div>
 
                     </div>
@@ -155,7 +155,7 @@
                 </div>
             </div>
             <div class="table-container" id="contacts">
-                <table class=" table table-hover mt-2" id="contacts-table">
+                <table class="table table-hover mt-2" id="contacts-table">
                     <thead class="text-left font-educ">
                         <tr>
                             <th scope="col">No #</th>
@@ -453,6 +453,7 @@
     @endif
     <script src="{{ asset('js/show_hide_contacts_table.js') }}"></script>
     <script src="{{ asset('js/active_activity_buttons.js') }}"></script>
+    <script src="{{ asset('js/sort.js') }}"></script>
     <script>
         window.onload = function() {
             interestedButton.classList.add('active-interest'); // Add active class to the clicked button

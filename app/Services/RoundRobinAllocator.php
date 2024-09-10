@@ -4,23 +4,33 @@ namespace App\Services;
 
 use App\Models\Contact;
 use App\Models\Owner;
+use App\Models\TransferContacts;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class RoundRobinAllocator
 {
+
     public function allocate()
     {
         $buhId = Auth::user()->id;  // Get BUH ID from the logged-in user
 
         try {
-            // Retrieve owners under the specified BUH, sorted by owner_pid
-            $owners = Owner::where('fk_buh', $buhId)->get()->sortBy('owner_pid')->values();
-            Log::info('Total owners retrieved for BUH ID ' . $buhId . ':', ['count' => $owners->count()]);
+            // Retrieve all owners under the specified BUH, sorted by owner_pid
+            $allOwners = Owner::where('fk_buh', $buhId)->orderBy('owner_pid')->get();
+            Log::info('Total owners retrieved for BUH ID ' . $buhId . ':', ['count' => $allOwners->count()]);
 
-            if ($owners->isEmpty()) {
+            if ($allOwners->isEmpty()) {
                 throw new \Exception("No sales agents assigned. Please assign the appropriate sales agents. BUH ID: " . $buhId);
+            }
+
+            //Retrieve only active owners for assignment purposes
+            $activeOwners = $allOwners->where('status', 'active')->values(); // Filter to get only active owners
+            Log::info('Active owner PIDs available for assignment:', ['active_owner_pids' => $activeOwners->pluck('owner_pid')->toArray()]);
+
+            if ($activeOwners->isEmpty()) {
+                throw new \Exception("No active sales agents available for assignment. BUH ID: " . $buhId);
             }
 
             // Retrieve unassigned contacts
@@ -29,18 +39,18 @@ class RoundRobinAllocator
 
             // Get the last assigned contact for the BUH
             $lastAssignedContact = Contact::whereNotNull('fk_contacts__owner_pid')
-                ->whereIn('fk_contacts__owner_pid', $owners->pluck('owner_pid'))
+                ->whereIn('fk_contacts__owner_pid', $allOwners->pluck('owner_pid'))
                 ->orderBy('contact_pid', 'desc')
                 ->first();
 
             // Determine the next owner PID to start with
-            $nextOwnerPid = $this->determineNextOwnerPid($lastAssignedContact, $owners);
+            $nextOwnerPid = $this->determineNextOwnerPid($lastAssignedContact, $activeOwners);
             Log::info('Starting allocation with owner_pid:', ['next_owner_pid' => $nextOwnerPid]);
 
             // Allocate each unassigned contact
             foreach ($contacts as $contact) {
                 // Find the owner with the calculated next owner_pid
-                $owner = $owners->firstWhere('owner_pid', $nextOwnerPid);
+                $owner = $activeOwners->firstWhere('owner_pid', $nextOwnerPid);
 
                 if ($owner) {
                     // Assign the contact to the owner
@@ -63,7 +73,7 @@ class RoundRobinAllocator
                     ]);
 
                     // Get the next owner PID for the next contact
-                    $nextOwnerPid = $this->getNextOwnerPid($nextOwnerPid, $owners);
+                    $nextOwnerPid = $this->getNextOwnerPid($nextOwnerPid, $activeOwners);
                     Log::info('Next owner_pid calculated:', ['next_owner_pid' => $nextOwnerPid]);
                 }
             }
