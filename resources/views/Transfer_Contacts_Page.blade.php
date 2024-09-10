@@ -91,15 +91,15 @@
     @endif
     <div class="container-max-height">
         <form class="transfer-form-container" action=" {{ route('owner#transfer') }} " method="POST">
-            <input type="hidden" name="owner_pid" value=" {{ $owner->owner_pid }} " readonly>
             @csrf
-            <div class="d-flex justify-content-start align-items-center mb-3">
-                <div class="d-flex justify-content-between align-items-center p-2 border rounded">
-                    <span class="font-weight-bold" style="margin: 0px 1rem 0 0.25rem;">Name: {{$owner->owner_name}}</span>
-                    <button class="btn hover-action">
+            <input type="hidden" name="owner_pid" value=" {{ $owner->owner_pid }} " readonly>
+            <div class="table-title d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center">
+                    <h2 style="margin: 0 0.5rem 0 0.25rem;" class="font-educ headings">Transferable Contacts</h2>
+                    <button class="btn hover-action active">
                         Total Contacts: {{$countAllContacts}}
                     </button>
-                    <span 
+                    {{-- <span 
                         class="mx-4 btn 
                             @if ($owner->status === 'inactive')
                                 inactive-btn
@@ -113,23 +113,17 @@
                         @elseif ($owner->status === 'active')
                             Active
                         @endif
-                    </span>
-
+                    </span> --}}
                     @if ($owner->status === 'inactive')
-                        <button type="button" class="btn active-btn" onclick="updateStatusOwner({{ $owner->owner_pid }})">
+                        <button type="button" class="btn active-btn mx-3" onclick="updateStatusOwner({{ $owner->owner_pid }})">
                             Activate Sales Agent
                         </button>
                     @elseif ($owner->status === 'active')
-                        <button type="button" class="btn inactive-btn" onclick="updateStatusOwner({{ $owner->owner_pid }})">
+                        <button type="button" class="btn inactive-btn mx-3" onclick="updateStatusOwner({{ $owner->owner_pid }})">
                             Deactivate Sales Agent
                         </button>
                     @endif
-                </div>
-            </div>
-            <div class="table-title d-flex justify-content-between align-items-center mb-3">
-                <div class="d-flex align-items-center">
-                    <h2 style="margin: 0 0.5rem 0 0.25rem;" class="font-educ headings">Transferable Contacts</h2>
-                    <button type="button" class="btn btn-danger mx-4" data-toggle="modal" data-target="#transferContact">
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#transferContact">
                         Transfer Contacts <i class="fa-solid fa-right-left"></i>
                     </button>
                 </div>

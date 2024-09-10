@@ -71,7 +71,7 @@ table{
 }
 
 .content-height {
-    min-height: calc(100vh - 105.98px - 56px); /* Adjusted for navbar, footer, and my-4 margins */
+    min-height: calc(100vh - 105.98px - 80px); /* Adjusted for navbar, footer, and my-4 margins */
 }
 
 /* Responsive Adjustments */
@@ -740,3 +740,9 @@ th, label{
         .search-bar {
             margin-bottom: 10px;
         }
+
+        .tooltip {
+            position: absolute !important;
+            z-index: 1000; /* Ensure it's above other elements */
+        }
+        

@@ -155,7 +155,7 @@
                 </div>
             </div>
             <div class="table-container" id="contacts">
-                <table class=" table table-hover mt-2" id="contacts-table">
+                <table class="table table-hover mt-2" id="contacts-table">
                     <thead class="text-left font-educ">
                         <tr>
                             <th scope="col">No #</th>
@@ -453,6 +453,7 @@
     @endif
     <script src="{{ asset('js/show_hide_contacts_table.js') }}"></script>
     <script src="{{ asset('js/active_activity_buttons.js') }}"></script>
+    <script src="{{ asset('js/sort.js') }}"></script>
     <script>
         window.onload = function() {
             interestedButton.classList.add('active-interest'); // Add active class to the clicked button
