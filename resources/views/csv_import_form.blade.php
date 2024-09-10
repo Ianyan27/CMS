@@ -4,79 +4,79 @@
 
 @section('content')
 
-@if (Auth::check() && Auth::user()->role == 'BUH')
-    <div class="container-max-height">
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="d-flex justify-content-between">
-                    <h5 class="mb-4 font-educ headings">Please Select Platform</h5>
+    @if (Auth::check() && Auth::user()->role == 'BUH')
+        <div class="container-max-height">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="d-flex justify-content-between">
+                        <h5 class="mb-4 font-educ headings">Please Select Platform</h5>
+                        <!-- Get CSV Format button positioned to the right end -->
+                        <div id="raw-btn-container">
+                            <button class="btn hover-action" onclick="window.location.href='{{ route('get-csv') }}'">
+                                Get CSV Format
+                            </button>
+                        </div>
+                    </div>
                     <!-- Get CSV Format button positioned to the right end -->
-                    <div id="raw-btn-container">
-                        <button class="btn hover-action" onclick="window.location.href='{{ route('get-csv') }}'">
-                            Get CSV Format
-                        </button>
+                    <div id="raw-btn-container" class="d-none">
+                        <a href="get-csv">
+                            <button class="btn hover-action">
+                                Get CSV Format
+                            </button>
+                        </a>
+                    </div>
+                    <div id="platform-container">
+                        <div class="alert alert-danger d-none" id="platformValidationMsg" role="alert"
+                            style="font-size: medium">
+                            Please Select Platform *
+                        </div>
+                        <select id="platform" class="w-100 platforms search-bar" name="platform">
+                            <option value="" selected disabled>Select Platform</option>
+                            <option value="linkedin">LinkedIn</option>
+                            <option value="apollo">Apollo</option>
+                            <option value="raw">Raw</option>
+                        </select>
+                    </div>
+                    <div class="text-center mb-4">
+                        <div class="card-body justify-content-center align-items-center drop-zone" id="dropZone">
+                            <div class="mx-5">
+                                <h5 class="mb-4 font-educ">Drag and drop your files</h5>
+                                <p class="mb-4" title="The uploaded file must be a file of type: csv">File
+                                    formats we support <i class="fas fa-info-circle"></i></p>
+                            </div>
+                            @csrf
+                            <div>
+                                <input accept=".csv" type="file" name="csv_file" required id="fileInput" class="d-none">
+                            </div>
+                            <div>
+                                <label for="fileInput" class="btn hover-action mt-4">Import Manually</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <!-- Get CSV Format button positioned to the right end -->
-                <div id="raw-btn-container" class="d-none">
-                    <a href="get-csv">
-                        <button class="btn hover-action">
-                            Get CSV Format
-                        </button>
-                    </a>
-                </div>
-                <div id="platform-container">
-                    <div class="alert alert-danger d-none" id="platformValidationMsg" role="alert"
-                        style="font-size: medium">
-                        Please Select Platform *
-                    </div>
-                    <select id="platform" class="w-100 platforms search-bar" name="platform">
-                        <option value="" selected disabled>Select Platform</option>
-                        <option value="linkedin">LinkedIn</option>
-                        <option value="apollo">Apollo</option>
-                        <option value="raw">Raw</option>
-                    </select>
-                </div>
-                <div class="text-center mb-4">
-                    <div class="card-body justify-content-center align-items-center drop-zone" id="dropZone">
-                        <div class="mx-5">
-                            <h5 class="mb-4 font-educ">Drag and drop your files</h5>
-                            <p class="mb-4" title="The uploaded file must be a file of type: csv">File
-                                formats we support <i class="fas fa-info-circle"></i></p>
-                        </div>
-                        @csrf
+            </div>
+            <div class="card d-none" id="file-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <input accept=".csv" type="file" name="csv_file" required id="fileInput" class="d-none">
+                            <img src="../images/csv.png" alt="" style="height:4rem;">
+                            <p id="file-name" class="text-muted d-none"></p>
+                        </div>
+                        <div class="w-50">
+                            <div class="progress" id="progressContainer" role="progressbar" aria-valuenow="0"
+                                aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar bg-educ" id="progressBar" style="width: 0%;"></div>
+                            </div>
+                            <p id="progress-message" class="text-muted d-none mt-2"></p>
+                            <p id="error-message" class="text-danger d-none mt-2"></p>
                         </div>
                         <div>
-                            <label for="fileInput" class="btn hover-action mt-4">Import Manually</label>
+                            <input type="submit" id="submit-btn" class="btn hover-action" style="margin-left: auto">
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="card d-none" id="file-card">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <img src="../images/csv.png" alt="" style="height:4rem;">
-                        <p id="file-name" class="text-muted d-none"></p>
-                    </div>
-                    <div class="w-50">
-                        <div class="progress" id="progressContainer" role="progressbar" aria-valuenow="0" aria-valuemin="0"
-                            aria-valuemax="100">
-                            <div class="progress-bar bg-educ" id="progressBar" style="width: 0%;"></div>
-                        </div>
-                        <p id="progress-message" class="text-muted d-none mt-2"></p>
-                        <p id="error-message" class="text-danger d-none mt-2"></p>
-                    </div>
-                    <div>
-                        <input type="submit" id="submit-btn" class="btn hover-action" style="margin-left: auto">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     @else
         <div class="alert alert-danger text-center mt-5">
             <strong>Access Denied!</strong> You do not have permission to view this page.
