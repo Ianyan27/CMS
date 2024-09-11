@@ -21,6 +21,17 @@
             line-height: 25px;
             border-radius: 5px;
         }
+        /* Ensure the collapse container is styled properly */
+.collapse {
+    transition: height 0.3s ease;
+}
+
+/* Optionally, add more styling to the card */
+.card {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
 </style>
 @section('content')
 @if (Auth::check() && Auth::user()->role == 'BUH')
@@ -94,43 +105,27 @@
             @csrf
             <input type="hidden" name="owner_pid" value=" {{ $owner->owner_pid }} " readonly>
             <div class="table-title d-flex justify-content-between align-items-center mb-3">
-                <div class="d-flex align-items-center">
-                    <h2 style="margin: 0 0.5rem 0 0.25rem;" class="font-educ headings">Transferable Contacts</h2>
-                    <button class="btn hover-action active">
-                        Total Contacts: {{$countAllContacts}}
-                    </button>
-                    {{-- <span 
-                        class="mx-4 btn 
-                            @if ($owner->status === 'inactive')
-                                inactive-btn
-                            @elseif ($owner->status === 'active')
-                                active-btn
-                            @endif
-                        ">
-                        Status: 
-                        @if ($owner->status === 'inactive')
-                            Inactive
-                        @elseif ($owner->status === 'active')
-                            Active
-                        @endif
-                    </span> --}}
-                    @if ($owner->status === 'inactive')
-                        <button type="button" class="btn active-btn mx-3" onclick="updateStatusOwner({{ $owner->owner_pid }})">
-                            Activate Sales Agent
+                <div class="position-relative">
+                    <div class="d-flex align-items-center">
+                        <h2 style="margin: 0 0.25rem 0 0.25rem;" class="font-educ headings">Transferable Contacts</h2>
+                        <button style="margin: 0 1rem 0 0.25rem; padding: 10px 12px;" type="button" class="btn hover-action" onclick="toggleInfoCollapse()">
+                            <i style="font-size: 1.25rem;" class="fa-solid fa-circle-question"></i>
                         </button>
-                    @elseif ($owner->status === 'active')
-                        <button type="button" class="btn inactive-btn mx-3" onclick="updateStatusOwner({{ $owner->owner_pid }})">
-                            Deactivate Sales Agent
+                        <button type="button" class="btn hover-action" data-toggle="modal" data-target="#transferContact">
+                            Transfer Contacts <i class="fa-solid fa-right-left"></i>
                         </button>
-                    @endif
-                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#transferContact">
-                        Transfer Contacts <i class="fa-solid fa-right-left"></i>
-                    </button>
+                    </div>
+                    <!-- Info Container -->
+                    <div id="infoCollapse" class="collapse container rounded-bottom p-0" style="display: none; position: absolute; top: 100%; left: 0; z-index: 1000;">
+                        <div class="card card-body">
+                            <p>Total Contacts: {{$countAllContacts}} (New, In Progress, Hubspot, Archive, Discard) </p>
+                            <p>Eligible for transfer: {{ $totalEligibleContacts }} (New, In Progress, Archive)</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="d-flex align-items-center mr-3">
                     <div class="search-box d-flex align-items-center mr-3 mb-2">
-                        <input type="search" class="form-control mr-1" placeholder="Search Name or Email..." id="search-input"
-                            aria-label="Search">
+                        <input type="search" class="form-control mr-1" placeholder="Search Name or Email..." id="search-input" aria-label="Search">
                         <button style="padding: 10px 12px;" class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search">
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </button>
@@ -138,7 +133,7 @@
                 </div>
             </div>
             <div class="table-container">
-                <table id="sales-agents-table" class="table table-hover mt-2">
+                <table id="contacts-table" class="table table-hover mt-2">
                     <thead class="font-educ text-left">
                         <tr>
                             <th scope="col"><input type="checkbox" id="select-all"></th>
@@ -159,14 +154,38 @@
                                     onclick="sortByColumn('country', 'desc'); toggleSort('sortUp-country', 'sortDown-country')"
                                     style="display: none;"></i>
                             </th>
-                            <th scope="col">Status</th>
+                            <th class="position-relative" scope="col">Status
+                                <i style="cursor: pointer;" class="fa-solid fa-filter" id="filterIcon"
+                                    onclick="toggleFilter()"></i>
+                                <!-- Filter Container -->
+                                <div id="filterContainer" class="filter-popup container rounded-bottom"
+                                    style="display: none;">
+                                    <div class="row">
+                                        <div class="filter-option">
+                                            <input class="ml-3" type="checkbox" id="new" name="status"
+                                                value="New" onclick="applyFilter()">
+                                            <label for="new" style= "color: #318FFC;">New</label>
+                                        </div>
+                                        <div class="filter-option">
+                                            <input class="ml-3" type="checkbox" id="inProgress" name="status"
+                                                value="InProgress" onclick="applyFilter()">
+                                            <label for="inProgress" style="color: #FF8300;">In Progress</label>
+                                        </div>
+                                        <div class="filter-option">
+                                            <input class="ml-3" type="checkbox" id="hubspot" name="status"
+                                                value="HubSpot Contact" onclick="applyFilter()">
+                                            <label for="hubspot" style="color: #FF5C35;">HubSpot</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th>
                             <th scope="col ">Action</th>
                         </tr>
                     </thead>
                     <tbody class="text-left fonts">
                         <?php $i = ($viewContact->currentPage() - 1) * $viewContact->perPage(); ?>
                         @forelse ($viewContact as $contact)
-                            <tr>
+                            <tr data-status="{{ $contact['status'] }}">
                                 <td>
                                     <input class="contact-checkbox" type="checkbox" name="contact_pid[]" value=" {{ 
                                         $contact->contact_pid ?? 
@@ -398,5 +417,6 @@
     <script src=" {{ asset('js/transfer_contact.js') }} "></script>
     <script src=" {{ asset('js/checkbox_table.js') }} "></script>
     <script src=" {{ asset('js/search_name.js') }} "></script>
+    <script src=" {{ asset('js/filter_status.js') }} "></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 @endsection
