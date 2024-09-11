@@ -23,7 +23,7 @@ body {
 
 .table-container{
     min-height: 450px;
-    height: 575px;
+    height: 525px;
     max-height: 575px;
     overflow-y: auto;
 }
