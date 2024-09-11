@@ -15,27 +15,29 @@ class AuthController extends Controller
 {
 
     // Redirect to Microsoft OAuth page
-    public function redirectToMicrosoft(){
+    public function redirectToMicrosoft()
+    {
         /**
          * Re login method
          */
         // Get the base URL for Microsoft OAuth
-        // $url = Socialite::driver('microsoft')->redirect()->getTargetUrl();
+        $url = Socialite::driver('microsoft')->redirect()->getTargetUrl();
 
-        // // Append 'prompt=login' to the URL to force the user to re-authenticate
-        // $url .= (strpos($url, '?') === false ? '?' : '&') . 'prompt=login';
+        // Append 'prompt=login' to the URL to force the user to re-authenticate
+        $url .= (strpos($url, '?') === false ? '?' : '&') . 'prompt=select_account';
 
-        // return redirect($url);
+        return redirect($url);
 
         /**
          * Auto login with current account
          */
-        return Socialite::driver('microsoft')
-            ->redirect();
+        // return Socialite::driver('microsoft')
+        //     ->redirect();
     }
 
     // Handle the callback from Microsoft
-    public function handleMicrosoftCallback(){
+    public function handleMicrosoftCallback()
+    {
         try {
             // Retrieve the user from Microsoft
             $microsoftUser = Socialite::driver('microsoft')->user();
@@ -72,7 +74,8 @@ class AuthController extends Controller
     }
 
 
-    public function microsoftLogin(Request $request){
+    public function microsoftLogin(Request $request)
+    {
         // Validate the input
         $request->validate([
             'email' => 'required|email'
@@ -130,7 +133,8 @@ class AuthController extends Controller
     }
 
 
-    public function logout(Request $request){
+    public function logout(Request $request)
+    {
 
         $request->session()->forget(['name', 'email', 'role']);
 
