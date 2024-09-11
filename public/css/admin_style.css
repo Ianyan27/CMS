@@ -750,3 +750,97 @@ th, label{
             z-index: 1000; /* Ensure it's above other elements */
         }
         
+
+        .progress-container {
+            width: 100%;
+            background-color: #f3f3f3;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            height: 25px;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: #4caf50;
+            text-align: center;
+            color: white;
+            line-height: 25px;
+            border-radius: 5px;
+        }
+        /* Ensure the collapse container is styled properly */
+    .collapse {
+        transition: height 0.3s ease;
+    }
+
+    /* Optionally, add more styling to the card */
+    .card {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    /* Style the container for alignment */
+    .switch-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Style the switch */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 100%; /* Full width of the parent container */
+        min-width: 100px;
+        max-width: 100px; /* Max width to keep the switch from becoming too large */
+        height: 34px;
+    }
+
+    /* Hide default checkbox */
+    .switch input {
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+    }
+
+    /* Slider styling */
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+
+    /* Slider before the toggle state */
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+
+    /* When the switch is checked, adjust slider background */
+    input:checked + .slider {
+        background-color: #4CAF50;
+    }
+
+    /* When the switch is checked, move the slider to the right */
+    input:checked + .slider:before {
+        transform: translateX(66px);
+    }
+
+    /* Optional: style for status text */
+    .status-text {
+        font-size: 16px;
+    }

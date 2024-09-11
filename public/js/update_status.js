@@ -30,16 +30,19 @@ document.getElementById('statusSwitch').addEventListener('change', function() {
             status: isChecked ? 'active' : 'inactive'
         })
     })
-    .then(response => {
-        console.log('Response status:', response.status);
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
-        console.log('Response data:', data);
-        // Optionally handle success feedback here
+        // Check the response and show modal if needed
+        if (data.message) {
+            $('#successModal .modal-body').text(data.message);
+            $('#successModal').modal('show');
+        } else {
+            console.error('Unexpected response:', data);
+        }
     })
     .catch(error => {
         console.error('Error updating status:', error);
-        // Optionally handle error feedback here
+        $('#errorModal .modal-body').text('An error occurred while updating status.');
+        $('#errorModal').modal('show');
     });
 });

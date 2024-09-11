@@ -2,124 +2,49 @@
 
 @extends('layouts.app')
 
-<style>
-    .progress-container {
-            width: 100%;
-            background-color: #f3f3f3;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            height: 25px;
-            margin-top: 20px;
-        }
-
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background-color: #4caf50;
-            text-align: center;
-            color: white;
-            line-height: 25px;
-            border-radius: 5px;
-        }
-        /* Ensure the collapse container is styled properly */
-    .collapse {
-        transition: height 0.3s ease;
-    }
-
-    /* Optionally, add more styling to the card */
-    .card {
-        border: 1px solid #ddd;
-        border-radius: 4px;
-    }
-    /* Style the container for alignment */
-    .switch-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    /* Style the switch */
-    .switch {
-        position: relative;
-        display: inline-block;
-        width: 100%; /* Full width of the parent container */
-        max-width: 100px; /* Max width to keep the switch from becoming too large */
-        height: 34px;
-    }
-
-    /* Hide default checkbox */
-    .switch input {
-        opacity: 0;
-        width: 100%;
-        height: 100%;
-        margin: 0;
-    }
-
-    /* Slider styling */
-    .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #ccc;
-        transition: .4s;
-        border-radius: 34px;
-    }
-
-    /* Slider before the toggle state */
-    .slider:before {
-        position: absolute;
-        content: "";
-        height: 26px;
-        width: 26px;
-        left: 4px;
-        bottom: 4px;
-        background-color: white;
-        transition: .4s;
-        border-radius: 50%;
-    }
-
-    /* When the switch is checked, adjust slider background */
-    input:checked + .slider {
-        background-color: #4CAF50;
-    }
-
-    /* When the switch is checked, move the slider to the right */
-    input:checked + .slider:before {
-        transform: translateX(60px);
-    }
-
-    /* Optional: style for status text */
-    .status-text {
-        font-size: 16px;
-    }
-
-</style>
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    @if (Session::has('success'))
+        <script>
+            $(document).ready(function() {
+                $('#successModal').modal('show');
+                console.log('this is ready');
+                
+            });
+        </script>
+    @endif
+    <script>
+        $(document).ready(function() {
+            $('#errorModal').modal('show');
+            @if (Session::has('warning'))
+                $('#warningModal').modal('show');
+            @endif
+            @if (Session::has('error'))
+                $('#errorModal').modal('show');
+            @endif
+        });
+    </script>
+</head>
 @section('content')
 @if (Auth::check() && Auth::user()->role == 'BUH')
-    @if (Session::has('success'))
-        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content rounded-0">
-                    <div class="modal-header"
-                        style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
-                    border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
-                        <h5 class="modal-title" id="successModalLabel" style="color: #91264c"><strong>Success</strong>
-                        </h5>
-                    </div>
-                    <div class="modal-body" style="color: #91264c;border:none;">
-                        {{ Session::get('success') }}
-                    </div>
-                    <div class="modal-footer" style="border:none;">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                            style="background: #91264c; color:white;">OK</button>
-                    </div>
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content rounded-0">
+                <div class="modal-header"
+                    style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+                border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
+                    <h5 class="modal-title" id="successModalLabel" style="color: #91264c"><strong>Success</strong></h5>
+                </div>
+                <div class="modal-body" style="color: #91264c;border:none;">
+                    {{ Session::get('success') }}
+                </div>
+                <div class="modal-footer" style="border:none;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                        style="background: #91264c; color:white;">OK</button>
                 </div>
             </div>
         </div>
-    @endif
+    </div>
     @if (Session::has('warning'))
         <!-- Success Modal -->
         <div class="modal fade" id="warningModal" tabindex="-1" aria-labelledby="warningModalLabel" aria-hidden="true">
@@ -175,12 +100,12 @@
                         <button id="infoButton" style="margin: 0 0.75rem; padding: 10px 12px;" type="button" class="btn hover-action" onclick="toggleInfoCollapse()">
                             <i style="font-size: 1.25rem;" class="fa-solid fa-circle-question"></i>
                         </button>
-                        <div class="switch-container" style="margin: 0 0.5rem;">
+                        <div class="switch-container" style="margin: 1.25rem 0.5rem 0; ">
                             <label class="switch">
                                 <input type="checkbox" id="statusSwitch" data-owner-pid="{{ $owner->owner_pid }}" @if ($owner->status === 'active') checked @endif>
                                 <span class="slider round"></span>
                             </label>
-                            <span class="owner-status 
+                            <span style="width:105px;" class="owner-status text-left
                                 @if($owner->status === 'active')
                                 status-text
                                 @elseif($owner->status === 'inactive')
@@ -454,24 +379,6 @@
             <strong>Access Denied!</strong> You do not have permission to view this page.
         </div>
     @endif
-    @if (Session::has('success'))
-        <script>
-            $(document).ready(function() {
-                $('#successModal').modal('show');
-            });
-        </script>
-    @endif
-    <script>
-        $(document).ready(function() {
-            $('#errorModal').modal('show');
-            @if (Session::has('warning'))
-                $('#warningModal').modal('show');
-            @endif
-            @if (Session::has('error'))
-                $('#errorModal').modal('show');
-            @endif
-        });
-    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             @if ($errors->any())
@@ -550,5 +457,4 @@
     <script src=" {{ asset('js/search_name.js') }} "></script>
     <script src=" {{ asset('js/filter_status.js') }} "></script>
     <script src=" {{ asset('js/active_buttons.js') }} "></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 @endsection

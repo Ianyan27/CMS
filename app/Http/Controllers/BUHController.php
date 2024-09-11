@@ -471,42 +471,44 @@ class BUHController extends Controller
     }
 
 
-    public function updateStatusOwner(Request $request, $owner_pid)
-{
-    // Log incoming request data
-    Log::info('Update Status Request:', [
-        'owner_pid' => $owner_pid,
-        'request_data' => $request->all()
-    ]);
+    public function updateStatusOwner(Request $request, $owner_pid){
+        // Log incoming request data
+        Log::info('Update Status Request:', [
+            'owner_pid' => $owner_pid,
+            'request_data' => $request->all()
+        ]);
 
-    try {
-        // Retrieve the owner by their primary ID (assuming owner_pid is the primary key)
-        $owner = Owner::find($owner_pid);
+        try {
+            // Retrieve the owner by their primary ID (assuming owner_pid is the primary key)
+            $owner = Owner::find($owner_pid);
 
-        if ($owner) {
-            // Update the status
-            $owner->status = $request->input('status');
-            $owner->save();
+            if ($owner) {
+                // Update the status
+                $owner->status = $request->input('status');
+                $owner->save();
 
-            Log::info('Owner status updated successfully:', [
-                'owner_id' => $owner->id,
-                'new_status' => $owner->status
-            ]);
+                Log::info('Owner status updated successfully:', [
+                    'owner_id' => $owner->id,
+                    'new_status' => $owner->status
+                ]);
 
-            return response()->json(['message' => 'Owner status updated successfully.']);
-        } else {
-            Log::warning('Owner not found:', ['owner_pid' => $owner_pid]);
+                // Return a success message as JSON
+                return response()->json(['message' => 'Owner status updated successfully.']);
+            } else {
+                Log::warning('Owner not found:', ['owner_pid' => $owner_pid]);
 
-            return response()->json(['message' => 'Owner not found'], 404);
+                return response()->json(['message' => 'Owner not found.'], 404);
+            }
+        } catch (\Exception $e) {
+            // Log the exception for debugging
+            Log::error('Error updating owner status: ' . $e->getMessage());
+
+            // Return an error message as JSON
+            return response()->json(['message' => 'An unexpected error occurred. Please try again later.'], 500);
         }
-    } catch (\Exception $e) {
-        // Log the exception for debugging
-        Log::error('Error updating owner status: ' . $e->getMessage());
-
-        // Return a JSON error response
-        return response()->json(['message' => 'An unexpected error occurred. Please try again later.'], 500);
     }
-}
+
+
 
     
     public function getProgress(){
