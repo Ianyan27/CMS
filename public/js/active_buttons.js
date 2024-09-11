@@ -29,3 +29,18 @@ discardButton.addEventListener('click', () => {
     clearActiveClasses();
     discardButton.classList.add('active-discard');
 });
+
+function toggleInfoCollapse() {
+    var infoCollapse = document.getElementById('infoCollapse');
+    var infoButton = document.getElementById('infoButton');
+
+    // Toggle visibility of the collapse element
+    if (infoCollapse.style.display === "none" || infoCollapse.style.display === "") {
+        infoCollapse.style.display = "block";
+        infoButton.classList.add('active-interest');  // Add active class when opened
+    } else {
+        infoCollapse.style.display = "none";
+        infoButton.classList.remove('active-interest');  // Remove active class when closed
+    }
+}
+

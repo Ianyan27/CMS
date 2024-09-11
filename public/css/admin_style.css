@@ -203,6 +203,10 @@ tbody {
     background-color: #ff9c84;
 }
 
+.inactive-text{
+    color: #FF4C4C;
+}
+
 .inactive-btn{
     background-color: #FF4C4C;
     color: #ffffff;
