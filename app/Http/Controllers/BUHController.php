@@ -281,7 +281,8 @@ class BUHController extends Controller
 
         $allContacts = $contacts->concat($archivedContacts)->concat($discardedContacts);
         $countAllContacts = $allContacts->count();
-
+        $countEligibleContacts = $contacts->concat($archivedContacts);
+        $totalEligibleContacts = $countEligibleContacts->count();
         $perPage = 50;
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $currentPageItems = $allContacts->slice(($currentPage - 1) * $perPage, $perPage)->all();
@@ -294,7 +295,8 @@ class BUHController extends Controller
             'owner' => $owner,
             'viewContact' => $paginatedContacts,
             'isEmpty' => $isEmpty,
-            'countAllContacts' => $countAllContacts
+            'countAllContacts' => $countAllContacts,
+            'totalEligibleContacts' => $totalEligibleContacts
         ]);
     }
 

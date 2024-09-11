@@ -56,3 +56,13 @@ function applyStatusFilter() {
         }
     });
 }
+
+function toggleInfoCollapse() {
+    var infoCollapse = document.getElementById('infoCollapse');
+    if (infoCollapse.style.display === 'none' || infoCollapse.style.display === '') {
+        infoCollapse.style.display = 'block';
+    } else {
+        infoCollapse.style.display = 'none';
+    }
+}
+
