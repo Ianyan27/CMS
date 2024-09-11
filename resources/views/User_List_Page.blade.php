@@ -296,29 +296,12 @@
                     </div>
                 </div>
             </div>
-
-            <!-- JavaScript for Validation -->
-            <script>
-                $(document).ready(function() {
-                    $('#addUserForm').on('submit', function(e) {
-                        var email = $('#email').val();
-                        var validDomains = ['lithan.com', 'educlaas.com', 'learning.educlaas.com'];
-                        var emailDomain = email.split('@')[1];
-
-                        if (email && validDomains.indexOf(emailDomain) === -1) {
-                            $('#emailError').text(
-                                'The email address must be one of the following domains: lithan.com, educlaas.com, learning.educlaas.com'
-                            );
-                            e.preventDefault(); // Prevent form submission
-                        } else {
-                            $('#emailError').text(''); // Clear any previous error message
-                        }
-                    });
-                });
-            </script>
         @else
             <div class="alert alert-danger text-center mt-5">
                 <strong>Access Denied!</strong> You do not have permission to view this page.
             </div>
-    @endif
+        @endif
+        <!-- JavaScript for Validation -->
+        <script src=" {{ asset('js/add_agent_validation.js') }} "></script>
+        <script src=" {{ asset('js/sort.js') }} "></script>
 @endsection
