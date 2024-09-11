@@ -21,6 +21,81 @@
             line-height: 25px;
             border-radius: 5px;
         }
+        /* Ensure the collapse container is styled properly */
+    .collapse {
+        transition: height 0.3s ease;
+    }
+
+    /* Optionally, add more styling to the card */
+    .card {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    /* Style the container for alignment */
+    .switch-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Style the switch */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 100%; /* Full width of the parent container */
+        max-width: 100px; /* Max width to keep the switch from becoming too large */
+        height: 34px;
+    }
+
+    /* Hide default checkbox */
+    .switch input {
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+    }
+
+    /* Slider styling */
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+
+    /* Slider before the toggle state */
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+
+    /* When the switch is checked, adjust slider background */
+    input:checked + .slider {
+        background-color: #4CAF50;
+    }
+
+    /* When the switch is checked, move the slider to the right */
+    input:checked + .slider:before {
+        transform: translateX(60px);
+    }
+
+    /* Optional: style for status text */
+    .status-text {
+        font-size: 16px;
+    }
+
 </style>
 @section('content')
 @if (Auth::check() && Auth::user()->role == 'BUH')
@@ -94,43 +169,50 @@
             @csrf
             <input type="hidden" name="owner_pid" value=" {{ $owner->owner_pid }} " readonly>
             <div class="table-title d-flex justify-content-between align-items-center mb-3">
-                <div class="d-flex align-items-center">
-                    <h2 style="margin: 0 0.5rem 0 0.25rem;" class="font-educ headings">Transferable Contacts</h2>
-                    <button class="btn hover-action active">
-                        Total Contacts: {{$countAllContacts}}
-                    </button>
-                    {{-- <span 
-                        class="mx-4 btn 
-                            @if ($owner->status === 'inactive')
-                                inactive-btn
-                            @elseif ($owner->status === 'active')
-                                active-btn
-                            @endif
-                        ">
-                        Status: 
-                        @if ($owner->status === 'inactive')
-                            Inactive
-                        @elseif ($owner->status === 'active')
-                            Active
-                        @endif
-                    </span> --}}
-                    @if ($owner->status === 'inactive')
-                        <button type="button" class="btn active-btn mx-3" onclick="updateStatusOwner({{ $owner->owner_pid }})">
-                            Activate Sales Agent
+                <div class="position-relative">
+                    <div class="d-flex align-items-center">
+                        <h2 style="margin: 0 0.25rem 0 0.25rem;" class="font-educ headings">Transferable Contacts</h2>
+                        <button id="infoButton" style="margin: 0 0.75rem; padding: 10px 12px;" type="button" class="btn hover-action" onclick="toggleInfoCollapse()">
+                            <i style="font-size: 1.25rem;" class="fa-solid fa-circle-question"></i>
                         </button>
-                    @elseif ($owner->status === 'active')
-                        <button type="button" class="btn inactive-btn mx-3" onclick="updateStatusOwner({{ $owner->owner_pid }})">
-                            Deactivate Sales Agent
+                        <div class="switch-container" style="margin: 0 0.5rem;">
+                            <label class="switch">
+                                <input type="checkbox" id="statusSwitch" data-owner-pid="{{ $owner->owner_pid }}" @if ($owner->status === 'active') checked @endif>
+                                <span class="slider round"></span>
+                            </label>
+                            <span class="owner-status 
+                                @if($owner->status === 'active')
+                                status-text
+                                @elseif($owner->status === 'inactive')
+                                inactive-text
+                                @endif">Status: 
+                                @if ($owner->status === 'active')
+                                Active
+                                @elseif ($owner->status === 'inactive')
+                                Inactive
+                                @endif
+                            </span>
+                        </div>
+                        <button type="button" class="btn hover-action" data-toggle="modal" data-target="#transferContact">
+                            Transfer Contacts <i class="fa-solid fa-right-left"></i>
                         </button>
-                    @endif
-                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#transferContact">
-                        Transfer Contacts <i class="fa-solid fa-right-left"></i>
-                    </button>
+                    </div>
+                    <!-- Info Container -->
+                    <div id="infoCollapse" class="collapse container rounded-bottom p-0" 
+                        style="display: none; 
+                                position: absolute; 
+                                top: 100%; left: 0; 
+                                z-index: 1000; 
+                                box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);">
+                        <div class="card card-body">
+                            <p>Total Contacts: {{$countAllContacts}} (New, In Progress, Hubspot, Archive, Discard) </p>
+                            <p>Eligible for transfer: {{ $totalEligibleContacts }} (New, In Progress, Archive)</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="d-flex align-items-center mr-3">
                     <div class="search-box d-flex align-items-center mr-3 mb-2">
-                        <input type="search" class="form-control mr-1" placeholder="Search Name or Email..." id="search-input"
-                            aria-label="Search">
+                        <input type="search" class="form-control mr-1" placeholder="Search Name or Email..." id="search-input" aria-label="Search">
                         <button style="padding: 10px 12px;" class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search">
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </button>
@@ -138,35 +220,65 @@
                 </div>
             </div>
             <div class="table-container">
-                <table id="sales-agents-table" class="table table-hover mt-2">
+                <table id="contacts-table" class="table table-hover mt-2">
                     <thead class="font-educ text-left">
                         <tr>
                             <th scope="col"><input type="checkbox" id="select-all"></th>
                             <th scope="col">No #</th>
                             <th scope="col" id="name-header">Name
-                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-agent"
-                                    onclick="sortByColumn('agent', 'asc'); toggleSort('sortDown-agent', 'sortUp-agent')"></i>
-                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-agent"
-                                    onclick="sortByColumn('agent', 'desc'); toggleSort('sortUp-agent', 'sortDown-agent')"
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name"
+                                    onclick="sortTable('name', 'asc'); toggleSort('sortDown-name', 'sortUp-name')"></i>
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name"
+                                    onclick="sortTable('name', 'desc'); toggleSort('sortUp-name', 'sortDown-name')"
                                     style="display: none;"></i>
                             </th>
-                            <th scope="col">Email</th>
+                            <th scope="col" id="email-header">Email
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-email"
+                                    onclick="sortTable('email', 'asc'); toggleSort('sortDown-email', 'sortUp-email')"></i>
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-email"
+                                    onclick="sortTable('email', 'desc'); toggleSort('sortUp-email', 'sortDown-email')"
+                                    style="display: none;"></i>
+                            </th>
                             <th scope="col">Phone Contact</th>
                             <th scope="col" id="country-header">Country
                                 <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-country"
-                                    onclick="sortByColumn('country', 'asc'); toggleSort('sortDown-country', 'sortUp-country')"></i>
+                                    onclick="sortTable('country', 'asc'); toggleSort('sortDown-country', 'sortUp-country')"></i>
                                 <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-country"
-                                    onclick="sortByColumn('country', 'desc'); toggleSort('sortUp-country', 'sortDown-country')"
+                                    onclick="sortTable('country', 'desc'); toggleSort('sortUp-country', 'sortDown-country')"
                                     style="display: none;"></i>
                             </th>
-                            <th scope="col">Status</th>
+                            <th class="position-relative" scope="col">Status
+                                <i style="cursor: pointer;" class="fa-solid fa-filter" id="filterIcon"
+                                    onclick="toggleFilter()"></i>
+                                <!-- Filter Container -->
+                                <div id="filterContainer" class="filter-popup container rounded-bottom"
+                                    style="display: none;">
+                                    <div class="row">
+                                        <div class="filter-option">
+                                            <input class="ml-3" type="checkbox" id="new" name="status"
+                                                value="New" onclick="applyFilter()">
+                                            <label for="new" style= "color: #318FFC;">New</label>
+                                        </div>
+                                        <div class="filter-option">
+                                            <input class="ml-3" type="checkbox" id="inProgress" name="status"
+                                                value="InProgress" onclick="applyFilter()">
+                                            <label for="inProgress" style="color: #FF8300;">In Progress</label>
+                                        </div>
+                                        <div class="filter-option">
+                                            <input class="ml-3" type="checkbox" id="hubspot" name="status"
+                                                value="HubSpot Contact" onclick="applyFilter()">
+                                            <label for="hubspot" style="color: #FF5C35;">HubSpot</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th>
                             <th scope="col ">Action</th>
                         </tr>
                     </thead>
                     <tbody class="text-left fonts">
                         <?php $i = ($viewContact->currentPage() - 1) * $viewContact->perPage(); ?>
                         @forelse ($viewContact as $contact)
-                            <tr>
+                            <tr data-status="{{ $contact['status'] }}">
                                 <td>
                                     <input class="contact-checkbox" type="checkbox" name="contact_pid[]" value=" {{ 
                                         $contact->contact_pid ?? 
@@ -221,10 +333,10 @@
                                     </span> 
                                 </td>
                                 <td>
-                                    {{-- <a href=" {{ route('owner#view-contact', $contact->contact_pid) }} "
-                                        class="btn hover-action" data-toggle="tooltip" title="View">
+                                    <a href=" {{ route('owner#view-contact', $contact->contact_pid) }} "
+                                        class="btn hover-action" style="padding:10px 12px;" data-toggle="tooltip" title="View">
                                         <i class="fa-solid fa-eye"></i>
-                                    </a> --}}
+                                    </a>
                                 </td>
                             </tr>
                         @empty
@@ -337,37 +449,11 @@
             </div>
         </form>
     </div>        
-        {{-- @foreach ($viewContact as $owners)
-            <div class="modal fade" id="deleteOwnerModal{{ $owners->owner_pid }}" tabindex="-1"
-                aria-labelledby="deleteOwnerModalLabel{{ $owners->owner_pid }}" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content text-center">
-                        <div class="icon-container mx-auto">
-                            <i class="fa-solid fa-trash"></i>
-                        </div>
-                        <div class="modal-header border-0">
-                        </div>
-                        <div class="modal-body">
-                            <p>You are about to delete this Sales Agent</p>
-                            <p class="text-muted">This will delete your sales agent from your list.</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                            <form action="{{ route('owner#delete', $owners->owner_pid) }}" method="post">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endforeach --}}
     @else
         <div class="alert alert-danger text-center mt-5">
             <strong>Access Denied!</strong> You do not have permission to view this page.
         </div>
-@endif
+    @endif
     @if (Session::has('success'))
         <script>
             $(document).ready(function() {
@@ -394,9 +480,75 @@
             @endif
         });
     </script>
+    <script>
+        function sortTable(columnName, order) {
+        let table, rows, switching, i, x, y, shouldSwitch;
+        table = document.querySelector(".table");
+        switching = true;
+        
+        // Loop until no switching has been done
+        while (switching) {
+            switching = false;
+            rows = table.rows;
+            
+            // Loop through all table rows except the first (headers)
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                
+                // Determine the column index based on columnName
+                let columnIndex;
+                if (columnName === 'name') {
+                    columnIndex = 2; // Index for the 'Name' column
+                } else if (columnName === 'email') {
+                    columnIndex = 3; // Index for the 'Email' column
+                } else if (columnName === 'phone') {
+                    columnIndex = 4; // Index for the 'Phone Contact' column
+                } else if (columnName === 'country') {
+                    columnIndex = 5; // Index for the 'Country' column
+                } else if (columnName === 'status') {
+                    columnIndex = 6; // Index for the 'Status' column
+                }
+
+                // Compare the two elements in the column to see if they should switch
+                x = rows[i].querySelectorAll("td")[columnIndex];
+                y = rows[i + 1].querySelectorAll("td")[columnIndex];
+                
+                if (order === 'asc' && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                    shouldSwitch = true;
+                    break;
+                } else if (order === 'desc' && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                // If a switch has been marked, make the switch and mark the switch as done
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+        reassignRowNumbersTableContainer();
+    }
+    function reassignRowNumbersTableContainer() {
+        const table = document.querySelector(".table");
+        const rows = table.tBodies[0].rows; // Only get rows in the tbody
+
+        // Loop through all rows, starting from index 0
+        for (let i = 0; i < rows.length; i++) {
+            // Ensure we're updating the "No #" column (index 1), not the checkbox (index 0)
+            rows[i].querySelectorAll("td")[1].innerText = i + 1; // Assign row number starting from 1
+        }
+}
+
+
+
+    </script>
+    <script src=" {{ asset('js/update_status.js') }} "></script>
     <script src=" {{ asset('js/progress_bar.js') }} "></script>
     <script src=" {{ asset('js/transfer_contact.js') }} "></script>
     <script src=" {{ asset('js/checkbox_table.js') }} "></script>
     <script src=" {{ asset('js/search_name.js') }} "></script>
+    <script src=" {{ asset('js/filter_status.js') }} "></script>
+    <script src=" {{ asset('js/active_buttons.js') }} "></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 @endsection
