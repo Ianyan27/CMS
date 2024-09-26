@@ -114,7 +114,7 @@
                                     </div>
                                 </div>
                             </th>
-                            <th scope="col" class="text-center">Action</th>
+                            <th scope="col" class="text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="text-left fonts">
@@ -161,20 +161,20 @@
                                         @endif
                                     </span>
                                 </td>
-                                <td class="d-flex justify-content-between align-items-center">
+                                <td class="d-flex justify-content-center align-items-center">
                                     <a href=" {{ route('owner#transfer-contact', $owners->owner_pid) }} "
                                         class="btn hover-action" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-right-left"></i>
                                     </a>
                                     <a href="{{ route('owner#view-owner', $owners->owner_pid) }}"
-                                        class="btn hover-action" style="padding: 10px 12px;">
+                                        class="btn hover-action mx-2" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
 
-                                    <a class="btn hover-action" style="padding: 10px 12px;" data-toggle="modal"
+                                    {{-- <a class="btn hover-action" style="padding: 10px 12px;" data-toggle="modal"
                                         data-target="#deleteOwnerModal{{ $owners->owner_pid }}">
                                         <i class="fa-solid fa-trash"></i>
-                                    </a>
+                                    </a> --}}
                                 </td>
                             </tr>
                         @endforeach

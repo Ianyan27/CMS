@@ -262,7 +262,7 @@
                             <div class="form-group">
                                 <label for="name">Name</label>
                                 <input type="text" class="form-control" id="name" name="name"
-                                    value="{{ old('name') }}" required>
+                                    value="{{ old('name') }}" minlength="3" maxlength="50" required>
                                 @error('name')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
