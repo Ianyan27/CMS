@@ -2,60 +2,49 @@
 
 @extends('layouts.app')
 
-<style>
-    .progress-container {
-            width: 100%;
-            background-color: #f3f3f3;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            height: 25px;
-            margin-top: 20px;
-        }
-
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background-color: #4caf50;
-            text-align: center;
-            color: white;
-            line-height: 25px;
-            border-radius: 5px;
-        }
-        /* Ensure the collapse container is styled properly */
-.collapse {
-    transition: height 0.3s ease;
-}
-
-/* Optionally, add more styling to the card */
-.card {
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-</style>
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    @if (Session::has('success'))
+        <script>
+            $(document).ready(function() {
+                $('#successModal').modal('show');
+                console.log('this is ready');
+                
+            });
+        </script>
+    @endif
+    <script>
+        $(document).ready(function() {
+            $('#errorModal').modal('show');
+            @if (Session::has('warning'))
+                $('#warningModal').modal('show');
+            @endif
+            @if (Session::has('error'))
+                $('#errorModal').modal('show');
+            @endif
+        });
+    </script>
+</head>
 @section('content')
 @if (Auth::check() && Auth::user()->role == 'BUH')
-    @if (Session::has('success'))
-        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content rounded-0">
-                    <div class="modal-header"
-                        style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
-                    border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
-                        <h5 class="modal-title" id="successModalLabel" style="color: #91264c"><strong>Success</strong>
-                        </h5>
-                    </div>
-                    <div class="modal-body" style="color: #91264c;border:none;">
-                        {{ Session::get('success') }}
-                    </div>
-                    <div class="modal-footer" style="border:none;">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                            style="background: #91264c; color:white;">OK</button>
-                    </div>
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content rounded-0">
+                <div class="modal-header"
+                    style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+                border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
+                    <h5 class="modal-title" id="successModalLabel" style="color: #91264c"><strong>Success</strong></h5>
+                </div>
+                <div class="modal-body" style="color: #91264c;border:none;">
+                    {{ Session::get('success') }}
+                </div>
+                <div class="modal-footer" style="border:none;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                        style="background: #91264c; color:white;">OK</button>
                 </div>
             </div>
         </div>
-    @endif
+    </div>
     @if (Session::has('warning'))
         <!-- Success Modal -->
         <div class="modal fade" id="warningModal" tabindex="-1" aria-labelledby="warningModalLabel" aria-hidden="true">
@@ -108,15 +97,38 @@
                 <div class="position-relative">
                     <div class="d-flex align-items-center">
                         <h2 style="margin: 0 0.25rem 0 0.25rem;" class="font-educ headings">Transferable Contacts</h2>
-                        <button style="margin: 0 1rem 0 0.25rem; padding: 10px 12px;" type="button" class="btn hover-action" onclick="toggleInfoCollapse()">
+                        <button id="infoButton" style="margin: 0 0.75rem; padding: 10px 12px;" type="button" class="btn hover-action" onclick="toggleInfoCollapse()">
                             <i style="font-size: 1.25rem;" class="fa-solid fa-circle-question"></i>
                         </button>
+                        <div class="switch-container" style="margin: 1.25rem 0.5rem 0; ">
+                            <label class="switch">
+                                <input type="checkbox" id="statusSwitch" data-owner-pid="{{ $owner->owner_pid }}" @if ($owner->status === 'active') checked @endif>
+                                <span class="slider round"></span>
+                            </label>
+                            <span style="width:105px;" class="owner-status text-left
+                                @if($owner->status === 'active')
+                                status-text
+                                @elseif($owner->status === 'inactive')
+                                inactive-text
+                                @endif">Status: 
+                                @if ($owner->status === 'active')
+                                Active
+                                @elseif ($owner->status === 'inactive')
+                                Inactive
+                                @endif
+                            </span>
+                        </div>
                         <button type="button" class="btn hover-action" data-toggle="modal" data-target="#transferContact">
                             Transfer Contacts <i class="fa-solid fa-right-left"></i>
                         </button>
                     </div>
                     <!-- Info Container -->
-                    <div id="infoCollapse" class="collapse container rounded-bottom p-0" style="display: none; position: absolute; top: 100%; left: 0; z-index: 1000;">
+                    <div id="infoCollapse" class="collapse container rounded-bottom p-0" 
+                        style="display: none; 
+                                position: absolute; 
+                                top: 100%; left: 0; 
+                                z-index: 1000; 
+                                box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);">
                         <div class="card card-body">
                             <p>Total Contacts: {{$countAllContacts}} (New, In Progress, Hubspot, Archive, Discard) </p>
                             <p>Eligible for transfer: {{ $totalEligibleContacts }} (New, In Progress, Archive)</p>
@@ -139,19 +151,25 @@
                             <th scope="col"><input type="checkbox" id="select-all"></th>
                             <th scope="col">No #</th>
                             <th scope="col" id="name-header">Name
-                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-agent"
-                                    onclick="sortByColumn('agent', 'asc'); toggleSort('sortDown-agent', 'sortUp-agent')"></i>
-                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-agent"
-                                    onclick="sortByColumn('agent', 'desc'); toggleSort('sortUp-agent', 'sortDown-agent')"
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name"
+                                    onclick="sortTable('name', 'asc'); toggleSort('sortDown-name', 'sortUp-name')"></i>
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name"
+                                    onclick="sortTable('name', 'desc'); toggleSort('sortUp-name', 'sortDown-name')"
                                     style="display: none;"></i>
                             </th>
-                            <th scope="col">Email</th>
+                            <th scope="col" id="email-header">Email
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-email"
+                                    onclick="sortTable('email', 'asc'); toggleSort('sortDown-email', 'sortUp-email')"></i>
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-email"
+                                    onclick="sortTable('email', 'desc'); toggleSort('sortUp-email', 'sortDown-email')"
+                                    style="display: none;"></i>
+                            </th>
                             <th scope="col">Phone Contact</th>
                             <th scope="col" id="country-header">Country
                                 <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-country"
-                                    onclick="sortByColumn('country', 'asc'); toggleSort('sortDown-country', 'sortUp-country')"></i>
+                                    onclick="sortTable('country', 'asc'); toggleSort('sortDown-country', 'sortUp-country')"></i>
                                 <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-country"
-                                    onclick="sortByColumn('country', 'desc'); toggleSort('sortUp-country', 'sortDown-country')"
+                                    onclick="sortTable('country', 'desc'); toggleSort('sortUp-country', 'sortDown-country')"
                                     style="display: none;"></i>
                             </th>
                             <th class="position-relative" scope="col">Status
@@ -240,10 +258,10 @@
                                     </span> 
                                 </td>
                                 <td>
-                                    {{-- <a href=" {{ route('owner#view-contact', $contact->contact_pid) }} "
-                                        class="btn hover-action" data-toggle="tooltip" title="View">
+                                    <a href=" {{ route('owner#view-contact', $contact->contact_pid) }} "
+                                        class="btn hover-action" style="padding:10px 12px;" data-toggle="tooltip" title="View">
                                         <i class="fa-solid fa-eye"></i>
-                                    </a> --}}
+                                    </a>
                                 </td>
                             </tr>
                         @empty
@@ -356,55 +374,11 @@
             </div>
         </form>
     </div>        
-        {{-- @foreach ($viewContact as $owners)
-            <div class="modal fade" id="deleteOwnerModal{{ $owners->owner_pid }}" tabindex="-1"
-                aria-labelledby="deleteOwnerModalLabel{{ $owners->owner_pid }}" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content text-center">
-                        <div class="icon-container mx-auto">
-                            <i class="fa-solid fa-trash"></i>
-                        </div>
-                        <div class="modal-header border-0">
-                        </div>
-                        <div class="modal-body">
-                            <p>You are about to delete this Sales Agent</p>
-                            <p class="text-muted">This will delete your sales agent from your list.</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                            <form action="{{ route('owner#delete', $owners->owner_pid) }}" method="post">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endforeach --}}
     @else
         <div class="alert alert-danger text-center mt-5">
             <strong>Access Denied!</strong> You do not have permission to view this page.
         </div>
-@endif
-    @if (Session::has('success'))
-        <script>
-            $(document).ready(function() {
-                $('#successModal').modal('show');
-            });
-        </script>
     @endif
-    <script>
-        $(document).ready(function() {
-            $('#errorModal').modal('show');
-            @if (Session::has('warning'))
-                $('#warningModal').modal('show');
-            @endif
-            @if (Session::has('error'))
-                $('#errorModal').modal('show');
-            @endif
-        });
-    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             @if ($errors->any())
@@ -413,10 +387,74 @@
             @endif
         });
     </script>
+    <script>
+        function sortTable(columnName, order) {
+        let table, rows, switching, i, x, y, shouldSwitch;
+        table = document.querySelector(".table");
+        switching = true;
+        
+        // Loop until no switching has been done
+        while (switching) {
+            switching = false;
+            rows = table.rows;
+            
+            // Loop through all table rows except the first (headers)
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                
+                // Determine the column index based on columnName
+                let columnIndex;
+                if (columnName === 'name') {
+                    columnIndex = 2; // Index for the 'Name' column
+                } else if (columnName === 'email') {
+                    columnIndex = 3; // Index for the 'Email' column
+                } else if (columnName === 'phone') {
+                    columnIndex = 4; // Index for the 'Phone Contact' column
+                } else if (columnName === 'country') {
+                    columnIndex = 5; // Index for the 'Country' column
+                } else if (columnName === 'status') {
+                    columnIndex = 6; // Index for the 'Status' column
+                }
+
+                // Compare the two elements in the column to see if they should switch
+                x = rows[i].querySelectorAll("td")[columnIndex];
+                y = rows[i + 1].querySelectorAll("td")[columnIndex];
+                
+                if (order === 'asc' && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                    shouldSwitch = true;
+                    break;
+                } else if (order === 'desc' && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                // If a switch has been marked, make the switch and mark the switch as done
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+        reassignRowNumbersTableContainer();
+    }
+    function reassignRowNumbersTableContainer() {
+        const table = document.querySelector(".table");
+        const rows = table.tBodies[0].rows; // Only get rows in the tbody
+
+        // Loop through all rows, starting from index 0
+        for (let i = 0; i < rows.length; i++) {
+            // Ensure we're updating the "No #" column (index 1), not the checkbox (index 0)
+            rows[i].querySelectorAll("td")[1].innerText = i + 1; // Assign row number starting from 1
+        }
+}
+
+
+
+    </script>
+    <script src=" {{ asset('js/update_status.js') }} "></script>
     <script src=" {{ asset('js/progress_bar.js') }} "></script>
     <script src=" {{ asset('js/transfer_contact.js') }} "></script>
     <script src=" {{ asset('js/checkbox_table.js') }} "></script>
     <script src=" {{ asset('js/search_name.js') }} "></script>
     <script src=" {{ asset('js/filter_status.js') }} "></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src=" {{ asset('js/active_buttons.js') }} "></script>
 @endsection

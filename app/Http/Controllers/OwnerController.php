@@ -48,7 +48,7 @@ class OwnerController extends Controller
     {
         try {
             $client = new Client();
-            $response = $client->request('GET', 'https://api.hubapi.com/settings/v3/users/', [
+            $response = $client->request('GET', 'https://api.hubapi.com/crm/v3/owners', [
                 'headers' => [
                     'Authorization' => 'Bearer ' . env('HUBSPOT_API_KEY'),
                     'Content-Type'  => 'application/json',  

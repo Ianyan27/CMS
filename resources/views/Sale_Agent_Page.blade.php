@@ -74,10 +74,10 @@
                     <thead class="font-educ text-left">
                         <tr>
                             <th scope="col" id="name-header">Name
-                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-agent"
-                                    onclick="sortByColumn('agent', 'asc'); toggleSort('sortDown-agent', 'sortUp-agent')"></i>
-                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-agent"
-                                    onclick="sortByColumn('agent', 'desc'); toggleSort('sortUp-agent', 'sortDown-agent')"
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name"
+                                    onclick="sortByColumn('name', 'asc'); toggleSort('sortDown-name', 'sortUp-name')"></i>
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name"
+                                    onclick="sortByColumn('name', 'desc'); toggleSort('sortUp-name', 'sortDown-name')"
                                     style="display: none;"></i>
                             </th>
                             <th scope="col">Hubspot ID</th>

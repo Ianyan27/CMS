@@ -79,10 +79,10 @@ function toggleSort(downIconId, upIconId) {
 
         // Define column indices based on columnName
         let columnIndex;
-        if (columnName === 'agent') {
-            columnIndex = 2; // Index for 'Agent' column
+        if (columnName === 'name') {
+            columnIndex = 0; // Index for 'Agent' column
         } else if (columnName === 'country') {
-            columnIndex = 3; // Index for 'Country' column
+            columnIndex = 2; // Index for 'Country' column
         } else {
             return; // Exit if columnName is not handled
         }
@@ -111,15 +111,22 @@ function toggleSort(downIconId, upIconId) {
                 switching = true;
             }
         }
-        // Reassign "No #" column values
-        reassignRowNumbers();
+        // // Reassign "No #" column values
+        // reassignRowNumbers();
     }
 
-    function reassignRowNumbers() {
-        const table = document.querySelector("#sales-agents-table");
-        const rows = table.tBodies[0].rows;
-
-        for (let i = 0; i < rows.length; i++) {
-            rows[i].cells[1].innerText = i + 1; // Reassign "No #" column (index 1)
-        }
-    }
+    // function reassignRowNumbers() {
+    //     const table = document.querySelector("#sales-agents-table");
+    //     const rows = table.tBodies[0].rows;
+    
+    //     for (let i = 0; i < rows.length; i++) {
+    //         // Make sure we're updating only the "No #" column (second column, index 1)
+    //         let numberCell = rows[i].cells[1]; 
+    
+    //         // Ensure that the second column (index 1) is updated with the row number, not the checkbox
+    //         if (numberCell) {
+    //             numberCell.innerText = i + 1; // Update the number starting from 1
+    //         }
+    //     }
+    // }
+    

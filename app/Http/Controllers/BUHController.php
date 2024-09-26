@@ -471,39 +471,47 @@ class BUHController extends Controller
     }
 
 
-    public function updateStatusOwner($owner_pid)
-    {
+    public function updateStatusOwner(Request $request, $owner_pid){
+        // Log incoming request data
+        Log::info('Update Status Request:', [
+            'owner_pid' => $owner_pid,
+            'request_data' => $request->all()
+        ]);
+
         try {
             // Retrieve the owner by their primary ID (assuming owner_pid is the primary key)
             $owner = Owner::find($owner_pid);
 
             if ($owner) {
-                if ($owner->status === 'active') {
-                    $owner->status = 'inactive';
-                    $message = 'Owner status updated to inactive';
-                } else {
-                    $owner->status = 'active';
-                    $message = 'Owner status updated to active';
-                }
+                // Update the status
+                $owner->status = $request->input('status');
                 $owner->save();
-                return redirect()->back()->with('success', $message);
+
+                Log::info('Owner status updated successfully:', [
+                    'owner_id' => $owner->id,
+                    'new_status' => $owner->status
+                ]);
+
+                // Return a success message as JSON
+                return response()->json(['message' => 'Owner status updated successfully.']);
             } else {
-                return redirect()->back()->with('error', 'Owner not found');
+                Log::warning('Owner not found:', ['owner_pid' => $owner_pid]);
+
+                return response()->json(['message' => 'Owner not found.'], 404);
             }
         } catch (\Exception $e) {
             // Log the exception for debugging
             Log::error('Error updating owner status: ' . $e->getMessage());
 
-            // Redirect back with a generic error message
-            return redirect()->back()->with('error', 'An unexpected error occurred. Please try again later.');
+            // Return an error message as JSON
+            return response()->json(['message' => 'An unexpected error occurred. Please try again later.'], 500);
         }
     }
 
 
 
-
-    public function getProgress()
-    {
+    
+    public function getProgress(){
         return response()->json(['progress' => Session::get('progress', 0)]);
     }
 }
