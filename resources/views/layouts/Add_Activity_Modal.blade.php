@@ -77,6 +77,60 @@
         </div>
     </div>
 </div>
+@foreach ($engagements as $engagement)
+    <div class="modal fade" id="deleteUserModal{{ $engagement->engagement_pid }}" tabindex="-1"
+        aria-labelledby="deleteUserModalLabel{{ $engagement->engagement_pid }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center">
+                <div class="icon-container mx-auto">
+                    <i class="fa-solid fa-trash"></i>
+                </div>
+                <div class="modal-header border-0">
+                </div>
+                <div class="modal-body">
+                    <!-- Updated message -->
+                    <p class="font-weight-bold">Are you sure you want to archive this activity?</p>
+                    <p class="text-muted">This activity will be moved to the archived activities and can be restored later.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <!-- Update the form action to point to your delete route -->
+                    <form action="{{ route('deleteActivity', ['engagement_pid' => $engagement->engagement_pid]) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-danger">Archive</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+@endforeach
+@foreach ($deletedEngagement as $deletedActivity)
+    <!-- Retrieve (Restore) Modal -->
+    <div class="modal fade" id="retrieveActivityModal{{ $deletedActivity->id }}" tabindex="-1"
+        aria-labelledby="retrieveActivityModal{{ $deletedActivity->id }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center">
+                <div class="icon-container mx-auto">
+                    <i class="fa-solid fa-undo-alt"></i>
+                </div>
+                <div class="modal-header border-0">
+                </div>
+                <div class="modal-body">
+                    <!-- Retrieve Message -->
+                    <p class="font-weight-bold">Are you sure you want to restore this activity?</p>
+                    <p class="text-muted">This activity will be restored and moved back to the active activities list.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <form action="{{ route('retrieveActivity', ['id' => $deletedActivity->id]) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn hover-action">Restore</button>
+                    </form>                                                   
+                </div>
+            </div>
+        </div>
+    </div>
+@endforeach
 <script>
     document.getElementById('activity-attachment').addEventListener('change', function(event) {
         const allowedExtensions = ['image/jpeg', 'image/png', 'image/jpg'];

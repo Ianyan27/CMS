@@ -193,6 +193,12 @@
         <div class="table-title d-flex justify-content-between align-items-center mt-5">
             <div class="d-flex align-items-center">
                 <h2 class="ml-2 mb-1 headings">Activity Taken</h2>
+                <button class="btn hover-action mx-3" id="show-activities">
+                    Activities Taken
+                </button>
+                <button class="btn archive-table mx-3" id="show-deleted-activities">
+                    Archived Activities
+                </button>
             </div>
             <div class="d-flex align-items-center mr-2 mb-2">
                 <!-- Button to trigger the modal -->
@@ -205,68 +211,135 @@
             </div>
         </div>
         <!-- Table -->
-        <div class="table-container" style="max-height: 350px; overflow-y:auto;" id="table-container">
-    <table class="table table-hover mt-2">
-        <thead class="font-educ text-left">
-            <tr>
-                <th scope="col">No</th>
-                <th scope="col">Date</th>
-                <th scope="col">Created Date</th>
-                <th scope="col">Modified Date</th>
-                <th scope="col">Type</th>
-                <th scope="col">Description</th>
-                <th scope="col">Attachment</th>
-                
-                @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
-                    <th scope="col" class="text-center">Action</th>
-                @endif
-            </tr>
-        </thead>
-        <tbody class="text-left bg-row">
-            <?php $i = 0; ?>
-            @forelse ($engagements as $engagement)
-                @php
-                    // Decode the JSON or handle the attachments array properly
-                    $attachments = json_decode($engagement->attachments, true); // Assuming it's a JSON string
-                    $filename = $attachments[0] ?? ''; // Get the first filename from the array
-                @endphp
-                <tr>
-                    <td>{{ ++$i }}</td>
-                    <td>{{ $engagement->date }}</td>
-                    <td>{{ \Carbon\Carbon::parse($engagement->created_at)->format('Y-m-d H:i:s') }}</td> <!-- Created Date -->
-                    <td>{{ \Carbon\Carbon::parse($engagement->updated_at)->format('Y-m-d H:i:s') }}</td> <!-- Modified Date -->
-                    <td>{{ $engagement->activity_name }}</td>
-                    <td>{{ $engagement->details }}</td>
-                    <td>
-                        @if ($filename)
-                            <a href="#table-container" id="attachmentImage"
-                                style="width: 100px; height: auto; cursor: pointer;"
-                                data-image-url="{{ $filename }}">
-                                View Attachment
-                            </a>
-                        @else
-                            No Image Available
+        <div class="table-container" style="max-height: 350px; overflow-y:auto; display: block;" id="activity-table">
+            <table class="table table-hover mt-2">
+                <thead class="font-educ text-left">
+                    <tr>
+                        <th scope="col">No</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Created Date</th>
+                        <th scope="col">Modified Date</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Attachment</th>
+                        
+                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+                            <th scope="col" class="text-center">Action</th>
                         @endif
-                    </td>
-                    
-                    @if (Auth::user()->role == 'Sales_Agent')
-                        <td class="text-center">
-                            <a href="{{ Auth::user()->role == 'Sales_Agent' ? route('contact#update-activity', ['contact_id' => $engagement->fk_engagements__contact_pid, 'activity_id' => $engagement->engagement_pid]) : '#' }}"
-                                data-toggle="modal"
-                                {{ Auth::user()->role == 'Sales_Agent' ? 'data-target=#updateActivityModal-' . $engagement->engagement_pid : '' }}
-                                class="btn hover-action">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </a>
-                        </td>
-                    @endif
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="8" class="text-center">No Activity Taken.</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
+                    </tr>
+                </thead>
+                <tbody class="text-left bg-row">
+                    <?php $i = 0; ?>
+                    @forelse ($engagements as $engagement)
+                        @php
+                            // Decode the JSON or handle the attachments array properly
+                            $attachments = json_decode($engagement->attachments, true); // Assuming it's a JSON string
+                            $filename = $attachments[0] ?? ''; // Get the first filename from the array
+                        @endphp
+                        <tr>
+                            <td>{{ ++$i }}</td>
+                            <td>{{ $engagement->date }}</td>
+                            <td>{{ \Carbon\Carbon::parse($engagement->created_at)->format('Y-m-d H:i:s') }}</td> <!-- Created Date -->
+                            <td>{{ \Carbon\Carbon::parse($engagement->updated_at)->format('Y-m-d H:i:s') }}</td> <!-- Modified Date -->
+                            <td>{{ $engagement->activity_name }}</td>
+                            <td>{{ $engagement->details }}</td>
+                            <td>
+                                @if ($filename)
+                                    <a href="#table-container" id="attachmentImage"
+                                        style="width: 100px; height: auto; cursor: pointer;"
+                                        data-image-url="{{ $filename }}">
+                                        View Attachment
+                                    </a>
+                                @else
+                                    No Image Available
+                                @endif
+                            </td>
+                            
+                            @if (Auth::user()->role == 'Sales_Agent')
+                                <td class="text-center">
+                                    @if($editContact->status !== 'HubSpot Contact')
+                                        <a href="{{ Auth::user()->role == 'Sales_Agent' ? route('contact#update-activity', ['contact_id' => $engagement->fk_engagements__contact_pid, 'activity_id' => $engagement->engagement_pid]) : '#' }}"
+                                        data-toggle="modal"
+                                        {{ Auth::user()->role == 'Sales_Agent' ? 'data-target=#updateActivityModal-' . $engagement->engagement_pid : '' }}
+                                        class="btn hover-action">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                        </a>
+                                    @endif
+                                    <a class="btn hover-action" data-toggle="modal"
+                                        data-target="#deleteUserModal{{ $engagement->engagement_pid }}">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </td>
+                            @endif
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" class="text-center">No Activity Taken.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        <div class="table-container" style="max-height: 350px; overflow-y:auto; display: none;" id="deleted-activity-table">
+            <table class="table table-hover mt-2">
+                <thead class="font-educ text-left">
+                    <tr>
+                        <th scope="col">No</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Created Date</th>
+                        <th scope="col">Modified Date</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Attachment</th>
+                        
+                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+                            <th scope="col" class="text-center">Action</th>
+                        @endif
+                    </tr>
+                </thead>
+                <tbody class="text-left bg-row">
+                    <?php $i = 0; ?>
+                    @forelse ($deletedEngagement as $deletedActivity)
+                        @php
+                            // Decode the JSON or handle the attachments array properly
+                            $attachments = json_decode($deletedActivity->attachments, true); // Assuming it's a JSON string
+                            $filename = $attachments[0] ?? ''; // Get the first filename from the array
+                        @endphp
+                        <tr>
+                            <td>{{ ++$i }}</td>
+                            <td>{{ $deletedActivity->date }}</td>
+                            <td>{{ \Carbon\Carbon::parse($deletedActivity->created_at)->format('Y-m-d H:i:s') }}</td> <!-- Created Date -->
+                            <td>{{ \Carbon\Carbon::parse($deletedActivity->updated_at)->format('Y-m-d H:i:s') }}</td> <!-- Modified Date -->
+                            <td>{{ $deletedActivity->activity_name }}</td>
+                            <td>{{ $deletedActivity->details }}</td>
+                            <td>
+                                @if ($filename)
+                                    <a href="#table-container" id="attachmentImage"
+                                        style="width: 100px; height: auto; cursor: pointer;"
+                                        data-image-url="{{ $filename }}">
+                                        View Attachment
+                                    </a>
+                                @else
+                                    No Image Available
+                                @endif
+                            </td>
+                            @if (Auth::user()->role == 'Sales_Agent')
+                                <td class="text-center">
+                                    <a class="btn hover-action" data-toggle="modal"
+                                        data-target="#retrieveActivityModal{{ $deletedActivity->id }}">
+                                        <i class="fa-solid fa-rotate-left"></i>
+                                    </a>
+                                </td>
+                            @endif
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" class="text-center">No Activity Taken.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 </div>
 
     @else
@@ -275,8 +348,6 @@
         </div>
     @endif
     </div>
-
-
     <!-- Bootstrap Modal for Image -->
     <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
         aria-hidden="true">
@@ -289,7 +360,6 @@
             </div>
         </div>
     </div>
-
     <script>
         document.querySelectorAll('.activity-button').forEach(button => {
             button.addEventListener('click', function() {
@@ -324,6 +394,7 @@
             });
         });
     </script>
+    <script src=" {{ URL::asset('js/show_activity_table.js') }} "></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ URL::asset('js/contact_detail.js') }}"></script>
     <script src="{{ URL::asset('js/status_color.js') }}"></script>

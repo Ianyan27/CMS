@@ -129,6 +129,12 @@ Route::group(['prefix' => 'sales-agent'], function () {
         ContactController::class,
         'saveActivity'
     ])->name('contact#save-activity');
+    Route::post('/delete-activity/{engagement_pid}', [
+        ContactController::class, 'deleteActivity'
+    ])->name('deleteActivity');
+    Route::post('/retrieve-activity/{id}', [
+        ContactController::class, 'retrieveActivity'
+    ])->name('retrieveActivity');     
     Route::post('/save-archive-activity/{contact_archive_pid}', [
         ArchiveController::class,
         'saveActivity'
