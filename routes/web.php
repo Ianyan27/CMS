@@ -20,6 +20,10 @@ Route::get('/', function () {
     return view('Login');
 })->name('login');
 
+Route::get('/sale_admin', function(){
+    return view('Sale_Admin_Page');
+})->name('sale_admin');
+
 // Microsoft OAuth Login
 Route::get('login/microsoft', [AuthController::class, 'redirectToMicrosoft'])->name('login.microsoft');
 Route::get('auth/callback', [AuthController::class, 'handleMicrosoftCallback'])->name('callback');
@@ -129,6 +133,9 @@ Route::group(['prefix' => 'sales-agent'], function () {
         ContactController::class,
         'saveActivity'
     ])->name('contact#save-activity');
+    Route::post('/archive-activity/{engagement_pid}', [
+    ContactController::class, 'archiveActivity'
+    ])->name('archiveActivity');
     Route::post('/delete-activity/{engagement_pid}', [
         ContactController::class, 'deleteActivity'
     ])->name('deleteActivity');

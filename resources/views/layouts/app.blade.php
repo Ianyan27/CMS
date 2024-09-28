@@ -101,6 +101,11 @@
                                 </a>
                             </li>
                         @endif
+                        <li class="nav-item dashboard-link">
+                            <a class="nav-link" href="{{ route('sale_admin') }}">
+                                <i class="fa-solid fa-address-book"></i><span>Sale Admin</span>
+                            </a>
+                        </li>
                     </ul>
                 </ul>
             </div>

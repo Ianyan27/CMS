@@ -202,7 +202,7 @@
             </div>
             <div class="d-flex align-items-center mr-2 mb-2">
                 <!-- Button to trigger the modal -->
-                @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+                @if (Auth::check() && Auth::user()->role == 'Sales_Agent' && $editContact->status !== 'HubSpot Contact')
                     <button class="btn hover-action add-activity-button" data-toggle="modal"
                         data-target="#addActivityModal">
                         <i style="font-size: 22px;" class="fa-solid fa-square-plus p-1"></i>
@@ -223,7 +223,7 @@
                         <th scope="col">Description</th>
                         <th scope="col">Attachment</th>
                         
-                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent' && $editContact->status !== 'HubSpot Contact')
                             <th scope="col" class="text-center">Action</th>
                         @endif
                     </tr>
@@ -264,11 +264,11 @@
                                         class="btn hover-action">
                                         <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
+                                        <a class="btn hover-action" data-toggle="modal"
+                                            data-target="#deleteUserModal{{ $engagement->engagement_pid }}">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
                                     @endif
-                                    <a class="btn hover-action" data-toggle="modal"
-                                        data-target="#deleteUserModal{{ $engagement->engagement_pid }}">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </a>
                                 </td>
                             @endif
                         </tr>

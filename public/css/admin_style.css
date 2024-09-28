@@ -1,11 +1,12 @@
 /* General Styles */
 * {
-    font-family: system-ui, -apple-system, 
+    /* font-family: system-ui, -apple-system, 
     "Segoe UI", Roboto, "Helvetica Neue", 
     "Noto Sans", "Liberation Sans", Arial, 
     sans-serif, "Apple Color Emoji", 
     "Segoe UI Emoji", "Segoe UI Symbol", 
-    "Noto Color Emoji";
+    "Noto Color Emoji"; */
+    font-family: Montserrat;
 }
 
 html, body {
@@ -848,4 +849,25 @@ th, label{
     /* Optional: style for status text */
     .status-text {
         font-size: 16px;
+    }
+
+    .sale-admin-container{
+        overflow: auto;
+        width: 75%;
+        padding: 0.5rem 1.75rem;
+        max-height: 500px;
+    }
+
+    .summary-container{
+        position: sticky;
+        top: 62px;
+        max-height: 400px;
+    }
+
+    .summary > div > p{
+        font-weight: bold;
+    }
+    
+    .summary > div > p span {
+        font-weight: normal;
     }

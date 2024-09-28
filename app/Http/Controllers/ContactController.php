@@ -435,7 +435,7 @@ class ContactController extends Controller
             ->with('success', 'Activity updated successfully.');
     }
 
-    public function deleteActivity($engagement_pid)
+    public function archiveActivity($engagement_pid)
     {
         // Find the engagement activity by its ID (engagement_pid)
         $engagement = Engagement::find($engagement_pid);
@@ -468,6 +468,16 @@ class ContactController extends Controller
         }
     }
 
+    public function deleteActivity($engagement_pid){
+    // Find the engagement by its engagement_pid
+    $engagement = Engagement::findOrFail($engagement_pid);
+
+    // Permanently delete the engagement
+    $engagement->delete();
+
+    // Redirect with a success message
+    return redirect()->back()->with('success', 'Activity deleted permanently.');
+}
     public function retrieveActivity($id) {
         // Retrieve the deleted activities based on engagement_pid
         $deletedContacts = Delete_contacts::where('id', $id)->get();

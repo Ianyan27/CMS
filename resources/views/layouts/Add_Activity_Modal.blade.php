@@ -85,19 +85,23 @@
                 <div class="icon-container mx-auto">
                     <i class="fa-solid fa-trash"></i>
                 </div>
-                <div class="modal-header border-0">
-                </div>
+                <div class="modal-header border-0"></div>
                 <div class="modal-body">
                     <!-- Updated message -->
-                    <p class="font-weight-bold">Are you sure you want to archive this activity?</p>
-                    <p class="text-muted">This activity will be moved to the archived activities and can be restored later.</p>
+                    <p class="font-weight-bold">What would you like to do with this activity?</p>
+                    <p class="text-muted">You can either archive the activity (it can be restored later) or delete it permanently.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <!-- Update the form action to point to your delete route -->
+                    <!-- Archive Form -->
+                    <form action="{{ route('archiveActivity', ['engagement_pid' => $engagement->engagement_pid]) }}" method="POST" style="margin-right: 10px;">
+                        @csrf
+                        <button type="submit" class="btn archive-table">Archive</button>
+                    </form>
+                    <!-- Delete Form -->
                     <form action="{{ route('deleteActivity', ['engagement_pid' => $engagement->engagement_pid]) }}" method="POST">
                         @csrf
-                        <button type="submit" class="btn btn-danger">Archive</button>
+                        <button type="submit" class="btn discard-table">Delete Permanently</button>
                     </form>
                 </div>
             </div>
