@@ -1,150 +1,133 @@
-const buCountryMap = {
-    "SG Retail": ["Singapore"],
-    "HED": ["Malaysia", "Myanmar", "Indonesia", "Philippines", "Vietnam", "Cambodia", "Laos", "Thailand", "India", "Sri Lanka", "Others"],
-    "Alliance": ["Malaysia", "Myanmar", "Indonesia", "Philippines", "Vietnam", "Cambodia", "Laos", "Thailand", "India", "Sri Lanka", "Others"],
-    "Enterprise International": ["Malaysia", "Indonesia", "Philippines"],
-    "Enterprise Singapore": ["Singapore"],
-    "Talent Management": ["Malaysia", "Singapore", "Myanmar", "Indonesia", "Philippines", "Vietnam", "Cambodia", "Laos", "Thailand", "India", "Sri Lanka", "Others"]
-};
 
-// BUH mapping for each BU and country
-const buhMap = {
-    "SG Retail": {
-        "Singapore": "Max"
-    },
-    "HED": {
-        "Malaysia": "She Nee",
-        "Myanmar": "Shine",
-        "Indonesia": "Tissa",
-        "Philippines": "Abbigail",
-        "Vietnam": "Dung",
-        "Cambodia": "Metta",
-        "Laos": "Metta",
-        "Thailand": "Metta",
-        "India": "Metta",
-        "Sri Lanka": "Rizvi",
-        "Others": "Metta"
-    },
-    "Alliance": {
-        "Malaysia": "Elise Tan",
-        "Myanmar": "Shine",
-        "Indonesia": "Indra",
-        "Philippines": "Hysie",
-        "Vietnam": "Dung",
-        "Cambodia": "Tep",
-        "Laos": "Tep",
-        "Thailand": "Tep",
-        "India": "Metta",
-        "Sri Lanka": "Rizvi",
-        "Others": "Metta"
-    },
-    "Enterprise International": {
-        "Malaysia": "Christopher",
-        "Indonesia": "Christopher",
-        "Philippines": "Christopher"
-    },
-    "Enterprise Singapore": {
-        "Singapore": "Caesar"
-    },
-    "Talent Management": {
-        "Malaysia": "Parvin",
-        "Singapore": "Parvin",
-        "Myanmar": "Parvin",
-        "Indonesia": "Parvin",
-        "Philippines": "Parvin",
-        "Vietnam": "Parvin",
-        "Cambodia": "Parvin",
-        "Laos": "Parvin",
-        "Thailand": "Parvin",
-        "India": "Parvin",
-        "Sri Lanka": "Parvin",
-        "Others": "Parvin"
-    }
-};
-
-// Array to hold selected countries
+// Global variable to hold selected countries
 let selectedCountries = [];
 
-// Update Country Checkboxes based on selected BU
+// Function to update countries and BUH based on selected BU
 function updateCountryCheckboxes() {
     const buDropdown = document.getElementById('buDropdown');
     const selectedBU = buDropdown.value;
-    const countryCheckboxesDiv = document.getElementById('countryCheckboxes');
-    countryCheckboxesDiv.innerHTML = ''; // Clear previous checkboxes
+    console.log("Selected BU:", selectedBU);
 
-    // Clear selected countries when BU changes
-    selectedCountries = [];
-    updateSelectedCountriesList(); // Clear the displayed selected countries
-    updateSelectedValues(); // Update the displayed values
+    // Update the selected BU display
+    document.getElementById('selectedBU').textContent = selectedBU || 'None';
 
-    if (selectedBU && buCountryMap[selectedBU]) {
-        const countries = buCountryMap[selectedBU];
-        countries.forEach(country => {
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.value = country;
-            checkbox.id = `country_${country}`;
-            checkbox.onchange = function () {
-                if (checkbox.checked) {
-                    addCountry(country);
-                } else {
-                    removeCountry(country);
-                }
-            };
+    // Clear previous checkboxes
+    const countryCheckboxes = document.getElementById('countryCheckboxes');
+    countryCheckboxes.innerHTML = '';
 
-            const label = document.createElement('label');
-            label.htmlFor = `country_${country}`;
-            label.textContent = country;
-            countryCheckboxesDiv.classList.add('checkbox-container');
+    // Reset selected country and BUH display
+    document.getElementById('selectedCountry').textContent = 'None';
+    document.getElementById('selectedBUH').textContent = 'None';
 
-            // Append checkbox and label
-            const checkboxWrapper = document.createElement('div');
-            checkboxWrapper.classList.add('checkbox-item');
-            checkboxWrapper.appendChild(checkbox);
-            checkboxWrapper.appendChild(label);
-            countryCheckboxesDiv.appendChild(checkboxWrapper);
-        });
+    // Clear BUH dropdown
+    const buhDropdown = document.getElementById('buhDropdown');
+    buhDropdown.innerHTML = '<option value="" selected disabled>Select BUH</option>'; // Reset options
+
+    // If no BU is selected, clear the BUH display
+    if (!selectedBU) {
+        console.log("No BU selected. Exiting updateCountryCheckboxes.");
+        return; // Do not fetch data if no BU is selected
     }
 
-    // Reset BUH dropdown
-    document.getElementById('buhDropdown').innerHTML = '<option value="">Select BUH</option>';
+    // Fetch the countries and BUH from the server
+    console.log("Fetching BU data for:", selectedBU);
+    fetch(`{{ route('get.bu.data') }}?business_unit=${selectedBU}`)
+        .then(response => {
+            console.log("Response received from server:", response);
+            return response.json();
+        })
+        .then(data => {
+            // Update country checkboxes
+            console.log("Data received from server:", data);
+            data.countries.forEach(country => {
+                const checkbox = document.createElement('div');
+                checkbox.classList.add('form-check');
+                checkbox.innerHTML = `
+                            <input class="form-check-input" type="checkbox" value="${country}" id="${country}" onchange="updateSelectedCountries()">
+                            <label class="form-check-label font-educ" for="${country}">${country}</label>
+                        `;
+                countryCheckboxes.appendChild(checkbox);
+            });
+
+            // Store the BUH data by country
+            window.buhDataByCountry = data.buh; // Store BUH data globally
+            console.log("BUH data by country stored:", window.buhDataByCountry);
+        })
+        .catch(error => console.error('Error fetching BU data:', error));
 }
 
-// Function to add selected country
-function addCountry(country) {
-    if (!selectedCountries.includes(country)) {
-        selectedCountries.push(country);
-        updateSelectedCountriesList();
-        updateBUHDropdown();
-        updateSelectedValues();
-    }
-}
+function updateSelectedCountries() {
+    const checkboxes = document.querySelectorAll('#countryCheckboxes input[type="checkbox"]');
+    selectedCountries = Array.from(checkboxes)
+        .filter(checkbox => checkbox.checked)
+        .map(checkbox => checkbox.value);
 
-// Function to remove selected country
-function removeCountry(country) {
-    selectedCountries = selectedCountries.filter(c => c !== country);
+    console.log("Selected countries updated:", selectedCountries);
+
+    // Update the selected countries display
+    document.getElementById('selectedCountry').textContent = selectedCountries.length > 0 ? selectedCountries.join(
+        ', ') : 'None';
+
+    // Update the BUH dropdown based on selected countries
+    updateBuhDropdown(selectedCountries);
+
+    // Update the selected countries list
     updateSelectedCountriesList();
-    updateBUHDropdown();
-    updateSelectedValues();
 }
 
-// Update the list of selected countries with remove buttons
+function updateBuhDropdown(selectedCountries) {
+    const buhDropdown = document.getElementById('buhDropdown');
+    buhDropdown.innerHTML = '<option value="" selected disabled>Select BUH</option>'; // Reset options
+
+    if (selectedCountries.length === 0) {
+        console.log("No countries selected for BUH dropdown.");
+        document.getElementById('selectedBUH').textContent = 'None';
+        return;
+    }
+
+    // Collect BUH values based on selected countries
+    const buhValues = selectedCountries.flatMap(country => window.buhDataByCountry[country] || []);
+
+    // Populate BUH dropdown with unique BUH values
+    const uniqueBuhValues = [...new Set(buhValues)];
+
+    console.log("Unique BUH values collected:", uniqueBuhValues);
+
+    uniqueBuhValues.forEach(buh => {
+        const option = document.createElement('option');
+        option.value = buh;
+        option.textContent = buh;
+        buhDropdown.appendChild(option);
+    });
+
+    // **Do not update selectedBUH here!**
+}
+
+// Add an event listener for the BUH dropdown to update the selectedBUH display when a BUH is selected
+document.getElementById('buhDropdown').addEventListener('change', function () {
+    const selectedBuh = this.value; // Get the selected BUH
+    document.getElementById('selectedBUH').textContent = selectedBuh || 'None'; // Update the display
+    console.log("Selected BUH updated to:", selectedBuh);
+});
+
+
 function updateSelectedCountriesList() {
     const selectedCountriesList = document.getElementById('selectedCountriesList');
     selectedCountriesList.innerHTML = ''; // Clear previous list
 
     selectedCountries.forEach(country => {
         const countryDiv = document.createElement('div');
-        countryDiv.classList.add('countries');
-        countryDiv.classList.add('border-educ');
+        countryDiv.classList.add('countries', 'border-educ');
+
         const countryLabel = document.createElement('span');
         countryLabel.textContent = country;
+
         const removeButton = document.createElement('button');
-        removeButton.textContent = '✖';
+        removeButton.textContent = '✖'; // Remove button
         removeButton.classList.add('remove-button');
         removeButton.onclick = function () {
+            console.log("Removing country:", country);
             removeCountry(country);
-            document.getElementById(`country_${country}`).checked = false; // Uncheck the checkbox
         };
 
         countryDiv.appendChild(countryLabel);
@@ -153,50 +136,42 @@ function updateSelectedCountriesList() {
     });
 }
 
-// Update BUH Dropdown based on selected BU and selected countries
-function updateBUHDropdown() {
-    const buDropdown = document.getElementById('buDropdown');
-    const selectedBU = buDropdown.value;
+function removeCountry(country) {
+    console.log("Country to remove:", country);
+    // Remove country from the selectedCountries array
+    selectedCountries = selectedCountries.filter(c => c !== country);
 
-    const buhDropdown = document.getElementById('buhDropdown');
-    buhDropdown.innerHTML = '<option value="">Select BUH</option>'; // Clear BUH dropdown
+    // Uncheck the checkbox for the removed country
+    document.getElementById(country).checked = false;
 
-    if (selectedBU && selectedCountries.length > 0) {
-        selectedCountries.forEach(country => {
-            if (buhMap[selectedBU] && buhMap[selectedBU][country]) {
-                const buh = buhMap[selectedBU][country];
-                const option = document.createElement('option');
-                option.value = buh;
-                option.text = buh;
-                buhDropdown.appendChild(option);
-            }
-        });
+    // Update the selected countries list display
+    updateSelectedCountriesList();
+
+    // Update the displayed selected countries text
+    document.getElementById('selectedCountry').textContent = selectedCountries.length > 0 ? selectedCountries.join(
+        ', ') : 'None';
+
+    // If no countries are selected, reset the BUH dropdown
+    if (selectedCountries.length === 0) {
+        const buhDropdown = document.getElementById('buhDropdown');
+        buhDropdown.innerHTML = '<option value="" selected disabled>Select BUH</option>'; // Reset options
+        document.getElementById('selectedBUH').textContent = 'None';
+        console.log("No countries selected. BUH dropdown reset.");
     }
 }
 
-// Update selected values displayed on the right side
-function updateSelectedValues() {
-    const selectedCountriesText = selectedCountries.length > 0 ? selectedCountries.join(', ') : "None";
+// Function to reset selections when changing the BU
+function resetSelections() {
+    console.log("Resetting selections...");
+    selectedCountries = []; // Clear the selected countries
+    document.getElementById('selectedCountry').textContent = 'None'; // Update display
+    updateSelectedCountriesList(); // Clear the displayed list
 
-    // Get all checked BUH checkboxes
-    const checkedBUHs = Array.from(document.querySelectorAll('#buhCheckboxes input[type="checkbox"]:checked'))
-        .map(checkbox => checkbox.nextElementSibling.textContent); // Get the label text
-
-    const selectedBUH = checkedBUHs.length > 0 ? checkedBUHs.join(', ') : "None";
-
-    document.getElementById('selectedBUH').innerText = selectedBUH;
-    document.getElementById('selectedCountry').innerText = selectedCountriesText;
+    // Clear BUH dropdown and display
+    const buhDropdown = document.getElementById('buhDropdown');
+    buhDropdown.innerHTML = '<option value="" selected disabled>Select BUH</option>'; // Reset options
+    document.getElementById('selectedBUH').textContent = 'None'; // Reset display
 }
-// Existing arrays and maps remain the same
-// ...
 
-// Update selected values displayed on the right side
-function updateSelectedValues() {
-    const selectedBU = document.getElementById('buDropdown').value || "None";
-    const selectedCountriesText = selectedCountries.length > 0 ? selectedCountries.join(', ') : "None";
-    const selectedBUH = document.getElementById('buhDropdown').value || "None";
-
-    document.getElementById('selectedBU').innerText = selectedBU;
-    document.getElementById('selectedCountry').innerText = selectedCountriesText;
-    document.getElementById('selectedBUH').innerText = selectedBUH;
-}
+// Call resetSelections function whenever the BU dropdown changes
+document.getElementById('buDropdown').addEventListener('change', resetSelections);

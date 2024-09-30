@@ -154,6 +154,7 @@
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         // Global variable to hold selected countries
         let selectedCountries = [];
@@ -331,20 +332,12 @@
 
         // Call resetSelections function whenever the BU dropdown changes
         document.getElementById('buDropdown').addEventListener('change', resetSelections);
-    </script>
 
-
-
-
-
-    {{-- <script src=" {{ URL::asset('js/disabled_import_csv_button.js') }} "></script> --}}
-    {{-- <script src=" {{ URL::asset('js/selection_before_import.js') }} "></script> --}}
-    <script>
         //-----------declaring----------------//
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
         const uploadForm = document.getElementById('uploadForm');
-        const submitBtn = document.getElementById('submit-btn');
+        const submitBtn = document.getElementById('submitBtn');
         const fileName = document.getElementById('file-name');
         const card = document.getElementById('file-card');
         const progressContainer = document.getElementById('progressContainer');
@@ -353,14 +346,11 @@
         const errorMessage = document.getElementById('error-message');
         const radioContainer = document.getElementById('radio-container');
 
-
-
         //----------Drag and drop--------------//
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
             dropZone.classList.add('dragover');
         });
-
 
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
@@ -462,9 +452,6 @@
             }
         }
 
-
-
-
         //----------submit-------------//
         submitBtn.addEventListener('click', (e) => {
 
@@ -475,8 +462,6 @@
             const platformSelect = document.getElementById('platform');
             formData.append('csv_file', fileInput.files[0]);
             formData.append('platform', platformSelect.value);
-
-
 
             submitBtn.classList.add('d-none');
             progressContainer.classList.remove('d-none')
@@ -529,14 +514,12 @@
                         progressBar.style.width = '100%';
                         progressMessage.textContent = 'Upload complete!';
 
-
                         let valid_count = data.data.valid_count;
                         let invalid_count = data.data.invalid_count;
                         let duplicate_count = data.data.duplicate_count;
                         let total_count = valid_count + invalid_count + duplicate_count;
 
                         setTimeout(() => {
-
 
                             const {
                                 invalid_rows,
@@ -562,8 +545,6 @@
                 });
         });
 
-
-
         //show download promt
         function showDownloadPrompt(valid_count, invalid_count, duplicate_count, total_count, invalid_rows_link,
             duplicate_rows_link) {
@@ -584,18 +565,18 @@
             // Add the logo image and text in a flex container
             const logoUrl = "{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}";
             const headerContent = `
-           <div style="
-            padding: 15px; 
-            background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
-            border-radius: 8px 8px 0 0;
-        "   class="d-flex justify-content-between align-items-center">
-        <div>
-                <p style=" margin-right: 30px; margin-bottom: 0;" class="headings">Import Status</p>
+                <div style="
+                    padding: 15px; 
+                    background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+                    border-radius: 8px 8px 0 0;
+                "   class="d-flex justify-content-between align-items-center">
+                <div>
+                        <p style=" margin-right: 30px; margin-bottom: 0;" class="headings">Import Status</p>
+                        </div>
+                        <div>
+                        <img src="${logoUrl}" alt="Company Logo" style="height: 30px;">
+                        </div>
                 </div>
-                 <div>
-                <img src="${logoUrl}" alt="Company Logo" style="height: 30px;">
-                 </div>
-        </div>
     `;
             const bodyContent = `
     <div style="padding : 20px" class="fonts">
@@ -622,13 +603,12 @@
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <p style="margin: 5px 0; font-size: 16px;">Duplicate Rows:</p>
         ${duplicate_rows_link ? `<a href="${duplicate_rows_link}" id="download-duplicate-btn" style="color: #007bff; text-decoration: underline; margin-left: 10px;">Download</a>` : ''}
-       
+        
         <div style="display: flex; align-items: center;">
             <strong>${duplicate_count}</strong>
-             </div>
+        </div>
     </div>
     <hr style="margin: 10px 0;">
-        
         <div class="text-end">
             <button id="cancel-btn" class="btn" style="background-color: #6c757d; color: white; padding: 5px 10px; border-radius: 4px;">Close</button>
         </div>
@@ -638,10 +618,9 @@
             downloadPrompt.innerHTML = `
         ${headerContent}
         ${bodyContent}
-       
+
         
     `;
-
 
             // Append the modal to the body
             document.body.appendChild(downloadPrompt);
