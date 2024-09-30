@@ -69,9 +69,13 @@ let selectedCountries = [];
 function updateCountryCheckboxes() {
     const buDropdown = document.getElementById('buDropdown');
     const selectedBU = buDropdown.value;
-
     const countryCheckboxesDiv = document.getElementById('countryCheckboxes');
     countryCheckboxesDiv.innerHTML = ''; // Clear previous checkboxes
+
+    // Clear selected countries when BU changes
+    selectedCountries = [];
+    updateSelectedCountriesList(); // Clear the displayed selected countries
+    updateSelectedValues(); // Update the displayed values
 
     if (selectedBU && buCountryMap[selectedBU]) {
         const countries = buCountryMap[selectedBU];
@@ -80,7 +84,7 @@ function updateCountryCheckboxes() {
             checkbox.type = 'checkbox';
             checkbox.value = country;
             checkbox.id = `country_${country}`;
-            checkbox.onchange = function() {
+            checkbox.onchange = function () {
                 if (checkbox.checked) {
                     addCountry(country);
                 } else {
@@ -91,9 +95,11 @@ function updateCountryCheckboxes() {
             const label = document.createElement('label');
             label.htmlFor = `country_${country}`;
             label.textContent = country;
+            countryCheckboxesDiv.classList.add('checkbox-container');
 
             // Append checkbox and label
             const checkboxWrapper = document.createElement('div');
+            checkboxWrapper.classList.add('checkbox-item');
             checkboxWrapper.appendChild(checkbox);
             checkboxWrapper.appendChild(label);
             countryCheckboxesDiv.appendChild(checkboxWrapper);
@@ -129,16 +135,14 @@ function updateSelectedCountriesList() {
 
     selectedCountries.forEach(country => {
         const countryDiv = document.createElement('div');
-        countryDiv.style.display = 'inline-block';
-        countryDiv.style.marginRight = '10px';
-
+        countryDiv.classList.add('countries');
+        countryDiv.classList.add('border-educ');
         const countryLabel = document.createElement('span');
         countryLabel.textContent = country;
-
         const removeButton = document.createElement('button');
-        removeButton.textContent = 'Remove';
-        removeButton.style.marginLeft = '5px';
-        removeButton.onclick = function() {
+        removeButton.textContent = '✖';
+        removeButton.classList.add('remove-button');
+        removeButton.onclick = function () {
             removeCountry(country);
             document.getElementById(`country_${country}`).checked = false; // Uncheck the checkbox
         };
@@ -172,38 +176,27 @@ function updateBUHDropdown() {
 
 // Update selected values displayed on the right side
 function updateSelectedValues() {
-    const selectedBU = document.getElementById('buDropdown').value || "None";
     const selectedCountriesText = selectedCountries.length > 0 ? selectedCountries.join(', ') : "None";
-    const selectedBUH = document.getElementById('buhDropdown').value || "None";
 
-    document.getElementById('selectedBU').innerText = selectedBU;
-    document.getElementById('selectedCountry').innerText = selectedCountriesText;
+    // Get all checked BUH checkboxes
+    const checkedBUHs = Array.from(document.querySelectorAll('#buhCheckboxes input[type="checkbox"]:checked'))
+        .map(checkbox => checkbox.nextElementSibling.textContent); // Get the label text
+
+    const selectedBUH = checkedBUHs.length > 0 ? checkedBUHs.join(', ') : "None";
+
     document.getElementById('selectedBUH').innerText = selectedBUH;
+    document.getElementById('selectedCountry').innerText = selectedCountriesText;
 }
 // Existing arrays and maps remain the same
 // ...
-
-// Function to update the selected platform
-function updatePlatformSelection() {
-    const selectedPlatform = document.getElementById('platform').value || "None";
-    document.getElementById('selectedPlatform').innerText = selectedPlatform;
-}
 
 // Update selected values displayed on the right side
 function updateSelectedValues() {
     const selectedBU = document.getElementById('buDropdown').value || "None";
     const selectedCountriesText = selectedCountries.length > 0 ? selectedCountries.join(', ') : "None";
     const selectedBUH = document.getElementById('buhDropdown').value || "None";
-    const selectedPlatform = document.getElementById('platform').value || "None";
 
     document.getElementById('selectedBU').innerText = selectedBU;
     document.getElementById('selectedCountry').innerText = selectedCountriesText;
     document.getElementById('selectedBUH').innerText = selectedBUH;
-    document.getElementById('selectedPlatform').innerText = selectedPlatform;
 }
-
-// Add event listener for platform selection
-document.getElementById('platform').addEventListener('change', function() {
-    updatePlatformSelection();
-    updateSelectedValues(); // To ensure all selected values are updated together
-});

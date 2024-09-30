@@ -9,6 +9,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CSVDownloadController;
 use App\Http\Controllers\DiscardController;
 use App\Http\Controllers\OwnerController;
+use App\Http\Controllers\SaleAdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\HubspotContactController;
 use Illuminate\Support\Facades\Auth;
@@ -20,9 +21,8 @@ Route::get('/', function () {
     return view('Login');
 })->name('login');
 
-Route::get('/sale_admin', function(){
-    return view('Sale_Admin_Page');
-})->name('sale_admin');
+Route::get('/sale_admin', [SaleAdminController::class, 'index'])->name('sale_admin');
+Route::get('/get-bu-data', [SaleAdminController::class, 'getBUData'])->name('get.bu.data');
 
 // Microsoft OAuth Login
 Route::get('login/microsoft', [AuthController::class, 'redirectToMicrosoft'])->name('login.microsoft');

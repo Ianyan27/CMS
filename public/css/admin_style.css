@@ -855,13 +855,14 @@ th, label{
         overflow: auto;
         width: 75%;
         padding: 0.5rem 1.75rem;
-        max-height: 500px;
+        max-height: 550px;
     }
 
     .summary-container{
         position: sticky;
         top: 62px;
-        max-height: 400px;
+        min-height: calc(41.594px + 160px + 218px);
+        max-height: max-content;
     }
 
     .summary > div > p{
@@ -870,4 +871,29 @@ th, label{
     
     .summary > div > p span {
         font-weight: normal;
+    }
+
+    .filter-container{
+        height: calc(46.391px + 457 + 16px);
+    }
+
+    .checkbox-item input{
+        margin-right: 0.5rem;
+    }
+
+    .checkbox-item label {
+        color: #91264c;
+    }
+
+    .countries{
+        display: inline-block;
+        margin-right: 10px;
+        padding: 0.125rem 0.5rem;
+        border-radius: 0.375rem;
+    }
+
+    .remove-button{
+        border: none;
+        margin-left: 5px;
+        background-color: #ffffff;
     }
