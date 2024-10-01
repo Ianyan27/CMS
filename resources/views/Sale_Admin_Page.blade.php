@@ -4,13 +4,12 @@
 
 @section('content')
 
-    <div class="container-max-height d-flex justify-content-center align-items-center">
-        <div class="sale-admin-container rounded border-educ">
+    <div class="container-max-height">
+        <div class="">
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="headings">Import CSV</h5>
-                <img src="{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}" alt="Company Logo" style="height: 30px;">
             </div>
-            <div class="filter-container row my-3">
+            <div class="row my-3">
                 <div class="col-sm-12 col-md-12 col-lg-6 my-2 px-3">
                     <div class="row">
                         <label class="font-educ" for="buDropdown">Select BU:</label>
