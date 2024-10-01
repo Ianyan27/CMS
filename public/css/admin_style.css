@@ -25,6 +25,8 @@ body {
 .container-max-height{
     min-height: 650px;
     max-height: 700px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .table-container{
@@ -853,9 +855,8 @@ th, label{
 
     .sale-admin-container{
         overflow: auto;
-        width: 75%;
         padding: 0.5rem 1.75rem;
-        max-height: 550px;
+        max-height: 700px;
     }
 
     .summary-container{
@@ -865,8 +866,14 @@ th, label{
         max-height: max-content;
     }
 
+    .summary div{
+        gap: 10px;
+        min-width: 250px; 
+    }
+
     .summary > div > p{
         font-weight: bold;
+        margin: 0;
     }
     
     .summary > div > p span {
