@@ -387,69 +387,7 @@
             @endif
         });
     </script>
-    <script>
-        function sortTable(columnName, order) {
-        let table, rows, switching, i, x, y, shouldSwitch;
-        table = document.querySelector(".table");
-        switching = true;
-        
-        // Loop until no switching has been done
-        while (switching) {
-            switching = false;
-            rows = table.rows;
-            
-            // Loop through all table rows except the first (headers)
-            for (i = 1; i < (rows.length - 1); i++) {
-                shouldSwitch = false;
-                
-                // Determine the column index based on columnName
-                let columnIndex;
-                if (columnName === 'name') {
-                    columnIndex = 2; // Index for the 'Name' column
-                } else if (columnName === 'email') {
-                    columnIndex = 3; // Index for the 'Email' column
-                } else if (columnName === 'phone') {
-                    columnIndex = 4; // Index for the 'Phone Contact' column
-                } else if (columnName === 'country') {
-                    columnIndex = 5; // Index for the 'Country' column
-                } else if (columnName === 'status') {
-                    columnIndex = 6; // Index for the 'Status' column
-                }
-
-                // Compare the two elements in the column to see if they should switch
-                x = rows[i].querySelectorAll("td")[columnIndex];
-                y = rows[i + 1].querySelectorAll("td")[columnIndex];
-                
-                if (order === 'asc' && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                    shouldSwitch = true;
-                    break;
-                } else if (order === 'desc' && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                    shouldSwitch = true;
-                    break;
-                }
-            }
-            if (shouldSwitch) {
-                // If a switch has been marked, make the switch and mark the switch as done
-                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                switching = true;
-            }
-        }
-        reassignRowNumbersTableContainer();
-    }
-    function reassignRowNumbersTableContainer() {
-        const table = document.querySelector(".table");
-        const rows = table.tBodies[0].rows; // Only get rows in the tbody
-
-        // Loop through all rows, starting from index 0
-        for (let i = 0; i < rows.length; i++) {
-            // Ensure we're updating the "No #" column (index 1), not the checkbox (index 0)
-            rows[i].querySelectorAll("td")[1].innerText = i + 1; // Assign row number starting from 1
-        }
-}
-
-
-
-    </script>
+    <script src=" {{ asset('js/sort_transfer_table.js') }} "></script>
     <script src=" {{ asset('js/update_status.js') }} "></script>
     <script src=" {{ asset('js/progress_bar.js') }} "></script>
     <script src=" {{ asset('js/transfer_contact.js') }} "></script>

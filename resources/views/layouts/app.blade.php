@@ -151,8 +151,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
     <script src="{{ URL::asset('js/search_email.js') }}"></script>
-    <script src="{{ URL::asset('js/sort.js') }}"></script>
     <script src="{{ URL::asset('js/filter_status.js') }}"></script>
 </body>
-
 </html>

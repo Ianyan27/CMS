@@ -51,7 +51,7 @@ class AdminController extends Controller
 
         // Validate the request
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|min:3|max:50',
             'email' => [
                 'required',
                 'string',
@@ -77,7 +77,7 @@ class AdminController extends Controller
             'role' => $role,
             'password' => bcrypt($request->password), // Encrypt the password
         ]);
-        return redirect()->route('admin#index')->with('success', 'User created successfully');
+        return redirect()->route('view-user')->with('success', 'User created successfully');
     }
 
     public function editUser($id){

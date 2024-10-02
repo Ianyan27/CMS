@@ -56,7 +56,6 @@
                         data-target="#addSalesAgentModal" style="padding: 10px 12px;">
                         <i class="fa-solid fa-square-plus"></i>
                     </button>
-
                 </div>
                 <div class="d-flex align-items-center mr-3">
                     <div class="search-box d-flex align-items-center ml-3">
@@ -115,7 +114,7 @@
                                     </div>
                                 </div>
                             </th>
-                            <th scope="col" class="text-center">Action</th>
+                            <th scope="col" class="text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="text-left fonts">
@@ -162,20 +161,20 @@
                                         @endif
                                     </span>
                                 </td>
-                                <td class="d-flex justify-content-between align-items-center">
+                                <td class="d-flex justify-content-center align-items-center">
                                     <a href=" {{ route('owner#transfer-contact', $owners->owner_pid) }} "
                                         class="btn hover-action" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-right-left"></i>
                                     </a>
                                     <a href="{{ route('owner#view-owner', $owners->owner_pid) }}"
-                                        class="btn hover-action" style="padding: 10px 12px;">
+                                        class="btn hover-action mx-2" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
 
-                                    <a class="btn hover-action" style="padding: 10px 12px;" data-toggle="modal"
+                                    {{-- <a class="btn hover-action" style="padding: 10px 12px;" data-toggle="modal"
                                         data-target="#deleteOwnerModal{{ $owners->owner_pid }}">
                                         <i class="fa-solid fa-trash"></i>
-                                    </a>
+                                    </a> --}}
                                 </td>
                             </tr>
                         @endforeach
@@ -270,79 +269,7 @@
             });
         </script>
     @endif
-    <script>
-        document.getElementById('search-name').addEventListener('keyup', function() {
-            var input = this.value.toLowerCase();
-            var rows = document.querySelectorAll('#sales-agents-table tbody tr');
-
-            rows.forEach(function(row) {
-                var nameCell = row.querySelector('td:nth-child(1)'); // Target the first column (Name)
-                var nameText = nameCell.textContent || nameCell.innerText;
-
-                if (nameText.toLowerCase().includes(input)) {
-                    row.style.display = ''; // Show the row if it matches the search input
-                } else {
-                    row.style.display = 'none'; // Hide the row if it doesn't match
-                }
-            });
-        });
-        document.addEventListener('DOMContentLoaded', function() {
-            @if ($errors->any())
-                var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
-                errorModal.show();
-            @endif
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
-            $('#addSalesAgentForm').on('submit', function(e) {
-                var email = $('#email').val();
-                var validDomains = ['lithan.com', 'educlaas.com', 'learning.educlaas.com'];
-                var emailDomain = email.split('@')[1];
-                var isValid = validDomains.indexOf(emailDomain) !== -1;
-
-                if (email && !isValid) {
-
-                    $('#emailError').text(
-                        'The email address must be one of the following domains: lithan.com, educlaas.com, learning.educlaas.com'
-                    );
-                    e.preventDefault(); // Prevent form submission
-                } else {
-                    $('#emailError').text(''); // Clear any previous error message
-                }
-            });
-
-            // Optional: Clear the error message when the modal is hidden
-            $('#errorModal').on('hidden.bs.modal', function() {
-                $('#emailError').text('');
-            });
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
-            $('[data-toggle="tooltip"]').tooltip();
-        });
-    </script>
-
-    <script>
-        $(document).ready(function() {
-            $('#teamMembers').change(function() {
-                // Get the selected option
-                var selectedOption = $(this).find('option:selected');
-
-                // Extract data attributes
-                var agentName = selectedOption.data('name');
-                var agentEmail = selectedOption.data('email');
-                var hubspotId = selectedOption.data('hubspot-id');
-
-                // Populate the fields with the selected agent's data
-                $('#agentName').val(agentName);
-                $('#email').val(agentEmail);
-                $('#hubspotId').val(hubspotId);
-            });
-
-            // show modal error
-            $("#errorModal").modal('show');
-        });
-    </script>
+    <script src=" {{ asset('js/agent_form_handler.js') }} "></script>
+    <script src=" {{ asset('js/search_name.js') }} "></script>
+    <script src=" {{ asset('js/sort.js') }} "></script>
 @endsection
