@@ -11,6 +11,7 @@ use App\Http\Controllers\DiscardController;
 use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\SaleAdminController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\HeadController;
 use App\Http\Controllers\HubspotContactController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -32,7 +33,6 @@ Route::get('auth/callback', [AuthController::class, 'handleMicrosoftCallback'])-
 Route::post('/microsoft-login', [AuthController::class, 'microsoftLogin'])->name('microsoft.login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth:sanctum', 'verified'])->get('/view-user', function () {
-
     if (Auth::check()) {
         if (Auth::user()->role == 'Sales_Agent') {
             return redirect()->route('sales-agent#index');
@@ -40,10 +40,13 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/view-user', function () {
             return redirect()->route('admin#index');
         } else if (Auth::user()->role == 'BUH') {
             return redirect()->route('buh#index');
+        } else if (Auth::user()->role == 'Head') {
+            return redirect()->route('admin#index');
         }
     }
     return redirect()->route('login')->withErrors(['role' => 'Unauthorized access.']);
 });
+
 
 // Route::middleware(['auth'])->group(function () {
 //     Route::get('/view-user', [AdminController::class, 'viewUser'])->name('view-user');
@@ -242,4 +245,27 @@ Route::group(['prefix' => 'buh'], function () {
         BUHController::class,
         'getProgress'
     ])->name('progress');
+});
+
+// Define routes for the Head role
+Route::group(['prefix' => 'head', 'as' => 'head.'], function () {
+    Route::get('/', [HeadController::class, 'index'])->name('index');
+    
+    // View user details
+    Route::get('/view-user', [HeadController::class, 'viewUser'])->name('view-user');
+    
+    // Save a new user
+    Route::post('/save-user', [HeadController::class, 'saveUser'])->name('save-user');
+    
+    // Edit user details
+    Route::get('/edit-user/{id}', [HeadController::class, 'editUser'])->name('edit-user');
+    
+    // Update user details (change this line)
+    Route::put('/update-user/{id}', [HeadController::class, 'updateUser'])->name('update-user'); // Change from POST to PUT
+    
+    // Delete a user
+    Route::delete('/delete-user/{id}', [HeadController::class, 'deleteUser'])->name('delete-user');
+
+    // View contact details
+    Route::get('/view-contact/{contact_pid}', [HeadController::class, 'viewContact'])->name('view-contact');
 });

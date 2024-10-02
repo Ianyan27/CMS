@@ -93,6 +93,13 @@
                                 </a>
                             </li>
                         @endif
+                        @if (Auth::check() && Auth::user()->role == 'Head')
+                            <li class="{{ Route::currentRouteName() != 'head.index' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'head.index' ? 'active-link' : '' }}">
+                            <a class="nav-link" href="{{ route('head.index') }}">
+                                <i class="fa-solid fa-user"></i><span>Head Dashboard</span>
+                            </a>
+                        </li>
+                        @endif
                         @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
                             <li
                                 class="{{ Route::currentRouteName() != 'contact-listing' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'contact-listing' ? 'active-link' : '' }}">
