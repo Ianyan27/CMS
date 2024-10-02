@@ -1,6 +1,12 @@
 /* General Styles */
 * {
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    /* font-family: system-ui, -apple-system, 
+    "Segoe UI", Roboto, "Helvetica Neue", 
+    "Noto Sans", "Liberation Sans", Arial, 
+    sans-serif, "Apple Color Emoji", 
+    "Segoe UI Emoji", "Segoe UI Symbol", 
+    "Noto Color Emoji"; */
+    font-family: Montserrat;
 }
 
 html, body {
@@ -19,6 +25,8 @@ body {
 .container-max-height{
     min-height: 650px;
     max-height: 700px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .table-container{
@@ -843,4 +851,56 @@ th, label{
     /* Optional: style for status text */
     .status-text {
         font-size: 16px;
+    }
+
+    .sale-admin-container{
+        overflow: auto;
+        padding: 0.5rem 1.75rem;
+        max-height: 700px;
+    }
+
+    .summary-container{
+        position: sticky;
+        top: 62px;
+        min-height: calc(41.594px + 160px + 218px);
+        max-height: max-content;
+    }
+
+    .summary div{
+        gap: 10px;
+        min-width: 250px; 
+    }
+
+    .summary > div > p{
+        font-weight: bold;
+        margin: 0;
+    }
+    
+    .summary > div > p span {
+        font-weight: normal;
+    }
+
+    .filter-container{
+        height: calc(46.391px + 457 + 16px);
+    }
+
+    .checkbox-item input{
+        margin-right: 0.5rem;
+    }
+
+    .checkbox-item label {
+        color: #91264c;
+    }
+
+    .countries{
+        display: inline-block;
+        margin-right: 10px;
+        padding: 0.125rem 0.5rem;
+        border-radius: 0.375rem;
+    }
+
+    .remove-button{
+        border: none;
+        margin-left: 5px;
+        background-color: #ffffff;
     }

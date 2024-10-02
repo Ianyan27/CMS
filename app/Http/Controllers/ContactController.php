@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Contact;
 use App\Models\ContactArchive;
 use App\Models\ContactDiscard;
+use App\Models\Delete_contacts;
 use App\Models\Engagement;
 use App\Models\EngagementArchive;
 use App\Models\EngagementDiscard;
@@ -118,7 +119,7 @@ class ContactController extends Controller
 
         // Retrieve engagements archived for the contact
         $engagementsArchive = EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $contact_pid)->get();
-
+        $deletedEngagement = Delete_contacts::where('fk_engagements__contact_pid', $contact_pid)->get();
         // Use the first engagement for updates if available
         $updateEngagement = $engagements->first();
 
@@ -128,7 +129,8 @@ class ContactController extends Controller
             'editContact' => $editContact,
             'engagements' => $engagements,
             'updateEngagement' => $updateEngagement,
-            'engagementArchive' => $engagementsArchive
+            'engagementArchive' => $engagementsArchive,
+            'deletedEngagement' => $deletedEngagement
         ]);
     }
 
@@ -269,7 +271,7 @@ class ContactController extends Controller
         ])->with('success', 'Contact updated successfully.');
     }
 
-    public function saveActivity(Request $request, $contact_pid){
+    public function saveActivity(Request $request, $contact_pid) {
         // Checking for admin role and redirecting if true
         $user = Auth::user();
         if ($user->role === 'Admin') {
@@ -304,7 +306,7 @@ class ContactController extends Controller
 
         // Create a new Engagement record
         $engagement = new Engagement();
-
+    
         // Handle file upload if a new file is provided
         if ($request->hasFile('activity-attachments')) {
             $imageFile = $request->file('activity-attachments');
@@ -312,29 +314,32 @@ class ContactController extends Controller
             $encryptedImage = Crypt::encrypt($imageContent);
             $engagement->attachments = json_encode([$encryptedImage]);
         }
-
+    
         // Assign engagement data from request
         $engagement->date = $request->input('activity-date');
         $engagement->details = $request->input('activity-details');
         $engagement->activity_name = $request->input('activity-name');
         $engagement->fk_engagements__contact_pid = $contact_pid;
         $engagement->save();
-
-        // Update contact status
-        $contact->status = "InProgress";
-        $contact->save();
-
+    
+        // Update contact status only if the current status is 'New'
+        if ($contact->status === "New") {
+            $contact->status = "InProgress";
+            $contact->save();
+        }
+    
         // Save activity to the logs table
         $actionType = 'Save New Activity';
         $actionDescription = "Added a new activity: {$request->input('activity-name')} with details: {$request->input('activity-details')}";
-
+    
         $saveActivity = $this->saveLog($contact_pid, $actionType, $actionDescription);
         Log::info("Save Activity: " . $saveActivity);
-
+    
         // Redirect to the contact view page with a success message
         return redirect()->route('contact#view', ['contact_pid' => $contact_pid])
             ->with('success', 'Activity added successfully.');
     }
+    
 
 
     public function editActivity($fk_engagements__contact_pid, $activity_id){
@@ -430,6 +435,89 @@ class ContactController extends Controller
             ->with('success', 'Activity updated successfully.');
     }
 
+    public function archiveActivity($engagement_pid)
+    {
+        // Find the engagement activity by its ID (engagement_pid)
+        $engagement = Engagement::find($engagement_pid);
+
+        if (!$engagement) {
+            return redirect()->back()->with('error', 'Activity not found.');
+        }
+
+        try {
+            // Move the activity to the "deleted" table
+            Delete_contacts::create([
+                'fk_engagements__contact_pid' => $engagement->fk_engagements__contact_pid,
+                'activity_name' => $engagement->activity_name,
+                'date' => $engagement->date,
+                'details' => $engagement->details,
+                'attachments' => $engagement->attachments,
+            ]);
+
+            // Delete the activity from the "engagements" table
+            $engagement->delete();
+            // Log the deletion action
+            Log::info('Activity moved to deleted table and removed from engagements table', [
+                'engagement_pid' => $engagement_pid,
+                'contact_pid' => $engagement->fk_engagements__contact_pid,
+            ]);
+            return redirect()->back()->with('success', 'Activity deleted and moved to the deleted table successfully.');
+        } catch (\Exception $e) {
+            Log::error('Failed to delete activity', ['error' => $e->getMessage()]);
+            return redirect()->back()->with('error', 'An error occurred while deleting the activity.');
+        }
+    }
+
+    public function deleteActivity($engagement_pid){
+    // Find the engagement by its engagement_pid
+    $engagement = Engagement::findOrFail($engagement_pid);
+
+    // Permanently delete the engagement
+    $engagement->delete();
+
+    // Redirect with a success message
+    return redirect()->back()->with('success', 'Activity deleted permanently.');
+}
+    public function retrieveActivity($id) {
+        // Retrieve the deleted activities based on engagement_pid
+        $deletedContacts = Delete_contacts::where('id', $id)->get();
+    
+        if ($deletedContacts->isEmpty()) {
+            return redirect()->back()->with('error', 'No activities found in archived contacts.');
+        }
+    
+        try {
+            foreach ($deletedContacts as $deletedContact) {
+                // Move the activity back to the "engagements" table
+                Engagement::create([
+                    'fk_engagements__contact_pid' => $deletedContact->fk_engagements__contact_pid,
+                    'activity_name' => $deletedContact->activity_name,
+                    'date' => $deletedContact->date,
+                    'details' => $deletedContact->details,
+                    'attachments' => $deletedContact->attachments,
+                ]);
+    
+                // Delete the activity from the deleted contacts table
+                $deletedContact->delete();
+    
+                // Log the restoration action
+                Log::info('Activity restored from deleted contacts and moved back to engagements', [
+                    'fk_engagements__contact_pid' => $deletedContact->fk_engagements__contact_pid,
+                ]);
+            }
+    
+            return redirect()->back()->with('success', 'Activities restored successfully.');
+        } catch (\Exception $e) {
+            Log::error('Failed to restore activities', [
+                'id' => $id,
+                'error' => $e->getMessage(),
+            ]);
+    
+            return redirect()->back()->with('error', 'An error occurred while restoring the activities.');
+        }
+    }
+    
+    
 
     public function hubspotContacts()
     {

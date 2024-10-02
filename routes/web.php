@@ -9,6 +9,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CSVDownloadController;
 use App\Http\Controllers\DiscardController;
 use App\Http\Controllers\OwnerController;
+use App\Http\Controllers\SaleAdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\HubspotContactController;
 use Illuminate\Support\Facades\Auth;
@@ -19,6 +20,9 @@ use Illuminate\Support\Facades\Session;
 Route::get('/', function () {
     return view('Login');
 })->name('login');
+
+Route::get('/sale_admin', [SaleAdminController::class, 'index'])->name('sale_admin');
+Route::get('/get-bu-data', [SaleAdminController::class, 'getBUData'])->name('get.bu.data');
 
 // Microsoft OAuth Login
 Route::get('login/microsoft', [AuthController::class, 'redirectToMicrosoft'])->name('login.microsoft');
@@ -129,6 +133,15 @@ Route::group(['prefix' => 'sales-agent'], function () {
         ContactController::class,
         'saveActivity'
     ])->name('contact#save-activity');
+    Route::post('/archive-activity/{engagement_pid}', [
+    ContactController::class, 'archiveActivity'
+    ])->name('archiveActivity');
+    Route::post('/delete-activity/{engagement_pid}', [
+        ContactController::class, 'deleteActivity'
+    ])->name('deleteActivity');
+    Route::post('/retrieve-activity/{id}', [
+        ContactController::class, 'retrieveActivity'
+    ])->name('retrieveActivity');     
     Route::post('/save-archive-activity/{contact_archive_pid}', [
         ArchiveController::class,
         'saveActivity'
