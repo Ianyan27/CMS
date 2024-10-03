@@ -23,8 +23,11 @@ class HubspotContactController extends Controller
             ]);
         }
 
-        // Retrieve contacts with the selected IDs
-        $contacts = Contact::whereIn('contact_pid', $selectedContacts)->get();
+        // Retrieve contacts with the selected IDs and join with the owners table to get the HubSpot owner ID
+        $contacts = Contact::whereIn('contact_pid', $selectedContacts)
+            ->join('owners', 'contacts.fk_contacts__owner_pid', '=', 'owners.owner_pid')
+            ->select('contacts.*', 'owners.owner_hubspot_id')
+            ->get();
 
         // Convert the retrieved contacts to an array suitable for HubSpot
         $hubspotContacts = $contacts->map(function ($contact) {
@@ -40,6 +43,7 @@ class HubspotContactController extends Controller
                     'company' => $contact->company_name,
                     'skills' => $contact->skills,
                     'social_profile' => $contact->social_profile,
+                    'hubspot_owner_id' => $contact->owner_hubspot_id, // Include the HubSpot owner ID
                 ],
             ];
         })->toArray();
@@ -93,6 +97,10 @@ class HubspotContactController extends Controller
 
             foreach ($engagements as $engagement) {
                 $engagementType = strtoupper($engagement->activity_name);
+                if ($engagementType == "PHONE") {
+                    $engagementType = "CALL";
+                }
+
                 // Retrieve owner details for the email engagement
                 $owner = DB::table('contacts as c')
                     ->join('owners as o', 'c.fk_contacts__owner_pid', '=', 'o.owner_pid')
@@ -104,20 +112,20 @@ class HubspotContactController extends Controller
                 if ($engagementType == "WHATSAPP") {
                     $activity = [
                         "properties" => [
-                            "hs_communication_channel_type"=> "WHATS_APP",
-                            "hs_communication_logged_from"=> "CRM",
-                            "hs_communication_body"=> $engagement->details,
-                            "hs_timestamp"=> strtotime($engagement->created_at) * 1000
+                            "hs_communication_channel_type" => "WHATS_APP",
+                            "hs_communication_logged_from" => "CRM",
+                            "hs_communication_body" => $engagement->details,
+                            "hs_timestamp" => strtotime($engagement->created_at) * 1000
                         ],
-                        "associations"=> [
+                        "associations" => [
                             [
                                 "to" => [
-                                    "id"=> $hubspotContactId
+                                    "id" => $hubspotContactId
                                 ],
-                                "types"=> [
+                                "types" => [
                                     [
-                                        "associationCategory"=> "HUBSPOT_DEFINED",
-                                        "associationTypeId"=> 81
+                                        "associationCategory" => "HUBSPOT_DEFINED",
+                                        "associationTypeId" => 81
                                     ]
                                 ]
                             ]
@@ -132,14 +140,13 @@ class HubspotContactController extends Controller
                         'body' => json_encode($activity),
                         'verify' => false,
                     ]);
-    
+
                     $activityResponseBody = json_decode($activityResponse->getBody(), true);
                     Log::info('Activity creation response: ' . json_encode($activityResponseBody));
-    
+
                     if ($activityResponse->getStatusCode() !== 200) {
                         Log::error('Failed to create activity for contact ID: ' . $contact->contact_pid);
                     }
-
                 }
                 //for MEETING and CAll activities
                 elseif ($engagementType == "MEETING" || $engagementType == "CALL") {
@@ -164,10 +171,10 @@ class HubspotContactController extends Controller
                         'body' => json_encode($activity),
                         'verify' => false,
                     ]);
-    
+
                     $activityResponseBody = json_decode($activityResponse->getBody(), true);
                     Log::info('Activity creation response: ' . json_encode($activityResponseBody));
-    
+
                     if ($activityResponse->getStatusCode() !== 200) {
                         Log::error('Failed to create activity for contact ID: ' . $contact->contact_pid);
                     }
@@ -199,10 +206,10 @@ class HubspotContactController extends Controller
                         'body' => json_encode($activity),
                         'verify' => false,
                     ]);
-    
+
                     $activityResponseBody = json_decode($activityResponse->getBody(), true);
                     Log::info('Activity creation response: ' . json_encode($activityResponseBody));
-    
+
                     if ($activityResponse->getStatusCode() !== 200) {
                         Log::error('Failed to create activity for contact ID: ' . $contact->contact_pid);
                     }
@@ -230,10 +237,10 @@ class HubspotContactController extends Controller
                         'body' => json_encode($activity),
                         'verify' => false,
                     ]);
-    
+
                     $activityResponseBody = json_decode($activityResponse->getBody(), true);
                     Log::info('Activity creation response: ' . json_encode($activityResponseBody));
-    
+
                     if ($activityResponse->getStatusCode() !== 200) {
                         Log::error('Failed to create activity for contact ID: ' . $contact->contact_pid);
                     }
