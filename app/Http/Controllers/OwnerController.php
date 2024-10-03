@@ -30,6 +30,7 @@ class OwnerController extends Controller
         } else {
             // If the user is Admin, show all owners
             $owner = Owner::paginate(10);
+            $contact = Contact::get();
         }
 
         // Get Hubspot sales agents

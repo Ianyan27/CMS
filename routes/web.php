@@ -21,7 +21,6 @@ Route::get('/', function () {
     return view('Login');
 })->name('login');
 
-Route::get('/sale_admin', [SaleAdminController::class, 'index'])->name('sale_admin');
 Route::get('/get-bu-data', [SaleAdminController::class, 'getBUData'])->name('get.bu.data');
 
 // Microsoft OAuth Login
@@ -40,6 +39,8 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/view-user', function () {
             return redirect()->route('admin#index');
         } else if (Auth::user()->role == 'BUH') {
             return redirect()->route('buh#index');
+        } else if (Auth::user()->role == 'Sales_Admin'){
+            return redirect()->route('sales-admin#index');
         }
     }
     return redirect()->route('login')->withErrors(['role' => 'Unauthorized access.']);
@@ -83,6 +84,45 @@ Route::group(['prefix' => 'admin'], function () {
         AdminController::class,
         'viewContact'
     ])->name('admin#view-contact');
+    Route::get('/import-csv', function () {
+        return view('csv_import_form');
+    })->name('admin#importcsv');
+    Route::post('/import', [
+        BUHController::class,
+        'import'
+    ])->name('admin#import');
+    //get csv format
+    Route::get('/get-csv', [
+        CSVDownloadController::class,
+        'downloadCSV'
+    ])->name('admin#get-csv');
+    Route::get('/sales_admin', [
+        SaleAdminController::class, 'index'
+    ])->name('admin#sales-admin');
+    Route::get('/hubspot-contact', [
+        ContactController::class,
+        'hubspotContacts'
+    ])->name('admin#hubspot-contact');
+    Route::post('/submit-hubspot-contacts', [
+        HubspotContactController::class,
+        'submitHubspotContacts'
+    ])->name('admin#submit-hubspot-contacts');
+    Route::get('/owner', [
+        OwnerController::class,
+        'owner'
+    ])->name('admin#view');
+    Route::get('/view-owner/{owner_pid}', [
+        OwnerController::class,
+        'viewOwner'
+    ])->name('admin#view-owner');
+    Route::get('/transfer-contacts/{owner_pid}', [
+        BUHController::class,
+        'transferContact'
+    ])->name('admin#transfer-contact');
+    Route::post('/transfer', [
+        BUHController::class,
+        'transfer'
+    ])->name('admin#transfer');
 });
 Route::group(['prefix' => 'sales-agent'], function () {
     Route::get('/', [
@@ -242,4 +282,10 @@ Route::group(['prefix' => 'buh'], function () {
         BUHController::class,
         'getProgress'
     ])->name('progress');
+});
+
+Route::group(['prefix' => 'sales-admin'], function (){
+    Route::get('/', [
+        SaleAdminController::class, 'index'
+    ])->name('sales-admin#index');
 });
