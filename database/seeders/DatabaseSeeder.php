@@ -7,10 +7,6 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 
 use App\Models\BusinessUnit;
-<<<<<<< HEAD
-=======
-
->>>>>>> 339f477aa2b50904cb3bafaa7e311e7d926dd544
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -99,9 +95,6 @@ class DatabaseSeeder extends Seeder
 
         // Use Eloquent to insert the data into the Business_Unit table
         BusinessUnit::insert($businessUnits);
-<<<<<<< HEAD
-=======
       
->>>>>>> 339f477aa2b50904cb3bafaa7e311e7d926dd544
     }
 }

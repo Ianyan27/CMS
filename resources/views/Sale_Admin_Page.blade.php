@@ -393,11 +393,18 @@
             //create form data
             const formData = new FormData();
             const platformSelect = document.getElementById('platform');
+            const buDropdown = document.getElementById('buDropdown');
+            const buhDropdown = document.getElementById('buhDropdown');
+            
             formData.append('csv_file', fileInput.files[0]);
             formData.append('platform', platformSelect.value);
             formData.append('country', countryDropdown.value);
+            formData.append('bu', buDropdown.value);
+            formData.append('buh', buhDropdown.value);
 
             console.log(countryDropdown.value);
+            console.log(buDropdown.value);
+            console.log(buhDropdown.value);
             
             
         
