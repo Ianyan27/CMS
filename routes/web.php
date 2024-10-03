@@ -22,7 +22,7 @@ Route::get('/', function () {
     return view('Login');
 })->name('login');
 
-Route::get('/get-bu-data', [SaleAdminController::class, 'getBUData'])->name('get.bu.data');
+Route::post('/get-bu-data', [SaleAdminController::class, 'getBUData'])->name('get.bu.data');
 
 // Microsoft OAuth Login
 Route::get('login/microsoft', [AuthController::class, 'redirectToMicrosoft'])->name('login.microsoft');
@@ -55,88 +55,118 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/view-user', function () {
 
 
 Route::group(['prefix' => 'admin'], function () {
+    // Admin Routes
     Route::get('/', [
         AdminController::class,
         'index'
     ])->name('admin#index');
+
     Route::get('/view-user', [
         AdminController::class,
         'viewUser'
     ])->name('admin#view-user');
+
+    // User Routes
     Route::get('/edit-user/{id}', [
         AdminController::class,
         'editUser'
     ])->name('user#edit-user');
+
     Route::post('/update-user/{id}', [
         AdminController::class,
         'updateUser'
     ])->name('user#update-user');
+
     Route::delete('/delete-user/{id}', [
         AdminController::class,
         'deleteUser'
     ])->name('user#delete-user');
+
     Route::post('/save-user', [
         AdminController::class,
         'saveUser'
-    ])->name('user#save-user');
+    ])->name('admin#save-user');
+
+    // Contact Routes
     Route::get('/contacts', [
         AdminController::class,
         'contacts'
     ])->name('admin#contact-listing');
+
     Route::get('/view-contacts/{contact_pid}', [
         OwnerController::class,
         'viewContact'
     ])->name('admin#view-contact');
+
+    // CSV Import Routes
     Route::get('/import-csv', function () {
         return view('csv_import_form');
     })->name('admin#importcsv');
+
     Route::post('/import', [
         BUHController::class,
         'import'
     ])->name('admin#import');
-    //get csv format
+
+    // Get CSV Format
     Route::get('/get-csv', [
         CSVDownloadController::class,
         'downloadCSV'
     ])->name('admin#get-csv');
+
+    // Sales Admin Routes
     Route::get('/sales_admin', [
         SaleAdminController::class, 'index'
     ])->name('admin#sales-admin');
+
+    // Hubspot Contact Routes
     Route::get('/hubspot-contact', [
         ContactController::class,
         'hubspotContacts'
     ])->name('admin#hubspot-contact');
+
     Route::post('/submit-hubspot-contacts', [
         HubspotContactController::class,
         'submitHubspotContacts'
     ])->name('admin#submit-hubspot-contacts');
+
+    // Owner Routes
     Route::get('/owner', [
         OwnerController::class,
         'owner'
     ])->name('admin#view');
+
     Route::get('/view-owner/{owner_pid}', [
         OwnerController::class,
         'viewOwner'
     ])->name('admin#view-owner');
+
+    Route::post('/update-owner/{owner_pid}', [
+        OwnerController::class,
+        'updateOwner'
+    ])->name('admin#update-owner');
+
+    // Transfer Contact Routes
     Route::get('/transfer-contacts/{owner_pid}', [
         BUHController::class,
         'transferContact'
     ])->name('admin#transfer-contact');
+
     Route::post('/transfer', [
         BUHController::class,
         'transfer'
     ])->name('admin#transfer');
-    Route::post('/update-owner/{owner_pid}', [
-        OwnerController::class,
-        'updateOwner'
-    ])->name(name: 'admin#update-owner');
+
+    // Delete Activity Route
     Route::post('/delete-activity/{engagement_pid}', [
         ContactController::class, 'deleteActivity'
     ])->name('admin#deleteActivity');
-    Route::get('view-contact/{contact_pid}', [
+
+    // Update Contact Route
+    Route::post('/save-contact/{contact_pid}/{id}', [
         ContactController::class,
-        'viewContact'
-    ])->name('admin#view-contact');
+        'updateContact'
+    ])->name('admin#update-contact');
 });
 Route::group(['prefix' => 'sales-agent'], function () {
     Route::get('/', [

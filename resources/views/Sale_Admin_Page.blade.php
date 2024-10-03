@@ -19,7 +19,7 @@
                                     onchange="updateCountryDropdown(); handleBUChange()">
                                     <option value="">Select BU</option>
                                     @foreach ($businessUnit as $bu)
-                                        <option value="{{ $bu->business_unit }}">{{ $bu->business_unit }}</option>
+                                        <option value="{{ $bu->name }}">{{ $bu->name }}</option>
                                     @endforeach
                                 </select>
                             </div>

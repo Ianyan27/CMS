@@ -40,8 +40,7 @@ class AdminController extends Controller
         ]);
     }
 
-    public function saveUser(Request $request)
-    {
+    public function saveUser(Request $request){
 
         // Define the allowed email domains
         $allowedDomains = ['lithan.com', 'educlaas.com', 'learning.educlaas.com'];
@@ -77,7 +76,7 @@ class AdminController extends Controller
             'role' => $role,
             'password' => bcrypt($request->password), // Encrypt the password
         ]);
-        return redirect()->route('view-user')->with('success', 'User created successfully');
+        return redirect()->back()->with('success', 'User created successfully');
     }
 
     public function editUser($id){
@@ -101,6 +100,7 @@ class AdminController extends Controller
     {
         User::where('id', $id)->delete();
         return redirect()->route('admin#index')->with('success', 'User Deleted Successfully');
+        dd(session()->all());
     }
 
     public function viewContact($contact_pid){
