@@ -55,13 +55,14 @@ class HeadController extends Controller
         ],
         'password' => 'string',
     ]);
-
+    $businessUnit = " ";
     // Create a new user
     try {
         User::create([
             'role' => 'BUH', // Consider assigning a proper role if needed
             'name' => $request->name,
             'email' => $request->email,
+            'business_unit' => $request->businessUnit,
             'password' => 'uwu', // Encrypt the password
             
         ]);
@@ -92,10 +93,21 @@ class HeadController extends Controller
     {
         // Validate incoming data
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
+            'name' => 'required|string|min:3|max:50',
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                'unique:users',
+                function ($attribute, $value, $fail) use ($domainRegex) {
+                    if (!preg_match('/@(' . $domainRegex . ')$/', $value)) {
+                        $fail('The email address must be one of the following domains: ' . str_replace('|', ', ', $domainRegex));
+                    }
+                },
+            ],
+            'password' => 'string',
         ]);
-    
         // Find the user by ID
         $user = User::find($id);
     
@@ -103,6 +115,7 @@ class HeadController extends Controller
             // Update user details
             $user->name = $request->input('name');
             $user->email = $request->input('email');
+            $user->businessUnit = $request->input('business_unit');
             $user->save(); // Ensure save() is called to persist changes
     
             // Redirect with success message

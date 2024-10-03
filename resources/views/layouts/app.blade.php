@@ -77,7 +77,7 @@
                             <li
                                 class="{{ Route::currentRouteName() != 'importcsv' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'importcsv' ? 'active-link' : '' }}">
                                 <a class="nav-link" href="{{ route('importcsv') }}">
-                                    <i class="fa-solid fa-file-arrow-up"></i><span>Import Files</span>
+                                    <i class="fa-solid fa-file-arrow-up"></i><span>Import CSV</span>
                                 </a>
                             </li>
                             <li
@@ -108,9 +108,9 @@
                                 </a>
                             </li>
                         @endif
-                        <li class="nav-item dashboard-link">
+                        <li class="{{ Route::currentRouteName() != 'sale_admin' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'sale_admin' ? 'active-link' : '' }}">
                             <a class="nav-link" href="{{ route('sale_admin') }}">
-                                <i class="fa-solid fa-address-book"></i><span>Sale Admin</span>
+                                <i class="fa-solid fa-file-arrow-up"></i><span>Import CSV</span>
                             </a>
                         </li>
                     </ul>
