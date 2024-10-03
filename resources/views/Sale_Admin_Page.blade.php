@@ -8,128 +8,126 @@
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="headings">Import CSV</h5>
         </div>
-        <div class="sale-admin-container row my-3">
-            <div class="summary col-12 border-educ rounded">
-                <div class="text-center font-educ mt-2 h4">
-                    Summary
-                </div>
-                <div class="summary d-flex justify-content-evenly mb-1">
-                    <div class="d-flex justify-content-center align-items-center">
-                        <p>Business Unit:</p> <span class="text-left" id="selectedBU">None</span>
-                    </div>
-                    <div class="d-flex justify-content-evenly align-items-center">
-                        <p>Country: </p><span class="text-left" id="selectedCountry">None</span>
-                    </div>
-                    <div class="d-flex justify-content-evenly align-items-center">
-                        <p>Business Unit Head:</p><span class="text-left" id="selectedBUH">None</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-12 col-md-12 col-lg-12 my-2 px-3">
-                <div class="row">
+        <div class="sale-admin-container row my-3 px-3">
+            <div class="col-12 my-2 px-3">
+                <div class="row" style="min-height: 160px;">
                     <div class="col-lg-6">
-                        <label class="font-educ" for="buDropdown">Select BU</label>
-                        <select id="buDropdown" class="w-100 platforms search-bar" name="business_unit"
-                            onchange="updateCountryDropdown(); handleBUChange()">
-                            <option value="">Select BU</option>
-                            @foreach ($businessUnit as $bu)
-                                <option value="{{ $bu->business_unit }}">{{ $bu->business_unit }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-lg-6 d-none" id="country-container">
-                        <label for="countryDropdown">Select Country</label>
-                        <select id="countryDropdown" name="countryCheckboxes" class="w-100 platforms search-bar"
-                            name="country" onchange="updateSelectedCountryAndBuh(); handleCountryChange()">
-                            <option value="">Select Country</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row d-none">
-                    <div class="col-lg-6 d-none" id="buh-container">
-                        <label for="buhDropdown">Select BUH:</label>
-                        <select id="buhDropdown" class="w-100 platforms search-bar" name="buh">
-                            <option value="" selected disabled>Select BUH</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12 d-none" id="import-container">
-                        <div class="mb-4">
-                            <!-- Select platform with button next to it -->
-                            <div class="d-flex align-items-center">
-                                <div id="platform-container" style="width: 55%">
-                                    <div class="alert alert-danger d-none" id="platformValidationMsg" role="alert"
-                                        style="font-size: medium">
-                                        Please Select Platform *
-                                    </div>
-                                    <label class="font-educ" for="platform">Select Platform</label>
-                                    <select id="platform"
-                                        class="platforms search-bar d-flex align-items-center justify-content-start w-100 m-0"
-                                        name="platform">
-                                        <option value="" selected disabled>Select Platform</option>
-                                        <option value="linkedin">LinkedIn</option>
-                                        <option value="apollo">Apollo</option>
-                                        <option value="raw">Raw</option>
+                        <div class="row">
+                            <div class="col-12">
+                                <label class="font-educ d-block" for="buDropdown">Select BU</label>
+                                <select id="buDropdown" class="w-75 platforms search-bar" name="business_unit"
+                                    onchange="updateCountryDropdown(); handleBUChange()">
+                                    <option value="">Select BU</option>
+                                    @foreach ($businessUnit as $bu)
+                                        <option value="{{ $bu->business_unit }}">{{ $bu->business_unit }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-12 d-none" id="country-container">
+                                <label class="font-educ d-block" for="countryDropdown">Select Country</label>
+                                <select id="countryDropdown" name="countryCheckboxes" class="w-75 platforms search-bar"
+                                    name="country" onchange="updateSelectedCountryAndBuh(); handleCountryChange()">
+                                    <option value="">Select Country</option>
+                                </select>
+                            </div>
+                            <div class="d-none">
+                                <div class="col-lg-12 d-none" id="buh-container">
+                                    <label for="buhDropdown">Select BUH:</label>
+                                    <select id="buhDropdown" class="w-100 platforms search-bar" name="buh">
+                                        <option value="" selected disabled>Select BUH</option>
                                     </select>
                                 </div>
-                                <!-- Get CSV button next to the select element -->
-                                <div id="raw-btn-container" class="d-flex align-items-center justify-content-end"
-                                    style="width: 45%;">
-                                    <button class="btn hover-action"
-                                        onclick="window.location.href='{{ route('get-csv') }}'">
-                                        Get CSV Format
-                                    </button>
-                                </div>
                             </div>
                         </div>
-                        <!-- Drag and drop file section -->
-                        <div class="row text-center mx-1" style="margin-bottom: 12px;">
-                            <div class="card-body justify-content-center align-items-center drop-zone" id="dropZone">
-                                <div class="mx-5">
-                                    <h5 class="mb-4 font-educ">Drag and drop your files</h5>
-                                    <p class="mb-4" title="The uploaded file must be a file of type: csv">File formats
-                                        we support
-                                        <i class="fas fa-info-circle"></i>
-                                    </p>
-                                </div>
-                                @csrf
-                                <div>
-                                    <input accept=".csv" type="file" name="csv_file" required id="fileInput"
-                                        class="d-none" disabled>
-                                </div>
-                                <div>
-                                    <label for="fileInput" id="fileInputLabel" class="btn hover-action mt-4 disabled">
-                                        Filter first before importing
-                                    </label>
-                                </div>
+                    </div>
+                    <div class="summary col-lg-6 border-educ rounded" style="padding: 0 1.25rem;">
+                        <div class="text-center font-educ mt-2 h4">
+                            Summary
+                        </div>
+                        <div class="summary my-2">
+                            <div class="my-2">
+                                <p class="d-inline">Business Unit:</p> <span class="text-left" id="selectedBU">None</span>
+                            </div>
+                            <div class="my-2">
+                                <p class="d-inline">Country: </p><span class="text-left" id="selectedCountry">None</span>
+                            </div>
+                            <div class="my-2">
+                                <p class="d-inline">Business Unit Head:</p><span class="text-left" id="selectedBUH">None</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="card d-none mb-2" id="file-card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <img src="../images/csv.png" alt="" style="height:4rem;">
-                                <p id="file-name" class="text-muted d-none"></p>
+                <div class="row my-3 d-none border-educ rounded" id="import-container">
+                    <div class="col-lg-6">
+                        <div id="platform-container">
+                            <div class="alert alert-danger d-none" id="platformValidationMsg" role="alert"
+                                style="font-size: medium">
+                                Please Select Platform *
                             </div>
-                            <div class="w-50">
-                                <div class="progress" id="progressContainer" role="progressbar" aria-valuenow="0"
-                                    aria-valuemin="0" aria-valuemax="100">
-                                    <div class="progress-bar bg-educ" id="progressBar" style="width: 0%;"></div>
+                            <label class="font-educ" for="platform">Select Platform</label>
+                            <select id="platform"
+                                class="platforms search-bar d-flex align-items-center justify-content-start w-100 m-0"
+                                name="platform">
+                                <option value="" selected disabled>Select Platform</option>
+                                <option value="linkedin">LinkedIn</option>
+                                <option value="apollo">Apollo</option>
+                                <option value="raw">Raw</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 d-flex align-items-center justify-content-end">
+                        <div id="raw-btn-container">
+                            <button class="btn hover-action" onclick="window.location.href='{{ route('get-csv') }}'">
+                                Get CSV Format
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-12 text-center my-3">
+                        <div class="card-body justify-content-center align-items-center drop-zone" id="dropZone">
+                            <div class="mx-5">
+                                <h5 class="mb-4 font-educ">Drag and drop your files</h5>
+                                <p class="mb-4" title="The uploaded file must be a file of type: csv">File formats
+                                    we support
+                                    <i class="fas fa-info-circle"></i>
+                                </p>
+                            </div>
+                            @csrf
+                            <div>
+                                <input accept=".csv" type="file" name="csv_file" required id="fileInput" class="d-none"
+                                    disabled>
+                            </div>
+                            <div>
+                                <label for="fileInput" id="fileInputLabel" class="btn hover-action mt-4 disabled">
+                                    Filter first before importing
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 d-none my-3" id="file-card">
+                        <div class="card-body card">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <img src="../images/csv.png" alt="" style="height:4rem;">
+                                    <p id="file-name" class="text-muted d-none"></p>
                                 </div>
-                                <p id="progress-message" class="text-muted d-none mt-2"></p>
-                                <p id="error-message" class="text-danger d-none mt-2"></p>
-                            </div>
-                            <div>
-                                <input type="submit" id="submitBtn" class="btn hover-action" style="margin-left: auto">
+                                <div class="w-50">
+                                    <div class="progress" id="progressContainer" role="progressbar" aria-valuenow="0"
+                                        aria-valuemin="0" aria-valuemax="100">
+                                        <div class="progress-bar bg-educ" id="progressBar" style="width: 0%;"></div>
+                                    </div>
+                                    <p id="progress-message" class="text-muted d-none mt-2"></p>
+                                    <p id="error-message" class="text-danger d-none mt-2"></p>
+                                </div>
+                                <div>
+                                    <input type="submit" id="submitBtn" class="btn hover-action" style="margin-left: auto">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>

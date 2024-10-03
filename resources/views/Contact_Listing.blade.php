@@ -114,7 +114,7 @@
                                 @elseif ($contact['status'] === 'discard')
                                     #FF7F86; color: #BD000C;
                                 @elseif ($contact['status'] === 'InProgress')
-                                    #FFF3CD; color: #FF8300;
+                                    #FFF3CD; color: #FF8300; padding: 5px 10px;
                                 @elseif ($contact['status'] === 'New')
                                     #CCE5FF ; color:  #318FFC;
                                 @elseif ($contact['status'] === 'Archive')

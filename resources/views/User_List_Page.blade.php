@@ -244,8 +244,6 @@
                 </div>
             </div>
         @endforeach
-
-
         <!-- Modal for Adding New User -->
         <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel"
             aria-hidden="true">
@@ -296,7 +294,8 @@
                     </div>
                 </div>
             </div>
-        @else
+        </div>
+            @else
             <div class="alert alert-danger text-center mt-5">
                 <strong>Access Denied!</strong> You do not have permission to view this page.
             </div>
