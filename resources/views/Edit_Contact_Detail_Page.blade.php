@@ -49,7 +49,7 @@
             <div class="col-md-5 border-right" id="contact-detail">
                 <div class="table-title d-flex justify-content-between align-items-center my-3">
                     <h2 class="mt-2 headings">Contact Detail</h2>
-                    @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+                    @if (Auth::check() && Auth::user()->role == 'Sales_Agent' || Auth::check() && Auth::user()->role == 'Admin')
                         <a href="{{ route('contact#edit', $editContact->contact_pid) }}" class="btn hover-action mx-1"
                             data-toggle="modal" data-target="#editContactModal">
                             <i class="fa-solid fa-pen-to-square"></i>
@@ -202,7 +202,7 @@
             </div>
             <div class="d-flex align-items-center mr-2 mb-2">
                 <!-- Button to trigger the modal -->
-                @if (Auth::check() && Auth::user()->role == 'Sales_Agent' && $editContact->status !== 'HubSpot Contact')
+                @if (Auth::check() && Auth::user()->role == 'Sales_Agent' || Auth::check() && Auth::user()->role == 'Admin' && $editContact->status !== 'HubSpot Contact')
                     <button class="btn hover-action add-activity-button" data-toggle="modal"
                         data-target="#addActivityModal">
                         <i style="font-size: 22px;" class="fa-solid fa-square-plus p-1"></i>
@@ -223,7 +223,7 @@
                         <th scope="col">Description</th>
                         <th scope="col">Attachment</th>
                         
-                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent' && $editContact->status !== 'HubSpot Contact')
+                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent' || Auth::check() && Auth::user()->role == 'Admin' && $editContact->status !== 'HubSpot Contact')
                             <th scope="col" class="text-center">Action</th>
                         @endif
                     </tr>
@@ -255,7 +255,7 @@
                                 @endif
                             </td>
                             
-                            @if (Auth::user()->role == 'Sales_Agent')
+                            @if (Auth::user()->role == 'Sales_Agent' || Auth::user()->role == 'Admin')
                                 <td class="text-center">
                                     @if($editContact->status !== 'HubSpot Contact')
                                         <a href="{{ Auth::user()->role == 'Sales_Agent' ? route('contact#update-activity', ['contact_id' => $engagement->fk_engagements__contact_pid, 'activity_id' => $engagement->engagement_pid]) : '#' }}"
@@ -292,7 +292,7 @@
                         <th scope="col">Description</th>
                         <th scope="col">Attachment</th>
                         
-                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent' && Auth::check() && Auth::user()->role == 'Admin')
                             <th scope="col" class="text-center">Action</th>
                         @endif
                     </tr>
@@ -323,7 +323,7 @@
                                     No Image Available
                                 @endif
                             </td>
-                            @if (Auth::user()->role == 'Sales_Agent')
+                            @if (Auth::user()->role == 'Sales_Agent' || Auth::user()->role == 'Admin')
                                 <td class="text-center">
                                     <a class="btn hover-action" data-toggle="modal"
                                         data-target="#retrieveActivityModal{{ $deletedActivity->id }}">

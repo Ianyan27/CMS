@@ -22,7 +22,6 @@ Route::get('/', function () {
     return view('Login');
 })->name('login');
 
-Route::get('/sale_admin', [SaleAdminController::class, 'index'])->name('sale_admin');
 Route::get('/get-bu-data', [SaleAdminController::class, 'getBUData'])->name('get.bu.data');
 
 // Microsoft OAuth Login
@@ -40,6 +39,8 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/view-user', function () {
             return redirect()->route('admin#index');
         } else if (Auth::user()->role == 'BUH') {
             return redirect()->route('buh#index');
+        } else if (Auth::user()->role == 'Sales_Admin'){
+            return redirect()->route('sales-admin#index');
         } else if (Auth::user()->role == 'Head') {
             return redirect()->route('head.index');
         }
@@ -83,7 +84,57 @@ Route::group(['prefix' => 'admin'], function () {
         'contacts'
     ])->name('admin#contact-listing');
     Route::get('/view-contacts/{contact_pid}', [
-        AdminController::class,
+        OwnerController::class,
+        'viewContact'
+    ])->name('admin#view-contact');
+    Route::get('/import-csv', function () {
+        return view('csv_import_form');
+    })->name('admin#importcsv');
+    Route::post('/import', [
+        BUHController::class,
+        'import'
+    ])->name('admin#import');
+    //get csv format
+    Route::get('/get-csv', [
+        CSVDownloadController::class,
+        'downloadCSV'
+    ])->name('admin#get-csv');
+    Route::get('/sales_admin', [
+        SaleAdminController::class, 'index'
+    ])->name('admin#sales-admin');
+    Route::get('/hubspot-contact', [
+        ContactController::class,
+        'hubspotContacts'
+    ])->name('admin#hubspot-contact');
+    Route::post('/submit-hubspot-contacts', [
+        HubspotContactController::class,
+        'submitHubspotContacts'
+    ])->name('admin#submit-hubspot-contacts');
+    Route::get('/owner', [
+        OwnerController::class,
+        'owner'
+    ])->name('admin#view');
+    Route::get('/view-owner/{owner_pid}', [
+        OwnerController::class,
+        'viewOwner'
+    ])->name('admin#view-owner');
+    Route::get('/transfer-contacts/{owner_pid}', [
+        BUHController::class,
+        'transferContact'
+    ])->name('admin#transfer-contact');
+    Route::post('/transfer', [
+        BUHController::class,
+        'transfer'
+    ])->name('admin#transfer');
+    Route::post('/update-owner/{owner_pid}', [
+        OwnerController::class,
+        'updateOwner'
+    ])->name(name: 'admin#update-owner');
+    Route::post('/delete-activity/{engagement_pid}', [
+        ContactController::class, 'deleteActivity'
+    ])->name('admin#deleteActivity');
+    Route::get('view-contact/{contact_pid}', [
+        ContactController::class,
         'viewContact'
     ])->name('admin#view-contact');
 });
@@ -268,4 +319,10 @@ Route::group(['prefix' => 'head', 'as' => 'head.'], function () {
 
     // View contact details
     Route::get('/view-contact/{contact_pid}', [HeadController::class, 'viewContact'])->name('view-contact');
+});
+
+Route::group(['prefix' => 'sales-admin'], function (){
+    Route::get('/', [
+        SaleAdminController::class, 'index'
+    ])->name('sales-admin#index');
 });

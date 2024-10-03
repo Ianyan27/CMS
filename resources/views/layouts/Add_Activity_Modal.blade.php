@@ -129,7 +129,12 @@
                         @csrf
                         <button type="submit" class="btn hover-action">Restore</button>
                     </form>
-                    <form action="{{ route('deleteActivity', ['engagement_pid' => $engagement->engagement_pid]) }}"
+                    {{-- <form action="{{ Auth::user()->role == 'Admin' ? route('admin#deleteActivity', ['engagement_pid' => $engagements->engagement_pid]) : route('deleteActivity', ['engagement_pid' => $engagements->engagement_pid]) }}"
+                        method="POST">
+                        @csrf
+                        <button type="submit" class="btn discard-table">Delete Permanently</button>
+                    </form> --}}
+                    <form action="{{ route('deleteActivity', ['engagement_pid' => $deletedActivity->fk_engagements__contact_pid]) }}"
                         method="POST">
                         @csrf
                         <button type="submit" class="btn discard-table">Delete Permanently</button>

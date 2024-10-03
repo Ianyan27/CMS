@@ -43,7 +43,8 @@
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="padding: 5px 0;">
                             <form action="{{ route('logout') }}" method="POST" class="d-inline">
                                 @csrf
-                                <button type="submit" class="dropdown-item btn discard-table" style="padding: 6px 20px;">
+                                <button type="submit" class="dropdown-item btn discard-table"
+                                    style="padding: 6px 20px;">
                                     <i class="fa-solid fa-right-from-bracket" style="padding: 0 10px 0 0;"></i> Logout
                                 </button>
                             </form>
@@ -57,59 +58,46 @@
                 <ul class="nav flex-column fonts my-2">
                     <!-- Sidebar Navigation Items -->
                     <ul class="navbar-nav">
-                        @if (Auth::check() && Auth::user()->role == 'Admin')
-                            <li
-                                class="{{ Route::currentRouteName() != 'admin#index' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'admin#index' ? 'active-link' : '' }}">
-                                <a class="nav-link" href="{{ route('admin#index') }}">
-                                    <i class="fa-solid fa-user"></i><span>Users</span>
-                                </a>
-                            </li>
-                        @endif
-                        @if (Auth::check() && Auth::user()->role == 'Admin')
-                            <li
-                                class="{{ Route::currentRouteName() != 'admin#contact-listing' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'admin#contact-listing' ? 'active-link' : '' }}">
-                                <a class="nav-link " href="{{ route('admin#contact-listing') }}">
-                                    <i class="fa-solid fa-address-book"></i><span>Contacts</span>
-                                </a>
-                            </li>
-                        @endif
-                        @if (Auth::check() && Auth::user()->role == 'BUH')
-                            <li
-                                class="{{ Route::currentRouteName() != 'importcsv' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'importcsv' ? 'active-link' : '' }}">
-                                <a class="nav-link" href="{{ route('importcsv') }}">
-                                    <i class="fa-solid fa-file-arrow-up"></i><span>Import CSV</span>
-                                </a>
-                            </li>
-                            <li
-                                class="{{ Route::currentRouteName() != 'owner#view' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'owner#view' ? 'active-link' : '' }}">
-                                <a class="nav-link" href="{{ route('owner#view') }}">
-                                    <i class="fa-solid fa-universal-access"></i><span>Sales Agent</span>
-                                </a>
-                            </li>
-                            <li
-                                class="{{ Route::currentRouteName() != 'hubspot-contact' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'hubspot-contact' ? 'active-link' : '' }}">
-                                <a class="nav-link" href="{{ route('hubspot-contact') }}">
-                                    <i class="fa-brands fa-hubspot"></i><span>Hubspot Contacts</span>
-                                </a>
-                            </li>
-                        @endif
-                        @if (Auth::check() && Auth::user()->role == 'Head')
-                            <li class="{{ Route::currentRouteName() != 'head.index' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'head.index' ? 'active-link' : '' }}">
-                            <a class="nav-link" href="{{ route('head.index') }}">
-                                <i class="fa-solid fa-user"></i><span>Head Dashboard</span>
+                        <li
+                            class="{{ Route::currentRouteName() != 'admin#index' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'admin#index' ? 'active-link' : '' }}">
+                            <a class="nav-link" href="{{ route('admin#index') }}">
+                                <i class="fa-solid fa-user"></i><span>Users</span>
                             </a>
                         </li>
-                        @endif
-                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
-                            <li
-                                class="{{ Route::currentRouteName() != 'contact-listing' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'contact-listing' ? 'active-link' : '' }}">
-                                <a class="nav-link" href="{{ route('contact-listing') }}">
-                                    <i class="fa-solid fa-address-book"></i><span>Contacts</span>
-                                </a>
-                            </li>
-                        @endif
-                        <li class="{{ Route::currentRouteName() != 'sale_admin' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'sale_admin' ? 'active-link' : '' }}">
-                            <a class="nav-link" href="{{ route('sale_admin') }}">
+                        {{-- <li
+                            class="{{ Route::currentRouteName() != 'admin#contact-listing' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'admin#contact-listing' ? 'active-link' : '' }}">
+                            <a class="nav-link " href="{{ route('admin#contact-listing') }}">
+                                <i class="fa-solid fa-address-book"></i><span>Contacts</span>
+                            </a>
+                        </li> --}}
+                        {{-- <li
+                            class="{{ Route::currentRouteName() != 'importcsv' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'importcsv' ? 'active-link' : '' }}">
+                            <a class="nav-link" href="{{ route('importcsv') }}">
+                                <i class="fa-solid fa-file-arrow-up disabled"></i><span>Import CSV</span>
+                            </a>
+                        </li> --}}
+                        <li
+                            class="{{ in_array(Route::currentRouteName(), ['admin#view', 'owner#view']) ? 'active-link' : 'nav-item' }} dashboard-link">
+                            <a class="nav-link" href="{{ route(Auth::user()->role == 'Admin' ? 'admin#view' : 'owner#view') }}">
+                                <i class="fa-solid fa-universal-access"></i><span>Sales Agent</span>
+                            </a>
+                        </li>
+                        <li
+                            class="{{ in_array(Route::currentRouteName(), ['admin#hubspot-contact', 'hubspot-contact']) ? 'active-link' : 'nav-item' }} dashboard-link">
+                            <a class="nav-link"
+                                href="{{ route(Auth::user()->role == 'Admin' ? 'admin#hubspot-contact' : 'hubspot-contact') }}">
+                                <i class="fa-brands fa-hubspot"></i><span>Hubspot Contacts</span>
+                            </a>
+                        </li>
+                        <li
+                            class="{{ in_array(Route::currentRouteName(), ['admin#contact-listing', 'contact-listing']) ? 'active-link' : 'nav-item' }} dashboard-link">
+                            <a class="nav-link" href="{{ route(Auth::user()->role == 'Admin' ? 'admin#contact-listing' : 'contact-listing') }}">
+                                <i class="fa-solid fa-address-book"></i><span>Contacts</span>
+                            </a>
+                        </li>
+                        <li
+                            class="{{ Route::currentRouteName() != 'sale_admin' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'sale_admin' ? 'active-link' : '' }}">
+                            <a class="nav-link" href="{{ route('admin#sales-admin') }}">
                                 <i class="fa-solid fa-file-arrow-up"></i><span>Import CSV</span>
                             </a>
                         </li>
@@ -165,4 +153,5 @@
     <script src="{{ URL::asset('js/search_email.js') }}"></script>
     <script src="{{ URL::asset('js/filter_status.js') }}"></script>
 </body>
+
 </html>

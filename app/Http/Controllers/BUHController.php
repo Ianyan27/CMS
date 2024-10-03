@@ -273,14 +273,19 @@ class BUHController extends Controller
         }
     }
 
-    public function transferContact($owner_pid)
-    {
+    public function transferContact($owner_pid){
         Session::put('progress', 0);
+        $user = Auth::user();
+        if($user->role == 'BUH'){
+            $contacts = Contact::where('fk_contacts__owner_pid', $owner_pid)->get();
+            $archivedContacts = ContactArchive::where('fk_contact_archives__owner_pid', $owner_pid)->get();
+            $discardedContacts = ContactDiscard::where('fk_contact_discards__owner_pid', $owner_pid)->get();
+        }else{
+            $contacts = Contact::get();
+            $archivedContacts = ContactArchive::get();
+            $discardedContacts = ContactDiscard::get();
+        }
         $owner = Owner::where('owner_pid', $owner_pid)->first();
-        $contacts = Contact::where('fk_contacts__owner_pid', $owner_pid)->get();
-        $archivedContacts = ContactArchive::where('fk_contact_archives__owner_pid', $owner_pid)->get();
-        $discardedContacts = ContactDiscard::where('fk_contact_discards__owner_pid', $owner_pid)->get();
-
         $allContacts = $contacts->concat($archivedContacts)->concat($discardedContacts);
         $countAllContacts = $allContacts->count();
         $countEligibleContacts = $contacts->concat($archivedContacts);
