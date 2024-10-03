@@ -59,6 +59,7 @@ class BUHController extends Controller
         $file = $request->file('csv_file');
         $platform = $request->input('platform'); // Get the platform value
         $country = $request->input('country');
+        
 
         // Get the BUH ID from the logged-in user
         $buhId = Auth::user()->id;
