@@ -18,11 +18,14 @@ class UserController extends Controller{
         } elseif ($currentUser->role === 'BUH') {
             // If the user is a BUH, retrieve only users with the role 'Sales_Agent'
             $userData = User::where('role', 'Sales_Agent')->paginate(10);
+        } elseif ($currentUser->role === 'Head') {
+            // If the user is a Head, retrieve all users
+            $userData = User::where('role', 'BUH')->paginate(10);
         } else {
             // Handle other roles or redirect if the role doesn't match expected ones
             return redirect()->route('home')->with('error', 'You do not have permission to view this page.');
         }
-    
+        
         // Pass the user data to the view
         return view('User_List_Page', [
             'userData' => $userData

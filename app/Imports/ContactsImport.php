@@ -31,11 +31,12 @@ class ContactsImport implements ToModel, WithHeadingRow
     private $duplicateCount = 0;
 
     protected $platform;  // Add platform property
-
+    protected $country;
     // Constructor to accept platform
-    public function __construct($platform)
+    public function __construct($platform,  $country)
     {
         $this->platform = $platform;
+        $this->country = $country;
     }
 
     public function model(array $row)
@@ -68,7 +69,11 @@ class ContactsImport implements ToModel, WithHeadingRow
             $this->invalidRows[] = array_merge($row, ['validation_errors' => ['Name field is missing or not recognized']]);
             return null; // Skip this row
         }
-
+        // Check if the country matches the selected country
+        if (isset($data['country']) && strtolower($data['country']) !== strtolower($this->country)) {
+            $this->invalidRows[] = array_merge($row, ['validation_errors' => ['Country does not match the selected country']]);
+            return null; // Mark as invalid if country does not match
+        }
         // Check for duplicates
         if (Contact::where('email', $data['email'])->exists()) {
             $this->duplicateRows[] = $row;
@@ -79,8 +84,8 @@ class ContactsImport implements ToModel, WithHeadingRow
         // Validate the data
         $validator = Validator::make($data, [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:contacts,email',
-            'contact_number' => 'string|max:20',
+            'email' => 'email|max:255|unique:contacts,email|required_without:contact_number',
+            'contact_number' => 'string|max:20|required_without:email',
         ]);
 
         if ($validator->fails()) {

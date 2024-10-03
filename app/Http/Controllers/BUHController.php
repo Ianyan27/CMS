@@ -58,6 +58,7 @@ class BUHController extends Controller
 
         $file = $request->file('csv_file');
         $platform = $request->input('platform'); // Get the platform value
+        $country = $request->input('country');
 
         // Get the BUH ID from the logged-in user
         $buhId = Auth::user()->id;
@@ -77,7 +78,7 @@ class BUHController extends Controller
             // Store the file in public storage
             //$filePath = Storage::disk('public')->putFile('csv_uploads', $file);
             // Import the data into the database using the ContactsImport class
-            $import = new ContactsImport($platform);
+            $import = new ContactsImport($platform, $country);
             Excel::import($import, $file);
             $allocator = new RoundRobinAllocator();
             $allocator->allocate(Contact::class);

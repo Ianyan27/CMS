@@ -395,6 +395,12 @@
             const platformSelect = document.getElementById('platform');
             formData.append('csv_file', fileInput.files[0]);
             formData.append('platform', platformSelect.value);
+            formData.append('country', countryDropdown.value);
+
+            console.log(countryDropdown.value);
+            
+            
+        
 
             submitBtn.classList.add('d-none');
             progressContainer.classList.remove('d-none')

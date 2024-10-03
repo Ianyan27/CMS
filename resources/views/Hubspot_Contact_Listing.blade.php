@@ -56,7 +56,7 @@
                             <td>{{ $index + 1 }}</td> <!-- Index value -->
                             <td>{{ $contact->name }}</td>
                             <td>{{ $contact->email }}</td>
-                            <td>{{ $contact->phone }}</td>
+                            <td>{{ $contact->contact_number }}</td>
                         </tr>
                     @empty
                         <tr>
