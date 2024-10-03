@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\BU;
 use App\Models\Contact;
 use App\Models\Owner;
+use App\Models\SaleAgent;
 use App\Models\TransferContacts;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -12,13 +14,14 @@ use Illuminate\Support\Facades\Log;
 class RoundRobinAllocator
 {
 
-    public function allocate()
+    public function allocate($country, $bu)
     {
-        $buhId = Auth::user()->id;  // Get BUH ID from the logged-in user
+        // $buhId = Auth::user()->id;  // Get BUH ID from the logged-in user
+        $buhId = BU::whereId('id', $bu)->whereCountry(''); // Get BU from the upload csv form
 
         try {
             // Retrieve all owners under the specified BUH, sorted by owner_pid
-            $allOwners = Owner::where('fk_buh', $buhId)->orderBy('owner_pid')->get();
+            $allOwners = SaleAgent::where('fk_buh', $buhId)->orderBy('id')->get();
             Log::info('Total owners retrieved for BUH ID ' . $buhId . ':', ['count' => $allOwners->count()]);
 
             if ($allOwners->isEmpty()) {
