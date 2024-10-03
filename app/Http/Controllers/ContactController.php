@@ -78,8 +78,7 @@ class ContactController extends Controller
         // Get the logged-in user (sales agent)
     }
 
-    public function viewContact($contact_pid)
-    {
+    public function viewContact($contact_pid){
         /* Retrieve the contact record with the specified 'contact_pid' and pass
          it to the 'Edit_Contact_Detail_Page' view for editing. */
 
@@ -470,7 +469,7 @@ class ContactController extends Controller
 
     public function deleteActivity($engagement_pid){
     // Find the engagement by its engagement_pid
-    $engagement = Engagement::findOrFail($engagement_pid);
+    $engagement = Delete_contacts::findOrFail($engagement_pid);
 
     // Permanently delete the engagement
     $engagement->delete();
@@ -512,7 +511,6 @@ class ContactController extends Controller
                 'id' => $id,
                 'error' => $e->getMessage(),
             ]);
-    
             return redirect()->back()->with('error', 'An error occurred while restoring the activities.');
         }
     }

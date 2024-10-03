@@ -103,8 +103,7 @@ class AdminController extends Controller
         return redirect()->route('admin#index')->with('success', 'User Deleted Successfully');
     }
 
-    public function viewContact($contact_pid)
-    {
+    public function viewContact($contact_pid){
         /* Retrieve the contact record with the specified 'contact_pid' and pass
          it to the 'Edit_Contact_Detail_Page' view for editing. */
         $editContact = Contact::where('contact_pid', $contact_pid)->first();

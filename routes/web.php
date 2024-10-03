@@ -81,7 +81,7 @@ Route::group(['prefix' => 'admin'], function () {
         'contacts'
     ])->name('admin#contact-listing');
     Route::get('/view-contacts/{contact_pid}', [
-        AdminController::class,
+        OwnerController::class,
         'viewContact'
     ])->name('admin#view-contact');
     Route::get('/import-csv', function () {
@@ -123,6 +123,17 @@ Route::group(['prefix' => 'admin'], function () {
         BUHController::class,
         'transfer'
     ])->name('admin#transfer');
+    Route::post('/update-owner/{owner_pid}', [
+        OwnerController::class,
+        'updateOwner'
+    ])->name(name: 'admin#update-owner');
+    Route::post('/delete-activity/{engagement_pid}', [
+        ContactController::class, 'deleteActivity'
+    ])->name('admin#deleteActivity');
+    Route::get('view-contact/{contact_pid}', [
+        ContactController::class,
+        'viewContact'
+    ])->name('admin#view-contact');
 });
 Route::group(['prefix' => 'sales-agent'], function () {
     Route::get('/', [

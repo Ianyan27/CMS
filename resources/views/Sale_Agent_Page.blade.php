@@ -170,10 +170,14 @@
                                         class="btn hover-action" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-right-left"></i>
                                     </a>
-                                    <a href="{{ route('owner#view-owner', $owners->owner_pid) }}"
+                                    <a href="{{ Auth::user()->role == 'Admin' ? route('admin#view-owner', $owners->owner_pid) : route('owner#view-owner', $owners->owner_pid) }}"
                                         class="btn hover-action mx-2" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
+                                    {{-- <a href="{{ route('owner#view-owner', $owners->owner_pid) }}"
+                                        class="btn hover-action mx-2" style="padding: 10px 12px;">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a> --}}
 
                                     {{-- <a class="btn hover-action" style="padding: 10px 12px;" data-toggle="modal"
                                         data-target="#deleteOwnerModal{{ $owners->owner_pid }}">

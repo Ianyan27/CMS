@@ -41,7 +41,7 @@
             <div class="col-md-5 border-right" id="contact-detail">
                 <div class="table-title d-flex justify-content-between align-items-center my-3">
                     <h2 class="mt-2 ml-3 headings">Sale Agent Detail</h2>
-                    @if (Auth::check() && Auth::user()->role == 'BUH')
+                    @if (Auth::check() && Auth::user()->role == 'BUH' || Auth::check() && Auth::user()->role == 'Admin')
                         <a style="padding: 10px 12px;" href="{{ route('owner#update', $editOwner->owner_pid) }}"
                             class="btn hover-action mx-1" data-toggle="modal" data-target="#editOwnerModal">
                             <i class="fa-solid fa-pen-to-square"></i>
@@ -242,7 +242,7 @@
                                     @elseif ($contact['status'] === 'discard')
                                         #FF7F86; color: #BD000C;
                                     @elseif ($contact['status'] === 'InProgress')
-                                        #FFF3CD; color: #FF8300;
+                                        #FFF3CD; color: #FF8300; padding: 5px 10px;
                                     @elseif ($contact['status'] === 'New')
                                         #CCE5FF ; color:  #318FFC;
                                     @elseif ($contact['status'] === 'Archive')
@@ -262,11 +262,16 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <a href=" {{ route('owner#view-contact', $contact->contact_pid) }} "
+                                    <a href=" {{ Auth::user()->role == 'Admin' ? route('admin#view-contact', ['contact_pid' => $contact->contact_pid]) : route('owner#view-contact', ['contact_pid' => $contact->contact_pid]) }} "
                                         class="btn hover-action" data-toggle="tooltip" title="View"
                                         style="padding: 10px 12px;">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
+                                    {{-- <a href=" {{ route('owner#view-contact', $contact->contact_pid) }} "
+                                        class="btn hover-action" data-toggle="tooltip" title="View"
+                                        style="padding: 10px 12px;">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a> --}}
                                 </td>
                             </tr>
                         @empty

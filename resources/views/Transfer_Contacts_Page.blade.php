@@ -238,7 +238,7 @@
                                         @elseif ($contact['status'] === 'Discard')
                                             #FF7F86; color: #BD000C;
                                         @elseif ($contact['status'] === 'InProgress')
-                                            #FFF3CD; color: #FF8300;
+                                            #FFF3CD; color: #FF8300; padding: 5px 10px;
                                         @elseif ($contact['status'] === 'New')
                                             #CCE5FF ; color:  #318FFC;
                                         @elseif ($contact['status'] === 'Archive')
@@ -258,10 +258,14 @@
                                     </span> 
                                 </td>
                                 <td>
-                                    <a href=" {{ route('owner#view-contact', $contact->contact_pid) }} "
+                                    <a href=" {{ Auth::user()->role == 'Admin' ? route('admin#view-contact', ['contact_pid' => $contact->contact_pid]) : route('owner#view-contact', ['contact_pid' => $contact->contact_pid]) }} "
                                         class="btn hover-action" style="padding:10px 12px;" data-toggle="tooltip" title="View">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
+                                    {{-- <a href=" {{ route('owner#view-contact', $contact->contact_pid) }} "
+                                        class="btn hover-action" style="padding:10px 12px;" data-toggle="tooltip" title="View">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a> --}}
                                 </td>
                             </tr>
                         @empty
