@@ -74,21 +74,9 @@ class ContactsImport implements ToModel, WithHeadingRow
             return null; // Skip this row
         }
         // Check if the country matches the selected country
-        if (empty($data['country'])) {
-            $this->invalidRows[] = array_merge($row, ['validation_errors' => ['Country field is missing']]);
-            return null; // Skip this row
-        }
-
-        // Normalize the country values
-        $selectedCountry = strtolower(trim($this->country));
-        $rowCountry = strtolower(trim($data['country']));
-
-        // Add debug log
-        Log::info('Comparing selected country (' . $selectedCountry . ') with row country (' . $rowCountry . ')');
-
-        if ($rowCountry !== $selectedCountry) {
+        if (isset($data['country']) && strtolower($data['country']) !== strtolower($this->country)) {
             $this->unselectedCountry[] = array_merge($row, ['validation_errors' => ['Country does not match the selected country']]);
-            return null; // Skip this row
+            return null; // Move to unselectedCountry array instead of invalidRows
         }
         // Check for duplicates
         if (Contact::where('email', $data['email'])->exists()) {
@@ -144,6 +132,7 @@ class ContactsImport implements ToModel, WithHeadingRow
     {
         return $this->duplicateRows;
     }
+
 
     public function getUnselectedCountryRows()
     {
