@@ -35,6 +35,11 @@ class Contact extends Model
         return $this->belongsTo(Owner::class, 'fk_contacts__owner_pid');
     }
 
+    public function saleAgent()
+    {
+        return $this->belongsTo(SaleAgent::class, 'fk_contacts__sale_agent_id');
+    }
+
     public function engagements()
     {
         return $this->hasMany(Engagement::class, 'fk_engagements__contact_pid');
