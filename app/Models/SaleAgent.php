@@ -29,4 +29,9 @@ class SaleAgent extends Model
     {
         return $this->belongsTo(BuCountry::class, 'bu_country_id');
     }
+
+    public function contacts()
+    {
+        return $this->hasMany(Contact::class, 'fk_contacts__sale_agent_id');
+    }
 }

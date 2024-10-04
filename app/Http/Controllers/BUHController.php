@@ -10,11 +10,15 @@ use App\Rules\ContactExistInAnyTable;
 use App\Services\RoundRobinAllocator;
 use Illuminate\Http\Request;
 use App\Imports\ContactsImport;
+use App\Models\BuCountry;
+use App\Models\BUH;
 use App\Models\Contact;
 use App\Models\ContactArchive;
 use App\Models\ContactDiscard;
+use App\Models\Country;
 use App\Models\Log as ModelsLog;
 use App\Models\MovedContact;
+use App\Models\SaleAgent;
 use App\Models\TransferContacts;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Maatwebsite\Excel\Facades\Excel;
@@ -40,7 +44,7 @@ class BUHController extends Controller
         // Validate the uploaded file
         $fileValidator = Validator::make($request->all(), [
             'csv_file' => 'required|mimes:csv,txt|max:102400',
-            'platform' => 'required|string'
+            'platform' => 'required|string',
         ], [
             'csv_file.required' => 'The CSV file is required.',
             'csv_file.mimes' => 'The uploaded file must be a file of type: csv',
@@ -59,13 +63,42 @@ class BUHController extends Controller
         $file = $request->file('csv_file');
         $platform = $request->input('platform'); // Get the platform value
         $country = $request->input('country');
+        $bu = $request->input('bu');
+        $buh = $request->input('buh');
 
-        // Get the BUH ID from the logged-in user
-        $buhId = Auth::user()->id;
+        Log::info('Received country: ' . $request->input('country'));
+        Log::info('Received BUH: ' . $request->input('buh'));
+
+
+        Log::info('reterived bu ' . $bu . ' buh ' . $buh);
+
+        // Retrieve Country ID based on Country Name
+        $country = Country::where('name', $country)->first();
+        if (!$country) {
+            return response()->json([
+                'success' => false,
+                'message' => "Country not found."
+            ], 404);
+        }
+        $countryId = $country->id;
+
+        // Retrieve BU ID based on BUH Name
+        $buh = BUH::where('name', $buh)->first();
+        if (!$buh) {
+            return response()->json([
+                'success' => false,
+                'message' => "Business Unit Head not found."
+            ], 404);
+        }
+        $buhId = $buh->id;
 
         // Retrieve owners (sales agents) under the specified BUH
-        $owners = Owner::where('fk_buh', $buhId)->get();
-        Log::info('Total owners retrieved for BUH ID ' . $buhId . ':', ['count' => $owners->count()]);
+
+        $bu_country = BuCountry::where('buh_id', $buhId)->first();
+        $bu_country_id = $bu_country->id;
+        Log::info("bu country id " . $bu_country_id);
+        $owners = SaleAgent::where('bu_country_id', $bu_country_id)->get();
+        Log::info('Total owners retrieved for BUH_Country ID ' . $bu_country->id . ':', ['count' => $owners->count()]);
 
         if ($owners->isEmpty()) {
             return response()->json([
@@ -78,10 +111,10 @@ class BUHController extends Controller
             // Store the file in public storage
             //$filePath = Storage::disk('public')->putFile('csv_uploads', $file);
             // Import the data into the database using the ContactsImport class
-            $import = new ContactsImport($platform, $country);
+            $import = new ContactsImport($platform, $country->name);
             Excel::import($import, $file);
             $allocator = new RoundRobinAllocator();
-            $allocator->allocate(Contact::class);
+            $allocator->allocate($countryId, $buhId);
         } catch (\Exception $e) {
 
             return response()->json([
@@ -94,8 +127,10 @@ class BUHController extends Controller
         $validCount = $import->getValidCount();
         $invalidCount = $import->getInvalidCount();
         $duplicateCount = $import->getDuplicateCount();
+        $unselectedCountryCount = $import->getUnselectedCountryCount();
         $invalidRows = $import->getInvalidRows();
         $duplicateRows = $import->getDuplicateRows();
+        $unselectedCountryRows = $import->getUnselectedCountryRows();
 
         // Export invalid and duplicate rows
         $fileLinks = [];
@@ -118,6 +153,15 @@ class BUHController extends Controller
             $duplicateCsvUrl = $this->exportCsv($duplicateCsvFileName, $duplicateCsvData);
             $fileLinks['duplicate_rows'] = $duplicateCsvUrl;
         }
+        // Export unselected country rows (new logic)
+        if (!empty($unselectedCountryRows)) {
+            $headers = array_keys($unselectedCountryRows[0]);
+            $headers[] = 'validation_errors';
+            $unselectedCountryCsvData = array_merge([$headers], $unselectedCountryRows);
+            $unselectedCountryCsvFileName = 'unselected_country_rows.csv';
+            $unselectedCountryCsvUrl = $this->exportCsv($unselectedCountryCsvFileName, $unselectedCountryCsvData);
+            $fileLinks['unselected_country_rows'] = $unselectedCountryCsvUrl;
+        }
 
 
         return response()->json([
@@ -127,6 +171,7 @@ class BUHController extends Controller
                 'valid_count' => $validCount,
                 'invalid_count' => $invalidCount,
                 'duplicate_count' => $duplicateCount,
+                'unselected_country_count' => $unselectedCountryCount,
                 'file_links' => $fileLinks
                 // 'uploaded_file_path' => Storage::url($filePath) // Provide URL to the uploaded file
             ]
@@ -273,13 +318,20 @@ class BUHController extends Controller
     }
 
     public function transferContact($owner_pid)
+    
     {
         Session::put('progress', 0);
+        $user = Auth::user();
+        if ($user->role == 'BUH') {
+            $contacts = Contact::where('fk_contacts__owner_pid', $owner_pid)->get();
+            $archivedContacts = ContactArchive::where('fk_contact_archives__owner_pid', $owner_pid)->get();
+            $discardedContacts = ContactDiscard::where('fk_contact_discards__owner_pid', $owner_pid)->get();
+        } else {
+            $contacts = Contact::get();
+            $archivedContacts = ContactArchive::get();
+            $discardedContacts = ContactDiscard::get();
+        }
         $owner = Owner::where('owner_pid', $owner_pid)->first();
-        $contacts = Contact::where('fk_contacts__owner_pid', $owner_pid)->get();
-        $archivedContacts = ContactArchive::where('fk_contact_archives__owner_pid', $owner_pid)->get();
-        $discardedContacts = ContactDiscard::where('fk_contact_discards__owner_pid', $owner_pid)->get();
-
         $allContacts = $contacts->concat($archivedContacts)->concat($discardedContacts);
         $countAllContacts = $allContacts->count();
         $countEligibleContacts = $contacts->concat($archivedContacts);
@@ -461,7 +513,7 @@ class BUHController extends Controller
             }
 
             // After moving contacts, call the allocate method to assign contacts using round-robin
-            $allocator->allocate();
+            $allocator->allocate(1, 1); // hardcode for testing purposed
             // If allocation is successful, redirect back with a success message
             return redirect()->back()->with('success', 'Contacts successfully assigned.');
         } catch (\Exception $e) {
@@ -472,7 +524,9 @@ class BUHController extends Controller
     }
 
 
-    public function updateStatusOwner(Request $request, $owner_pid){
+    public function updateStatusOwner(Request $request, $owner_pid)
+    
+    {
         // Log incoming request data
         Log::info('Update Status Request:', [
             'owner_pid' => $owner_pid,
@@ -511,8 +565,9 @@ class BUHController extends Controller
 
 
 
-    
-    public function getProgress(){
+
+    public function getProgress()
+    {
         return response()->json(['progress' => Session::get('progress', 0)]);
     }
 }

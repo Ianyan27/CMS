@@ -134,10 +134,14 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <a href=" {{ route('contact#view', $contact->contact_pid) }} "
+                                    <a href=" {{ Auth::user()->role == 'Admin' ? route('admin#view-contact', ['contact_pid' => $contact->contact_pid]) : route('contact#view', $contact->contact_pid) }} "
                                         class="btn hover-action" data-toggle="tooltip" title="View">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
+                                    {{-- <a href=" {{ route('contact#view', $contact->contact_pid) }} "
+                                        class="btn hover-action" data-toggle="tooltip" title="View">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a> --}}
                                 </td>
                             </tr>
                         @empty

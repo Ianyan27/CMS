@@ -69,13 +69,13 @@ table{
 }
 
 .navigation-width {
-    width: 220px;
+    width: 230px;
     padding: 0;
 }
 
 /* Base Styles */
 .content-width {
-    width: calc(100% - 250px);
+    width: calc(100% - 260px);
 }
 
 .content-height {

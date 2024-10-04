@@ -19,7 +19,7 @@
                                     onchange="updateCountryDropdown(); handleBUChange()">
                                     <option value="">Select BU</option>
                                     @foreach ($businessUnit as $bu)
-                                        <option value="{{ $bu->business_unit }}">{{ $bu->business_unit }}</option>
+                                        <option value="{{ $bu->name }}">{{ $bu->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -52,7 +52,8 @@
                                 <p class="d-inline">Country: </p><span class="text-left" id="selectedCountry">None</span>
                             </div>
                             <div class="my-2">
-                                <p class="d-inline">Business Unit Head:</p><span class="text-left" id="selectedBUH">None</span>
+                                <p class="d-inline">Business Unit Head:</p><span class="text-left"
+                                    id="selectedBUH">None</span>
                             </div>
                         </div>
                     </div>
@@ -119,7 +120,8 @@
                                     <p id="error-message" class="text-danger d-none mt-2"></p>
                                 </div>
                                 <div>
-                                    <input type="submit" id="submitBtn" class="btn hover-action" style="margin-left: auto">
+                                    <input type="submit" id="submitBtn" class="btn hover-action"
+                                        style="margin-left: auto">
                                 </div>
                             </div>
                         </div>
@@ -131,8 +133,15 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // Global variable to hold selected countries
-        // Global variable to hold selected countries
+        $(document).ready(function() {
+            // Event handler for when the country dropdown is changed
+            $('#countryDropdown').on('change', function() {
+                const selectedCountry = $(this).val();
+                $('#buhDropdown')
+                updateSelectedCountryAndBuh(selectedCountry);
+            });
+
+        });
         // Function to update countries and BUH based on selected BU
         function updateCountryDropdown() {
             const buDropdown = document.getElementById('buDropdown');
@@ -162,12 +171,31 @@
 
             // Fetch the countries and BUH from the server
             console.log("Fetching BU data for:", selectedBU);
-            fetch(`{{ route('get.bu.data') }}?business_unit=${selectedBU}`)
-                .then(response => response.json()) // Parse response as JSON
+            fetch(`{{ route('get.bu.data') }}`, {
+                    method: 'POST', // Use POST method
+                    headers: {
+                        'Content-Type': 'application/json', // Specify the content type
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token for Laravel
+                    },
+                    body: JSON.stringify({
+                        business_unit: selectedBU
+                    }) // Send the selected BU in the request body
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json(); // Parse response as JSON
+                })
                 .then(data => {
                     // Log the complete data received from the server to inspect its structure
                     console.log("Complete data received from server:", data);
+                    console.log("buh: ", data.buh[0]);
+                    const buhValue = data.buh[0];
 
+                    // $.each(buhData, function(index, value) {
+                    //     $('#buhDropdown').append(`<option value="${value.id}">${value.name}</option>`);
+                    // });
                     // Update country dropdown
                     data.countries.forEach(country => {
                         const option = document.createElement('option');
@@ -177,7 +205,7 @@
                     });
 
                     // Store the BUH data by country
-                    window.buhDataByCountry = data.buh; // Assuming 'buh' is a key in your JSON response
+                    window.buhDataByCountry = data.buh[0]; // Assuming 'buh' is a key in your JSON response
                     console.log("BUH data by country stored:", window.buhDataByCountry);
                 })
                 .catch(error => console.error('Error fetching BU data:', error));
@@ -205,10 +233,10 @@
             }
 
             // Log the BUH data to inspect it
-            console.log("BUH data by country:", window.buhDataByCountry);
+            console.log("BUH data by country:", buhDropdown);
 
             // Get BUH for the selected country
-            const buhValue = window.buhDataByCountry[selectedCountry];
+            const buhValue = window.buhDataByCountry;
 
             // Check if buhValue exists and is not an array (since it's a string in your case)
             if (typeof buhValue === 'string') {
@@ -393,14 +421,21 @@
             //create form data
             const formData = new FormData();
             const platformSelect = document.getElementById('platform');
+            const buDropdown = document.getElementById('buDropdown');
+            const buhDropdown = document.getElementById('buhDropdown');
+
             formData.append('csv_file', fileInput.files[0]);
             formData.append('platform', platformSelect.value);
             formData.append('country', countryDropdown.value);
+            formData.append('bu', buDropdown.value);
+            formData.append('buh', buhDropdown.value);
 
             console.log(countryDropdown.value);
-            
-            
-        
+            console.log(buDropdown.value);
+            console.log(buhDropdown.value);
+
+
+
 
             submitBtn.classList.add('d-none');
             progressContainer.classList.remove('d-none')
@@ -456,18 +491,20 @@
                         let valid_count = data.data.valid_count;
                         let invalid_count = data.data.invalid_count;
                         let duplicate_count = data.data.duplicate_count;
-                        let total_count = valid_count + invalid_count + duplicate_count;
+                        let unselected_country_count = data.data.unselected_country_count;
+                        let total_count = valid_count + invalid_count + duplicate_count + unselected_country_count;
 
                         setTimeout(() => {
 
                             const {
                                 invalid_rows,
-                                duplicate_rows
+                                duplicate_rows,
+                                unselected_country_rows
                             } = data.data.file_links;
 
-                            showDownloadPrompt(valid_count, invalid_count, duplicate_count,
+                            showDownloadPrompt(valid_count, invalid_count, duplicate_count, unselected_country_count,
                                 total_count,
-                                invalid_rows, duplicate_rows, );
+                                invalid_rows, duplicate_rows, unselected_country_rows);
                         }, 800);
 
                         progressMessage.classList.remove('d-none');
@@ -485,8 +522,8 @@
         });
 
         //show download promt
-        function showDownloadPrompt(valid_count, invalid_count, duplicate_count, total_count, invalid_rows_link,
-            duplicate_rows_link) {
+        function showDownloadPrompt(valid_count, invalid_count, duplicate_count, unselected_country_count, total_count, invalid_rows_link,
+            duplicate_rows_link, unselected_country_rows_link) {
             // Create the modal element
             const downloadPrompt = document.createElement('div');
 
@@ -548,10 +585,20 @@
         </div>
     </div>
     <hr style="margin: 10px 0;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <p style="margin: 5px 0; font-size: 16px;">Unselected CountryRows:</p>
+        ${unselected_country_rows_link ? `<a href="${unselected_country_rows_link}" id="download-duplicate-btn" style="color: #007bff; text-decoration: underline; margin-left: 10px;">Download</a>` : ''}
+        
+        <div style="display: flex; align-items: center;">
+            <strong>${unselected_country_count}</strong>
+        </div>
+    </div>
+    <hr style="margin: 10px 0;">
         <div class="text-end">
             <button id="cancel-btn" class="btn" style="background-color: #6c757d; color: white; padding: 5px 10px; border-radius: 4px;">Close</button>
         </div>
-    </div>    
+    </div> 
+      
     `;
 
             downloadPrompt.innerHTML = `

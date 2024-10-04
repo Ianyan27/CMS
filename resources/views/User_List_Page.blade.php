@@ -3,6 +3,12 @@
 @extends('layouts.app')
 @section('content')
     @if (Auth::check() && Auth::user()->role == 'Admin')
+        <script>
+            $(document).ready(function() {
+                $('#successModal').modal('show');
+                console.log('Modal triggered!');
+            });
+        </script>
         @if (Session::has('success'))
             <!-- Success Modal -->
             <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
@@ -10,7 +16,7 @@
                     <div class="modal-content">
                         <div class="modal-header"
                             style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
-                    border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
+                                border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
                             <h5 class="modal-title" id="successModalLabel" style="color: #91264c"><strong>Success</strong>
                             </h5>
                         </div>
@@ -255,7 +261,7 @@
                         <h5 class="modal-title" id="addUserModalLabel" style="color: #91264c;">Create New User</h5>
                     </div>
                     <div class="modal-body" style="color: #91264c">
-                        <form id="addUserForm" action="{{ route('user#save-user') }}" method="POST">
+                        <form id="addUserForm" action="{{ route('admin#save-user') }}" method="POST">
                             @csrf
                             <div class="form-group">
                                 <label for="name">Name</label>
@@ -295,12 +301,12 @@
                 </div>
             </div>
         </div>
-            @else
-            <div class="alert alert-danger text-center mt-5">
-                <strong>Access Denied!</strong> You do not have permission to view this page.
-            </div>
-        @endif
-        <!-- JavaScript for Validation -->
-        <script src=" {{ asset('js/add_agent_validation.js') }} "></script>
-        <script src=" {{ asset('js/sort.js') }} "></script>
+    @else
+        <div class="alert alert-danger text-center mt-5">
+            <strong>Access Denied!</strong> You do not have permission to view this page.
+        </div>
+    @endif
+    <!-- JavaScript for Validation -->
+    <script src=" {{ asset('js/add_agent_validation.js') }} "></script>
+    <script src=" {{ asset('js/sort.js') }} "></script>
 @endsection

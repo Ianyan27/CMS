@@ -4,7 +4,7 @@
 @extends('layouts.Add_Sales-Agent_Modal')
 
 @section('content')
-    @if (Auth::check() && Auth::user()->role == 'BUH')
+    @if (Auth::check() && Auth::user()->role == 'BUH' || Auth::check() && Auth::user()->role == 'Admin')
         @if ($errors->any() || session('error'))
             <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="false">
                 <div class="modal-dialog">
@@ -162,14 +162,22 @@
                                     </span>
                                 </td>
                                 <td class="d-flex justify-content-center align-items-center">
-                                    <a href=" {{ route('owner#transfer-contact', $owners->owner_pid) }} "
+                                    {{-- <a href=" {{ route('owner#transfer-contact', $owners->owner_pid) }} "
+                                        class="btn hover-action" style="padding: 10px 12px;">
+                                        <i class="fa-solid fa-right-left"></i>
+                                    </a> --}}
+                                    <a href="{{ Auth::user()->role == 'Admin' ? route('admin#transfer-contact', $user->id) : route('owner#transfer-contact', $owners->owner_pid) }}"
                                         class="btn hover-action" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-right-left"></i>
                                     </a>
-                                    <a href="{{ route('owner#view-owner', $owners->owner_pid) }}"
+                                    <a href="{{ Auth::user()->role == 'Admin' ? route('admin#view-owner', $owners->owner_pid) : route('owner#view-owner', $owners->owner_pid) }}"
                                         class="btn hover-action mx-2" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
+                                    {{-- <a href="{{ route('owner#view-owner', $owners->owner_pid) }}"
+                                        class="btn hover-action mx-2" style="padding: 10px 12px;">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a> --}}
 
                                     {{-- <a class="btn hover-action" style="padding: 10px 12px;" data-toggle="modal"
                                         data-target="#deleteOwnerModal{{ $owners->owner_pid }}">

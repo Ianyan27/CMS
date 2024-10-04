@@ -6,6 +6,7 @@ use App\Models\Contact;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class ContactsImport implements ToModel, WithHeadingRow
 {
@@ -28,6 +29,7 @@ class ContactsImport implements ToModel, WithHeadingRow
     private $validRows = [];
     private $invalidRows = [];
     private $duplicateRows = [];
+    private $unselectedCountry = [];
     private $duplicateCount = 0;
 
     protected $platform;  // Add platform property
@@ -54,6 +56,8 @@ class ContactsImport implements ToModel, WithHeadingRow
             }
         }
 
+        Log::info('selected country in before validate ' . $this->country);
+
         // Combine first_name and last_name into name
         if (isset($data['first_name']) && isset($data['last_name'])) {
             $data['name'] = $data['first_name'] . ' ' . $data['last_name'];
@@ -70,9 +74,21 @@ class ContactsImport implements ToModel, WithHeadingRow
             return null; // Skip this row
         }
         // Check if the country matches the selected country
-        if (isset($data['country']) && strtolower($data['country']) !== strtolower($this->country)) {
-            $this->invalidRows[] = array_merge($row, ['validation_errors' => ['Country does not match the selected country']]);
-            return null; // Mark as invalid if country does not match
+        if (empty($data['country'])) {
+            $this->invalidRows[] = array_merge($row, ['validation_errors' => ['Country field is missing']]);
+            return null; // Skip this row
+        }
+
+        // Normalize the country values
+        $selectedCountry = strtolower(trim($this->country));
+        $rowCountry = strtolower(trim($data['country']));
+
+        // Add debug log
+        Log::info('Comparing selected country (' . $selectedCountry . ') with row country (' . $rowCountry . ')');
+
+        if ($rowCountry !== $selectedCountry) {
+            $this->unselectedCountry[] = array_merge($row, ['validation_errors' => ['Country does not match the selected country']]);
+            return null; // Skip this row
         }
         // Check for duplicates
         if (Contact::where('email', $data['email'])->exists()) {
@@ -114,6 +130,11 @@ class ContactsImport implements ToModel, WithHeadingRow
         return $this->duplicateCount;
     }
 
+    public function getUnselectedCountryCount()
+    {
+        return count($this->unselectedCountry);
+    }
+
     public function getInvalidRows()
     {
         return $this->invalidRows;
@@ -122,5 +143,10 @@ class ContactsImport implements ToModel, WithHeadingRow
     public function getDuplicateRows()
     {
         return $this->duplicateRows;
+    }
+
+    public function getUnselectedCountryRows()
+    {
+        return $this->unselectedCountry;
     }
 }
