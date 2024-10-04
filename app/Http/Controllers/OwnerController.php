@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\ArchiveActivities;
+use App\Models\BuCountry;
+use App\Models\BUH;
 use App\Models\Contact;
 use App\Models\ContactArchive;
 use App\Models\ContactDiscard;
@@ -20,20 +22,27 @@ use Illuminate\Support\Facades\Log;
 class OwnerController extends Controller
 {
 
-    public function owner(){
+    public function owner()
+    {
         // Get the current authenticated user
         $user = Auth::user();
+        $buhId = BUH::where("email", $user->email)->get()->first();
+        $buCountry = BuCountry::where('buh_id', $buhId->id)
+            ->first();
+        Log::info("bu country: " . $buCountry);
         // Check if the user is a BUH or Admin
         if ($user->role == 'BUH') {
             // If the user is BUH, filter owners by the BUH's fk_buh
-            $owner = Owner::where('fk_buh', $user->id)->paginate(10);
+            $owner = SaleAgent::where('bu_country_id', $buCountry->id)->paginate(10);
+
+            Log::info("user log: " . $user);
             $contact = Contact::where('fk_contacts__owner_pid', null)->count();
             // $archiveContact = ContactArchive::where('fk_contact_archives__owner_pid', null)->count();
             // $discardContact = ContactDiscard::where('fk_contact_discards__owner_pid', null)->count();
             Log::info("Total of unassigned contacts: " . $contact);
         } else {
             // If the user is Admin, show all owners
-            $owner = Owner::paginate(10);
+            $owner = SaleAgent::paginate(10);
             $contact = Contact::get();
         }
 
@@ -56,7 +65,7 @@ class OwnerController extends Controller
             $response = $client->request('GET', 'https://api.hubapi.com/crm/v3/owners', [
                 'headers' => [
                     'Authorization' => 'Bearer ' . env('HUBSPOT_API_KEY'),
-                    'Content-Type'  => 'application/json',  
+                    'Content-Type'  => 'application/json',
                 ],
                 'verify' => false
             ]);
@@ -74,7 +83,8 @@ class OwnerController extends Controller
         }
     }
 
-    public function viewSaleAgent($owner_pid){
+    public function viewSaleAgent($owner_pid)
+    {
         $owner = Owner::where('owner_pid', $owner_pid)->first();
         // Execute the queries to get the actual data
         $editOwner = Owner::where('owner_pid', $owner_pid)->first();
@@ -144,7 +154,8 @@ class OwnerController extends Controller
         return redirect()->route('owner#view-owner', ['owner_pid' => $owner_pid])->with('success', 'Sale Agent updated successfully.');
     }
 
-    public function viewContact($contact_pid){
+    public function viewContact($contact_pid)
+    {
         /* Retrieve the contact record with the specified 'contact_pid' and pass
          it to the 'Edit_Contact_Detail_Page' view for editing. */
 
