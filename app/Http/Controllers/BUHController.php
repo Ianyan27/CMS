@@ -114,7 +114,7 @@ class BUHController extends Controller
             $import = new ContactsImport($platform, $country->name);
             Excel::import($import, $file);
             $allocator = new RoundRobinAllocator();
-            $allocator->allocate($countryId, $buhId);
+            $allocator->allocate($buhId);
         } catch (\Exception $e) {
 
             return response()->json([
@@ -323,7 +323,7 @@ class BUHController extends Controller
         Session::put('progress', 0);
         $user = Auth::user();
         if ($user->role == 'BUH') {
-            $contacts = Contact::where('fk_contacts__owner_pid', $owner_pid)->get();
+            $contacts = Contact::where('fk_contacts__sale_agent_id', $owner_pid)->get();
             $archivedContacts = ContactArchive::where('fk_contact_archives__owner_pid', $owner_pid)->get();
             $discardedContacts = ContactDiscard::where('fk_contact_discards__owner_pid', $owner_pid)->get();
         } else {
@@ -331,7 +331,7 @@ class BUHController extends Controller
             $archivedContacts = ContactArchive::get();
             $discardedContacts = ContactDiscard::get();
         }
-        $owner = Owner::where('owner_pid', $owner_pid)->first();
+        $owner = SaleAgent::where('id', $owner_pid)->first();
         $allContacts = $contacts->concat($archivedContacts)->concat($discardedContacts);
         $countAllContacts = $allContacts->count();
         $countEligibleContacts = $contacts->concat($archivedContacts);
@@ -358,6 +358,11 @@ class BUHController extends Controller
     {
         set_time_limit(300);
         $owner_pid = $request->input('owner_pid');
+        $user = Auth::user();
+        Log::info("email user: " . $user->email);
+        $userId = BUH::where("email", $user->email)->get()->first();
+        Log::info("user id: " . $userId->id);
+
         try {
             // Validate the input
             $validated = $request->validate([
@@ -402,7 +407,7 @@ class BUHController extends Controller
                 foreach ($contactsBatch as $contact_pid) {
                     // Find the contact in the contacts table
                     $contact = Contact::where('contact_pid', $contact_pid)
-                        ->where('fk_contacts__owner_pid', $owner_pid)
+                        ->where('fk_contacts__sale_agent_id', $owner_pid)
                         ->first();
 
                     if ($contact) {
@@ -412,7 +417,7 @@ class BUHController extends Controller
                         try {
                             // Move the contact to moved_contacts table
                             $movedContact = new MovedContact();
-                            $movedContact->fk_contacts__owner_pid = null;
+                            $movedContact->fk_contacts__sale_agent_id = null;
                             $movedContact->date_of_allocation = $contact->date_of_allocation;
                             $movedContact->name = $contact->name;
                             $movedContact->email = $contact->email;
@@ -457,7 +462,7 @@ class BUHController extends Controller
             // Instantiate the RoundRobinAllocator
             $allocator = new RoundRobinAllocator();
             // Call the assignContacts method to assign contacts back to the contacts table using round-robin
-            $this->assignContacts($allocator);
+            $this->assignContacts($allocator, $userId->id);
             Log::info('Contacts successfully moved.');
             return redirect()->back()->with('success', 'Contacts successfully moved to the moved_contacts table.');
         } catch (ValidationException $e) {
@@ -469,7 +474,7 @@ class BUHController extends Controller
         }
     }
 
-    public function assignContacts(RoundRobinAllocator $allocator)
+    public function assignContacts(RoundRobinAllocator $allocator, $userId)
     {
         set_time_limit(300);
         try {
@@ -513,7 +518,7 @@ class BUHController extends Controller
             }
 
             // After moving contacts, call the allocate method to assign contacts using round-robin
-            $allocator->allocate(1, 1); // hardcode for testing purposed
+            $allocator->allocate($userId);
             // If allocation is successful, redirect back with a success message
             return redirect()->back()->with('success', 'Contacts successfully assigned.');
         } catch (\Exception $e) {
@@ -535,7 +540,7 @@ class BUHController extends Controller
 
         try {
             // Retrieve the owner by their primary ID (assuming owner_pid is the primary key)
-            $owner = Owner::find($owner_pid);
+            $owner = SaleAgent::find($owner_pid);
 
             if ($owner) {
                 // Update the status
