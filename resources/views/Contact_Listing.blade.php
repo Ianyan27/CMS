@@ -206,10 +206,16 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <a href=" {{ route('archive#view', $archive->contact_archive_pid) }} "
+                                    <a href=" {{ Auth::user()->role == 'Admin' ? 
+                                    route('admin#archive-view', $archive->contact_archive_pid) :
+                                    route('archive#view', $archive->contact_archive_pid) }} "
                                         class="btn hover-action" data-toggle="tooltip" title="View">
                                         <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
                                     </a>
+                                    {{-- <a href=" {{ route('archive#view', $archive->contact_archive_pid) }} "
+                                        class="btn hover-action" data-toggle="tooltip" title="View">
+                                        <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
+                                    </a> --}}
                                 </td>
                             </tr>
                         @empty

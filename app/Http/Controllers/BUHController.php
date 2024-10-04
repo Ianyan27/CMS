@@ -559,15 +559,7 @@ class BUHController extends Controller
             return response()->json(['message' => 'An unexpected error occurred. Please try again later.'], 500);
         }
     }
-
-
-
-
-    public function getProgress()
-    {
-
-    public function getProgress()
-    {
+    public function getProgress(){
         return response()->json(['progress' => Session::get('progress', 0)]);
     }
 }

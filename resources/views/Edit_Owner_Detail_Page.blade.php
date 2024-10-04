@@ -42,10 +42,16 @@
                 <div class="table-title d-flex justify-content-between align-items-center my-3">
                     <h2 class="mt-2 ml-3 headings">Sale Agent Detail</h2>
                     @if (Auth::check() && Auth::user()->role == 'BUH' || Auth::check() && Auth::user()->role == 'Admin')
-                        <a style="padding: 10px 12px;" href="{{ route('owner#update', $editOwner->owner_pid) }}"
+                        <a style="padding: 10px 12px;" href="{{ Auth::user()->role == 'Admin' ? 
+                        route('admin#update', ['owner_pid' => $owner->owner_pid]) : 
+                        route('owner#update', ['contact_pid' => $editOwner->contact_pid]) }}"
                             class="btn hover-action mx-1" data-toggle="modal" data-target="#editOwnerModal">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </a>
+                        {{-- <a style="padding: 10px 12px;" href="{{ route('owner#update', $editOwner->owner_pid) }}"
+                            class="btn hover-action mx-1" data-toggle="modal" data-target="#editOwnerModal">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a> --}}
                     @endif
                 </div>
                 <div class="row mx-1 mb-1">

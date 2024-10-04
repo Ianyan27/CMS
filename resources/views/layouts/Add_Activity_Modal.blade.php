@@ -95,12 +95,18 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     <!-- Archive Form -->
-                    <form action="{{ route('archiveActivity', ['engagement_pid' => $engagement->engagement_pid]) }}"
+                    <form action="{{ Auth::user()->role == 'Admin' ? 
+                    route('admin#archiveActivities', ['engagement_pid' => $engagement->engagement_pid]) : 
+                    route('archiveActivity', ['engagement_pid' => $engagement->engagement_pid]) }}"
                         method="POST" style="margin-right: 10px;">
                         @csrf
                         <button type="submit" class="btn archive-table">Archive</button>
                     </form>
-                    <!-- Delete Form -->
+                    {{-- <form action="{{ route('archiveActivity', ['engagement_pid' => $engagement->engagement_pid]) }}"
+                        method="POST" style="margin-right: 10px;">
+                        @csrf
+                        <button type="submit" class="btn archive-table">Archive</button>
+                    </form> --}}
                 </div>
             </div>
         </div>
@@ -129,16 +135,18 @@
                         @csrf
                         <button type="submit" class="btn hover-action">Restore</button>
                     </form>
-                    {{-- <form action="{{ Auth::user()->role == 'Admin' ? route('admin#deleteActivity', ['engagement_pid' => $engagements->engagement_pid]) : route('deleteActivity', ['engagement_pid' => $engagements->engagement_pid]) }}"
-                        method="POST">
-                        @csrf
-                        <button type="submit" class="btn discard-table">Delete Permanently</button>
-                    </form> --}}
-                    <form action="{{ route('deleteActivity', ['engagement_pid' => $deletedActivity->fk_engagements__contact_pid]) }}"
+                    <form action="{{ Auth::user()->role == 'Admin' ? 
+                    route('admin#deleteActivity', ['engagement_pid' => $deletedActivity->fk_engagements__contact_pid]) : 
+                    route('deleteActivity', ['engagement_pid' => $deletedActivity->fk_engagements__contact_pid]) }}"
                         method="POST">
                         @csrf
                         <button type="submit" class="btn discard-table">Delete Permanently</button>
                     </form>
+                    {{-- <form action="{{ route('deleteActivity', ['engagement_pid' => $deletedActivity->fk_engagements__contact_pid]) }}"
+                        method="POST">
+                        @csrf
+                        <button type="submit" class="btn discard-table">Delete Permanently</button>
+                    </form> --}}
                 </div>
             </div>
         </div>

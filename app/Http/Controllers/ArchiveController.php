@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Contact;
 use App\Models\ContactArchive;
 use App\Models\ContactDiscard;
+use App\Models\Delete_contacts;
 use App\Models\Engagement;
 use App\Models\EngagementArchive;
 use App\Models\EngagementDiscard;
@@ -42,13 +43,15 @@ class ArchiveController extends Controller
                 }
             }
         }
+        $deletedEngagement = Delete_contacts::where('fk_engagements__contact_pid', $contact_archive_pid)->get();
 
         // Pass the entire engagement collection to the view, not just the first record.
         return view('Edit_Archive_Detail_Page')->with([
             'editArchive' => $editArchive,
             'engagementArchive' => $engagementArchive,
             'owner' => $owner,
-            'updateEngagement' => $engagementArchive
+            'updateEngagement' => $engagementArchive,
+            'deletedEngagement' => $deletedEngagement
         ]);
     }
 
@@ -134,11 +137,16 @@ class ArchiveController extends Controller
 
     private function saveLog($contact_archive_pid, $action_type, $action_description){
 
-        $user = Auth::user()->email; // Get the authenticated user's ID as owner_pid
-        $owner = Owner::where('owner_email_id', $user)->first();
+        $user = Auth::user(); // Get the authenticated user's ID as owner_pid
+        if($user->role == 'Admin'){
+            $id = $user->id;
+        } else {
+            $owner = Owner::where('owner_email_id', $user->email)->first();
+            $id = $owner->owner_pid;
+        }
         DB::table('archive__logs')->insert([
             'fk_logs__archive_contact_pid' => $contact_archive_pid,
-            'fk_logs__owner_pid' => $owner->owner_pid,
+            'fk_logs__owner_pid' => $id,
             'action_type' => $action_type, // Ensure this value is one of the allowed ENUM values
             'action_description' => $action_description,
             'activity_datetime' => now(),
@@ -266,5 +274,44 @@ class ArchiveController extends Controller
         // Redirect to the contact view page with a success message
         return redirect()->route('archive#view', ['contact_archive_pid' => $contact_archive_pid])
             ->with('success', 'Activity added successfully.');
+    }
+
+    public function retrieveActivity($id)
+    {
+        // Retrieve the deleted activities based on engagement_pid
+        $deletedContacts = Delete_contacts::where('id', $id)->get();
+
+        if ($deletedContacts->isEmpty()) {
+            return redirect()->back()->with('error', 'No activities found in archived contacts.');
+        }
+
+        try {
+            foreach ($deletedContacts as $deletedContact) {
+                // Move the activity back to the "engagements" table
+                EngagementArchive::create([
+                    'fk_engagement_archives__contact_archive_pid' => $deletedContact->fk_engagements__contact_pid,
+                    'activity_name' => $deletedContact->activity_name,
+                    'date' => $deletedContact->date,
+                    'details' => $deletedContact->details,
+                    'attachments' => $deletedContact->attachments,
+                ]);
+
+                // Delete the activity from the deleted contacts table
+                $deletedContact->delete();
+
+                // Log the restoration action
+                Log::info('Activity restored from deleted contacts and moved back to engagements', [
+                    'fk_engagements__contact_pid' => $deletedContact->fk_engagements__contact_pid,
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Activities restored successfully.');
+        } catch (\Exception $e) {
+            Log::error('Failed to restore activities', [
+                'id' => $id,
+                'error' => $e->getMessage(),
+            ]);
+            return redirect()->back()->with('error', 'An error occurred while restoring the activities.');
+        }
     }
 }
