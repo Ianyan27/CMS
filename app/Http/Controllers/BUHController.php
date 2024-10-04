@@ -127,8 +127,10 @@ class BUHController extends Controller
         $validCount = $import->getValidCount();
         $invalidCount = $import->getInvalidCount();
         $duplicateCount = $import->getDuplicateCount();
+        $unselectedCountryCount = $import->getUnselectedCountryCount();
         $invalidRows = $import->getInvalidRows();
         $duplicateRows = $import->getDuplicateRows();
+        $unselectedCountryRows = $import->getUnselectedCountryRows();
 
         // Export invalid and duplicate rows
         $fileLinks = [];
@@ -169,6 +171,7 @@ class BUHController extends Controller
                 'valid_count' => $validCount,
                 'invalid_count' => $invalidCount,
                 'duplicate_count' => $duplicateCount,
+                'unselected_country_count' => $unselectedCountryCount,
                 'file_links' => $fileLinks
                 // 'uploaded_file_path' => Storage::url($filePath) // Provide URL to the uploaded file
             ]
