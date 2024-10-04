@@ -491,18 +491,20 @@
                         let valid_count = data.data.valid_count;
                         let invalid_count = data.data.invalid_count;
                         let duplicate_count = data.data.duplicate_count;
+                        let unselected_country_count = data.data.unselected_country_count;
                         let total_count = valid_count + invalid_count + duplicate_count;
 
                         setTimeout(() => {
 
                             const {
                                 invalid_rows,
-                                duplicate_rows
+                                duplicate_rows,
+                                unselected_country_rows
                             } = data.data.file_links;
 
                             showDownloadPrompt(valid_count, invalid_count, duplicate_count,
                                 total_count,
-                                invalid_rows, duplicate_rows, );
+                                invalid_rows, duplicate_rows, unselected_country_rows);
                         }, 800);
 
                         progressMessage.classList.remove('d-none');
@@ -521,7 +523,7 @@
 
         //show download promt
         function showDownloadPrompt(valid_count, invalid_count, duplicate_count, total_count, invalid_rows_link,
-            duplicate_rows_link) {
+            duplicate_rows_link, unselected_country_rows_link) {
             // Create the modal element
             const downloadPrompt = document.createElement('div');
 
@@ -586,7 +588,22 @@
         <div class="text-end">
             <button id="cancel-btn" class="btn" style="background-color: #6c757d; color: white; padding: 5px 10px; border-radius: 4px;">Close</button>
         </div>
-    </div>    
+    </div> 
+    <hr style="margin: 10px 0;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <p style="margin: 5px 0; font-size: 16px;">Duplicate Rows:</p>
+        ${unselected_country_rows_link ? `<a href="${unselected_country_rows_link}" id="download-duplicate-btn" style="color: #007bff; text-decoration: underline; margin-left: 10px;">Download</a>` : ''}
+        
+        <div style="display: flex; align-items: center;">
+            <strong>${unselected_country_count}</strong>
+        </div>
+    </div>
+    <hr style="margin: 10px 0;">
+        <div class="text-end">
+            <button id="cancel-btn" class="btn" style="background-color: #6c757d; color: white; padding: 5px 10px; border-radius: 4px;">Close</button>
+        </div>
+    </div> 
+      
     `;
 
             downloadPrompt.innerHTML = `

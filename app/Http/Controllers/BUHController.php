@@ -61,9 +61,9 @@ class BUHController extends Controller
         $country = $request->input('country');
         $bu = $request->input('bu');
         $buh = $request->input('buh');
-        
 
-        Log::info('reterived bu'. $bu . 'buh'. $buh) ;
+
+        Log::info('reterived bu' . $bu . 'buh' . $buh);
 
         // Get the BUH ID from the logged-in user
         $buhId = Auth::user()->id;
@@ -86,7 +86,7 @@ class BUHController extends Controller
             $import = new ContactsImport($platform, $country);
             Excel::import($import, $file);
             $allocator = new RoundRobinAllocator();
-            $allocator->allocate(Contact::class);
+            ///////uncomment later  //$allocator->allocate(Contact::class);
         } catch (\Exception $e) {
 
             return response()->json([
@@ -122,6 +122,15 @@ class BUHController extends Controller
             $duplicateCsvFileName = 'duplicate_rows.csv';
             $duplicateCsvUrl = $this->exportCsv($duplicateCsvFileName, $duplicateCsvData);
             $fileLinks['duplicate_rows'] = $duplicateCsvUrl;
+        }
+        // Export unselected country rows (new logic)
+        if (!empty($unselectedCountryRows)) {
+            $headers = array_keys($unselectedCountryRows[0]);
+            $headers[] = 'validation_errors';
+            $unselectedCountryCsvData = array_merge([$headers], $unselectedCountryRows);
+            $unselectedCountryCsvFileName = 'unselected_country_rows.csv';
+            $unselectedCountryCsvUrl = $this->exportCsv($unselectedCountryCsvFileName, $unselectedCountryCsvData);
+            $fileLinks['unselected_country_rows'] = $unselectedCountryCsvUrl;
         }
 
 
@@ -277,14 +286,15 @@ class BUHController extends Controller
         }
     }
 
-    public function transferContact($owner_pid){
+    public function transferContact($owner_pid)
+    {
         Session::put('progress', 0);
         $user = Auth::user();
-        if($user->role == 'BUH'){
+        if ($user->role == 'BUH') {
             $contacts = Contact::where('fk_contacts__owner_pid', $owner_pid)->get();
             $archivedContacts = ContactArchive::where('fk_contact_archives__owner_pid', $owner_pid)->get();
             $discardedContacts = ContactDiscard::where('fk_contact_discards__owner_pid', $owner_pid)->get();
-        }else{
+        } else {
             $contacts = Contact::get();
             $archivedContacts = ContactArchive::get();
             $discardedContacts = ContactDiscard::get();
@@ -471,7 +481,7 @@ class BUHController extends Controller
             }
 
             // After moving contacts, call the allocate method to assign contacts using round-robin
-            $allocator->allocate();
+            ///////uncomment later/// $allocator->allocate();
             // If allocation is successful, redirect back with a success message
             return redirect()->back()->with('success', 'Contacts successfully assigned.');
         } catch (\Exception $e) {
@@ -482,7 +492,8 @@ class BUHController extends Controller
     }
 
 
-    public function updateStatusOwner(Request $request, $owner_pid){
+    public function updateStatusOwner(Request $request, $owner_pid)
+    {
         // Log incoming request data
         Log::info('Update Status Request:', [
             'owner_pid' => $owner_pid,
@@ -521,8 +532,9 @@ class BUHController extends Controller
 
 
 
-    
-    public function getProgress(){
+
+    public function getProgress()
+    {
         return response()->json(['progress' => Session::get('progress', 0)]);
     }
 }
