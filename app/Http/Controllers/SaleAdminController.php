@@ -30,11 +30,11 @@ class SaleAdminController extends Controller
         ]);
 
         // Get the name of the Business Unit from the request
-        $buName = $request->input('business_unit');
+        $buName = $request->get('business_unit');
 
         // Find the Business Unit by its name
         $bu = BU::where('name', $buName)->first();
-        Log::info('The BU Id is: ' . $bu->id);
+
         // If no BU is found, return an error response
         if (!$bu) {
             return response()->json(['error' => 'Business Unit not found'], 404);
@@ -42,7 +42,6 @@ class SaleAdminController extends Controller
 
         // Get the corresponding BU ID
         $buId = $bu->id;
-        
 
         // Get the BUH list associated with the BU
         $buhList = BUH::whereHas('buCountries', function ($query) use ($buId) {
@@ -56,7 +55,7 @@ class SaleAdminController extends Controller
 
         // Prepare the response by extracting the unique country names
         $response = [
-            'countries' => $buCountries->pluck('country.name')->unique(),
+            'countries' => $buCountries->pluck('country.name'),
             'buh' => $buhList->pluck('name'), // Get the names of the BUHs related to this BU
         ];
 

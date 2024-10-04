@@ -39,7 +39,7 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/view-user', function () {
             return redirect()->route('admin#index');
         } else if (Auth::user()->role == 'BUH') {
             return redirect()->route('buh#index');
-        } else if (Auth::user()->role == 'Sales_Admin'){
+        } else if (Auth::user()->role == 'Sales_Admin') {
             return redirect()->route('sales-admin#index');
         } else if (Auth::user()->role == 'Head') {
             return redirect()->route('head.index');
@@ -116,7 +116,8 @@ Route::group(['prefix' => 'admin'], function () {
 
     // Sales Admin Routes
     Route::get('/sales_admin', [
-        SaleAdminController::class, 'index'
+        SaleAdminController::class,
+        'index'
     ])->name('admin#sales-admin');
 
     // Hubspot Contact Routes
@@ -159,7 +160,8 @@ Route::group(['prefix' => 'admin'], function () {
 
     // Delete Activity Route
     Route::post('/delete-activity/{engagement_pid}', [
-        ContactController::class, 'deleteActivity'
+        ContactController::class,
+        'deleteActivity'
     ])->name('admin#deleteActivity');
 
     // Update Contact Route
@@ -218,14 +220,17 @@ Route::group(['prefix' => 'sales-agent'], function () {
         'saveActivity'
     ])->name('contact#save-activity');
     Route::post('/archive-activity/{engagement_pid}', [
-    ContactController::class, 'archiveActivity'
+        ContactController::class,
+        'archiveActivity'
     ])->name('archiveActivity');
     Route::post('/delete-activity/{engagement_pid}', [
-        ContactController::class, 'deleteActivity'
+        ContactController::class,
+        'deleteActivity'
     ])->name('deleteActivity');
     Route::post('/retrieve-activity/{id}', [
-        ContactController::class, 'retrieveActivity'
-    ])->name('retrieveActivity');     
+        ContactController::class,
+        'retrieveActivity'
+    ])->name('retrieveActivity');
     Route::post('/save-archive-activity/{contact_archive_pid}', [
         ArchiveController::class,
         'saveActivity'
@@ -331,19 +336,19 @@ Route::group(['prefix' => 'buh'], function () {
 // Define routes for the Head role
 Route::group(['prefix' => 'head', 'as' => 'head.'], function () {
     Route::get('/', [HeadController::class, 'index'])->name('index');
-    
+
     // View user details
     Route::get('/view-user', [HeadController::class, 'viewUser'])->name('view-user');
-    
+
     // Save a new user
     Route::post('/save-user', [HeadController::class, 'saveUser'])->name('save-user');
-    
+
     // Edit user details
     Route::get('/edit-user/{id}', [HeadController::class, 'editUser'])->name('edit-user');
-    
+
     // Update user details (change this line)
     Route::put('/update-user/{id}', [HeadController::class, 'updateUser'])->name('update-user'); // Change from POST to PUT
-    
+
     // Delete a user
     Route::delete('/delete-user/{id}', [HeadController::class, 'deleteUser'])->name('delete-user');
 
@@ -351,8 +356,9 @@ Route::group(['prefix' => 'head', 'as' => 'head.'], function () {
     Route::get('/view-contact/{contact_pid}', [HeadController::class, 'viewContact'])->name('view-contact');
 });
 
-Route::group(['prefix' => 'sales-admin'], function (){
+Route::group(['prefix' => 'sales-admin'], function () {
     Route::get('/', [
-        SaleAdminController::class, 'index'
+        SaleAdminController::class,
+        'index'
     ])->name('sales-admin#index');
 });
