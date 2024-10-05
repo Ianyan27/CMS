@@ -1,5 +1,5 @@
 <?php
-
+// Need to be implement by Kyaw Naing Win still not finished
 namespace App\Http\Controllers;
 
 use App\Models\User; // Make sure to import the User model
@@ -13,23 +13,27 @@ use Illuminate\Support\Facades\Db;
 
 class HeadController extends Controller
 {
-    // Display a listing of users
+    // Display a listing of users    // Display a listing of users
     public function index()
     {
-        // Using Laravel's query builder syntax to retrieve the required data
         $userData = DB::table('bu_country as bc')
-            ->join('bu as bu', 'bc.bu_id', '=', 'bu.id')
-            ->join('country as c', 'bc.country_id', '=', 'c.id')
-            ->join('buh as buh', 'bc.buh_id', '=', 'buh.id')
-            ->select('bc.id as id', 'bu.name as bu_name', 'c.name as country_name', 'buh.name as buh_name', 'buh.email as buh_email')
-            ->paginate(10); // Adding pagination for the results
-
-        // Retrieve all entries from the country table
+            ->join('bu', 'bc.bu_id', '=', 'bu.id')
+            ->join('country', 'bc.country_id', '=', 'country.id')
+            ->join('buh', 'bc.buh_id', '=', 'buh.id')
+            ->select(
+                'bc.id as id', 
+                'bu.name as bu_name', 
+                'country.name as country_name', 
+                'buh.name as buh_name', 
+                'buh.email as buh_email',
+                'buh.nationality' // Include nationality here
+            )
+            ->paginate(10);
+    
+        // Retrieve all entries from the country and bu tables
         $countries = DB::table('country')->get();
-
-        // Retrieve all entries from the bu table
         $businessUnits = DB::table('bu')->get();
-
+    
         // Pass the results to the view
         return view('Head_page', [
             'userData' => $userData,
@@ -37,151 +41,209 @@ class HeadController extends Controller
             'businessUnits' => $businessUnits
         ]);
     }
-
+    
     public function viewUser()
     {
-        // Using Laravel's query builder syntax to retrieve the required user data
         $userData = DB::table('bu_country as bc')
-            ->join('bu as bu', 'bc.bu_id', '=', 'bu.id')
-            ->join('country as c', 'bc.country_id', '=', 'c.id')
-            ->join('buh as buh', 'bc.buh_id', '=', 'buh.id')
-            ->select('bc.id as id', 'bu.name as bu_name', 'c.name as country_name', 'buh.name as buh_name', 'buh.email as buh_email')
-            ->paginate(10); // Adding pagination for the results
-
-        // Retrieve all entries from the country table
+            ->join('bu', 'bc.bu_id', '=', 'bu.id')
+            ->join('country', 'bc.country_id', '=', 'country.id')
+            ->join('buh', 'bc.buh_id', '=', 'buh.id')
+            ->select(
+                'bc.id as id', 
+                'bu.name as bu_name', 
+                'country.name as country_name', 
+                'buh.name as buh_name', 
+                'buh.email as buh_email',
+                'buh.nationality' // Include nationality here
+            )
+            ->paginate(10);
+    
         $countries = DB::table('country')->get();
-
-        // Retrieve all entries from the bu table
         $businessUnits = DB::table('bu')->get();
-
-        // Pass the results to the view
-        return view('Edit_Head_page', [
+    
+        return view('Head_page', [
             'userData' => $userData,
             'countries' => $countries,
             'businessUnits' => $businessUnits
         ]);
     }
-
     // Save a new user
-    public function saveUser(Request $request)
-    {
-        // Step 1: Validate the incoming request data
-        $validatedData = $request->validate([
-            'name' => 'required|string|min:3|max:50',
-            'email' => 'required|email|unique:users,email', // Ensure email is unique in the user table
-            'role' => 'required|string',
-            'bu_id' => 'required|exists:bu,id', // Validate BU ID exists in the bu table
-            'country_id' => 'required|exists:country,id', // Validate country ID exists in the country table
-            'nationality' => 'required'
-        ]);
-    
-        // Step 2: Save the BUH name, email, and role in the user table
-     DB::table('users')->insertGetId([
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-            'role' => $validatedData['role'],
-            'password' => 'hannah uwu', 
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-    
-        // Step 3: Insert the BUH's name and email into the bu table and retrieve the inserted BU ID
-        $buhId = DB::table('buh')->insertGetId([
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-            'nationality' => $validatedData['nationality'],
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-    
-        // Step 4: Retrieve the country ID from the country table (already validated in Step 1)
-        $countryId = $validatedData['country_id'];
-        $buId = $validatedData['bu_id'];
-    
-        // Step 5: Insert the BUH ID, BU ID, and Country ID into the bu_country table
-        DB::table('bu_country')->insert([
-            'buh_id' => $buhId,
-            'bu_id' => $buId,
-            'country_id' => $countryId,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-    
-        // Redirect or return a response indicating success
-        return redirect()->route('head.view-users')->with('success', 'User added successfully!');
-    }
-    
-// Edit user details
-public function editUser($id)
+    // Save a new user
+public function saveUser(Request $request)
 {
-       // Using Laravel's query builder to retrieve user data by ID
-    $user = DB::table('bu_country as bc')
-        ->join('bu as bu', 'bc.bu_id', '=', 'bu.id')
-        ->join('country as c', 'bc.country_id', '=', 'c.id')
-        ->join('buh as buh', 'bc.buh_id', '=', 'buh.id')
-        ->select('bc.id as id', 'bu.name as bu_name', 'c.name as country_name', 'buh.name as buh_name', 'buh.email as buh_email', 'buh.nationality')
-        ->where('bc.id', $id)
-        ->first();
+    // Define the allowed email domains as a regular expression (e.g., gmail.com, yahoo.com)
+    $domainRegex = 'lithan.com|educlaas.com|learning.educlaas.com';
 
-    // Retrieve all entries from the country table
-    $countries = DB::table('country')->get();
-
-    // Retrieve all entries from the bu table
-    $businessUnits = DB::table('bu')->get();
-
-    // Pass the results to the edit view (you might have a separate edit view)
-    return view('edit-user', [
-        'users' => $user,
-        'countries' => $countries,
-        'businessUnits' => $businessUnits
-    ]);
-}
-
-// Update user details
-public function updateUser(Request $request, $id)
-{
-    // Step 1: Validate the incoming request data
+    // Validate the request data
     $validatedData = $request->validate([
-        'name' => 'required',
-        'email' => 'required', // Ensure email is unique except for the current user
-        'role' => 'required',
-        'bu_id' => 'required', // Validate BU ID exists in the bu table
-        'country_id' => 'required', // Validate country ID exists in the country table
-        'nationality' => 'required'
+        'name' => 'required|string|min:3|max:50',
+        'email' => [
+            'required',
+            'string',
+            'email',
+            'max:255',
+            'unique:users', // Ensures the email is unique in the users table
+            function ($attribute, $value, $fail) use ($domainRegex) {
+                // Validates the email domain against the allowed domains
+                if (!preg_match('/@(' . $domainRegex . ')$/', $value)) {
+                    $fail('The email address must be one of the following domains: ' . str_replace('|', ', ', $domainRegex));
+                }
+            }
+        ],
+        'nationality' => 'required|string|max:255', // Validation for nationality
+        'bu_id' => 'required|integer', // Validation for Business Unit
+        'country_id' => 'required|integer', // Validation for Country
     ]);
 
-    // Step 2: Update the user in the users table
-    DB::table('users')->where('id', $id)->update([
+    // Insert into the users table
+    $userId = DB::table('users')->insertGetId([
         'name' => $validatedData['name'],
         'email' => $validatedData['email'],
-        'role' => 'BUH',
+        'role' => $request->input('role'),
+        'password' => bcrypt('default'), // Password is hashed before saving
+        'created_at' => now(),
         'updated_at' => now(),
     ]);
 
-    // Step 3: Update the BUH's information in the buh table
-    DB::table('buh')->where('email', $validatedData['email'])->update([
+    // Insert into the buh table
+    $buhId = DB::table('buh')->insertGetId([
         'name' => $validatedData['name'],
-        'nationality' => 'test',
+        'email' => $validatedData['email'],
+        'nationality' => $validatedData['nationality'],
+        'created_at' => now(),
         'updated_at' => now(),
     ]);
 
-    // Step 4: Update the bu_country table with the new BU and country IDs
-    DB::table('bu_country')->where('buh_id', $id)->update([
+    // Insert into the bu_country table
+    DB::table('bu_country')->insert([
+        'buh_id' => $buhId,
         'bu_id' => $validatedData['bu_id'],
         'country_id' => $validatedData['country_id'],
+        'created_at' => now(),
         'updated_at' => now(),
     ]);
 
-    // Redirect or return a response indicating success
-    return redirect()->route('head.view-users')->with('success', 'User updated successfully!');
+    return redirect()->route('head.view-user')->with('success', 'User added successfully!');
 }
 
-
-    // Delete a user
-    public function deleteUser($id)
+    // Edit user details
+    public function editUser($id)
     {
+        $userData = DB::table('bu_country as bc')
+            ->join('bu', 'bc.bu_id', '=', 'bu.id')
+            ->join('country', 'bc.country_id', '=', 'country.id')
+            ->join('buh', 'bc.buh_id', '=', 'buh.id')
+            ->select('bc.id as id', 'bu.name as bu_name', 'country.name as country_name', 'buh.name as buh_name', 'buh.email as buh_email', 'buh.nationality')
+            ->where('bc.id', $id)
+            ->first();
 
+        $countries = DB::table('country')->get();
+        $businessUnits = DB::table('bu')->get();
+
+        return view('edit-user', [
+            'users' => $userData,
+            'countries' => $countries,
+            'businessUnits' => $businessUnits
+        ]);
     }
+
+    public function updateUser(Request $request, $id)
+    {
+        try {
+            // Fetch the correct buh_id using the $id from bu_country
+            $buCountry = DB::table('bu_country')->where('id', $id)->first();
+            $buhId = $buCountry->buh_id;
+    
+            // Fetch the correct user record based on the buh_id
+            $buh = DB::table('buh')->where('id', $buhId)->first();
+            $user = DB::table('users')->where('email', $buh->email)->first(); // Use email to fetch the corresponding user
+    
+            // Ensure nationality is provided, if not, set a default or handle it properly
+            $nationality = $request->input('nationality', 'Not Provided'); // Default value 'Not Provided' if nationality is missing
+    
+            // Check if the user exists before updating
+            if ($user) {
+                // Update the user in the users table using the user ID
+                DB::table('users')->where('id', $user->id)->update([
+                    'name' => $request->input('name'),
+                    'email' => $request->input('email'), // Ensure email is updated
+                    'role' => 'BUH',
+                    'updated_at' => now(),
+                ]);
+            } else {
+                Log::error('User not found for BUH email: ' . $buh->email);
+            }
+    
+            // Update the BUH's information in the buh table
+            DB::table('buh')->where('id', $buhId)->update([
+                'name' => $request->input('name'),
+                'email' => $request->input('email'), // Ensure email is updated
+                'nationality' => $nationality, // Use the resolved nationality value
+                'updated_at' => now(),
+            ]);
+    
+            // Update the bu_country table
+            DB::table('bu_country')->where('id', $id)->update([
+                'bu_id' => $request->input('bu_id'),
+                'country_id' => $request->input('country_id'),
+                'updated_at' => now(),
+            ]);
+    
+            Log::info('User and BUH update completed successfully.');
+    
+            // Redirect or return a response indicating success
+            return redirect()->route('head.view-user')->with('success', 'User updated successfully!');
+    
+        } catch (\Exception $e) {
+            Log::error('Error updating user: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to update user.');
+        }
+    }
+    
+
+    // Delete a user// Delete a user
+public function deleteUser($id)
+{
+    DB::beginTransaction(); // Start a database transaction
+
+    try {
+        // Fetch the related buh_id and email using the provided id from bu_country
+        $buCountry = DB::table('bu_country as bc')
+            ->join('buh as b', 'bc.buh_id', '=', 'b.id')
+            ->select('bc.buh_id', 'b.email') // Select the email from the buh table
+            ->where('bc.id', $id)
+            ->first();
+
+        if (!$buCountry) {
+            return redirect()->route('head.view-user')->with('error', 'User not found.');
+        }
+
+        $buhId = $buCountry->buh_id;
+
+        // Delete the entry in the bu_country table first
+        DB::table('bu_country')->where('id', $id)->delete();
+
+        // Then delete the entry in the buh table
+        DB::table('buh')->where('id', $buhId)->delete();
+
+        // Finally, delete the entry in the users table using the retrieved email
+        $user = DB::table('users')->where('email', $buCountry->email)->first();
+        if ($user) {
+            DB::table('users')->where('id', $user->id)->delete();
+        } else {
+            Log::warning('User not found for deletion with email: ' . $buCountry->email);
+        }
+
+        DB::commit(); // Commit the transaction
+
+        return redirect()->route('head.view-user')->with('success', 'User deleted successfully!');
+    } catch (\Exception $e) {
+        DB::rollBack(); // Rollback the transaction on error
+        Log::error('Error deleting user: ' . $e->getMessage());
+        return redirect()->back()->with('error', 'Failed to delete user.');
+    }
+}
+
 
     // View contact details
     public function viewContact($contact_pid)
