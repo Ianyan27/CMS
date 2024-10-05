@@ -6,9 +6,10 @@
 @extends('layouts.Add_Archive_Activity_Modal')
 @extends('layouts.Edit_Archive_Activity_Modal')
 @extends('layouts.Attachment_Error_Modal')
+@extends('layouts.Archive_Delete_Modal')
 @section('content')
     @if (
-        (Auth::check() && Auth::user()->role == 'Sales_Agent') || 
+        (Auth::check() && Auth::user()->role == 'Sales_Agent') ||
             Auth::user()->role == 'Admin' ||
             Auth::user()->role == 'BUH')
         @if (session('success'))
@@ -49,7 +50,7 @@
             <div class="col-md-5 border-right" id="contact-detail">
                 <div class="table-title d-flex justify-content-between align-items-center my-3">
                     <h2 class="mt-2 ml-3 headings">Contact Detail</h2>
-                    @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+                    @if ((Auth::check() && Auth::user()->role == 'Sales_Agent') || Auth::user()->role == 'Admin')
                         <a href="{{ route('archive#edit', $editArchive->contact_archive_pid) }}"
                             class="btn hover-action mx-1" data-toggle="modal" data-target="#editArchiveModal">
                             <i class="fa-solid fa-pen-to-square"></i>
@@ -82,13 +83,15 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="font-educ" for="address">Address</label>
-                            <h5 class="fonts text-truncate" id="address" style="height: 125px;">{{ $editArchive->address }}</h5>
+                            <h5 class="fonts text-truncate" id="address" style="height: 125px;">
+                                {{ $editArchive->address }}</h5>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="font-educ" for="date-of-allocation">Date of Allocation</label>
-                            <h5 class="fonts text-truncate" id="date-of-allocation">{{ $editArchive->date_of_allocation }}</h5>
+                            <h5 class="fonts text-truncate" id="date-of-allocation">{{ $editArchive->date_of_allocation }}
+                            </h5>
                         </div>
                         <div class="form-group">
                             <label class="font-educ" for="qualification">Qualification</label>
@@ -149,8 +152,8 @@
                 {{-- Iterating all the activities from all contacts --}}
                 <div class="activities">
                     @forelse ($engagementArchive->groupBy(function ($date) {
-                                                        return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
-                                                    }) as $month => $activitiesInMonth)
+                                                            return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
+                                                        }) as $month => $activitiesInMonth)
                         <div class="activity-list" data-month="{{ $month }}">
                             <div class="activity-date my-3 ml-3">
                                 <span class="text-muted">{{ $month }}</span>
@@ -198,9 +201,15 @@
         <div class="table-title d-flex justify-content-between align-items-center mt-5">
             <div class="d-flex align-items-center">
                 <h2 class="ml-2 mb-1 headings">Activity Taken</h2>
+                <button class="btn hover-action mx-3" id="show-activities">
+                    Activities Taken
+                </button>
+                <button class="btn archive-table mx-3" id="show-deleted-activities">
+                    Archived Activities
+                </button>
             </div>
             <div class="d-flex align-items-center mr-2 mb-2">
-                @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+                @if ((Auth::check() && Auth::user()->role == 'Sales_Agent') || Auth::user()->role == 'Admin')
                     <button class="btn hover-action add-activity-button" data-toggle="modal"
                         data-target="#addArchiveActivityModal">
                         <i style="font-size: 22px;" class="fa-solid fa-square-plus p-1"></i>
@@ -209,69 +218,134 @@
             </div>
         </div>
         <!-- Table -->
-        <table class="table table-hover mt-2">
-    <thead class="font-educ text-left">
-        <tr>
-            <th scope="col">No</th>
-            <th scope="col">Date</th>
-            <th scope="col">Created Date</th>
-            <th scope="col">Modified Date</th>
-            <th scope="col">Type</th>
-            <th scope="col">Description</th>
-            <th scope="col">Attachment</th>
-           
-            @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
-                <th scope="col">Action</th>
-            @endif
-        </tr>
-    </thead>
-    <tbody class="text-left bg-row">
-        <?php $i = 0; ?>
-
-        @forelse ($engagementArchive as $engagement)
-            @php
-                // Decode the JSON or handle the attachments array properly
-                $attachments = json_decode($engagement->attachments, true); // Assuming it's a JSON string
-                $filename = $attachments[0] ?? ''; // Get the first filename from the array
-                $filePath = public_path('attachments/leads/' . $filename);
-            @endphp
-            <tr>
-                <td>{{ ++$i }}</td>
-                <td>{{ $engagement->date }}</td>
-                <td>{{ \Carbon\Carbon::parse($engagement->created_at)->format('Y-m-d H:i:s') }}</td> <!-- Created Date -->
-                <td>{{ \Carbon\Carbon::parse($engagement->updated_at)->format('Y-m-d H:i:s') }}</td> <!-- Modified Date -->
-                <td>{{ $engagement->activity_name }}</td>
-                <td>{{ $engagement->details }}</td>
-                <td>
-                    @if ($filename)
-                        <a href="#table-container" id="attachmentImage"
-                            style="width: 100px; height: auto; cursor: pointer;"
-                            data-image-url="{{ $filename }}">
-                            View Attachment
-                        </a>
-                    @else
-                        No Image Available
-                    @endif
-                </td>
-               
-                @if (Auth::user()->role == 'Sales_Agent')
-                    <td>
-                        <a href="{{ Auth::user()->role == 'Sales_Agent' ? route('archive#edit', ['contact_archive_pid' => $engagement->engagement_archive_pid]) : '#' }}"
-                            data-toggle="modal"
-                            {{ Auth::user()->role == 'Sales_Agent' ? 'data-target=#updateArchiveActivityModal-' . $engagement->engagement_archive_pid : '' }}
-                            class="btn hover-action">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </a>
-                    </td>
-                @endif
-            </tr>
-        @empty
-            <tr>
-                <td colspan="8" class="text-center">No Activities Taken</td>
-            </tr>
-        @endforelse
-    </tbody>
-</table>
+        <div class="table-container" style="max-height: 350px; overflow-y:auto; display: block;" id="activity-table">
+            <table class="table table-hover mt-2">
+                <thead class="font-educ text-left">
+                    <tr>
+                        <th scope="col">No</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Created Date</th>
+                        <th scope="col">Modified Date</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Attachment</th>
+                        @if ((Auth::check() && Auth::user()->role == 'Sales_Agent') || Auth::user()->role == 'Admin')
+                            <th scope="col">Action</th>
+                        @endif
+                    </tr>
+                </thead>
+                <tbody class="text-left bg-row">
+                    <?php $i = 0; ?>
+                    @forelse ($engagementArchive as $engagement)
+                        @php
+                            // Decode the JSON or handle the attachments array properly
+                            $attachments = json_decode($engagement->attachments, true); // Assuming it's a JSON string
+                            $filename = $attachments[0] ?? ''; // Get the first filename from the array
+                            $filePath = public_path('attachments/leads/' . $filename);
+                        @endphp
+                        <tr>
+                            <td>{{ ++$i }}</td>
+                            <td>{{ $engagement->date }}</td>
+                            <td>{{ \Carbon\Carbon::parse($engagement->created_at)->format('Y-m-d H:i:s') }}</td>
+                            <!-- Created Date -->
+                            <td>{{ \Carbon\Carbon::parse($engagement->updated_at)->format('Y-m-d H:i:s') }}</td>
+                            <!-- Modified Date -->
+                            <td>{{ $engagement->activity_name }}</td>
+                            <td>{{ $engagement->details }}</td>
+                            <td>
+                                @if ($filename)
+                                    <a href="#table-container" id="attachmentImage"
+                                        style="width: 100px; height: auto; cursor: pointer;"
+                                        data-image-url="{{ $filename }}">
+                                        View Attachment
+                                    </a>
+                                @else
+                                    No Image Available
+                                @endif
+                            </td>
+                            @if ((Auth::check() && Auth::user()->role == 'Sales_Agent') || Auth::user()->role == 'Admin')
+                                <td>
+                                    <a href="{{ Auth::user()->role == 'Sales_Agent' || Auth::user()->role == 'Admin' ? route('archive#edit', ['contact_archive_pid' => $engagement->engagement_archive_pid]) : '#' }}"
+                                        data-toggle="modal"
+                                        {{ Auth::user()->role == 'Sales_Agent' || Auth::user()->role == 'Admin' ? 'data-target=#updateArchiveActivityModal-' . $engagement->engagement_archive_pid : '' }}
+                                        class="btn hover-action">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <a class="btn hover-action" data-toggle="modal"
+                                        data-target="#deleteUserModal{{ $engagement->engagement_archive_pid }}">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </td>
+                            @endif
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" class="text-center">No Activities Taken</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        <div class="table-container" style="max-height: 350px; overflow-y:auto; display: none;" id="deleted-activity-table">
+            <table class="table table-hover mt-2">
+                <thead class="font-educ text-left">
+                    <tr>
+                        <th scope="col">No</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Created Date</th>
+                        <th scope="col">Modified Date</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Attachment</th>
+                        
+                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent' && Auth::check() && Auth::user()->role == 'Admin')
+                            <th scope="col" class="text-center">Action</th>
+                        @endif
+                    </tr>
+                </thead>
+                <tbody class="text-left bg-row">
+                    <?php $i = 0; ?>
+                    @forelse ($deletedEngagement as $deletedActivity)
+                        @php
+                            // Decode the JSON or handle the attachments array properly
+                            $attachments = json_decode($deletedActivity->attachments, true); // Assuming it's a JSON string
+                            $filename = $attachments[0] ?? ''; // Get the first filename from the array
+                        @endphp
+                        <tr>
+                            <td>{{ ++$i }}</td>
+                            <td>{{ $deletedActivity->date }}</td>
+                            <td>{{ \Carbon\Carbon::parse($deletedActivity->created_at)->format('Y-m-d H:i:s') }}</td> <!-- Created Date -->
+                            <td>{{ \Carbon\Carbon::parse($deletedActivity->updated_at)->format('Y-m-d H:i:s') }}</td> <!-- Modified Date -->
+                            <td>{{ $deletedActivity->activity_name }}</td>
+                            <td>{{ $deletedActivity->details }}</td>
+                            <td>
+                                @if ($filename)
+                                    <a href="#table-container" id="attachmentImage"
+                                        style="width: 100px; height: auto; cursor: pointer;"
+                                        data-image-url="{{ $filename }}">
+                                        View Attachment
+                                    </a>
+                                @else
+                                    No Image Available
+                                @endif
+                            </td>
+                            @if (Auth::user()->role == 'Sales_Agent' || Auth::user()->role == 'Admin')
+                                <td class="text-center">
+                                    <a class="btn hover-action" data-toggle="modal"
+                                        data-target="#retrieveActivityModal{{ $deletedActivity->id }}">
+                                        <i class="fa-solid fa-rotate-left"></i>
+                                    </a>
+                                </td>
+                            @endif
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" class="text-center">No Activity Taken.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
         <!-- Bootstrap Modal for Image -->
         <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
@@ -328,6 +402,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ URL::asset('js/contact_detail.js') }}"></script>
     <script src="{{ URL::asset('js/status_color.js') }}"></script>
+    <script src="{{ URL::asset('js/show_activity_table.js') }}"></script>
     <script>
         $(document).ready(function() {
             // Function to show/hide activities and display "No activity" messages based on the filter
@@ -414,11 +489,11 @@
     </script>
     <script>
         document.addEventListener('click', function(event) {
-        if (event.target && event.target.id === 'attachmentImage') {
-            const imageUrl = event.target.getAttribute('data-image-url');
-            document.getElementById('modalImage').src = imageUrl;
-            $('#imageModal').modal('show');
-        }
-    });
+            if (event.target && event.target.id === 'attachmentImage') {
+                const imageUrl = event.target.getAttribute('data-image-url');
+                document.getElementById('modalImage').src = imageUrl;
+                $('#imageModal').modal('show');
+            }
+        });
     </script>
 @endsection

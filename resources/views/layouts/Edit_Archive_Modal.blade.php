@@ -14,8 +14,13 @@
             </div>
             <div class="modal-body">
                 <form
-                    action="{{ route('archive#update-archive', ['contact_archive_pid' => $editArchive->contact_archive_pid, 'owner_pid' => $owner->owner_pid]) }}"
+                    action="{{ Auth::user()->role == 'Admin' ? 
+                    route('archive#update-archive', ['contact_archive_pid' => $editArchive->contact_archive_pid, 'owner_pid' => Auth::user()->id]) : 
+                    route('archive#update-archive', ['contact_archive_pid' => $editArchive->contact_archive_pid, 'owner_pid' => $owner->owner_pid]) }}"
                     method="POST" id="editContactForm">
+                {{-- <form
+                    action="{{ route('archive#update-archive', ['contact_archive_pid' => $editArchive->contact_archive_pid, 'owner_pid' => $owner->owner_pid]) }}"
+                    method="POST" id="editContactForm"> --}}
                     @csrf
                     <div class="row">
                         <!-- Left Column -->

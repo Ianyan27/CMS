@@ -131,7 +131,7 @@ class OwnerController extends Controller
         ]);
     }
 
-    public function updateOwner(Request $request, $owner_pid)
+    public function updateSaleAgent(Request $request, $owner_pid)
     {
 
         $owner = Owner::find($owner_pid);

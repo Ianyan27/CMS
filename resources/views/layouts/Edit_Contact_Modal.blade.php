@@ -14,7 +14,9 @@ aria-hidden="true">
                 style="height: 30px;">
         </div>
         <div class="modal-body">
-            <form action="{{ Auth::user()->role == 'Admin' ? route('admin#update-contact', ['contact_pid' => $editContact->contact_pid, 'id' => $user->id]) : route('contact#update-contact',['contact_pid' => $editContact->contact_pid, 'owner_pid' => $owner->owner_pid]) }}" 
+            <form action="{{ Auth::user()->role == 'Admin' ? 
+                route('admin#save-edit-contact', ['contact_pid' => $editContact->contact_pid, 'id' => Auth::user()->id ]) : 
+                route('contact#update-contact',['contact_pid' => $editContact->contact_pid, 'owner_pid' => $owner->owner_pid]) }}" 
                 {{-- <form action="{{ route('contact#update-contact',['contact_pid' => $editContact->contact_pid, 'owner_pid' => $owner->owner_pid]) }}"  --}}
                 method="POST" id="editContactForm">
                 @csrf
