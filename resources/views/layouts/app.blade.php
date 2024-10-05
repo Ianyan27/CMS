@@ -101,6 +101,12 @@
                                 <i class="fa-solid fa-file-arrow-up"></i><span>Import CSV</span>
                             </a>
                         </li>
+                        <li
+                        class="{{ in_array(Route::currentRouteName(), ['head.index', 'head']) ? 'active-link' : 'nav-item' }} dashboard-link">
+                            <a class="nav-link" href="{{ route('head.index') }}">
+                                <i class="fa-solid fa-file-arrow-up"></i><span>Head Dashboard</span>
+                            </a>
+                        </li>
                     </ul>
                 </ul>
             </div>
