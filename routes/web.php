@@ -407,7 +407,7 @@ Route::group(['prefix' => 'head', 'as' => 'head.'], function () {
 
     // Update user details (change this line)
     Route::put('/update-user/{id}', [HeadController::class, 'updateUser'])->name('update-user'); // Change from POST to PUT
-
+    
     // Delete a user
     Route::delete('/delete-user/{id}', [HeadController::class, 'deleteUser'])->name('delete-user');
 

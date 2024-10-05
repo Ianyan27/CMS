@@ -105,6 +105,10 @@
                             <a class="nav-link"
                                 href="{{ route(Auth::user()->role == 'Admin' ? 'admin#contact-listing' : 'contact-listing') }}">
                                 <i class="fa-solid fa-address-book"></i><span>Contacts</span>
+                        <li
+                        class="{{ in_array(Route::currentRouteName(), ['head.index', 'head']) ? 'active-link' : 'nav-item' }} dashboard-link">
+                            <a class="nav-link" href="{{ route('head.index') }}">
+                                <i class="fa-solid fa-file-arrow-up"></i><span>Head Dashboard</span>
                             </a>
                         </li>
                     </ul>

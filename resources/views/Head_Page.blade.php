@@ -68,14 +68,20 @@
                                 onclick="sortTable('buh_name', 'desc'); toggleSort('sortUp-buh', 'sortDown-buh')"
                                 style="display: none;"></i>
                         </th>
-                        <th scope="col" id="buh-header">BUH Email
+                        <th scope="col" id="buh-email">BUH Email
                             <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-buh"
                                 onclick="sortTable('buh_email', 'asc'); toggleSort('sortDown-buh', 'sortUp-buh')"></i>
                             <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-buh"
                                 onclick="sortTable('buh_email', 'desc'); toggleSort('sortUp-buh', 'sortDown-buh')"
                                 style="display: none;"></i>
                         </th>
-
+                        <th scope="col" id="nationality-header">Nationality
+                            <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-buh"
+                                onclick="sortTable('nationality-header', 'asc'); toggleSort('sortDown-buh', 'sortUp-nationality')"></i>
+                            <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-buh"
+                                onclick="sortTable('nationality-header', 'desc'); toggleSort('sortUp-buh', 'sortDown-nationality')"
+                                style="display: none;"></i>
+                        </th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -88,6 +94,7 @@
                             <td>{{ $user->country_name }}</td> <!-- Displaying Country -->
                             <td>{{ $user->buh_name }}</td> <!-- Displaying BUH -->
                             <td>{{ $user->buh_email }}</td> <!-- Displaying BUH Email-->
+                            <td>{{ $user->nationality }}</td> <!-- Displaying Nationality -->
                             <td>
                                 <a class="btn hover-action" data-toggle="modal" data-target="#editUserModal{{ $user->id }}">
                                     <i class="fa-solid fa-pen-to-square"></i>
@@ -167,7 +174,7 @@
             </div>
             <form action="{{ route('head.update-user', $user->id) }}" method="POST">
                 @csrf
-                @method('POST')
+                @method('PUT')
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="name{{ $user->id }}" class="form-label">BUH Name</label>
@@ -179,7 +186,10 @@
                         <input type="email" class="form-control" name="email" id="email{{ $user->id }}"
                             value="{{ $user->buh_email }}" required>
                     </div>
-
+                    <div class="mb-3">
+                        <label for="nationality{{ $user->id }}" class="form-label">Nationality</label>
+                        <input type="text" class="form-control" name="nationality" id="nationality{{ $user->id }}" value="{{ $user->nationality }}" required>
+                    </div>
                     <div class="form-group">
                         <label for="bu">Business Unit (BU)</label>
                         <select class="form-control" id="bu" name="bu_id" required>
@@ -219,6 +229,35 @@
         </div>
     </div>
 </div>
+@endforeach
+@foreach ($userData as $user)
+    <!-- Delete User Modal -->
+    <div class="modal fade" id="deleteUserModal{{ $user->id }}" tabindex="-1"
+         aria-labelledby="deleteUserModalLabel{{ $user->id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content rounded-0">
+                <div class="modal-header d-flex justify-content-between align-items-center"
+                     style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%); border:none;">
+                    <h5 class="modal-title" id="deleteUserModalLabel{{ $user->id }}">
+                        <strong>Delete User:  {{ $user->buh_name }}</strong>
+                    </h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('head.delete-user', $user->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete this user?</p>
+                        <p class="text-danger"><strong>This action will permanently delete all related data!</strong></p>
+                    </div>
+                    <div class="modal-footer" style="border:none;">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endforeach
 
     <!-- Modal for Adding New User -->
