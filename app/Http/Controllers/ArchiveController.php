@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ArchiveActivities;
 use App\Models\Contact;
 use App\Models\ContactArchive;
 use App\Models\ContactDiscard;
@@ -43,7 +44,7 @@ class ArchiveController extends Controller
                 }
             }
         }
-        $deletedEngagement = Delete_contacts::where('fk_engagements__contact_pid', $contact_archive_pid)->get();
+        $deletedEngagement = ArchiveActivities::where('fk_engagements__contact_pid', $contact_archive_pid)->get();
 
         // Pass the entire engagement collection to the view, not just the first record.
         return view('Edit_Archive_Detail_Page')->with([

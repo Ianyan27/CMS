@@ -99,9 +99,9 @@ Route::group(['prefix' => 'admin'], function () {
     ])->name('admin#view-contact');
 
     // CSV Import Routes
-    Route::get('/import-csv', function () {
-        return view('csv_import_form');
-    })->name('admin#importcsv');
+    Route::get('/import-csv', [
+        AdminController::class, 'importCSV'
+    ])->name('admin#importcsv');
 
     Route::post('/import', [
         BUHController::class,
@@ -204,6 +204,10 @@ Route::group(['prefix' => 'admin'], function () {
         ArchiveController::class,
         'retrieveActivity'
     ])->name('admin#retrieveArchivedActivity');
+    Route::post('/save-activity/{contact_pid}', [
+        AdminController::class,
+        'saveActivity'
+    ])->name('admin#save-activity');
 });
 
 Route::group(['prefix' => 'sales-agent'], function () {
@@ -255,10 +259,21 @@ Route::group(['prefix' => 'sales-agent'], function () {
         ContactController::class,
         'saveActivity'
     ])->name('contact#save-activity');
-    Route::post('/archive-activity/{engagement_pid}', [
+    //Archive Activity
+    Route::post('/archive-activities/{engagement_archive_pid}', [
         ContactController::class,
         'archiveActivity'
     ])->name('archiveActivity');
+    //Archive Contacts
+    Route::post('/archive-activities/{engagement_archive_pid}', [
+        ContactController::class,
+        'archiveContactActivities'
+    ])->name('archiveContactActivities');
+    Route::post('/delete-archive-activity/{engagement_archive_pid}', [
+        ContactController::class,
+        'deleteArchiveActivity'
+    ])->name('deleteArchiveActivity');
+
     Route::post('/delete-activity/{engagement_pid}', [
         ContactController::class,
         'deleteActivity'

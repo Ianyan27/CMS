@@ -58,12 +58,14 @@
                 <ul class="nav flex-column fonts my-2">
                     <!-- Sidebar Navigation Items -->
                     <ul class="navbar-nav">
-                        <li
-                            class="{{ Route::currentRouteName() != 'admin#index' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'admin#index' ? 'active-link' : '' }}">
-                            <a class="nav-link" href="{{ route('admin#index') }}">
-                                <i class="fa-solid fa-user"></i><span>Users</span>
-                            </a>
-                        </li>
+                        @if (Auth::check() && Auth::user()->role == 'Admin')
+                            <li
+                                class="{{ Route::currentRouteName() != 'admin#index' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'admin#index' ? 'active-link' : '' }}">
+                                <a class="nav-link" href="{{ route('admin#index') }}">
+                                    <i class="fa-solid fa-user"></i><span>Users</span>
+                                </a>
+                            </li>
+                        @endif
                         {{-- <li
                             class="{{ Route::currentRouteName() != 'admin#contact-listing' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'admin#contact-listing' ? 'active-link' : '' }}">
                             <a class="nav-link " href="{{ route('admin#contact-listing') }}">
@@ -76,9 +78,11 @@
                                 <i class="fa-solid fa-file-arrow-up disabled"></i><span>Import CSV</span>
                             </a>
                         </li> --}}
+                        @if (Auth::check() && Auth::user()->role =='BUH' || Auth::user()->role == 'Admin')
                         <li
                             class="{{ in_array(Route::currentRouteName(), ['admin#view', 'owner#view']) ? 'active-link' : 'nav-item' }} dashboard-link">
-                            <a class="nav-link" href="{{ route(Auth::user()->role == 'Admin' ? 'admin#view' : 'owner#view') }}">
+                            <a class="nav-link"
+                                href="{{ route(Auth::user()->role == 'Admin' ? 'admin#view' : 'owner#view') }}">
                                 <i class="fa-solid fa-universal-access"></i><span>Sales Agent</span>
                             </a>
                         </li>
@@ -90,15 +94,17 @@
                             </a>
                         </li>
                         <li
-                            class="{{ in_array(Route::currentRouteName(), ['admin#contact-listing', 'contact-listing']) ? 'active-link' : 'nav-item' }} dashboard-link">
-                            <a class="nav-link" href="{{ route(Auth::user()->role == 'Admin' ? 'admin#contact-listing' : 'contact-listing') }}">
-                                <i class="fa-solid fa-address-book"></i><span>Contacts</span>
-                            </a>
-                        </li>
-                        <li
                             class="{{ Route::currentRouteName() != 'sale_admin' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'sale_admin' ? 'active-link' : '' }}">
                             <a class="nav-link" href="{{ route('admin#sales-admin') }}">
                                 <i class="fa-solid fa-file-arrow-up"></i><span>Import CSV</span>
+                            </a>
+                        </li>
+                        @endif
+                        <li
+                            class="{{ in_array(Route::currentRouteName(), ['admin#contact-listing', 'contact-listing']) ? 'active-link' : 'nav-item' }} dashboard-link">
+                            <a class="nav-link"
+                                href="{{ route(Auth::user()->role == 'Admin' ? 'admin#contact-listing' : 'contact-listing') }}">
+                                <i class="fa-solid fa-address-book"></i><span>Contacts</span>
                             </a>
                         </li>
                     </ul>

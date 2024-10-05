@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('deleted_contacts', function (Blueprint $table) {
+        Schema::create('archive_activities', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('fk_engagements__contact_pid');
             $table->string('activity_name');

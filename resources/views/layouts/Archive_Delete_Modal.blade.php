@@ -17,7 +17,7 @@
                     <!-- Archive Form -->
                     <form action="{{ Auth::user()->role == 'Admin' ? 
                     route('admin#archiveActivity', ['engagement_archive_pid' => $engagement->engagement_archive_pid]) : 
-                    route('archiveActivity', ['engagement_archive_pid' => $engagement->engagement_archive_pid]) }}"
+                    route('archiveContactActivities', ['engagement_archive_pid' => $engagement->engagement_archive_pid]) }}"
                         method="POST" style="margin-right: 10px;">
                         @csrf
                         <button type="submit" class="btn archive-table">Archive</button>

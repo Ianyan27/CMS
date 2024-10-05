@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Contact;
 use App\Models\ContactArchive;
 use App\Models\ContactDiscard;
-use App\Models\Delete_contacts;
+use App\Models\ArchiveActivities;
 use App\Models\Engagement;
 use App\Models\EngagementArchive;
 use App\Models\EngagementDiscard;
@@ -120,7 +120,7 @@ class ContactController extends Controller
 
         // Retrieve engagements archived for the contact
         $engagementsArchive = EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $contact_pid)->get();
-        $deletedEngagement = Delete_contacts::where('fk_engagements__contact_pid', $contact_pid)->get();
+        $deletedEngagement = ArchiveActivities::where('fk_engagements__contact_pid', $contact_pid)->get();
         // Use the first engagement for updates if available
         $updateEngagement = $engagements->first();
 
@@ -436,7 +436,42 @@ class ContactController extends Controller
             ->with('success', 'Activity updated successfully.');
     }
 
-    public function archiveActivity($engagement_archive_pid)
+    //Archive activities of Contacts
+    public function archiveActivity($fk_engagements__contact_pid)
+    {
+        // Find the engagement activity by its ID (engagement_pid)
+        $engagement = Engagement::find($fk_engagements__contact_pid);
+
+        if (!$engagement) {
+            return redirect()->back()->with('error', 'Activity not found.');
+        }
+
+        try {
+            // Move the activity to the "deleted" table
+            ArchiveActivities::create([
+                'fk_engagements__contact_pid' => $engagement->fk_engagements__contact_pid,
+                'activity_name' => $engagement->activity_name,
+                'date' => $engagement->date,
+                'details' => $engagement->details,
+                'attachments' => $engagement->attachments,
+            ]);
+
+            // Delete the activity from the "engagements" table
+            $engagement->delete();
+            // Log the deletion action
+            Log::info('Activity moved to deleted table and removed from engagements table', [
+                'engagement_pid' => $fk_engagements__contact_pid,
+                'contact_pid' => $engagement->fk_engagements__contact_pid,
+            ]);
+            return redirect()->back()->with('success', 'Activity deleted and moved to the deleted table successfully.');
+        } catch (\Exception $e) {
+            Log::error('Failed to delete activity', ['error' => $e->getMessage()]);
+            return redirect()->back()->with('error', 'An error occurred while deleting the activity.');
+        }
+    }
+
+    //Archive activities of Archived Contacts
+    public function archiveContactActivities($engagement_archive_pid)
     {
         // Find the engagement activity by its ID (engagement_pid)
         $engagement = EngagementArchive::find($engagement_archive_pid);
@@ -447,7 +482,7 @@ class ContactController extends Controller
 
         try {
             // Move the activity to the "deleted" table
-            Delete_contacts::create([
+            ArchiveActivities::create([
                 'fk_engagements__contact_pid' => $engagement->fk_engagement_archives__contact_archive_pid,
                 'activity_name' => $engagement->activity_name,
                 'date' => $engagement->date,
@@ -479,7 +514,7 @@ class ContactController extends Controller
         }
         try {
             // Move the activity to the "deleted" table
-            Delete_contacts::create([
+            ArchiveActivities::create([
                 'fk_engagements__contact_pid' => $engagement->fk_engagements__contact_pid,
                 'activity_name' => $engagement->activity_name,
                 'date' => $engagement->date,
@@ -503,7 +538,7 @@ class ContactController extends Controller
     public function deleteActivity($fk_engagements__contact_pid){
         try {
             // Find the engagement by its engagement_pid
-            $engagement = Delete_contacts::where( 'fk_engagements__contact_pid', $fk_engagements__contact_pid);
+            $engagement = ArchiveActivities::where( 'fk_engagements__contact_pid', $fk_engagements__contact_pid);
 
             // Permanently delete the engagement
             $engagement->delete();
@@ -520,7 +555,7 @@ class ContactController extends Controller
     public function deleteArchivedActivity($fk_engagements__contact_pid){
         try {
             // Find the engagement by its engagement_pid
-            $engagement = Delete_contacts::where( 'fk_engagements__contact_pid', $fk_engagements__contact_pid);
+            $engagement = ArchiveActivities::where( 'fk_engagements__contact_pid', $fk_engagements__contact_pid);
 
             // Permanently delete the engagement
             $engagement->delete();
@@ -537,7 +572,7 @@ class ContactController extends Controller
     public function deleteArchiveActivity($engagement_archive_pid){
         try {
             // Find the engagement by its engagement_pid
-            $engagement = Delete_contacts::where( 'fk_engagements__contact_pid', $engagement_archive_pid);
+            $engagement = ArchiveActivities::where( 'fk_engagements__contact_pid', $engagement_archive_pid);
 
             // Permanently delete the engagement
             $engagement->delete();
@@ -554,7 +589,7 @@ class ContactController extends Controller
     public function retrieveActivity($id)
     {
         // Retrieve the deleted activities based on engagement_pid
-        $deletedContacts = Delete_contacts::where('id', $id)->get();
+        $deletedContacts = ArchiveActivities::where('id', $id)->get();
 
         if ($deletedContacts->isEmpty()) {
             return redirect()->back()->with('error', 'No activities found in archived contacts.');

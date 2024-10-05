@@ -210,8 +210,8 @@
             </div>
             <div class="d-flex align-items-center mr-2 mb-2">
                 @if ((Auth::check() && Auth::user()->role == 'Sales_Agent') || Auth::user()->role == 'Admin')
-                    <button class="btn hover-action add-activity-button" data-toggle="modal"
-                        data-target="#addArchiveActivityModal">
+                    <button style="display: block;" class="btn hover-action add-activity-button" data-toggle="modal"
+                        data-target="#addArchiveActivityModal" id="addActivityBtn">
                         <i style="font-size: 22px;" class="fa-solid fa-square-plus p-1"></i>
                     </button>
                 @endif
@@ -319,7 +319,8 @@
                             <td>{{ $deletedActivity->activity_name }}</td>
                             <td>{{ $deletedActivity->details }}</td>
                             <td>
-                                @if ($filename)
+                                "This image is currently archived. Please restore the image to view it."
+                                {{-- @if ($filename)
                                     <a href="#table-container" id="attachmentImage"
                                         style="width: 100px; height: auto; cursor: pointer;"
                                         data-image-url="{{ $filename }}">
@@ -327,7 +328,7 @@
                                     </a>
                                 @else
                                     No Image Available
-                                @endif
+                                @endif --}}
                             </td>
                             @if (Auth::user()->role == 'Sales_Agent' || Auth::user()->role == 'Admin')
                                 <td class="text-center">

@@ -1,5 +1,6 @@
 const showActivitiesBtn = document.getElementById('show-activities');
 const showDeletedActivitiesBtn = document.getElementById('show-deleted-activities');
+const addActivityBtn = document.getElementById('addActivityBtn');
 
 const activityContainer = document.getElementById('activity-table');
 const deletedActivityContainer = document.getElementById('deleted-activity-table');
@@ -20,6 +21,7 @@ function deactivateAllButtons() {
 showActivitiesBtn.addEventListener('click', function() {
     hideAllTables();
     activityContainer.style.display = 'block';
+    addActivityBtn.style.display = 'block';
 
     // Set active button
     deactivateAllButtons();
@@ -30,6 +32,7 @@ showActivitiesBtn.addEventListener('click', function() {
 showDeletedActivitiesBtn.addEventListener('click', function() {
     hideAllTables();
     deletedActivityContainer.style.display = 'block';
+    addActivityBtn.style.display = 'none';
 
     // Set active button
     deactivateAllButtons();
