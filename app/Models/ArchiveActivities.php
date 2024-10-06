@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Delete_contacts extends Model
+class ArchiveActivities extends Model
 {
     use HasFactory;
-    protected $table = 'deleted_contacts';
+    protected $table = 'archive_activities';
 
     // Specify the fields that are mass assignable
     protected $fillable = [

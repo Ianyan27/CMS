@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ArchiveActivities;
 use App\Models\BU;
 use App\Models\Contact;
 use App\Models\ContactArchive;
@@ -21,8 +22,10 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class AdminController extends Controller{
@@ -156,7 +159,7 @@ class AdminController extends Controller{
 
         // Retrieve engagements archived for the contact
         $engagementsArchive = EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $contact_pid)->get();
-        $deletedEngagement = Delete_contacts::where('fk_engagements__contact_pid', $contact_pid)->get();
+        $deletedEngagement = ArchiveActivities::where('fk_engagements__contact_pid', $contact_pid)->get();
         // Use the first engagement for updates if available
         $updateEngagement = $engagements->first();
 
@@ -470,5 +473,103 @@ class AdminController extends Controller{
         return redirect()->route('admin#view-contact', [
             'contact_pid' => $contact_pid
         ])->with('success', 'Contact updated successfully.');
+    }
+
+    public function saveActivity(Request $request, $contact_pid)
+    {
+        // Checking for admin role and redirecting if true
+        $user = Auth::user();
+
+        // Validate the input data
+        $validator = Validator::make($request->all(), [
+            'activity-date' => 'required',
+            'activity-name' => 'required',
+            'activity-details' => 'required',
+            'activity-attachments' => 'required|file|mimes:jpeg,png,jpg'
+        ]);
+
+        // Handle validation errors
+        if ($validator->fails()) {
+            if ($validator->errors()->has('activity-attachments')) {
+                $attachmentErrors = $validator->errors()->get('activity-attachments');
+                if (in_array('The activity attachments must be a file of type: jpeg, png, jpg.', $attachmentErrors)) {
+                    return back()->withErrors(['activity-attachments' => 'Only image files (JPEG, PNG, JPG) are allowed.'])
+                        ->withInput();
+                }
+            }
+            return back()->withErrors($validator)->withInput();
+        }
+
+        // Check if the contact exists
+        $contact = Contact::find($contact_pid);
+        if (!$contact) {
+            return back()->with('error', 'The specified contact does not exist.');
+        }
+
+        // Create a new Engagement record
+        $engagement = new Engagement();
+
+        // Handle file upload if a new file is provided
+        if ($request->hasFile('activity-attachments')) {
+            $imageFile = $request->file('activity-attachments');
+            $imageContent = file_get_contents($imageFile);
+            $encryptedImage = Crypt::encrypt($imageContent);
+            $engagement->attachments = json_encode([$encryptedImage]);
+        }
+
+        // Assign engagement data from request
+        $engagement->date = $request->input('activity-date');
+        $engagement->details = $request->input('activity-details');
+        $engagement->activity_name = $request->input('activity-name');
+        $engagement->fk_engagements__contact_pid = $contact_pid;
+        $engagement->save();
+
+        // Update contact status only if the current status is 'New'
+        if ($contact->status === "New") {
+            $contact->status = "InProgress";
+            $contact->save();
+        }
+
+        // Save activity to the logs table
+        $actionType = 'Save New Activity';
+        $actionDescription = "Added a new activity: {$request->input('activity-name')} with details: {$request->input('activity-details')}";
+
+        $saveActivity = $this->saveLog($contact_pid, $actionType, $actionDescription);
+        Log::info("Save Activity: " . $saveActivity);
+
+        // Redirect to the contact view page with a success message
+        return redirect()->route('admin#view-contact', ['contact_pid' => $contact_pid])
+            ->with('success', 'Activity added successfully.');
+    }
+
+    private function saveLog($contact_pid, $action_type, $action_description)
+    {
+        $ownerEmail = Auth::user()->email; // Get the authenticated user's ID as owner_pid
+
+        // Check if the owner exists in the owners table
+        $ownerExists = DB::table('owners')->where('owner_email_id', $ownerEmail)->exists();
+        $ownerDetails = DB::table('owners')->where('owner_email_id', $ownerEmail)->first();
+        if (!$ownerExists) {
+            // Handle the case where the owner is not found
+            Log::error("Invalid Email {$ownerEmail}");
+            return false;
+        }
+
+        // Insert the log record
+        DB::table('logs')->insert([
+            'fk_logs__contact_pid' => $contact_pid,
+            'fk_logs__owner_pid' => $ownerDetails->owner_pid,
+            'action_type' => $action_type, // Ensure this value is one of the allowed ENUM values
+            'action_description' => $action_description,
+            'activity_datetime' => now(),
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        return true;
+    }
+
+    public function importCSV(){
+        return view('csv_import_form');
     }
 }

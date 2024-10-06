@@ -13,6 +13,7 @@ use App\Http\Controllers\SaleAdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\HeadController;
 use App\Http\Controllers\HubspotContactController;
+use App\Http\Controllers\SaleAgentsController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
@@ -70,17 +71,17 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/edit-user/{id}', [
         AdminController::class,
         'editUser'
-    ])->name('user#edit-user');
+    ])->name('admin#edit-user');
 
     Route::post('/update-user/{id}', [
         AdminController::class,
         'updateUser'
-    ])->name('user#update-user');
+    ])->name('admin#update-user');
 
     Route::delete('/delete-user/{id}', [
         AdminController::class,
         'deleteUser'
-    ])->name('user#delete-user');
+    ])->name('admin#delete-user');
 
     Route::post('/save-user', [
         AdminController::class,
@@ -99,9 +100,9 @@ Route::group(['prefix' => 'admin'], function () {
     ])->name('admin#view-contact');
 
     // CSV Import Routes
-    Route::get('/import-csv', function () {
-        return view('csv_import_form');
-    })->name('admin#importcsv');
+    Route::get('/import-csv', [
+        AdminController::class, 'importCSV'
+    ])->name('admin#importcsv');
 
     Route::post('/import', [
         BUHController::class,
@@ -131,21 +132,21 @@ Route::group(['prefix' => 'admin'], function () {
         'submitHubspotContacts'
     ])->name('admin#submit-hubspot-contacts');
 
-    // Owner Routes
-    Route::get('/owner', [
-        OwnerController::class,
-        'owner'
-    ])->name('admin#view');
+    // Sales Agent
+    Route::get('/sale-agents', [
+        SaleAgentsController::class,
+        'saleAgent'
+    ])->name('admin#viewSaleAgent');
 
-    Route::get('/view-owner/{owner_pid}', [
-        OwnerController::class,
-        'viewOwner'
-    ])->name('admin#view-owner');
+    Route::get('/view-sale-agent/{id}', [
+        SaleAgentsController::class,
+        'viewSaleAgent'
+    ])->name('admin#view-sale-agent');
 
-    Route::post('/update-owner/{owner_pid}', [
-        OwnerController::class,
+    Route::post('/update-sale-agent/{id}', [
+        SaleAgentsController::class,
         'updateSaleAgent'
-    ])->name('admin#update-owner');
+    ])->name('admin#update-sale-agent');
 
     // Transfer Contact Routes
     Route::get('/transfer-contacts/{owner_pid}', [
@@ -204,6 +205,10 @@ Route::group(['prefix' => 'admin'], function () {
         ArchiveController::class,
         'retrieveActivity'
     ])->name('admin#retrieveArchivedActivity');
+    Route::post('/save-activity/{contact_pid}', [
+        AdminController::class,
+        'saveActivity'
+    ])->name('admin#save-activity');
 });
 
 Route::group(['prefix' => 'sales-agent'], function () {
@@ -255,10 +260,21 @@ Route::group(['prefix' => 'sales-agent'], function () {
         ContactController::class,
         'saveActivity'
     ])->name('contact#save-activity');
-    Route::post('/archive-activity/{engagement_pid}', [
+    //Archive Activity
+    Route::post('/archive-activities/{engagement_archive_pid}', [
         ContactController::class,
         'archiveActivity'
     ])->name('archiveActivity');
+    //Archive Contacts
+    Route::post('/archive-activities/{engagement_archive_pid}', [
+        ContactController::class,
+        'archiveContactActivities'
+    ])->name('archiveContactActivities');
+    Route::post('/delete-archive-activity/{engagement_archive_pid}', [
+        ContactController::class,
+        'deleteArchiveActivity'
+    ])->name('deleteArchiveActivity');
+
     Route::post('/delete-activity/{engagement_pid}', [
         ContactController::class,
         'deleteActivity'
@@ -334,7 +350,7 @@ Route::group(['prefix' => 'buh'], function () {
     ])->name('owner#view');
     Route::get('/view-owner/{owner_pid}', [
         OwnerController::class,
-        'viewOwner'
+        'viewSaleAgent'
     ])->name('owner#view-owner');
     Route::post('/save-user', [
         BUHController::class,
@@ -344,14 +360,14 @@ Route::group(['prefix' => 'buh'], function () {
         OwnerController::class,
         'editOwner'
     ])->name('owner#update');
-    Route::post('/update-owner/{owner_pid}', [
+    Route::post('/update-sale-agent/{id}', [
         OwnerController::class,
         'updateSaleAgent'
-    ])->name('owner#update-owner');
-    Route::delete('/delete-owner/{owner_pid}', [
+    ])->name('buh#update-sale-agent');
+    Route::delete('/delete-sale-agent/{id}', [
         BUHController::class,
         'deleteOwner'
-    ])->name('owner#delete');
+    ])->name('buh#delete-sale-agent');
     Route::get('/view-contact/{contact_pid}', [
         OwnerController::class,
         'viewContact'

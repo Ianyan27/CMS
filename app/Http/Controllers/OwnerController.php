@@ -74,7 +74,7 @@ class OwnerController extends Controller
 
 
 
-    public function viewOwner($owner_pid){
+    public function viewSaleAgent($owner_pid){
         $owner = Owner::where('owner_pid', $owner_pid)->first();
         // Execute the queries to get the actual data
         $editOwner = Owner::where('owner_pid', $owner_pid)->first();

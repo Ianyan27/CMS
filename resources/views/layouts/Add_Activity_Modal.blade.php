@@ -13,8 +13,12 @@
                     style="height: 30px;">
             </div>
             <div class="modal-body">
-                <form action=" {{ route('contact#save-activity', $editContact->contact_pid) }} " method="POST"
+                <form action=" {{ Auth::user()->role == 'Admin' ? 
+                route('admin#save-activity' , $editContact->contact_pid) :
+                route('contact#save-activity', $editContact->contact_pid) }} " method="POST"
                     id="addActivityForm" enctype="multipart/form-data">
+                {{-- <form action=" {{ route('contact#save-activity', $editContact->contact_pid) }} " method="POST"
+                    id="addActivityForm" enctype="multipart/form-data"> --}}
                     @csrf
                     <input type="hidden" name="contact_pid" value=" {{ $editContact->contact_pid }} " readonly>
                     <div class="row row-margin-bottom row-border-bottom">

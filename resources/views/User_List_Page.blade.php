@@ -166,7 +166,7 @@
                                 style="height: 30px;">
                         </div>
                         <div class="modal-body">
-                            <form action="{{ route('user#update-user', $user->id) }}" method="POST">
+                            <form action="{{ route('admin#update-user', $user->id) }}" method="POST">
                                 @csrf
                                 <div class="row">
                                     <!-- Left Column -->
@@ -240,7 +240,7 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                             <!-- Update the form action to point to your delete route -->
-                            <form action="{{ route('user#delete-user', $user->id) }}" method="POST">
+                            <form action="{{ route('admin#delete-user', $user->id) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger">Delete</button>
