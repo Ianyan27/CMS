@@ -18,6 +18,7 @@ class SaleAgent extends Model
         'business_unit',
         'nationality',
         'total_hubspot_sync',
+        'business_unit',
         'total_in_progress',
         'total_assign_contacts',
         'total_archive_contacts',
