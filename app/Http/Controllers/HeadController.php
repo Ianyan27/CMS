@@ -14,60 +14,65 @@ use Illuminate\Support\Facades\Db;
 class HeadController extends Controller
 {
     // Display a listing of users    // Display a listing of users
-    public function index()
-    {
-        $userData = DB::table('bu_country as bc')
-            ->join('bu', 'bc.bu_id', '=', 'bu.id')
-            ->join('country', 'bc.country_id', '=', 'country.id')
-            ->join('buh', 'bc.buh_id', '=', 'buh.id')
-            ->select(
-                'bc.id as id', 
-                'bu.name as bu_name', 
-                'country.name as country_name', 
-                'buh.name as buh_name', 
-                'buh.email as buh_email',
-                'buh.nationality' // Include nationality here
-            )
-            ->paginate(10);
-    
-        // Retrieve all entries from the country and bu tables
-        $countries = DB::table('country')->get();
-        $businessUnits = DB::table('bu')->get();
-    
-        // Pass the results to the view
-        return view('Head_page', [
-            'userData' => $userData,
-            'countries' => $countries,
-            'businessUnits' => $businessUnits
-        ]);
-    }
-    
+ // In your Laravel controller
+public function index()
+{
+    $userData = DB::table('bu_country as bc')
+        ->join('bu', 'bc.bu_id', '=', 'bu.id')
+        ->join('country', 'bc.country_id', '=', 'country.id')
+        ->join('buh', 'bc.buh_id', '=', 'buh.id')
+        ->select(
+            'bc.id as id', 
+            'bu.name as bu_name', 
+            'country.name as country_name', 
+            'buh.name as buh_name', 
+            'buh.email as buh_email',
+            'buh.nationality' // Include nationality here
+        )
+        ->paginate(10);
+
+    // Pass the current page and per page values to the view
+    $currentPage = $userData->currentPage();
+    $perPage = $userData->perPage();
+
+    // Pass the results to the view
+    return view('Head_page', [
+        'userData' => $userData,
+        'currentPage' => $currentPage,
+        'perPage' => $perPage,
+        'countries' => DB::table('country')->get(),
+        'businessUnits' => DB::table('bu')->get()
+    ]);
+}
     public function viewUser()
     {
-        $userData = DB::table('bu_country as bc')
-            ->join('bu', 'bc.bu_id', '=', 'bu.id')
-            ->join('country', 'bc.country_id', '=', 'country.id')
-            ->join('buh', 'bc.buh_id', '=', 'buh.id')
-            ->select(
-                'bc.id as id', 
-                'bu.name as bu_name', 
-                'country.name as country_name', 
-                'buh.name as buh_name', 
-                'buh.email as buh_email',
-                'buh.nationality' // Include nationality here
-            )
-            ->paginate(10);
-    
-        $countries = DB::table('country')->get();
-        $businessUnits = DB::table('bu')->get();
-    
-        return view('Head_page', [
-            'userData' => $userData,
-            'countries' => $countries,
-            'businessUnits' => $businessUnits
-        ]);
+       $userData = DB::table('bu_country as bc')
+        ->join('bu', 'bc.bu_id', '=', 'bu.id')
+        ->join('country', 'bc.country_id', '=', 'country.id')
+        ->join('buh', 'bc.buh_id', '=', 'buh.id')
+        ->select(
+            'bc.id as id', 
+            'bu.name as bu_name', 
+            'country.name as country_name', 
+            'buh.name as buh_name', 
+            'buh.email as buh_email',
+            'buh.nationality' // Include nationality here
+        )
+        ->paginate(10);
+
+    // Pass the current page and per page values to the view
+    $currentPage = $userData->currentPage();
+    $perPage = $userData->perPage();
+
+    // Pass the results to the view
+    return view('Head_page', [
+        'userData' => $userData,
+        'currentPage' => $currentPage,
+        'perPage' => $perPage,
+        'countries' => DB::table('country')->get(),
+        'businessUnits' => DB::table('bu')->get()
+    ]);
     }
-    // Save a new user
     // Save a new user
 public function saveUser(Request $request)
 {
@@ -123,7 +128,9 @@ public function saveUser(Request $request)
         'updated_at' => now(),
     ]);
 
-    return redirect()->route('head.view-user')->with('success', 'User added successfully!');
+    // return redirect()->route('head.view-user')->with('success', 'User added successfully!');
+    return redirect()->back()->with('success', 'User added successfully!');
+
 }
 
     // Edit user details
@@ -192,7 +199,8 @@ public function saveUser(Request $request)
             Log::info('User and BUH update completed successfully.');
     
             // Redirect or return a response indicating success
-            return redirect()->route('head.view-user')->with('success', 'User updated successfully!');
+            // return redirect()->route('head.view-user')->with('success', 'User updated successfully!');
+            return redirect()->back()->with('success', 'User updated successfully!');
     
         } catch (\Exception $e) {
             Log::error('Error updating user: ' . $e->getMessage());
@@ -236,7 +244,8 @@ public function deleteUser($id)
 
         DB::commit(); // Commit the transaction
 
-        return redirect()->route('head.view-user')->with('success', 'User deleted successfully!');
+        // return redirect()->route('head.view-user')->with('success', 'User deleted successfully!');
+        return redirect()->back()->with('success', 'User deleted successfully!');
     } catch (\Exception $e) {
         DB::rollBack(); // Rollback the transaction on error
         Log::error('Error deleting user: ' . $e->getMessage());

@@ -4,6 +4,12 @@
 
 @section('content')
 @if (Auth::check() && Auth::user()->role == 'Head')
+        <script>
+            $(document).ready(function() {
+                $('#successModal').modal('show');
+                console.log('Modal triggered!');
+            });
+        </script>
     @if (Session::has('success'))
         <!-- Success Modal -->
         <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
@@ -46,6 +52,7 @@
                 <thead class="text-left font-educ">
                     <tr>
                         <th scope="col">No #</th>
+                        
                         <th scope="col" id="bu-header">Business Unit
                             <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-bu"
                                 onclick="sortTable('bu_name', 'asc'); toggleSort('sortDown-bu', 'sortUp-bu')"></i>
@@ -61,27 +68,27 @@
                                 style="display: none;"></i>
                         </th>
 
-                        <th scope="col" id="buh-header">BUH
-                            <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-buh"
-                                onclick="sortTable('buh_name', 'asc'); toggleSort('sortDown-buh', 'sortUp-buh')"></i>
-                            <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-buh"
-                                onclick="sortTable('buh_name', 'desc'); toggleSort('sortUp-buh', 'sortDown-buh')"
-                                style="display: none;"></i>
-                        </th>
-                        <th scope="col" id="buh-email">BUH Email
-                            <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-buh"
-                                onclick="sortTable('buh_email', 'asc'); toggleSort('sortDown-buh', 'sortUp-buh')"></i>
-                            <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-buh"
-                                onclick="sortTable('buh_email', 'desc'); toggleSort('sortUp-buh', 'sortDown-buh')"
-                                style="display: none;"></i>
-                        </th>
+                        <th scope="col" id="buh-name">BUH Name
+    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-buh-name-unique"
+        onclick="sortTable('buh_name', 'asc'); toggleSort('sortDown-buh-name-unique', 'sortUp-buh-name-unique')"></i>
+    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-buh-name-unique"
+        onclick="sortTable('buh_name', 'desc'); toggleSort('sortUp-buh-name-unique', 'sortDown-buh-name-unique')"
+        style="display: none;"></i>
+</th>
+<th scope="col" id="buh-email">BUH Email
+    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-buh-email-unique"
+        onclick="sortTable('buh_email', 'asc'); toggleSort('sortDown-buh-email-unique', 'sortUp-buh-email-unique')"></i>
+    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-buh-email-unique"
+        onclick="sortTable('buh_email', 'desc'); toggleSort('sortUp-buh-email-unique', 'sortDown-buh-email-unique')"
+        style="display: none;"></i>
+</th>
                         <th scope="col" id="nationality-header">Nationality
-                            <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-buh"
-                                onclick="sortTable('nationality-header', 'asc'); toggleSort('sortDown-buh', 'sortUp-nationality')"></i>
-                            <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-buh"
-                                onclick="sortTable('nationality-header', 'desc'); toggleSort('sortUp-buh', 'sortDown-nationality')"
-                                style="display: none;"></i>
-                        </th>
+    <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-nationality"
+        onclick="sortTable('nationality', 'asc'); toggleSort('sortDown-nationality', 'sortUp-nationality')"></i>
+    <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-nationality"
+        onclick="sortTable('nationality', 'desc'); toggleSort('sortUp-nationality', 'sortDown-nationality')"
+        style="display: none;"></i>
+</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -342,12 +349,106 @@
         <strong>Access Denied!</strong> You do not have permission to view this page.
     </div>
 @endif
+
+<script src="{{ asset('js/add_agent_validation.js') }}"></script>
+    <!-- <script src="{{ asset('js/sort.js') }}"></script> -->
+     <script>
+
+        
+    function sortTable(columnName, order) {
+    let table, rows, switching, i, x, y, shouldSwitch;
+    table = document.querySelector(".table");
+    switching = true;
+
+    // Loop until no switching has been done
+    while (switching) {
+        switching = false;
+        rows = table.rows;
+
+        for (i = 1; i < (rows.length - 1); i++) {
+            shouldSwitch = false;
+
+            // Determine the column index based on columnName
+            let columnIndex;
+            if (columnName === 'bu_name') {
+                columnIndex = 1; // Index for the 'Business Unit' column
+            } else if (columnName === 'country_name') {
+                columnIndex = 2; // Index for the 'Country' column
+            } else if (columnName === 'buh_name') {
+                columnIndex = 3; // Index for 'BUH' column
+            } else if (columnName === 'buh_email') {
+                columnIndex = 4; // Index for 'BUH Email' column
+            } else if (columnName === 'nationality') {
+                columnIndex = 5; // Index for 'Nationality' column
+            }
+
+            // Compare the two elements in the column to see if they should switch
+            x = rows[i].querySelectorAll("td")[columnIndex];
+            y = rows[i + 1].querySelectorAll("td")[columnIndex];
+
+            if (x && y) {
+                if (order === 'asc' && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                    shouldSwitch = true;
+                    break;
+                } else if (order === 'desc' && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+        }
+        if (shouldSwitch) {
+            // If a switch has been marked, make the switch and mark the switch as done
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+        }
+    }
+    reassignRowNumbersTableContainer();
+}
+function reassignRowNumbersTableContainer(){
+    const table = document.querySelector(".table");
+    const rows = table.rows;
+    const currentPage = {{ $currentPage }};
+    const perPage = {{ $perPage }};
+    const offset = (currentPage - 1) * perPage;
+
+    for (let i = 1; i < rows.length; i++) {
+        rows[i].querySelectorAll("td")[0].innerText = offset + i; // Reassign "No #" column (index 1)
+    }
+}
+     </script>
+     <script>
+        // Add an event listener to the search input field
+document.getElementById('search-input').addEventListener('input', function() {
+    // Get the search query
+    const searchQuery = this.value.toLowerCase();
+
+    // Get all table rows
+    const rows = document.querySelectorAll('.table tbody tr');
+
+    // Loop through each row
+    rows.forEach(function(row) {
+        // Get the row's text content
+        const buhName = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
+        const buhEmail = row.querySelector('td:nth-child(5)').textContent.toLowerCase();
+
+        // Check if the row's text content matches the search query
+        if (buhName.includes(searchQuery) || buhEmail.includes(searchQuery)) {
+            // Show the row if it matches the search query
+            row.style.display = '';
+        } else {
+            // Hide the row if it doesn't match the search query
+            row.style.display = 'none';
+        }
+    });
+});
+     </script>
 @endsection
 
-@push('scripts')
+
     <script src="{{ asset('js/add_agent_validation.js') }}"></script>
     <script src="{{ asset('js/sort.js') }}"></script>
-    <script>
+    
+    <!-- <script>
         $(document).ready(function () {
             $('#successModal').modal('show');
             // Show the Add User modal if needed
@@ -356,5 +457,5 @@
             });
 
         });
-    </script>
-@endpush
+    </script> -->
+    
