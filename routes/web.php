@@ -43,7 +43,7 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/view-user', function () {
         } else if (Auth::user()->role == 'Sales_Admin') {
             return redirect()->route('sales-admin#index');
         } else if (Auth::user()->role == 'Head') {
-            return redirect()->route('head.index');
+            return redirect()->route('head#index');
         }
     }
     return redirect()->route('login')->withErrors(['role' => 'Unauthorized access.']);
@@ -209,6 +209,9 @@ Route::group(['prefix' => 'admin'], function () {
         AdminController::class,
         'saveActivity'
     ])->name('admin#save-activity');
+    Route::get('/view-buh', [
+        AdminController::class, 'viewBUH'
+    ])->name('admin#view-buh');
 });
 
 Route::group(['prefix' => 'sales-agent'], function () {
@@ -394,20 +397,28 @@ Route::group(['prefix' => 'buh'], function () {
 });
 
 // Define routes for the Head role
-Route::group(['prefix' => 'head', 'as' => 'head.'], function () {
-    Route::get('/', [HeadController::class, 'index'])->name('index');
+Route::group(['prefix' => 'head', 'as' => 'head#'], function () {
+    Route::get('/', [
+        HeadController::class, 'index'
+    ])->name('index');
 
     // View user details
-    Route::get('/view-user', [HeadController::class, 'viewUser'])->name('view-user');
+    Route::get('/view-user', [
+        HeadController::class, 'viewUser'
+    ])->name('head#view-user');
 
     // Save a new user
-    Route::post('/save-user', [HeadController::class, 'saveUser'])->name('save-user');
+    Route::post('/save-user', [
+        HeadController::class, 'saveUser'
+    ])->name('save-user');
 
     // Edit user details
     Route::get('/edit-user/{id}', [HeadController::class, 'editUser'])->name('edit-user');
 
     // Update user details (change this line)
-    Route::put('/update-user/{id}', [HeadController::class, 'updateUser'])->name('update-user'); // Change from POST to PUT
+    Route::put('/update-user/{id}', [
+        HeadController::class, 'updateUser'
+    ])->name('update-user'); // Change from POST to PUT
     
     // Delete a user
     Route::delete('/delete-user/{id}', [HeadController::class, 'deleteUser'])->name('delete-user');

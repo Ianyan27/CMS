@@ -572,4 +572,34 @@ class AdminController extends Controller{
     public function importCSV(){
         return view('csv_import_form');
     }
+
+    public function viewBUH()
+    {
+        $userData = DB::table('bu_country as bc')
+            ->join('bu', 'bc.bu_id', '=', 'bu.id')
+            ->join('country', 'bc.country_id', '=', 'country.id')
+            ->join('buh', 'bc.buh_id', '=', 'buh.id')
+            ->select(
+                'bc.id as id',
+                'bu.name as bu_name',
+                'country.name as country_name',
+                'buh.name as buh_name',
+                'buh.email as buh_email',
+                'buh.nationality' // Include nationality here
+            )
+            ->paginate(10);
+
+        // Pass the current page and per page values to the view
+        $currentPage = $userData->currentPage();
+        $perPage = $userData->perPage();
+
+        // Pass the results to the view
+        return view('Head_page', [
+            'userData' => $userData,
+            'currentPage' => $currentPage,
+            'perPage' => $perPage,
+            'countries' => DB::table('country')->get(),
+            'businessUnits' => DB::table('bu')->get()
+        ]);
+    }
 }
