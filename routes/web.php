@@ -425,6 +425,10 @@ Route::group(['prefix' => 'buh'], function () {
         BUHController::class,
         'getProgress'
     ])->name('progress');
+    Route::get('/contact-listing', [
+        BUHController::class,
+        'contactsByBUH'
+    ])->name('buh#contact-listing');
 });
 
 // Define routes for the Head role
