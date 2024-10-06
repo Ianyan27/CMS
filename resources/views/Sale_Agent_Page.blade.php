@@ -120,14 +120,14 @@
                     <tbody class="text-left fonts">
                         @foreach ($owner as $owners)
                             <tr data-status="{{ $owners->status }}">
-                                <td>{{ $owners->owner_name }}</td>
-                                <td>{{ $owners->owner_hubspot_id }}</td>
+                                <td>{{ $owners->name }}</td>
+                                <td>{{ $owners->hubspot_id }}</td>
                                 <td>
                                     @inject('countryCodeMapper', 'App\Services\CountryCodeMapper')
 
                                     @php
                                         // Fetch the country code using the injected service
-                                        $countryCode = $countryCodeMapper->getCountryCode($owners['country']);
+                                        $countryCode = $countryCodeMapper->getCountryCode($owners['nationality']);
                                     @endphp
 
                                     @if ($countryCode)
@@ -137,7 +137,7 @@
                                         <!-- Optional: Add a fallback image or text when the country code is not found -->
                                         <span>No flag available</span>
                                     @endif
-                                    {{ $owners['country'] }}
+                                    {{ $owners['nationality'] }}
                                 </td>
                                 @inject('contactModel', 'App\Models\Contact')
                                 @inject('contactArchiveModel', 'App\Models\ContactArchive')
@@ -170,7 +170,7 @@
                                         class="btn hover-action" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-right-left"></i>
                                     </a>
-                                    <a href="{{ Auth::user()->role == 'Admin' ? route('admin#view-owner', $owners->owner_pid) : route('owner#view-owner', $owners->owner_pid) }}"
+                                    <a href="{{ Auth::user()->role == 'Admin' ? route('admin#view-sale-agent', ['id' => $owners->id] ) : route('owner#view-owner', $owners->owner_pid) }}"
                                         class="btn hover-action mx-2" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
@@ -253,7 +253,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                            <form action="{{ route('owner#delete', $owners->owner_pid) }}" method="post">
+                            <form action="{{ route('buh#delete-sale-agent', $owners->id) }}" method="post">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger">Delete</button>

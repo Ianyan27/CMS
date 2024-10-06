@@ -80,9 +80,9 @@
                         </li> --}}
                         @if (Auth::check() && Auth::user()->role =='BUH' || Auth::user()->role == 'Admin')
                         <li
-                            class="{{ in_array(Route::currentRouteName(), ['admin#view', 'owner#view']) ? 'active-link' : 'nav-item' }} dashboard-link">
+                            class="{{ in_array(Route::currentRouteName(), ['admin#viewSaleAgent', 'owner#view']) ? 'active-link' : 'nav-item' }} dashboard-link">
                             <a class="nav-link"
-                                href="{{ route(Auth::user()->role == 'Admin' ? 'admin#view' : 'owner#view') }}">
+                                href="{{ route(Auth::user()->role == 'Admin' ? 'admin#viewSaleAgent' : 'owner#view') }}">
                                 <i class="fa-solid fa-universal-access"></i><span>Sales Agent</span>
                             </a>
                         </li>

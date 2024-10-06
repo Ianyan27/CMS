@@ -43,12 +43,12 @@
                     <h2 class="mt-2 ml-3 headings">Sale Agent Detail</h2>
                     @if (Auth::check() && Auth::user()->role == 'BUH' || Auth::check() && Auth::user()->role == 'Admin')
                         <a style="padding: 10px 12px;" href="{{ Auth::user()->role == 'Admin' ? 
-                        route('admin#update', ['owner_pid' => $owner->owner_pid]) : 
-                        route('owner#update', ['contact_pid' => $editOwner->contact_pid]) }}"
+                        route('admin#update-sale-agent', ['id' => $owner->id]) : 
+                        route('owner#update', ['contact_pid' => $owner->contact_pid]) }}"
                             class="btn hover-action mx-1" data-toggle="modal" data-target="#editOwnerModal">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </a>
-                        {{-- <a style="padding: 10px 12px;" href="{{ route('owner#update', $editOwner->owner_pid) }}"
+                        {{-- <a style="padding: 10px 12px;" href="{{ route('owner#update', $owner->owner_pid) }}"
                             class="btn hover-action mx-1" data-toggle="modal" data-target="#editOwnerModal">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </a> --}}
@@ -58,22 +58,22 @@
                     <div class="col-md-6">
                         <div class="form-group mb-3">
                             <label class="font-educ" for="name">Name</label>
-                            <h5 class="fonts text-truncate" id="name">{{ $editOwner->owner_name }}</h5>
+                            <h5 class="fonts text-truncate" id="name">{{ $owner->name }}</h5>
                         </div>
                         <div class="form-group mb-3">
                             <label class="font-educ" for="email">Email</label>
-                            <h5 class="fonts text-truncate" id="email">{{ $editOwner->owner_email_id }}</h5>
+                            <h5 class="fonts text-truncate" id="email">{{ $owner->email }}</h5>
                         </div>
 
                     </div>
                     <div class="col-md-6">
                         <div class="form-group mb-3">
                             <label class="font-educ" for="business-unit">Business Unit</label>
-                            <h5 class="fonts text-truncate" id="business-unit">{{ $editOwner->owner_business_unit }}</h5>
+                            <h5 class="fonts text-truncate" id="business-unit">{{ $owner->owner_business_unit }}</h5>
                         </div>
                         <div class="form-group mb-3">
                             <label class="font-educ" for="country">Country</label>
-                            <h5 class="fonts text-truncate" id="country">{{ $editOwner->country }}</h5>
+                            <h5 class="fonts text-truncate" id="country">{{ $owner->nationality }}</h5>
                         </div>
 
                     </div>
@@ -83,7 +83,7 @@
 
                         <div class="form-group mb-3">
                             <label class="font-educ" for="hubspot-id">Hubspot Id</label>
-                            <h5 class="fonts" id="hubspot-id">{{ $editOwner->owner_hubspot_id }}</h5>
+                            <h5 class="fonts" id="hubspot-id">{{ $owner->hubspot_id }}</h5>
                         </div>
                     </div>
                 </div>
@@ -223,7 +223,12 @@
                                 <td>{{ ++$i }}</td>
                                 <td>{{ $contact['name'] }}</td>
                                 <td>{{ $contact['email'] }}</td>
-                                <td>{{ $contact['contact_number'] }}</td>
+                                <td>
+                                    @if (!$contact['contact_number'])
+                                        No Contact Number Found.
+                                    @endif
+                                </td>
+                                {{-- <td>{{ $contact['contact_number'] }}</td> --}}
                                 @inject('countryCodeMapper', 'App\Services\CountryCodeMapper')
 
                                 <td>
