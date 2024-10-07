@@ -93,6 +93,7 @@
             <form class="transfer-form-container" action=" {{ route('owner#transfer') }} " method="POST">
                 @csrf
                 <input type="hidden" name="owner_pid" value=" {{ $owner->id }} " readonly>
+                <input type="hidden" name="country" value=" {{ $owner->nationality }} " readonly>
                 <div class="table-title d-flex justify-content-between align-items-center mb-3">
                     <div class="position-relative">
                         <div class="d-flex align-items-center">
