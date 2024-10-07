@@ -3,41 +3,48 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content rounded-0">
             <div class="modal-header d-flex justify-content-between align-items-center"
-            style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+                style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
                         border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
                 <h5 class="modal-title font-educ" id="editOwnerModalLabel">
                     <strong>Edit Owner</strong>
                 </h5>
-                <img src="{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}" alt="Company Logo" style="height: 30px;">
+                <img src="{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}" alt="Company Logo"
+                    style="height: 30px;">
             </div>
             <div class="modal-body">
-                <form action="{{ Auth::check() && Auth::user()->role == 'Admin' ?
-                    route('admin#update-sale-agent', ['id' => $owner->id]) :
-                    route('buh#update-sale-agent', $owner->id)}}" method="POST" id="editOwnerForm">
-                {{-- <form action="{{ route('buh#update-sale-agent', $owner->id) }}" method="POST" id="editOwnerForm"> --}}
+                <form
+                    action="{{ Auth::check() && Auth::user()->role == 'Admin'
+                        ? route('admin#update-sale-agent', ['id' => $owner->id])
+                        : route('buh#update-sale-agent', $owner->id) }}"
+                    method="POST" id="editOwnerForm">
+                    {{-- <form action="{{ route('buh#update-sale-agent', $owner->id) }}" method="POST" id="editOwnerForm"> --}}
                     @csrf
                     <div class="row">
                         <!-- Left Column -->
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="font-educ" for="name">Name</label>
-                                <input type="text" class="form-control fonts" id="name" name="name" value="{{ $owner->name }}" readonly>
+                                <input type="text" class="form-control fonts" id="name" name="name"
+                                    value="{{ $owner->name }}" readonly>
                             </div>
                             <div class="form-group">
                                 <label class="font-educ" for="email">Email</label>
                                 <input type="email" class="form-control fonts" id="email" name="email"
-                                pattern="[a-zA-Z0-9._%+-]+@(lithan\.com|educlass\.com)$" value="{{ $owner->email }}" readonly>
+                                    pattern="[a-zA-Z0-9._%+-]+@(lithan\.com|educlass\.com)$" value="{{ $owner->email }}"
+                                    readonly>
                             </div>
                             <div class="form-group">
                                 <label class="font-educ" for="owner-hubspot-id">HubSpot ID</label>
-                                <input type="text" class="form-control fonts" id="owner-hubspot-id" name="hubspot_id" value="{{ $owner->hubspot_id }}" readonly>
+                                <input type="text" class="form-control fonts" id="owner-hubspot-id" name="hubspot_id"
+                                    value="{{ $owner->hubspot_id }}" readonly>
                             </div>
                         </div>
                         <!-- Right Column -->
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="font-educ" for="business-unit">Business Unit</label>
-                                <input type="text" class="form-control fonts" id="business-unit" name="business_unit" value="{{ $owner->business_unit }}" required>
+                                <input type="text" class="form-control fonts" id="business-unit" name="business_unit"
+                                    value="{{ $owner->business_unit }}" required>
                             </div>
                             <div class="form-group">
                                 <label class="font-educ" for="country">Country</label>
@@ -187,7 +194,8 @@
                                     <option value="Rwanda">Rwanda</option>
                                     <option value="Saint Kitts and Nevis">Saint Kitts and Nevis</option>
                                     <option value="Saint Lucia">Saint Lucia</option>
-                                    <option value="Saint Vincent and the Grenadines">Saint Vincent and the Grenadines</option>
+                                    <option value="Saint Vincent and the Grenadines">Saint Vincent and the Grenadines
+                                    </option>
                                     <option value="Samoa">Samoa</option>
                                     <option value="San Marino">San Marino</option>
                                     <option value="Sao Tome and Principe">Sao Tome and Principe</option>
@@ -237,13 +245,14 @@
                                     <option value="Yemen">Yemen</option>
                                     <option value="Zambia">Zambia</option>
                                     <option value="Zimbabwe">Zimbabwe</option>
-                                </select>                                
+                                </select>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn" style="background: #91264c; color: white;">Save</button>
+                        <button type="submit" class="btn"
+                            style="background: #91264c; color: white;">Save</button>
                     </div>
                 </form>
             </div>

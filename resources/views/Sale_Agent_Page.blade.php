@@ -145,9 +145,9 @@
                                 @inject('contactArchiveModel', 'App\Models\ContactArchive')
                                 @inject('contactDiscardModel', 'App\Models\ContactDiscard')
                                 <td class="text-center">
-                                    {{ $contactModel->where('fk_contacts__owner_pid', $owners->id)->count() +
-                                        $contactArchiveModel->where('fk_contact_archives__owner_pid', $owners->id)->count() +
-                                        $contactDiscardModel->where('fk_contact_discards__owner_pid', $owners->id)->count() }}
+                                    {{ $contactModel->where('fk_contacts__sale_agent_id', $owners->id)->count() +
+                                        $contactArchiveModel->where('fk_contacts__sale_agent_id', $owners->id)->count() +
+                                        $contactDiscardModel->where('fk_contacts__sale_agent_id', $owners->id)->count() }}
                                 </td>
                                 <td class="text-center">{{ $owners->total_hubspot_sync }}</td>
                                 <td class="text-center">{{ $owners->total_in_progress }}</td>

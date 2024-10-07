@@ -11,6 +11,7 @@ use App\Models\Engagement;
 use App\Models\EngagementArchive;
 use App\Models\EngagementDiscard;
 use App\Models\Owner;
+use App\Models\SaleAgent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -20,10 +21,11 @@ use Illuminate\Support\Facades\Validator;
 
 class ArchiveController extends Controller
 {
-    public function viewArchive($contact_archive_pid){
+    public function viewArchive($contact_archive_pid)
+    {
         $editArchive = ContactArchive::where('contact_archive_pid', $contact_archive_pid)->first();
         $user = Auth::user();
-        $owner = Owner::where('owner_email_id', $user->email)->first();
+        $owner = SaleAgent::where('email', $user->email)->first();
         $engagementArchive = EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $contact_archive_pid)->get();
 
         // Decrypt images in engagements
@@ -57,7 +59,8 @@ class ArchiveController extends Controller
     }
 
 
-    public function updateArchive(Request $request, $contact_archive_pid, $owner_pid){
+    public function updateArchive(Request $request, $contact_archive_pid, $owner_pid)
+    {
         $user = Auth::user();
         $archive = ContactArchive::find($contact_archive_pid);
         $owner = Owner::where('owner_email_id', $user->email)->first();
@@ -136,7 +139,8 @@ class ArchiveController extends Controller
     }
 
 
-    private function saveLog($contact_archive_pid, $action_type, $action_description){
+    private function saveLog($contact_archive_pid, $action_type, $action_description)
+    {
 
         $user = Auth::user(); // Get the authenticated user's ID as owner_pid
         if($user->role == 'Admin'){
@@ -218,7 +222,8 @@ class ArchiveController extends Controller
     }
 
 
-    public function saveActivity(Request $request, $contact_archive_pid){
+    public function saveActivity(Request $request, $contact_archive_pid)
+    {
         // Validate the input data
 
         $validator = Validator::make($request->all(), [

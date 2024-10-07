@@ -20,7 +20,7 @@
                     <div class="row row-margin-bottom row-border-bottom">
                         <div class="-col-md-6">
                             <div class="form-group">
-                                <input type="hidden" name="fk_buh" value=" {{ $user->id }} " readonly>
+                                <input type="hidden" name="email_buh" value=" {{ $user->email }} " readonly>
                                 <input type="hidden" name="role" value="Sales_Agent" />
                                 <input type="hidden" name="password" value="creatingtestaccount" />
                             </div>

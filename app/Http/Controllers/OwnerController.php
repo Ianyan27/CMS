@@ -26,12 +26,16 @@ class OwnerController extends Controller
     {
         // Get the current authenticated user
         $user = Auth::user();
-        $buhId = BUH::where("email", $user->email)->get()->first();
-        $buCountry = BuCountry::where('buh_id', $buhId->id)
-            ->first();
-        Log::info("bu country: " . $buCountry);
+        Log::info("User : " . $user);
+
         // Check if the user is a BUH or Admin
-        if ($user->role == 'BUH') {
+        if ($user->role === 'BUH') {
+
+            // getting bu country id
+            $buhId = BUH::where("email", $user->email)->get()->first();
+            $buCountry = BuCountry::where('buh_id', $buhId->id)
+                ->first();
+            Log::info("bu country: " . $buCountry);
             // If the user is BUH, filter owners by the BUH's fk_buh
             $owner = SaleAgent::where('bu_country_id', $buCountry->id)->paginate(10);
 
@@ -85,14 +89,14 @@ class OwnerController extends Controller
 
     public function viewSaleAgent($owner_pid)
     {
-        $owner = Owner::where('owner_pid', $owner_pid)->first();
+        $owner = SaleAgent::where('id', $owner_pid)->first();
         // Execute the queries to get the actual data
-        $editOwner = Owner::where('owner_pid', $owner_pid)->first();
+        $editOwner = SaleAgent::where('id', $owner_pid)->first();
 
         // Get the total contacts count allocated to this owner
-        $totalContacts = Contact::where('fk_contacts__owner_pid', $owner_pid)->count();
-        $totalArchive = ContactArchive::where('fk_contact_archives__owner_pid', $owner_pid)->count();
-        $totalDiscard = ContactDiscard::where('fk_contact_discards__owner_pid', $owner_pid)->count();
+        $totalContacts = Contact::where('fk_contacts__sale_agent_id', $owner_pid)->count();
+        $totalArchive = ContactArchive::where('fk_contacts__sale_agent_id', $owner_pid)->count();
+        $totalDiscard = ContactDiscard::where('fk_contacts__sale_agent_id', $owner_pid)->count();
 
         $totalContact = $totalContacts + $totalArchive + $totalDiscard;
         // Get the count of contacts where status is 'HubSpot'
@@ -115,16 +119,16 @@ class OwnerController extends Controller
 
         // Get the contacts
         $ownerContacts = Contact::where(
-            'fk_contacts__owner_pid',
+            'fk_contacts__sale_agent_id',
             $owner_pid
         )->paginate(50);
 
         $ownerArchive = ContactArchive::where(
-            'fk_contact_archives__owner_pid',
+            'fk_contacts__sale_agent_id',
             $owner_pid
         )->paginate(50);
         $ownerDiscard = ContactDiscard::where(
-            'fk_contact_discards__owner_pid',
+            'fk_contacts__sale_agent_id',
             $owner_pid
         )->paginate(50);
 
@@ -144,11 +148,11 @@ class OwnerController extends Controller
     public function updateSaleAgent(Request $request, $id)
     {
 
-        $owner = SaleAgent::find($id);
+        $owner = SaleAgent::find($owner_pid);
 
         $owner->update([
-            $owner->owner_business_unit = $request->input('business_unit'),
-            $owner->country = $request->input('country')
+            $owner->business_unit = $request->input('business_unit'),
+            $owner->nationality = $request->input('country')
         ]);
 
         return redirect()->route('owner#view-owner', ['owner_pid' => $owner_pid])->with('success', 'Sale Agent updated successfully.');
@@ -169,7 +173,7 @@ class OwnerController extends Controller
 
         // Retrieve the authenticated user
         $user = Auth::user();
-        $owner = Owner::where('owner_email_id', $user->email)->first();
+        $owner = SaleAgent::where('email', $user->email)->first();
 
         // Retrieve all engagements for the contact
         $engagements = Engagement::where('fk_engagements__contact_pid', $contact_pid)->get();
