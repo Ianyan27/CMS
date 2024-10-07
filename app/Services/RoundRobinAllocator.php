@@ -14,15 +14,21 @@ use Illuminate\Support\Facades\Log;
 class RoundRobinAllocator
 {
 
-    public function allocate($buhId)
+    public function allocate($buhId, $country)
     {
 
+        if (is_object($country) && property_exists($country, 'name')) {
+            $countryName = $country->name;
+        } else {
+            $countryName = $country;
+        }
         try {
             $bu_country = BuCountry::where('buh_id', $buhId)->first();
             $bu_country_id = $bu_country->id;
             Log::info("bu country id " . $bu_country_id);
+            Log::info("country : " . $country);
             // Retrieve all sales agents under the specified BUH, sorted by id
-            $allOwners = SaleAgent::where('bu_country_id', $bu_country_id)->orderBy('id')->get();
+            $allOwners = SaleAgent::where('bu_country_id', $bu_country_id)->where('nationality', $countryName)->orderBy('id')->get();
             Log::info('Total owners retrieved for BUH ID ' . $buhId . ':', ['count' => $allOwners->count()]);
 
             if ($allOwners->isEmpty()) {
