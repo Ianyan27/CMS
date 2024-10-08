@@ -280,7 +280,7 @@ class ArchiveController extends Controller
     public function retrieveActivity($id)
     {
         // Retrieve the deleted activities based on engagement_pid
-        $deletedContacts = Delete_contacts::where('id', $id)->get();
+        $deletedContacts = ArchiveActivities::where('id', $id)->get();
 
         if ($deletedContacts->isEmpty()) {
             return redirect()->back()->with('error', 'No activities found in archived contacts.');

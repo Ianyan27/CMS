@@ -92,7 +92,8 @@
     <div class="container-max-height">
         <form class="transfer-form-container" action=" {{ route('owner#transfer') }} " method="POST">
             @csrf
-            <input type="hidden" name="owner_pid" value=" {{ $owner->owner_pid }} " readonly>
+            
+            <input type="hidden" name="owner_pid" value="{{ Auth::user()->role == 'Admin' ? $owner->id : (Auth::user()->role == 'BUH' ? $owner->owner_pid : '') }}" readonly>
             <div class="table-title d-flex justify-content-between align-items-center mb-3">
                 <div class="position-relative">
                     <div class="d-flex align-items-center">
@@ -258,10 +259,12 @@
                                     </span> 
                                 </td>
                                 <td>
-                                    <a href=" {{ Auth::user()->role == 'Admin' ? route('admin#view-contact', ['contact_pid' => $contact->contact_pid]) : route('owner#view-contact', ['contact_pid' => $contact->contact_pid]) }} "
+                                    @if (isset($contact->contact_pid) && isset($contact->contact_archive_pid))
+                                        <a href="{{ Auth::user()->role == 'Admin' ? route('admin#view-contact', ['contact_pid' => $contact->contact_pid]) : route('owner#view-contact', ['contact_pid' => $contact->contact_pid]) }}"
                                         class="btn hover-action" style="padding:10px 12px;" data-toggle="tooltip" title="View">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </a>
+                                            <i class="fa-solid fa-eye"></i>
+                                        </a>
+                                    @endif
                                     {{-- <a href=" {{ route('owner#view-contact', $contact->contact_pid) }} "
                                         class="btn hover-action" style="padding:10px 12px;" data-toggle="tooltip" title="View">
                                         <i class="fa-solid fa-eye"></i>

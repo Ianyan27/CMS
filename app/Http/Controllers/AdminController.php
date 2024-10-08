@@ -28,7 +28,8 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
-class AdminController extends Controller{
+class AdminController extends Controller
+{
 
     public function index()
     {
@@ -44,7 +45,8 @@ class AdminController extends Controller{
         return view('User_List_Page', ['userData' => $userData]);
     }
 
-    public function contacts(){
+    public function contacts()
+    {
         $user = Auth::user();
         $contacts = Contact::paginate(10);
         $contactArchive = ContactArchive::paginate(10);
@@ -57,7 +59,8 @@ class AdminController extends Controller{
         ]);
     }
 
-    public function saveUser(Request $request){
+    public function saveUser(Request $request)
+    {
 
         // Define the allowed email domains
         $allowedDomains = ['lithan.com', 'educlaas.com', 'learning.educlaas.com'];
@@ -96,7 +99,8 @@ class AdminController extends Controller{
         return redirect()->back()->with('success', 'User created successfully');
     }
 
-    public function editUser($id){
+    public function editUser($id)
+    {
         $editUser = User::find($id);
         return view('Edit_User_Detail_Page', ['editUser' => $editUser]);
     }
@@ -119,7 +123,8 @@ class AdminController extends Controller{
         return redirect()->route('admin#index')->with('success', 'User Deleted Successfully');
     }
 
-    public function viewContact($contact_pid){
+    public function viewContact($contact_pid)
+    {
         /* Retrieve the contact record with the specified 'contact_pid' and pass
          it to the 'Edit_Contact_Detail_Page' view for editing. */
 
@@ -184,7 +189,7 @@ class AdminController extends Controller{
             'businessUnit' => $businessUnit
         ]);
     }
-    
+
     public function hubspotContacts()
     {
         $ownerPid = Auth::user()->id; // Get the authenticated user's ID as owner_pid
@@ -225,7 +230,8 @@ class AdminController extends Controller{
         ]);
     }
 
-    public function saleAgent(){
+    public function saleAgent()
+    {
         // Get the current authenticated user
         $user = Auth::user();
         // Check if the user is a BUH or Admin
@@ -254,13 +260,14 @@ class AdminController extends Controller{
         ]);
     }
 
-    protected function getHubspotSalesAgents(){
+    protected function getHubspotSalesAgents()
+    {
         try {
             $client = new Client();
             $response = $client->request('GET', 'https://api.hubapi.com/crm/v3/owners', [
                 'headers' => [
                     'Authorization' => 'Bearer ' . env('HUBSPOT_API_KEY'),
-                    'Content-Type'  => 'application/json',  
+                    'Content-Type'  => 'application/json',
                 ],
                 'verify' => false
             ]);
@@ -278,7 +285,8 @@ class AdminController extends Controller{
         }
     }
 
-    public function viewSaleAgent($owner_pid){
+    public function viewSaleAgent($owner_pid)
+    {
         $owner = Owner::where('owner_pid', $owner_pid)->first();
         // Execute the queries to get the actual data
         $editOwner = Owner::where('owner_pid', $owner_pid)->first();
@@ -335,7 +343,8 @@ class AdminController extends Controller{
         ]);
     }
 
-    public function updateSaleAgent(Request $request, $owner_pid){
+    public function updateSaleAgent(Request $request, $owner_pid)
+    {
 
         $owner = Owner::find($owner_pid);
 
@@ -349,7 +358,8 @@ class AdminController extends Controller{
         ])->with('success', 'Sale Agent updated successfully.');
     }
 
-    public function updateContact(Request $request, $contact_pid, $id){
+    public function updateContact(Request $request, $contact_pid, $id)
+    {
         // Checking for admin role and redirect if true
         $user = Auth::user();
         $owner = Owner::where('owner_email_id', $user->email)->first();
@@ -569,7 +579,8 @@ class AdminController extends Controller{
         return true;
     }
 
-    public function importCSV(){
+    public function importCSV()
+    {
         return view('csv_import_form');
     }
 
@@ -600,6 +611,37 @@ class AdminController extends Controller{
             'perPage' => $perPage,
             'countries' => DB::table('country')->get(),
             'businessUnits' => DB::table('bu')->get()
+        ]);
+    }
+
+    public function transferContact($id)
+    {
+        Session::put('progress', 0);
+        $user = Auth::user();
+
+        $contacts = Contact::get();
+        $archivedContacts = ContactArchive::get();
+        $discardedContacts = ContactDiscard::get();
+
+        $owner = SaleAgent::where('id', $id)->first();
+        $allContacts = $contacts->concat($archivedContacts)->concat($discardedContacts);
+        $countAllContacts = $allContacts->count();
+        $countEligibleContacts = $contacts->concat($archivedContacts);
+        $totalEligibleContacts = $countEligibleContacts->count();
+        $perPage = 50;
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $currentPageItems = $allContacts->slice(($currentPage - 1) * $perPage, $perPage)->all();
+        $paginatedContacts = new LengthAwarePaginator($currentPageItems, $allContacts->count(), $perPage);
+        $paginatedContacts->setPath(request()->url());
+
+        // Determine if the combined collection is empty
+        $isEmpty = $allContacts->isEmpty();
+        return view('Transfer_Contacts_Page', [
+            'owner' => $owner,
+            'viewContact' => $paginatedContacts,
+            'isEmpty' => $isEmpty,
+            'countAllContacts' => $countAllContacts,
+            'totalEligibleContacts' => $totalEligibleContacts
         ]);
     }
 }

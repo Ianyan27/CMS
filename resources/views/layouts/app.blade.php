@@ -86,6 +86,15 @@
                                 <i class="fa-solid fa-universal-access"></i><span>Sales Agent</span>
                             </a>
                         </li>
+                        @if (Auth::check() && Auth::user()->role == 'head' || Auth::user()->role == 'Admin')
+                            <li
+                            class="{{ in_array(Route::currentRouteName(), ['admin#view-buh', 'head#index']) ? 'active-link' : 'nav-item' }} dashboard-link">
+                                <a class="nav-link" 
+                                href="{{ route(Auth::user()->role == 'Admin' ? 'admin#view-buh' : 'head#index') }}">
+                                    <i class="fa-solid fa-universal-access"></i><span>BUH</span>
+                                </a>
+                            </li>
+                        @endif
                         <li
                             class="{{ in_array(Route::currentRouteName(), ['admin#hubspot-contact', 'hubspot-contact']) ? 'active-link' : 'nav-item' }} dashboard-link">
                             <a class="nav-link"
@@ -105,12 +114,6 @@
                             <a class="nav-link"
                                 href="{{ route(Auth::user()->role == 'Admin' ? 'admin#contact-listing' : 'contact-listing') }}">
                                 <i class="fa-solid fa-address-book"></i><span>Contacts</span>
-                            </a>
-                        <li
-                        class="{{ in_array(Route::currentRouteName(), ['admin#view-buh', 'head#index']) ? 'active-link' : 'nav-item' }} dashboard-link">
-                            <a class="nav-link" 
-                            href="{{ route(Auth::user()->role == 'Admin' ? 'admin#view-buh' : 'head#index') }}">
-                                <i class="fa-solid fa-universal-access"></i><span>BUH</span>
                             </a>
                         </li>
                     </ul>

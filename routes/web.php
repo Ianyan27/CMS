@@ -149,8 +149,8 @@ Route::group(['prefix' => 'admin'], function () {
     ])->name('admin#update-sale-agent');
 
     // Transfer Contact Routes
-    Route::get('/transfer-contacts/{owner_pid}', [
-        BUHController::class,
+    Route::get('/transfer-contacts/{id}', [
+        AdminController::class,
         'transferContact'
     ])->name('admin#transfer-contact');
 
@@ -160,11 +160,16 @@ Route::group(['prefix' => 'admin'], function () {
     ])->name('admin#transfer');
 
     // Delete Activity Route
+    Route::post('/archive-activities/{engagement_archive_pid}', [
+        ContactController::class,
+        'archiveContactActivities'
+    ])->name('admin#archiveActivity');
     // Delete the activity from the archive activities table
     Route::post('/delete-activity/{engagement_pid}', [
         ContactController::class,
         'deleteActivity'
     ])->name('admin#deleteActivity');
+
     //Delete the activity of the archive contacts
     Route::post('/delete-activity/{engagement_archive_pid}', [
         ContactController::class,
@@ -175,6 +180,7 @@ Route::group(['prefix' => 'admin'], function () {
         ContactController::class,
         'deleteArchiveActivity'
     ])->name('admin#deleteArchiveActivity');
+
     // Move the Activity in the archive activities
     Route::post('/archive-activity/{engagement_pid}', [
         ContactController::class,
@@ -201,6 +207,8 @@ Route::group(['prefix' => 'admin'], function () {
         ArchiveController::class,
         'viewArchive'
     ])->name('admin#archive-view');
+
+    //Retrive Archived Activities
     Route::post('/retrieve-activity/{id}', [
         ArchiveController::class,
         'retrieveActivity'
@@ -264,7 +272,7 @@ Route::group(['prefix' => 'sales-agent'], function () {
         'saveActivity'
     ])->name('contact#save-activity');
     //Archive Activity
-    Route::post('/archive-activities/{engagement_archive_pid}', [
+    Route::post('/archive-activities/{engagement_pid}', [
         ContactController::class,
         'archiveActivity'
     ])->name('archiveActivity');

@@ -463,7 +463,7 @@ class ContactController extends Controller
                 'engagement_pid' => $fk_engagements__contact_pid,
                 'contact_pid' => $engagement->fk_engagements__contact_pid,
             ]);
-            return redirect()->back()->with('success', 'Activity deleted and moved to the deleted table successfully.');
+            return redirect()->back()->with('success', 'Activity archived and moved to the archived table successfully.');
         } catch (\Exception $e) {
             Log::error('Failed to delete activity', ['error' => $e->getMessage()]);
             return redirect()->back()->with('error', 'An error occurred while deleting the activity.');
@@ -497,7 +497,7 @@ class ContactController extends Controller
                 'engagement_pid' => $engagement_archive_pid,
                 'contact_pid' => $engagement->fk_engagements__contact_pid,
             ]);
-            return redirect()->back()->with('success', 'Activity deleted and moved to the deleted table successfully.');
+            return redirect()->back()->with('success', 'Activity archived and moved to the archive table successfully.');
         } catch (\Exception $e) {
             Log::error('Failed to delete activity', ['error' => $e->getMessage()]);
             return redirect()->back()->with('error', 'An error occurred while deleting the activity.');
@@ -624,9 +624,6 @@ class ContactController extends Controller
             return redirect()->back()->with('error', 'An error occurred while restoring the activities.');
         }
     }
-
-
-
     public function hubspotContacts()
     {
         $ownerPid = Auth::user()->id; // Get the authenticated user's ID as owner_pid

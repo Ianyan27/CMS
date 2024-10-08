@@ -299,7 +299,7 @@
                         <th scope="col">Description</th>
                         <th scope="col">Attachment</th>
                         
-                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent' && Auth::check() && Auth::user()->role == 'Admin')
+                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent' || Auth::user()->role == 'Admin')
                             <th scope="col" class="text-center">Action</th>
                         @endif
                     </tr>
@@ -320,7 +320,7 @@
                             <td>{{ $deletedActivity->activity_name }}</td>
                             <td>{{ $deletedActivity->details }}</td>
                             <td>
-                                "This image is currently archived. Please restore the image to view it."
+                                "This activity is currently archived. Please restore the activity to view it."
                                 {{-- @if ($filename)
                                     <a href="#table-container" id="attachmentImage"
                                         style="width: 100px; height: auto; cursor: pointer;"
