@@ -259,12 +259,20 @@
                                     </span> 
                                 </td>
                                 <td>
-                                    @if (isset($contact->contact_pid) && isset($contact->contact_archive_pid))
-                                        <a href="{{ Auth::user()->role == 'Admin' ? route('admin#view-contact', ['contact_pid' => $contact->contact_pid]) : route('owner#view-contact', ['contact_pid' => $contact->contact_pid]) }}"
-                                        class="btn hover-action" style="padding:10px 12px;" data-toggle="tooltip" title="View">
-                                            <i class="fa-solid fa-eye"></i>
-                                        </a>
-                                    @endif
+                                    <a href="{{ Auth::user()->role == 'Admin' 
+                                                ? route('admin#view-transferable-contact', [
+                                                    'contact_pid' => $contact->contact_pid ?? $contact->contact_archive_pid ?? $contact->contact_discard_pid,
+                                                    'type' => isset($contact->contact_pid) ? $contact->status : (isset($contact->contact_archive_pid) ? 'archive' : 'discard')
+                                                ]) 
+                                                : route('owner#view-contact', [
+                                                    'contact_pid' => $contact->contact_pid ?? $contact->contact_archive_pid ?? $contact->contact_discard_pid,
+                                                    'type' => isset($contact->contact_pid) ? 'active' : (isset($contact->contact_archive_pid) ? 'archive' : 'discard')
+                                                ]) }}"
+                                                class="btn hover-action" style="padding:10px 12px;" data-toggle="tooltip" title="View">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                            
+                                    
                                     {{-- <a href=" {{ route('owner#view-contact', $contact->contact_pid) }} "
                                         class="btn hover-action" style="padding:10px 12px;" data-toggle="tooltip" title="View">
                                         <i class="fa-solid fa-eye"></i>

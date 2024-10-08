@@ -99,6 +99,10 @@ Route::group(['prefix' => 'admin'], function () {
         'viewContact'
     ])->name('admin#view-contact');
 
+    Route::get('/view-transferable-contact/{contact_pid}/{type}', [
+        AdminController::class, 'viewTransferableContact'
+    ])->name('admin#view-transferable-contact');
+
     // CSV Import Routes
     Route::get('/import-csv', [
         AdminController::class, 'importCSV'

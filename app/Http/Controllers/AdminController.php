@@ -123,6 +123,81 @@ class AdminController extends Controller
         return redirect()->route('admin#index')->with('success', 'User Deleted Successfully');
     }
 
+    public function viewTransferableContact($contact_pid, $type)
+    {
+        /* Retrieve the contact record with the specified 'contact_pid' and pass
+         it to the 'Edit_Contact_Detail_Page' view for editing. */
+
+        // Retrieve the contact record with the specified 'contact_pid'
+        $contact = null;
+
+    // Check which type of contact it is and retrieve it from the corresponding table
+        switch ($type) {
+            case 'New':
+            case 'HubSpot Contact':
+            case 'InProgress':
+                $contact = Contact::where('contact_pid', $contact_pid)->first();
+                break;
+            case 'archive':
+                $contact = ContactArchive::where('contact_archive_pid', $contact_pid)->first();
+                break;
+            case 'discard':
+                $contact = ContactDiscard::where('contact_discard_pid', $contact_pid)->first();
+                break;
+            default:
+                abort(404, 'Contact not found');
+        }
+
+        // Check if the contact exists
+        if (!$contact) {
+            return redirect()->route('admin#view-sale-agent')->with('error', 'Contact not found.');
+        }
+
+        // Retrieve the authenticated user
+        $user = Auth::user();
+        $owner = Owner::where('owner_email_id', $user->email)->first();
+
+        // Retrieve all engagements for the contact
+        $engagements = Engagement::where('fk_engagements__contact_pid', $contact_pid)->get();
+
+        // Decrypt images in engagements
+        foreach ($engagements as $engagement) {
+            if ($engagement->attachments) {
+                try {
+                    // Decrypt the attachment and base64 encode it for browser display
+                    $attachmentsArray = json_decode($engagement->attachments, true); // Decode JSON to array if stored as JSON
+                    foreach ($attachmentsArray as &$attachment) {
+                        $attachment = 'data:image/jpeg;base64,' . base64_encode(Crypt::decrypt($attachment));
+                    }
+                    // Convert array back to JSON for the frontend if needed
+                    $engagement->attachments = json_encode($attachmentsArray);
+                } catch (\Exception $e) {
+                    // Handle the case where decryption fails
+                    $engagement->attachments = null;
+                    Log::error('Failed to decrypt attachment for engagement ID: ' . $engagement->id . ' Error: ' . $e->getMessage());
+                }
+            }
+        }
+
+        // Retrieve engagements archived for the contact
+        $engagementsArchive = EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $contact_pid)->get();
+        $deletedEngagement = ArchiveActivities::where('fk_engagements__contact_pid', $contact_pid)->get();
+        // Use the first engagement for updates if available
+        $updateEngagement = $engagements->first();
+
+        // Pass data to the view
+        return view('Edit_Contact_Detail_Page')->with([
+            'user' => $user,
+            'owner' => $owner,
+            'editContact' => $contact,
+            'engagements' => $engagements,
+            'updateEngagement' => $updateEngagement,
+            'engagementArchive' => $engagementsArchive,
+            'deletedEngagement' => $deletedEngagement
+        ]);
+    }
+
+
     public function viewContact($contact_pid)
     {
         /* Retrieve the contact record with the specified 'contact_pid' and pass
@@ -133,7 +208,7 @@ class AdminController extends Controller
 
         // Check if the contact exists
         if (!$editContact) {
-            return redirect()->route('admin#contact-listing')->with('error', 'Contact not found.');
+            return redirect()->route('admin#view-contact', $contact_pid)->with('error', 'Contact not found.');
         }
 
         // Retrieve the authenticated user
