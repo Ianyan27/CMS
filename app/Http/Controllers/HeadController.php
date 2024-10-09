@@ -37,6 +37,9 @@ public function index()
     $currentPage = $userData->currentPage();
     $perPage = $userData->perPage();
 
+    // $dropdownData = DB::table('Business_Unit')->select('business_unit','country')->get();
+    // Log::info('dropdown Data are - '.$dropdownData);
+
     // Return the data to the view
     return view('Head_page', [
         'userData' => $userData,
@@ -125,6 +128,7 @@ public function index()
         'created_at' => now(),
         'updated_at' => now(),
     ]);
+
 
     // Insert into the bu_country table
     DB::table('bu_country')->insert([
