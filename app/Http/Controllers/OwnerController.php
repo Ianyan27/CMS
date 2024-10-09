@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ArchiveActivities;
 use App\Models\Contact;
 use App\Models\ContactArchive;
 use App\Models\ContactDiscard;
@@ -9,6 +10,7 @@ use App\Models\Delete_contacts;
 use App\Models\Engagement;
 use App\Models\EngagementArchive;
 use App\Models\Owner;
+use App\Models\SaleAgent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use GuzzleHttp\Client;
@@ -72,8 +74,6 @@ class OwnerController extends Controller
         }
     }
 
-
-
     public function viewSaleAgent($owner_pid){
         $owner = Owner::where('owner_pid', $owner_pid)->first();
         // Execute the queries to get the actual data
@@ -131,10 +131,10 @@ class OwnerController extends Controller
         ]);
     }
 
-    public function updateSaleAgent(Request $request, $owner_pid)
+    public function updateSaleAgent(Request $request, $id)
     {
 
-        $owner = Owner::find($owner_pid);
+        $owner = SaleAgent::find($id);
 
         $owner->update([
             $owner->owner_business_unit = $request->input('business_unit'),
@@ -184,7 +184,7 @@ class OwnerController extends Controller
 
         // Retrieve engagements archived for the contact
         $engagementsArchive = EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $contact_pid)->get();
-        $deletedEngagement = Delete_contacts::where('fk_engagements__contact_pid', $contact_pid)->get();
+        $deletedEngagement = ArchiveActivities::where('fk_engagements__contact_pid', $contact_pid)->get();
         // Use the first engagement for updates if available
         $updateEngagement = $engagements->first();
 

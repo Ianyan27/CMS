@@ -11,30 +11,33 @@
                 <img src="{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}" alt="Company Logo" style="height: 30px;">
             </div>
             <div class="modal-body">
-                <form action="{{ route('buh#update-sale-agent', $owner->id) }}" method="POST" id="editOwnerForm">
+                <form action="{{ Auth::check() && Auth::user()->role == 'Admin' ?
+                    route('admin#update-sale-agent', ['id' => $owner->id]) :
+                    route('buh#update-sale-agent', $owner->id)}}" method="POST" id="editOwnerForm">
+                {{-- <form action="{{ route('buh#update-sale-agent', $owner->id) }}" method="POST" id="editOwnerForm"> --}}
                     @csrf
                     <div class="row">
                         <!-- Left Column -->
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="font-educ" for="name">Name</label>
-                                <input type="text" class="form-control fonts" id="name" name="name" value="{{ $owner->owner_name }}" readonly>
+                                <input type="text" class="form-control fonts" id="name" name="name" value="{{ $owner->name }}" readonly>
                             </div>
                             <div class="form-group">
                                 <label class="font-educ" for="email">Email</label>
                                 <input type="email" class="form-control fonts" id="email" name="email"
-                                pattern="[a-zA-Z0-9._%+-]+@(lithan\.com|educlass\.com)$" value="{{ $owner->owner_email_id }}" readonly>
+                                pattern="[a-zA-Z0-9._%+-]+@(lithan\.com|educlass\.com)$" value="{{ $owner->email }}" readonly>
                             </div>
                             <div class="form-group">
                                 <label class="font-educ" for="owner-hubspot-id">HubSpot ID</label>
-                                <input type="text" class="form-control fonts" id="owner-hubspot-id" name="hubspot_id" value="{{ $owner->owner_hubspot_id }}" readonly>
+                                <input type="text" class="form-control fonts" id="owner-hubspot-id" name="hubspot_id" value="{{ $owner->hubspot_id }}" readonly>
                             </div>
                         </div>
                         <!-- Right Column -->
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="font-educ" for="business-unit">Business Unit</label>
-                                <input type="text" class="form-control fonts" id="business-unit" name="business_unit" value="{{ $owner->owner_business_unit }}" required>
+                                <input type="text" class="form-control fonts" id="business-unit" name="business_unit" value="{{ $owner->business_unit }}" required>
                             </div>
                             <div class="form-group">
                                 <label class="font-educ" for="country">Country</label>

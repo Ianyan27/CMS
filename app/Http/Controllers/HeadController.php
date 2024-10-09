@@ -77,66 +77,65 @@ public function index()
         ]);
     }
     // Save a new user
-    public function saveUser(Request $request)
-{
-    // Define the allowed email domains as a regular expression
-    $domainRegex = 'lithan.com|educlaas.com|learning.educlaas.com';
+    public function saveUser(Request $request){
+        // Define the allowed email domains as a regular expression
+        $domainRegex = 'lithan.com|educlaas.com|learning.educlaas.com';
 
-    // Validate the request data
-    $validatedData = $request->validate([
-        'name' => 'required|string|min:3|max:50',
-        'email' => [
-            'required',
-            'string',
-            'email',
-            'max:255',
-            'unique:users', // Ensures the email is unique in the users table
-            function ($attribute, $value, $fail) use ($domainRegex) {
-                // Validates the email domain against the allowed domains
-                if (!preg_match('/@(' . $domainRegex . ')$/', $value)) {
-                    $fail('The email address must be one of the following domains: ' . str_replace('|', ', ', $domainRegex));
+        // Validate the request data
+        $validatedData = $request->validate([
+            'name' => 'required|string|min:3|max:50',
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                'unique:users', // Ensures the email is unique in the users table
+                function ($attribute, $value, $fail) use ($domainRegex) {
+                    // Validates the email domain against the allowed domains
+                    if (!preg_match('/@(' . $domainRegex . ')$/', $value)) {
+                        $fail('The email address must be one of the following domains: ' . str_replace('|', ', ', $domainRegex));
+                    }
                 }
-            }
-        ],
-        'nationality' => 'required|string|max:255', // Validation for nationality
-        'bu_id' => 'required|integer', // Validation for Business Unit
-        'country_id' => 'required|integer', // Validation for Country
-    ]);
+            ],
+            'nationality' => 'required|string|max:255', // Validation for nationality
+            'bu_id' => 'required|integer', // Validation for Business Unit
+            'country_id' => 'required|integer', // Validation for Country
+        ]);
 
-    // Insert into the users table
-    $userId = DB::table('users')->insertGetId([
-        'name' => $validatedData['name'],
-        'email' => $validatedData['email'],
-        'role' => $request->input('role'),
-        'password' => bcrypt('default'), // Password is hashed before saving
-        'created_at' => now(),
-        'updated_at' => now(),
-    ]);
+        // Insert into the users table
+        $userId = DB::table('users')->insertGetId([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'role' => $request->input('role'),
+            'password' => bcrypt('default'), // Password is hashed before saving
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
-    // Get the authenticated head ID
-    $headId = Auth::id();
+        // Get the authenticated head ID
+        $headId = Auth::id();
 
-    // Insert into the buh table, including the head_id
-    $buhId = DB::table('buh')->insertGetId([
-        'name' => $validatedData['name'],
-        'email' => $validatedData['email'],
-        'nationality' => $validatedData['nationality'],
-        'head_id' => $headId, // Automatically assign the head_id
-        'created_at' => now(),
-        'updated_at' => now(),
-    ]);
+        // Insert into the buh table, including the head_id
+        $buhId = DB::table('buh')->insertGetId([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'nationality' => $validatedData['nationality'],
+            'head_id' => $headId, // Automatically assign the head_id
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
-    // Insert into the bu_country table
-    DB::table('bu_country')->insert([
-        'buh_id' => $buhId,
-        'bu_id' => $validatedData['bu_id'],
-        'country_id' => $validatedData['country_id'],
-        'created_at' => now(),
-        'updated_at' => now(),
-    ]);
+        // Insert into the bu_country table
+        DB::table('bu_country')->insert([
+            'buh_id' => $buhId,
+            'bu_id' => $validatedData['bu_id'],
+            'country_id' => $validatedData['country_id'],
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
-    return redirect()->back()->with('success', 'User added successfully!');
-}
+        return redirect()->back()->with('success', 'User added successfully!');
+    }
 
     // Edit user details
     public function editUser($id)

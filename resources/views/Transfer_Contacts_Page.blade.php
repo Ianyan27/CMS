@@ -103,7 +103,7 @@
                         </button>
                         <div class="switch-container" style="margin: 1.25rem 0.5rem 0; ">
                             <label class="switch">
-                                <input type="checkbox" id="statusSwitch" data-owner-pid="{{ $owner->owner_pid }}" @if ($owner->status === 'active') checked @endif>
+                                <input type="checkbox" id="statusSwitch" data-owner-pid="{{ $owner->id }}" data-user-type="{{Auth::user()->role}}" @if ($owner->status === 'active') checked @endif>
                                 <span class="slider round"></span>
                             </label>
                             <span style="width:105px;" class="owner-status text-left
@@ -311,7 +311,7 @@
                                                         white-space: nowrap; 
                                                         overflow: hidden; 
                                                         text-overflow: ellipsis; 
-                                                        border-radius: 10px;" type="text" value="{{ $owner->owner_name }}" disabled>
+                                                        border-radius: 10px;" type="text" value="{{$owner->name}}" disabled>
                                     </div>
                                     <div class="col-6">
                                         <h5 class="text-center">Transfer Methods</h5>

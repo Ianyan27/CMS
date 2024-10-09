@@ -72,6 +72,7 @@
                 <table id="sales-agents-table" class="table table-hover mt-2">
                     <thead class="font-educ text-left">
                         <tr>
+                            <th scope="col">No#</th>
                             <th scope="col" id="name-header">Name
                                 <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name"
                                     onclick="sortByColumn('name', 'asc'); toggleSort('sortDown-name', 'sortUp-name')"></i>
@@ -118,8 +119,10 @@
                         </tr>
                     </thead>
                     <tbody class="text-left fonts">
+                        <?php $i = ($owner->currentPage() - 1) * $owner->perPage() + 1; ?>
                         @foreach ($owner as $owners)
                             <tr data-status="{{ $owners->status }}">
+                                <td> {{$i++}} </td>
                                 <td>{{ $owners->name }}</td>
                                 <td>{{ $owners->hubspot_id }}</td>
                                 <td>
@@ -143,9 +146,9 @@
                                 @inject('contactArchiveModel', 'App\Models\ContactArchive')
                                 @inject('contactDiscardModel', 'App\Models\ContactDiscard')
                                 <td class="text-center">
-                                    {{ $contactModel->where('fk_contacts__owner_pid', $owners->owner_pid)->count() +
-                                        $contactArchiveModel->where('fk_contact_archives__owner_pid', $owners->owner_pid)->count() +
-                                        $contactDiscardModel->where('fk_contact_discards__owner_pid', $owners->owner_pid)->count() }}
+                                    {{ $contactModel->where('fk_contacts__owner_pid', $owners->id)->count() +
+                                        $contactArchiveModel->where('fk_contact_archives__owner_pid', $owners->id)->count() +
+                                        $contactDiscardModel->where('fk_contact_discards__owner_pid', $owners->id)->count() }}
                                 </td>
                                 <td class="text-center">{{ $owners->total_hubspot_sync }}</td>
                                 <td class="text-center">{{ $owners->total_in_progress }}</td>

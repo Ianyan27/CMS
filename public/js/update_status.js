@@ -2,6 +2,7 @@ document.getElementById('statusSwitch').addEventListener('change', function() {
     const isChecked = this.checked;
     const statusText = document.querySelector('.owner-status');
     const ownerPid = this.getAttribute('data-owner-pid');
+    const userType = this.getAttribute('data-user-type'); // Attribute indicating if it's admin or buh
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     // Update status text
@@ -15,12 +16,19 @@ document.getElementById('statusSwitch').addEventListener('change', function() {
         statusText.classList.add('inactive-text');
     }
 
-    // Log status and owner PID for debugging
+    // Determine the correct endpoint based on user type
+    const endpoint = userType == 'Admin' 
+        ? `/admin/update-status-sale-agent/${ownerPid}` 
+        : `/buh/update-status-sale-agent/${ownerPid}`;
+
+    // Log status, owner PID, and endpoint for debugging
     console.log('Changing status to:', isChecked ? 'active' : 'inactive');
     console.log('Owner PID:', ownerPid);
+    console.log('Role:', userType);
+    console.log('Endpoint:', endpoint);
 
     // Send AJAX request to update status on the server
-    fetch(`/buh/update-status-owner/${ownerPid}`, {
+    fetch(endpoint, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

@@ -374,7 +374,7 @@ class BUHController extends Controller
             Log::info('Owner PID: ' . $owner_pid);
 
             // **Check if the sales agent is inactive**
-            $owner = Owner::where('owner_pid', $owner_pid)->first();
+            $owner = SaleAgent::where('id', $owner_pid)->first();
 
             Log::info("Owner Status: " . $owner->status);
             if ($owner->status === 'active') {

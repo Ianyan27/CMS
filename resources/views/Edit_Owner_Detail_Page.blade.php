@@ -69,7 +69,7 @@
                     <div class="col-md-6">
                         <div class="form-group mb-3">
                             <label class="font-educ" for="business-unit">Business Unit</label>
-                            <h5 class="fonts text-truncate" id="business-unit">{{ $owner->owner_business_unit }}</h5>
+                            <h5 class="fonts text-truncate" id="business-unit">{{ $owner->business_unit }}</h5>
                         </div>
                         <div class="form-group mb-3">
                             <label class="font-educ" for="country">Country</label>
