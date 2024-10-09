@@ -50,13 +50,14 @@
                 <div class="table-title d-flex justify-content-between align-items-center my-3">
                     <h2 class="mt-2 headings">Contact Detail</h2>
                     @if (Auth::check() && Auth::user()->role == 'Sales_Agent' || Auth::check() && Auth::user()->role == 'Admin')
-                        <a href="{{ Auth::user()->role == 'Admin' ? 
-                            route('admin#edit-contact', ['contact_pid' => $editContact->contact_pid]) : 
-                            route('contact#edit', ['contact_pid' => $editContact->contact_pid]) }}" 
-                            class="btn hover-action mx-1"
-                            data-toggle="modal" data-target="#editContactModal">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </a>
+                    <a href="{{ Auth::user()->role == 'Admin' 
+                        ? route('admin#edit-contact', ['contact_pid' => $editContact->contact_pid ?? $editContact->contact_archive_pid ?? $editContact->contact_discard_pid])
+                        : route('contact#edit', ['contact_pid' => $editContact->contact_pid ?? $editContact->contact_archive_pid ?? $editContact->contact_discard_pid]) }}" 
+                    class="btn hover-action mx-1"
+                    data-toggle="modal" data-target="#editContactModal">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </a>
+            
                         {{-- <a href="{{ route('contact#edit', $editContact->contact_pid) }}" class="btn hover-action mx-1"
                             data-toggle="modal" data-target="#editContactModal">
                             <i class="fa-solid fa-pen-to-square"></i>

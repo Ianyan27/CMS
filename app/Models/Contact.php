@@ -14,6 +14,7 @@ class Contact extends Model
 
     protected $fillable = [
         'fk_contacts__owner_pid',
+        'fk_contacts__sale_agent_id',
         'date_of_allocation',
         'name',
         'email',

@@ -127,11 +127,16 @@ class SaleAgentsController extends Controller
         $saleAgent = SaleAgent::find($id);
 
         $saleAgent->update([
-            $saleAgent->owner_business_unit = $request->input('business_unit'),
-            $saleAgent->country = $request->input('country')
+            $saleAgent->business_unit = $request->input('business_unit'),
+            $saleAgent->nationality = $request->input('country')
         ]);
 
-        return redirect()->route('buh#view-sale-agent', ['id' => $id])->with('success', 'Sale Agent updated successfully.');
+        return redirect()->route(
+            Auth::check() && Auth::user()->role == 'Admin' ? 'admin#view-sale-agent' : 'buh#view-sale-agent', 
+            ['id' => $id]
+        )->with('success', 'Sale Agent updated successfully.');
+        
+        // return redirect()->route('buh#view-sale-agent', ['id' => $id])->with('success', 'Sale Agent updated successfully.');
     }
 
 }

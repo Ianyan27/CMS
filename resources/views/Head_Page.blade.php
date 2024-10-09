@@ -37,7 +37,7 @@
                 <div class="d-flex align-items-center">
                     <h2 class="my-2 mr-3 headings">Business Unit Head</h2>
                     <button class="btn hover-action mx-3" type="button" data-toggle="modal" data-target="#addUserModal"
-                    style="padding: 10px 12px;">
+                        style="padding: 10px 12px;">
                         <i class="fa-solid fa-square-plus"></i>
                     </button>
                 </div>
@@ -45,7 +45,7 @@
                     <input type="search" class="form-control mr-1" placeholder="Search by Email or Name" id="search-input"
                         aria-label="Search">
                     <button class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search"
-                    style="padding: 10px 12px;">
+                        style="padding: 10px 12px;">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
                 </div>
@@ -260,7 +260,9 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                            <form action="{{ route('head#delete-user', $user->id) }}" method="POST">
+                            {{ $user->id }}
+                            <form action="{{ Auth::user()->role == 'Admin' ? route('admin#delete-buh', ['id' => $user->id]) : route('head#delete-user', $user->id) }}" method="POST">
+                            {{-- <form action="{{ route('head#delete-user', $user->id) }}" method="POST"> --}}
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger">Delete</button>
@@ -282,7 +284,10 @@
                         <h5 class="modal-title" id="addUserModalLabel" style="color: #91264c;">Create New User</h5>
                     </div>
                     <div class="modal-body" style="color: #91264c;">
-                        <form id="addUserForm" action="{{ route('head#save-user') }}" method="POST">
+                        <form id="addUserForm"
+                            action="{{ Auth::user()->role == 'Admin' ? route('admin#save-buh') : route('head#save-user') }}"
+                            method="POST">
+                            {{-- <form id="addUserForm" action="{{ route('head#save-user') }}" method="POST"> --}}
                             @csrf
                             <div class="form-group">
                                 <label for="name">Name</label>
@@ -338,13 +343,13 @@
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>
-                    </div>
-                    <div class="modal-footer" style="border:none;">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn hover-action" style="background: #91264c; color:white;">Add
-                            User
-                        </button>
-                    </div>
+                        </div>
+                        <div class="modal-footer" style="border:none;">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn hover-action" style="background: #91264c; color:white;">
+                                Add BUH
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>

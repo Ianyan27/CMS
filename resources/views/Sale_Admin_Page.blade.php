@@ -191,7 +191,6 @@
                     // Log the complete data received from the server to inspect its structure
                     console.log("Complete data received from server:", data);
                     console.log("buh: ", data.buh[0]);
-                    const buhValue = data.buh[0];
 
                     // $.each(buhData, function(index, value) {
                     //     $('#buhDropdown').append(`<option value="${value.id}">${value.name}</option>`);
@@ -204,9 +203,6 @@
                         countryDropdown.appendChild(option);
                     });
 
-                    // Store the BUH data by country
-                    window.buhDataByCountry = data.buh[0]; // Assuming 'buh' is a key in your JSON response
-                    console.log("BUH data by country stored:", window.buhDataByCountry);
                 })
                 .catch(error => console.error('Error fetching BU data:', error));
         }
@@ -224,7 +220,6 @@
 
             // Update the BUH dropdown based on the selected country
             const buhDropdown = document.getElementById('buhDropdown');
-            buhDropdown.innerHTML = '<option value="" selected disabled>Select BUH</option>'; // Reset options
 
             if (!selectedCountry) {
                 console.log("No country selected for BUH.");
@@ -236,7 +231,8 @@
             console.log("BUH data by country:", buhDropdown);
 
             // Get BUH for the selected country
-            const buhValue = window.buhDataByCountry;
+            const buhValue = buhDropdown.value;
+
 
             // Check if buhValue exists and is not an array (since it's a string in your case)
             if (typeof buhValue === 'string') {
@@ -275,6 +271,10 @@
         function handleCountryChange() {
             const countryDropdown = document.getElementById('countryDropdown');
             const selectedCountry = countryDropdown.value;
+            const buId = document.getElementById('buDropdown')
+                .value; // Assuming you have a BU dropdown with ID 'buDropdown'
+
+            console.log(buId);
 
             // Show the BUH dropdown and CSV import if a country is selected
             const buhContainer = document.getElementById('buh-container');
@@ -286,6 +286,45 @@
                 buhContainer.classList.add('d-none');
                 importContainer.classList.add('d-none');
             }
+
+            if (!selectedCountry && !buId) {
+                return
+            }
+            fetch(`{{ route('get.buh.by.country') }}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        country: selectedCountry,
+                        business_unit: buId
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Log the complete data received from the server to inspect its structure
+                    console.log("Complete data received from server:", data);
+
+                    console.log("buh ", data.buh)
+                    // Populate BUH dropdown
+                    data.buh.forEach(buh => {
+                        const selectedBUH = document.getElementById('selectedBUH');
+                        selectedBUH.textContent = buh.name;
+                        // Assuming BUH has an id field and a name field
+                        const option = document.createElement('option');
+                        const buhDropdown = document.getElementById('buhDropdown');
+                        buhDropdown.options[0].value = buh.name; // Set value to the id of the BUH
+                        buhDropdown.options[0].textContent = buh.name;
+                    });
+                })
+                .catch(error => console.error('Error fetching BUH data:', error));
+
         }
 
         // Function to reset all hidden containers
@@ -492,7 +531,8 @@
                         let invalid_count = data.data.invalid_count;
                         let duplicate_count = data.data.duplicate_count;
                         let unselected_country_count = data.data.unselected_country_count;
-                        let total_count = valid_count + invalid_count + duplicate_count + unselected_country_count;
+                        let total_count = valid_count + invalid_count + duplicate_count +
+                            unselected_country_count;
 
                         setTimeout(() => {
 
@@ -502,7 +542,8 @@
                                 unselected_country_rows
                             } = data.data.file_links;
 
-                            showDownloadPrompt(valid_count, invalid_count, duplicate_count, unselected_country_count,
+                            showDownloadPrompt(valid_count, invalid_count, duplicate_count,
+                                unselected_country_count,
                                 total_count,
                                 invalid_rows, duplicate_rows, unselected_country_rows);
                         }, 800);
@@ -522,7 +563,8 @@
         });
 
         //show download promt
-        function showDownloadPrompt(valid_count, invalid_count, duplicate_count, unselected_country_count, total_count, invalid_rows_link,
+        function showDownloadPrompt(valid_count, invalid_count, duplicate_count, unselected_country_count, total_count,
+            invalid_rows_link,
             duplicate_rows_link, unselected_country_rows_link) {
             // Create the modal element
             const downloadPrompt = document.createElement('div');

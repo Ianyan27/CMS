@@ -4,7 +4,7 @@
 @extends('layouts.Add_Sales-Agent_Modal')
 
 @section('content')
-    @if (Auth::check() && Auth::user()->role == 'BUH' || Auth::check() && Auth::user()->role == 'Admin')
+    @if ((Auth::check() && Auth::user()->role == 'BUH') || (Auth::check() && Auth::user()->role == 'Admin'))
         @if ($errors->any() || session('error'))
             <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="false">
                 <div class="modal-dialog">
@@ -72,6 +72,7 @@
                 <table id="sales-agents-table" class="table table-hover mt-2">
                     <thead class="font-educ text-left">
                         <tr>
+                            <th scope="col">No#</th>
                             <th scope="col" id="name-header">Name
                                 <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name"
                                     onclick="sortByColumn('name', 'asc'); toggleSort('sortDown-name', 'sortUp-name')"></i>
@@ -118,6 +119,7 @@
                         </tr>
                     </thead>
                     <tbody class="text-left fonts">
+                        <?php $i = ($owner->currentPage() - 1) * $owner->perPage() + 1; ?>
                         @foreach ($owner as $owners)
                             <tr data-status="{{ $owners->status }}">
                                 <td>{{ $owners->name }}</td>
@@ -143,9 +145,9 @@
                                 @inject('contactArchiveModel', 'App\Models\ContactArchive')
                                 @inject('contactDiscardModel', 'App\Models\ContactDiscard')
                                 <td class="text-center">
-                                    {{ $contactModel->where('fk_contacts__owner_pid', $owners->owner_pid)->count() +
-                                        $contactArchiveModel->where('fk_contact_archives__owner_pid', $owners->owner_pid)->count() +
-                                        $contactDiscardModel->where('fk_contact_discards__owner_pid', $owners->owner_pid)->count() }}
+                                    {{ $contactModel->where('fk_contacts__sale_agent_id', $owners->id)->count() +
+                                        $contactArchiveModel->where('fk_contacts__sale_agent_id', $owners->id)->count() +
+                                        $contactDiscardModel->where('fk_contacts__sale_agent_id', $owners->id)->count() }}
                                 </td>
                                 <td class="text-center">{{ $owners->total_hubspot_sync }}</td>
                                 <td class="text-center">{{ $owners->total_in_progress }}</td>
@@ -166,20 +168,28 @@
                                         class="btn hover-action" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-right-left"></i>
                                     </a> --}}
-                                    <a href="{{ Auth::user()->role == 'Admin' ? route('admin#transfer-contact', ['id' => $owners->id]) : route('owner#transfer-contact', $owners->owner_pid) }}"
+                                    <<<<<<< HEAD <a
+                                        href="{{ Auth::user()->role == 'Admin' ? route('admin#transfer-contact', ['id' => $owners->id]) : route('owner#transfer-contact', $owners->owner_pid) }}"
                                         class="btn hover-action" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-right-left"></i>
-                                    </a>
-                                    <a href="{{ Auth::user()->role == 'Admin' ? route('admin#view-sale-agent', ['id' => $owners->id] ) : route('owner#view-owner', $owners->owner_pid) }}"
-                                        class="btn hover-action mx-2" style="padding: 10px 12px;">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </a>
-                                    {{-- <a href="{{ route('owner#view-owner', $owners->owner_pid) }}"
+                                        </a>
+                                        <a href="{{ Auth::user()->role == 'Admin' ? route('admin#view-sale-agent', ['id' => $owners->id]) : route('owner#view-owner', $owners->owner_pid) }}"=======<a
+                                            href="{{ Auth::user()->role == 'Admin' ? route('admin#transfer-contact', $owners->id) : route('owner#transfer-contact', $owners->id) }}"
+                                            class="btn hover-action" style="padding: 10px 12px;">
+                                            <i class="fa-solid fa-right-left"></i>
+                                        </a>
+                                        <a
+                                            href="{{ Auth::user()->role == 'Admin' ? route('admin#view-owner', $owners->id) : route('owner#view-owner', $owners->id) }}">>>>>>>
+                                            4a487f4 (retrieve the owner_pid to id)
+                                            class="btn hover-action mx-2" style="padding: 10px 12px;">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </a>
+                                        {{-- <a href="{{ route('owner#view-owner', $owners->owner_pid) }}"
                                         class="btn hover-action mx-2" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-eye"></i>
                                     </a> --}}
 
-                                    {{-- <a class="btn hover-action" style="padding: 10px 12px;" data-toggle="modal"
+                                        {{-- <a class="btn hover-action" style="padding: 10px 12px;" data-toggle="modal"
                                         data-target="#deleteOwnerModal{{ $owners->owner_pid }}">
                                         <i class="fa-solid fa-trash"></i>
                                     </a> --}}
@@ -238,8 +248,8 @@
         </div>
         </div>
         @foreach ($owner as $owners)
-            <div class="modal fade" id="deleteOwnerModal{{ $owners->owner_pid }}" tabindex="-1"
-                aria-labelledby="deleteOwnerModalLabel{{ $owners->owner_pid }}" aria-hidden="true">
+            <div class="modal fade" id="deleteOwnerModal{{ $owners->id }}" tabindex="-1"
+                aria-labelledby="deleteOwnerModalLabel{{ $owners->id }}" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content text-center">
                         <div class="icon-container mx-auto">
@@ -253,11 +263,14 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                            <form action="{{ route('buh#delete-sale-agent', $owners->id) }}" method="post">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
+                            <<<<<<< HEAD <form action="{{ route('buh#delete-sale-agent', $owners->id) }}" method="post">
+                                =======
+                                <form action="{{ route('owner#delete', $owners->id) }}" method="post">
+                                    >>>>>>> 4a487f4 (retrieve the owner_pid to id)
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
                         </div>
                     </div>
                 </div>
@@ -269,7 +282,7 @@
         </div>
     @endif
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src=" {{asset('js/filter_status.js')}} "></script>
+    <script src=" {{ asset('js/filter_status.js') }} "></script>
     @if (Session::has('success'))
         <script type="text/javascript">
             $(document).ready(function() {

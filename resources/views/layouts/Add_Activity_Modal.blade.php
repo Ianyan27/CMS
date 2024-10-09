@@ -14,7 +14,7 @@
             </div>
             <div class="modal-body">
                 <form action=" {{ Auth::user()->role == 'Admin' ? 
-                route('admin#save-activity' , $editContact->contact_pid) :
+                route('admin#save-activity' , $editContact->contact_pid ?? $editContact->contact_archive_pid ?? $editContact->contact_discard_pid) :
                 route('contact#save-activity', $editContact->contact_pid) }} " method="POST"
                     id="addActivityForm" enctype="multipart/form-data">
                 {{-- <form action=" {{ route('contact#save-activity', $editContact->contact_pid) }} " method="POST"

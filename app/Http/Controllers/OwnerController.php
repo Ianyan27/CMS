@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ArchiveActivities;
+use App\Models\BuCountry;
+use App\Models\BUH;
 use App\Models\Contact;
 use App\Models\ContactArchive;
 use App\Models\ContactDiscard;
@@ -9,6 +12,7 @@ use App\Models\Delete_contacts;
 use App\Models\Engagement;
 use App\Models\EngagementArchive;
 use App\Models\Owner;
+use App\Models\SaleAgent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use GuzzleHttp\Client;
@@ -18,20 +22,31 @@ use Illuminate\Support\Facades\Log;
 class OwnerController extends Controller
 {
 
-    public function owner(){
+    public function owner()
+    {
         // Get the current authenticated user
         $user = Auth::user();
+        Log::info("User : " . $user);
+
         // Check if the user is a BUH or Admin
-        if ($user->role == 'BUH') {
+        if ($user->role === 'BUH') {
+
+            // getting bu country id
+            $buhId = BUH::where("email", $user->email)->get()->first();
+            $buCountry = BuCountry::where('buh_id', $buhId->id)
+                ->first();
+            Log::info("bu country: " . $buCountry);
             // If the user is BUH, filter owners by the BUH's fk_buh
-            $owner = Owner::where('fk_buh', $user->id)->paginate(10);
+            $owner = SaleAgent::where('bu_country_id', $buCountry->id)->paginate(10);
+
+            Log::info("user log: " . $user);
             $contact = Contact::where('fk_contacts__owner_pid', null)->count();
             // $archiveContact = ContactArchive::where('fk_contact_archives__owner_pid', null)->count();
             // $discardContact = ContactDiscard::where('fk_contact_discards__owner_pid', null)->count();
             Log::info("Total of unassigned contacts: " . $contact);
         } else {
             // If the user is Admin, show all owners
-            $owner = Owner::paginate(10);
+            $owner = SaleAgent::paginate(10);
             $contact = Contact::get();
         }
 
@@ -54,7 +69,7 @@ class OwnerController extends Controller
             $response = $client->request('GET', 'https://api.hubapi.com/crm/v3/owners', [
                 'headers' => [
                     'Authorization' => 'Bearer ' . env('HUBSPOT_API_KEY'),
-                    'Content-Type'  => 'application/json',  
+                    'Content-Type'  => 'application/json',
                 ],
                 'verify' => false
             ]);
@@ -72,17 +87,16 @@ class OwnerController extends Controller
         }
     }
 
-
-
-    public function viewSaleAgent($owner_pid){
-        $owner = Owner::where('owner_pid', $owner_pid)->first();
+    public function viewSaleAgent($owner_pid)
+    {
+        $owner = SaleAgent::where('id', $owner_pid)->first();
         // Execute the queries to get the actual data
-        $editOwner = Owner::where('owner_pid', $owner_pid)->first();
+        $editOwner = SaleAgent::where('id', $owner_pid)->first();
 
         // Get the total contacts count allocated to this owner
-        $totalContacts = Contact::where('fk_contacts__owner_pid', $owner_pid)->count();
-        $totalArchive = ContactArchive::where('fk_contact_archives__owner_pid', $owner_pid)->count();
-        $totalDiscard = ContactDiscard::where('fk_contact_discards__owner_pid', $owner_pid)->count();
+        $totalContacts = Contact::where('fk_contacts__sale_agent_id', $owner_pid)->count();
+        $totalArchive = ContactArchive::where('fk_contacts__sale_agent_id', $owner_pid)->count();
+        $totalDiscard = ContactDiscard::where('fk_contacts__sale_agent_id', $owner_pid)->count();
 
         $totalContact = $totalContacts + $totalArchive + $totalDiscard;
         // Get the count of contacts where status is 'HubSpot'
@@ -105,16 +119,16 @@ class OwnerController extends Controller
 
         // Get the contacts
         $ownerContacts = Contact::where(
-            'fk_contacts__owner_pid',
+            'fk_contacts__sale_agent_id',
             $owner_pid
         )->paginate(50);
 
         $ownerArchive = ContactArchive::where(
-            'fk_contact_archives__owner_pid',
+            'fk_contacts__sale_agent_id',
             $owner_pid
         )->paginate(50);
         $ownerDiscard = ContactDiscard::where(
-            'fk_contact_discards__owner_pid',
+            'fk_contacts__sale_agent_id',
             $owner_pid
         )->paginate(50);
 
@@ -131,20 +145,21 @@ class OwnerController extends Controller
         ]);
     }
 
-    public function updateSaleAgent(Request $request, $owner_pid)
+    public function updateSaleAgent(Request $request, $id)
     {
 
-        $owner = Owner::find($owner_pid);
+        $owner = SaleAgent::find($owner_pid);
 
         $owner->update([
-            $owner->owner_business_unit = $request->input('business_unit'),
-            $owner->country = $request->input('country')
+            $owner->business_unit = $request->input('business_unit'),
+            $owner->nationality = $request->input('country')
         ]);
 
         return redirect()->route('owner#view-owner', ['owner_pid' => $owner_pid])->with('success', 'Sale Agent updated successfully.');
     }
 
-    public function viewContact($contact_pid){
+    public function viewContact($contact_pid)
+    {
         /* Retrieve the contact record with the specified 'contact_pid' and pass
          it to the 'Edit_Contact_Detail_Page' view for editing. */
 
@@ -158,7 +173,7 @@ class OwnerController extends Controller
 
         // Retrieve the authenticated user
         $user = Auth::user();
-        $owner = Owner::where('owner_email_id', $user->email)->first();
+        $owner = SaleAgent::where('email', $user->email)->first();
 
         // Retrieve all engagements for the contact
         $engagements = Engagement::where('fk_engagements__contact_pid', $contact_pid)->get();
@@ -184,7 +199,7 @@ class OwnerController extends Controller
 
         // Retrieve engagements archived for the contact
         $engagementsArchive = EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $contact_pid)->get();
-        $deletedEngagement = Delete_contacts::where('fk_engagements__contact_pid', $contact_pid)->get();
+        $deletedEngagement = ArchiveActivities::where('fk_engagements__contact_pid', $contact_pid)->get();
         // Use the first engagement for updates if available
         $updateEngagement = $engagements->first();
 

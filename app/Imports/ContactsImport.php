@@ -58,6 +58,8 @@ class ContactsImport implements ToModel, WithHeadingRow
 
         Log::info('selected country in before validate ' . $this->country);
 
+        Log::info('selected country in before validate ' . $this->country);
+
         // Combine first_name and last_name into name
         if (isset($data['first_name']) && isset($data['last_name'])) {
             $data['name'] = $data['first_name'] . ' ' . $data['last_name'];
@@ -135,6 +137,7 @@ class ContactsImport implements ToModel, WithHeadingRow
         return count($this->unselectedCountry);
     }
 
+
     public function getInvalidRows()
     {
         return $this->invalidRows;
@@ -144,6 +147,7 @@ class ContactsImport implements ToModel, WithHeadingRow
     {
         return $this->duplicateRows;
     }
+
 
     public function getUnselectedCountryRows()
     {

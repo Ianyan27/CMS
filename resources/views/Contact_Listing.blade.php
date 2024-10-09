@@ -3,7 +3,10 @@
 @section('title', 'Contact Listing Page')
 
 @section('content')
-    @if ((Auth::check() && Auth::user()->role == 'Sales_Agent') || Auth::user()->role == 'Admin')
+    @if (
+        (Auth::check() && Auth::user()->role == 'Sales_Agent') ||
+            Auth::user()->role == 'Admin' ||
+            Auth::user()->role == 'BUH')
         <div class="container-max-height">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center">

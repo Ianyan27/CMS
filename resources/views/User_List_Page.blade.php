@@ -103,7 +103,7 @@
                     </tbody>
                 </table>
             </div>
-            <div aria-label="Page navigation example " class="paginationContainer">
+            <div aria-label="Page navigation example" class="paginationContainer">
                 <ul class="pagination justify-content-center">
                     <!-- Previous Button -->
                     <li class="page-item {{ $userData->onFirstPage() ? 'disabled' : '' }}">
@@ -240,7 +240,7 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                             <!-- Update the form action to point to your delete route -->
-                            <form action="{{ route('admin#delete-user', $user->id) }}" method="POST">
+                            <form action="{{ route('admin#delete-user', ['id' => $user->id]) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger">Delete</button>
@@ -261,7 +261,7 @@
                         <h5 class="modal-title" id="addUserModalLabel" style="color: #91264c;">Create New User</h5>
                     </div>
                     <div class="modal-body" style="color: #91264c">
-                        <form id="addUserForm" action="{{ route('admin#save-user') }}" method="POST">
+                        <form id="addUserForm" action="{{ route('admin#save-new-user') }}" method="POST">
                             @csrf
                             <div class="form-group">
                                 <label for="name">Name</label>

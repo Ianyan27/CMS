@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\BuCountry;
 use App\Models\Contact;
 use App\Models\Owner;
 use App\Models\SaleAgent;
@@ -13,17 +14,16 @@ use Illuminate\Support\Facades\Log;
 class RoundRobinAllocator
 {
 
-    public function allocate($countryId, $buhId)
+    public function allocate($buhId, $country)
     {
 
         try {
+            $bu_country = BuCountry::where('buh_id', $buhId)->first();
+            $bu_country_id = $bu_country->id;
+            Log::info("bu country id " . $bu_country_id);
+            Log::info("country : " . $country);
             // Retrieve all sales agents under the specified BUH, sorted by id
-            $allOwners = SaleAgent::where('bu_country_id', function ($query) use ($buhId, $countryId) {
-                $query->select('id')
-                    ->from('bu_country')
-                    ->where('bu_id', $buhId)
-                    ->where('country_id', $countryId);
-            })->orderBy('id')->get();
+            $allOwners = SaleAgent::where('bu_country_id', $bu_country_id)->where('nationality', $country)->orderBy('id')->get();
             Log::info('Total owners retrieved for BUH ID ' . $buhId . ':', ['count' => $allOwners->count()]);
 
             if ($allOwners->isEmpty()) {

@@ -24,6 +24,8 @@ Route::get('/', function () {
 })->name('login');
 
 Route::post('/get-bu-data', [SaleAdminController::class, 'getBUData'])->name('get.bu.data');
+Route::post('/get-buh-by-country', [SaleAdminController::class, 'getBUHByCountry'])->name('get.buh.by.country');
+
 
 // Microsoft OAuth Login
 Route::get('login/microsoft', [AuthController::class, 'redirectToMicrosoft'])->name('login.microsoft');
@@ -78,7 +80,7 @@ Route::group(['prefix' => 'admin'], function () {
         'updateUser'
     ])->name('admin#update-user');
 
-    Route::delete('/delete-user/{id}', [
+    Route::post('/delete-user/{id}', [
         AdminController::class,
         'deleteUser'
     ])->name('admin#delete-user');
@@ -86,7 +88,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('/save-user', [
         AdminController::class,
         'saveUser'
-    ])->name('admin#save-user');
+    ])->name('admin#save-new-user');
 
     // Contact Routes
     Route::get('/contacts', [
@@ -98,6 +100,10 @@ Route::group(['prefix' => 'admin'], function () {
         AdminController::class,
         'viewContact'
     ])->name('admin#view-contact');
+
+    Route::get('/view-transferable-contact/{contact_pid}/{type}', [
+        AdminController::class, 'viewTransferableContact'
+    ])->name('admin#view-transferable-contact');
 
     // CSV Import Routes
     Route::get('/import-csv', [
@@ -155,7 +161,7 @@ Route::group(['prefix' => 'admin'], function () {
     ])->name('admin#transfer-contact');
 
     Route::post('/transfer', [
-        BUHController::class,
+        AdminController::class,
         'transfer'
     ])->name('admin#transfer');
 
@@ -220,6 +226,23 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/view-buh', [
         AdminController::class, 'viewBUH'
     ])->name('admin#view-buh');
+
+    Route::post('/save-buh', [
+        AdminController::class, 'saveBUH'
+    ])->name('admin#save-buh');
+
+    Route::delete('/delete-buh/{id}', [
+        AdminController::class, 'deleteBUH'
+    ])->name('admin#delete-buh');
+
+    Route::post('/update-status-sale-agent/{owner_pid}', [
+        AdminController::class,
+        'updateStatusSaleAgent'
+    ])->name('admin#update-status-sale-agent');
+    Route::get('/progress', [
+        AdminController::class,
+        'getProgress'
+    ])->name('progress');
 });
 
 Route::group(['prefix' => 'sales-agent'], function () {
@@ -319,7 +342,7 @@ Route::group(['prefix' => 'sales-agent'], function () {
         OwnerController::class,
         'editOwner'
     ])->name('admin#update');
-    Route::post('/update-owner/{owner_pid}', [
+    Route::post('/update-owner/{id}', [
         OwnerController::class,
         'updateSaleAgent'
     ])->name('admin#update-owner');
@@ -402,6 +425,10 @@ Route::group(['prefix' => 'buh'], function () {
         BUHController::class,
         'getProgress'
     ])->name('progress');
+    Route::get('/contact-listing', [
+        BUHController::class,
+        'contactsByBUH'
+    ])->name('buh#contact-listing');
 });
 
 // Define routes for the Head role
@@ -429,10 +456,14 @@ Route::group(['prefix' => 'head', 'as' => 'head#'], function () {
     ])->name('update-user'); // Change from POST to PUT
     
     // Delete a user
-    Route::delete('/delete-user/{id}', [HeadController::class, 'deleteUser'])->name('delete-user');
+    Route::delete('/delete-user/{id}', [
+        HeadController::class, 'deleteUser'
+    ])->name('delete-user');
 
     // View contact details
-    Route::get('/view-contact/{contact_pid}', [HeadController::class, 'viewContact'])->name('view-contact');
+    Route::get('/view-contact/{contact_pid}', [
+        HeadController::class, 'viewContact'
+    ])->name('view-contact');
 });
 
 Route::group(['prefix' => 'sales-admin'], function () {

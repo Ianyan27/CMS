@@ -6,6 +6,7 @@ use App\Models\BU;
 use App\Models\BuCountry;
 use App\Models\BUH;
 use App\Models\BusinessUnit;
+use App\Models\Country;
 use App\Models\Owner;
 use App\Models\SaleAgent;
 use Illuminate\Http\Request;
@@ -43,15 +44,17 @@ class SaleAdminController extends Controller
         // Get the corresponding BU ID
         $buId = $bu->id;
 
-        // Get the BUH list associated with the BU
-        $buhList = BUH::whereHas('buCountries', function ($query) use ($buId) {
-            $query->where('bu_id', $buId);
-        })->get();
-
         // Find the BuCountry records related to this BU
         $buCountries = BuCountry::with('country')
             ->where('bu_id', $buId)
             ->get();
+
+        Log::info("country id " . $buCountries);
+
+        $buhList = BUH::whereHas('buCountries', function ($query) use ($buId) {
+            $query->where('bu_id', $buId);
+        })->get();
+
 
         // Prepare the response by extracting the unique country names
         $response = [
@@ -59,10 +62,46 @@ class SaleAdminController extends Controller
             'buh' => $buhList->pluck('name'), // Get the names of the BUHs related to this BU
         ];
 
-        // Log the response data for debugging purposes
-        Log::info("Response: ", $response);
-
         // Return the response as JSON
         return response()->json($response);
+    }
+
+    public function getBUHByCountry(Request $request)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'country' => 'required|string',
+            'business_unit' => 'required|string',
+        ]);
+
+        // Get country and business unit from request
+        $countryName = $request->input('country');
+        $businessUnitName = $request->input('business_unit');
+
+        // Find the corresponding BU
+        $bu = BU::where('name', $businessUnitName)->first();
+        if (!$bu) {
+            return response()->json(['error' => 'Business Unit not found'], 404);
+        }
+
+        // Find the country
+        $country = Country::where('name', $countryName)->first();
+        if (!$country) {
+            return response()->json(['error' => 'Country not found'], 404);
+        }
+
+        // Retrieve BUHs associated with this BU and country
+        $buhList = BUH::whereHas('buCountries', function ($query) use ($bu, $country) {
+            $query->where('bu_id', $bu->id)
+                ->where('country_id', $country->id);
+        })->get();
+
+        // Check if any BUHs were found
+        if ($buhList->isEmpty()) {
+            return response()->json(['error' => 'No BUH found for the specified country and business unit'], 404);
+        }
+
+        // Return the list of BUHs as JSON
+        return response()->json(['buh' => $buhList]);
     }
 }

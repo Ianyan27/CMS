@@ -114,7 +114,7 @@ class BUHController extends Controller
             $import = new ContactsImport($platform, $country->name);
             Excel::import($import, $file);
             $allocator = new RoundRobinAllocator();
-            $allocator->allocate($countryId, $buhId);
+            $allocator->allocate($buhId, $country->name);
         } catch (\Exception $e) {
 
             return response()->json([
@@ -239,7 +239,7 @@ class BUHController extends Controller
             'hubspotId' => 'required|string|max:100',
             'businessUnit' => 'required|string|max:255',
             'country' => 'required|string|max:100',
-            'fk_buh' => 'required|integer',
+            'email_buh' => 'required|string',
         ]);
 
         Log::info('Processing user registration for email: ' . $request->input('email'));
@@ -250,6 +250,10 @@ class BUHController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }
+
+        // getting bu_country id
+        $buh = BUH::where("email", $request->input('email_buh'))->get()->first();
+        $bu_country = BuCountry::where("buh_id", $buh->id)->get()->first();
 
         // Begin a database transaction
         DB::beginTransaction();
@@ -272,20 +276,20 @@ class BUHController extends Controller
             Log::info("Created User ID: {$user->id} for email: " . $request->input('email'));
 
             // Create the owner (Sales Agent) with 'active' status
-            $saleAgent = Owner::create([
-                'owner_name' => $request->input('agentName'),
-                'owner_email_id' => $request->input('email'),
-                'fk_buh' => $request->input('fk_buh'),
-                'owner_hubspot_id' => $request->input('hubspotId'),
-                'owner_business_unit' => $request->input('businessUnit'),
-                'country' => $request->input('country'),
-                'owner_pid' => $user->id,
+            $saleAgent = SaleAgent::create([
+                'name' => $request->input('agentName'),
+                'email' => $request->input('email'),
+                'bu_country_id' => $bu_country->id,
+                'hubspot_id' => $request->input('hubspotId'),
+                'business_unit' => $request->input('businessUnit'),
+                'nationality' => $request->input('country'),
                 'status' => 'active', // Setting status to active
             ]);
 
             DB::commit();
 
-            Log::info('Successfully saved user and sale agent for email: ' . $user->email);
+            Log::info('Successfully saved user : ' . $user->email);
+            Log::info("Successfully sale agent for email: " .  $saleAgent->email);
 
             return redirect()->route('owner#view')->with('success', 'Sale Agent successfully added');
         } catch (\Exception $e) {
@@ -318,12 +322,12 @@ class BUHController extends Controller
     }
 
     public function transferContact($owner_pid)
-    
+
     {
         Session::put('progress', 0);
         $user = Auth::user();
         if ($user->role == 'BUH') {
-            $contacts = Contact::where('fk_contacts__owner_pid', $owner_pid)->get();
+            $contacts = Contact::where('fk_contacts__sale_agent_id', $owner_pid)->get();
             $archivedContacts = ContactArchive::where('fk_contact_archives__owner_pid', $owner_pid)->get();
             $discardedContacts = ContactDiscard::where('fk_contact_discards__owner_pid', $owner_pid)->get();
         } else {
@@ -331,7 +335,7 @@ class BUHController extends Controller
             $archivedContacts = ContactArchive::get();
             $discardedContacts = ContactDiscard::get();
         }
-        $owner = Owner::where('owner_pid', $owner_pid)->first();
+        $owner = SaleAgent::where('id', $owner_pid)->first();
         $allContacts = $contacts->concat($archivedContacts)->concat($discardedContacts);
         $countAllContacts = $allContacts->count();
         $countEligibleContacts = $contacts->concat($archivedContacts);
@@ -358,6 +362,12 @@ class BUHController extends Controller
     {
         set_time_limit(300);
         $owner_pid = $request->input('owner_pid');
+        $country = $request->input('country');
+        $user = Auth::user();
+        Log::info("email user: " . $user->email);
+        $userId = BUH::where("email", $user->email)->get()->first();
+        Log::info("user id: " . $userId->id);
+
         try {
             // Validate the input
             $validated = $request->validate([
@@ -374,7 +384,7 @@ class BUHController extends Controller
             Log::info('Owner PID: ' . $owner_pid);
 
             // **Check if the sales agent is inactive**
-            $owner = Owner::where('owner_pid', $owner_pid)->first();
+            $owner = SaleAgent::where('id', $owner_pid)->first();
 
             Log::info("Owner Status: " . $owner->status);
             if ($owner->status === 'active') {
@@ -402,7 +412,7 @@ class BUHController extends Controller
                 foreach ($contactsBatch as $contact_pid) {
                     // Find the contact in the contacts table
                     $contact = Contact::where('contact_pid', $contact_pid)
-                        ->where('fk_contacts__owner_pid', $owner_pid)
+                        ->where('fk_contacts__sale_agent_id', $owner_pid)
                         ->first();
 
                     if ($contact) {
@@ -412,7 +422,7 @@ class BUHController extends Controller
                         try {
                             // Move the contact to moved_contacts table
                             $movedContact = new MovedContact();
-                            $movedContact->fk_contacts__owner_pid = null;
+                            $movedContact->fk_contacts__sale_agent_id = null;
                             $movedContact->date_of_allocation = $contact->date_of_allocation;
                             $movedContact->name = $contact->name;
                             $movedContact->email = $contact->email;
@@ -457,7 +467,7 @@ class BUHController extends Controller
             // Instantiate the RoundRobinAllocator
             $allocator = new RoundRobinAllocator();
             // Call the assignContacts method to assign contacts back to the contacts table using round-robin
-            $this->assignContacts($allocator);
+            $this->assignContacts($allocator, $userId->id, $country);
             Log::info('Contacts successfully moved.');
             return redirect()->back()->with('success', 'Contacts successfully moved to the moved_contacts table.');
         } catch (ValidationException $e) {
@@ -469,7 +479,7 @@ class BUHController extends Controller
         }
     }
 
-    public function assignContacts(RoundRobinAllocator $allocator)
+    public function assignContacts(RoundRobinAllocator $allocator, $userId, $country)
     {
         set_time_limit(300);
         try {
@@ -513,19 +523,19 @@ class BUHController extends Controller
             }
 
             // After moving contacts, call the allocate method to assign contacts using round-robin
-            $allocator->allocate(1, 1); // hardcode for testing purposed
+            $allocator->allocate($userId, $country);
             // If allocation is successful, redirect back with a success message
             return redirect()->back()->with('success', 'Contacts successfully assigned.');
         } catch (\Exception $e) {
             // If there is an error during allocation, log the error and redirect back with an error message
-            Log::error('Failed to assign contacts: ' . $e->getMessage());
+            Log::error('Failed to assign contacts: ' . $e);
             return redirect()->back()->with('error', 'Failed to assign contacts. Please try again.');
         }
     }
 
 
     public function updateStatusOwner(Request $request, $owner_pid)
-    
+
     {
         // Log incoming request data
         Log::info('Update Status Request:', [
@@ -535,7 +545,7 @@ class BUHController extends Controller
 
         try {
             // Retrieve the owner by their primary ID (assuming owner_pid is the primary key)
-            $owner = Owner::find($owner_pid);
+            $owner = SaleAgent::find($owner_pid);
 
             if ($owner) {
                 // Update the status
@@ -562,7 +572,55 @@ class BUHController extends Controller
             return response()->json(['message' => 'An unexpected error occurred. Please try again later.'], 500);
         }
     }
-    public function getProgress(){
+
+    public function contactsByBUH()
+    {
+        $user = Auth::user();
+
+        // Fetch the BUH record associated with the logged-in user's email
+        $buh = BUH::where('email', $user->email)->first();
+
+        // Check if the BUH exists
+        if (!$buh) {
+            return redirect()->back()->with('error', 'No BUH found for the logged-in user.');
+        }
+
+        // Fetch all BuCountry records associated with this BUH
+        $buCountries = BuCountry::where('buh_id', $buh->id)->first();
+
+        // Check if there are any associated BuCountry records
+        if (!$buCountries) {
+            return redirect()->back()->with('error', 'No Business Units associated with this BUH.');
+        }
+
+        // Fetch all SaleAgents associated with the BuCountry records
+        $saleAgentIds = SaleAgent::where('bu_country_id', $buCountries->id)->pluck('id');
+
+        Log::info("Sales agent: " . $saleAgentIds);
+        // Check if there are any associated SaleAgents
+        if ($saleAgentIds->isEmpty()) {
+            return redirect()->back()->with('error', 'No Sale Agents found for the logged-in BUH.');
+        }
+
+        // Query the contacts, archives, and discards for all the sale agents using the correct foreign key `fk_contacts__sale_agent_id`
+        $contacts = Contact::whereIn('fk_contacts__sale_agent_id', $saleAgentIds)->paginate(50);
+        $contactArchive = ContactArchive::whereIn('fk_contacts__sale_agent_id', $saleAgentIds)->paginate(50);
+        $contactDiscard = ContactDiscard::whereIn('fk_contacts__sale_agent_id', $saleAgentIds)->paginate(50);
+
+        Log::info("contacts: " . $contacts);
+        // Pass the data to the view
+        return view('Contact_Listing', [
+            'buh' => $buh,
+            'contacts' => $contacts,
+            'contactArchive' => $contactArchive,
+            'contactDiscard' => $contactDiscard
+        ]);
+    }
+
+
+
+    public function getProgress()
+    {
         return response()->json(['progress' => Session::get('progress', 0)]);
     }
 }
