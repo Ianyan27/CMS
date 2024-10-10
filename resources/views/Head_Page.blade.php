@@ -172,77 +172,74 @@
                 </ul>
             </div>
         </div>
-        <!-- Edit User Modal -->
-        @foreach ($userData as $user)
-            <div class="modal fade" id="editUserModal{{ $user->id }}" tabindex="-1"
-                aria-labelledby="editUserModalLabel{{ $user->id }}" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content rounded-0">
-                        <div class="modal-header d-flex justify-content-between align-items-center"
-                            style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%); border:none;">
-                            <h5 class="modal-title font-educ" id="editUserModalLabel{{ $user->id }}">
-                                <strong>Edit BUH</strong>
-                            </h5>
-                        </div>
-                        <form action="{{ route('head#update-user', $user->id) }}" method="POST">
-                            @csrf
-                            @method('PUT')
-                            <div class="modal-body">
-                                <div class="mb-3">
-                                    <label for="name{{ $user->id }}" class="form-label">BUH Name</label>
-                                    <input type="text" class="form-control" name="name"
-                                        id="name{{ $user->id }}" value="{{ $user->buh_name }}" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="email{{ $user->id }}" class="form-label">Email</label>
-                                    <input type="email" class="form-control" name="email"
-                                        id="email{{ $user->id }}" value="{{ $user->buh_email }}" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="nationality{{ $user->id }}" class="form-label">Nationality</label>
-                                    <input type="text" class="form-control" name="nationality"
-                                        id="nationality{{ $user->id }}" value="{{ $user->nationality }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="bu">Business Unit (BU)</label>
-                                    <select class="form-control" id="bu" name="bu_id" required>
-                                        <option value="" disabled>Select BU</option>
-                                        @foreach ($businessUnits as $bu)
-                                            <option value="{{ $bu->id }}"
-                                                @if ($bu->name == $user->bu_name) selected @endif>
-                                                {{ $bu->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('bu_id')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-                                <div class="form-group">
-                                    <label for="country">Country</label>
-                                    <select class="form-control" id="country" name="country_id" required>
-                                        <option value="" disabled>Select Country</option>
-                                        @foreach ($countries as $country)
-                                            <option value="{{ $country->id }}"
-                                                @if ($country->name == $user->country_name) selected @endif>
-                                                {{ $country->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('country_id')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn hover-action">Update User</button>
-                            </div>
-                        </form>
+    <!-- Edit User Modal -->
+    @foreach ($userData as $user)
+        <div class="modal fade" id="editUserModal{{ $user->id }}" tabindex="-1"
+            aria-labelledby="editUserModalLabel{{ $user->id }}" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content rounded-0">
+                    <div class="modal-header d-flex justify-content-between align-items-center"
+                        style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%); border:none;">
+                        <h5 class="modal-title font-educ" id="editUserModalLabel{{ $user->id }}">
+                            <strong>Edit BUH</strong>
+                        </h5>
                     </div>
+                    <form action="{{ route('head#update-user', $user->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="name{{ $user->id }}" class="form-label">BUH Name</label>
+                                <input type="text" class="form-control" name="name" id="name{{ $user->id }}"
+                                    value="{{ $user->buh_name }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email{{ $user->id }}" class="form-label">Email</label>
+                                <input type="email" class="form-control" name="email" id="email{{ $user->id }}"
+                                    value="{{ $user->buh_email }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="nationality{{ $user->id }}" class="form-label">Nationality</label>
+                                <input type="text" class="form-control" name="nationality" id="nationality{{ $user->id }}"
+                                    value="{{ $user->nationality }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="bu">Business Unit (BU)</label>
+                                <select id="buDropdowninedit{{ $user->id }}" class="w-75 platforms search-bar"
+                                    name="business_unit" onchange="updateCountryDropdowninEdit({{ $user->id }});">
+                                    <option value="">Select BU</option>
+                                    @foreach ($businessUnit as $bu)
+                                        <option value="{{ $bu->name }}" {{ $user->bu_name === $bu->name ? 'selected' : '' }}>
+                                            {{ $bu->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('bu_id')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label for="country">Country</label>
+                                <select id="countryDropdown{{ $user->id }}" class="w-75 platforms search-bar" name="country"
+                                    onchange="updateSelectedCountryAndBuh({{ $user->id }});">
+                                    <option value="">Select Country</option>
+                                    @foreach ($countries as $country)
+                                        <option value="{{ $country->name }}" {{ $user->country_name === $country->name ? 'selected' : '' }}>{{ $country->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('country_id')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn hover-action">Update User</button>
+                        </div>
+                    </form>
                 </div>
             </div>
-        @endforeach
+        </div>
+    @endforeach
         @foreach ($userData as $user)
             <!-- Delete User Modal -->
             <div class="modal fade" id="deleteUserModal{{ $user->id }}" tabindex="-1"
@@ -437,6 +434,190 @@
             }
         }
     </script>
+    <script>
+    $(document).ready(function () {
+        // Event handler for when the country dropdown is changed
+        $('#countryDropdown').on('change', function () {
+            const selectedCountry = $(this).val();
+            $('#buDropdown')
+            updateSelectedCountryAndBuh(selectedCountry);
+        });
+
+    });
+    // Function to update countries and BUH based on selected BU
+    function updateCountryDropdown() {
+        const buDropdown = document.getElementById('buDropdown');
+        const selectedBU = buDropdown.value;
+        console.log("Selected BU:", selectedBU);
+
+
+        // Clear previous country options
+        const countryDropdown = document.getElementById('countryDropdown');
+        countryDropdown.innerHTML = '<option value="" selected disabled>Select Country</option>'; // Reset options
+
+
+
+        // If no BU is selected, clear the BUH display
+        if (!selectedBU) {
+            console.log("No BU selected. Exiting updateCountryDropdown.");
+            return; // Do not fetch data if no BU is selected
+        }
+
+        // Fetch the countries and BUH from the server
+        console.log("Fetching BU data for:", selectedBU);
+        fetch({{ route('get.bu.data') }}, {
+            method: 'POST', // Use POST method
+            headers: {
+                'Content-Type': 'application/json', // Specify the content type
+                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token for Laravel
+            },
+            body: JSON.stringify({
+                business_unit: selectedBU
+            }) // Send the selected BU in the request body
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json(); // Parse response as JSON
+            })
+            .then(data => {
+                // Log the complete data received from the server to inspect its structure
+                console.log("Complete data received from server:", data);
+                console.log("buh: ", data.buh[0]);
+
+                // $.each(buhData, function(index, value) {
+                //     $('#buhDropdown').append(<option value="${value.id}">${value.name}</option>);
+                // });
+                // Update country dropdown
+                data.countries.forEach(country => {
+                    const option = document.createElement('option');
+                    option.value = country;
+                    option.textContent = country;
+                    countryDropdown.appendChild(option);
+                });
+
+            })
+            .catch(error => console.error('Error fetching BU data:', error));
+    }
+
+    function updateCountryDropdowninEdit(id) {
+        console.log(id);
+        console.log('buDropdowninedit' + id);
+        var dropdownid = 'buDropdowninedit' + id;
+
+
+        const buDropdown = document.getElementById(dropdownid);
+        const selectedBU = buDropdown.value;
+        console.log("Selected BU:", selectedBU);
+
+        const tagid = 'countryDropdown'+id;
+        console.log(tagid);
+
+        // Clear previous country options
+        const countryDropdown = document.getElementById(tagid);
+        countryDropdown.innerHTML = '<option value="" selected disabled>Select Country</option>'; // Reset options
+
+        // If no BU is selected, clear the country dropdown
+        if (!selectedBU) {
+            console.log("No BU selected. Exiting updateCountryDropdown.");
+            return; // Do not fetch data if no BU is selected
+        }
+
+        // Fetch the countries and BUH from the server
+        console.log("Fetching BU data for:", selectedBU);
+        fetch({{ route('get.bu.data') }}, {
+            method: 'POST', // Use POST method
+            headers: {
+                'Content-Type': 'application/json', // Specify the content type
+                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token for Laravel
+            },
+            body: JSON.stringify({
+                business_unit: selectedBU
+            }) // Send the selected BU in the request body
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json(); // Parse response as JSON
+            })
+            .then(data => {
+                // Log the complete data received from the server to inspect its structure
+                console.log("Complete data received from server:", data);
+
+                // Update country dropdown
+                data.countries.forEach(country => {
+                    const option = document.createElement('option');
+                    option.value = country; // Ensure this matches your data structure
+                    option.textContent = country; // Ensure this matches your data structure
+                    countryDropdown.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching BU data:', error));
+    }
+
+    // Function to update selected country and automatically select the BUH
+    // Function to update selected country and automatically select the BUH
+    function updateSelectedCountryAndBuh() {
+
+        console.log('some')
+        const countryDropdown = document.getElementById('countryDropdown');
+        const selectedCountry = countryDropdown.value;
+
+        console.log("Selected country:", selectedCountry);
+
+        // Update the selected country display
+        document.getElementById('selectedCountry').textContent = selectedCountry || 'None';
+
+        // Update the BUH dropdown based on the selected country
+        const buhDropdown = document.getElementById('buhDropdown');
+
+        if (!selectedCountry) {
+            console.log("No country selected for BUH.");
+            document.getElementById('selectedBUH').textContent = 'None';
+            return;
+        }
+
+        // Log the BUH data to inspect it
+        console.log("BUH data by country:", buhDropdown);
+
+        // Get BUH for the selected country
+        const buhValue = buhDropdown.value;
+
+
+        // Check if buhValue exists and is not an array (since it's a string in your case)
+        if (typeof buhValue === 'string') {
+            // Create a single option for the BUH dropdown
+            const option = document.createElement('option');
+            option.value = buhValue;
+            option.textContent = buhValue;
+            buhDropdown.appendChild(option);
+
+            // Automatically select the first (and only) BUH
+            buhDropdown.value = buhValue;
+            document.getElementById('selectedBUH').textContent = buhValue; // Update the BUH display
+            console.log("Automatically selected BUH:", buhValue);
+        } else {
+            console.error("BUH data is not available or not valid for selected country:", selectedCountry);
+            document.getElementById('selectedBUH').textContent = 'None';
+        }
+    }
+
+
+
+    // Function to reset all hidden containers
+    function hideAll() {
+        document.getElementById('country-container').classList.add('d-none');
+        document.getElementById('buh-container').classList.add('d-none');
+        document.getElementById('import-container').classList.add('d-none');
+    }
+
+    // Initially hide everything
+    document.addEventListener('DOMContentLoaded', function () {
+        hideAll();
+    });
+</script>
 @endsection
 
 <!-- <script>
