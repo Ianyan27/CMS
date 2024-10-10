@@ -45,7 +45,7 @@
                         <a style="padding: 10px 12px;"
                             href="{{ Auth::user()->role == 'Admin'
                                 ? route('admin#update-sale-agent', ['id' => $owner->id])
-                                : route('owner#update', ['contact_pid' => $owner->contact_pid]) }}"
+                                : route('buh#update-sale-agent', ['id' => $owner->id]) }}"
                             class="btn hover-action mx-1" data-toggle="modal" data-target="#editOwnerModal">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </a>

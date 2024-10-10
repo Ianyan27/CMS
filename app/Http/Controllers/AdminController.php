@@ -131,7 +131,7 @@ class AdminController extends Controller
         // Retrieve the contact record with the specified 'contact_pid'
         $contact = null;
 
-    // Check which type of contact it is and retrieve it from the corresponding table
+        // Check which type of contact it is and retrieve it from the corresponding table
         switch ($type) {
             case 'New':
             case 'HubSpot Contact':
@@ -680,7 +680,7 @@ class AdminController extends Controller
         $perPage = $userData->perPage();
 
         // Pass the results to the view
-        return view('Head_page', [
+        return view('Head_Page', [
             'userData' => $userData,
             'currentPage' => $currentPage,
             'perPage' => $perPage,
@@ -720,7 +720,8 @@ class AdminController extends Controller
         ]);
     }
 
-    public function saveBUH(Request $request){
+    public function saveBUH(Request $request)
+    {
         // Define the allowed email domains as a regular expression
         $domainRegex = 'lithan.com|educlaas.com|learning.educlaas.com';
 
@@ -780,9 +781,10 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'User added successfully!');
     }
 
-    public function deleteBUH($id){
+    public function deleteBUH($id)
+    {
         DB::beginTransaction(); // Start a database transaction
-    
+
         try {
             // Fetch the related buh_id and email using the provided id from bu_country
             $buCountry = DB::table('bu_country as bc')
@@ -790,22 +792,22 @@ class AdminController extends Controller
                 ->select('bc.buh_id', 'b.email') // Select the email from the buh table
                 ->where('bc.id', $id)
                 ->first();
-    
+
             if (!$buCountry) {
                 return redirect()->route('admin#view-buh')->with('error', 'User not found.');
             }
-    
+
             $buhId = $buCountry->buh_id;
-    
+
             // Delete related entries in the sale_agent table first
             DB::table('sale_agent')->where('bu_country_id', $id)->delete();
-    
+
             // Delete the entry in the bu_country table
             DB::table('bu_country')->where('id', $id)->delete();
-    
+
             // Then delete the entry in the buh table
             DB::table('buh')->where('id', $buhId)->delete();
-    
+
             // Finally, delete the entry in the users table using the retrieved email
             $user = DB::table('users')->where('email', $buCountry->email)->first();
             if ($user) {
@@ -813,9 +815,9 @@ class AdminController extends Controller
             } else {
                 Log::warning('User not found for deletion with email: ' . $buCountry->email);
             }
-    
+
             DB::commit(); // Commit the transaction
-    
+
             return redirect()->back()->with('success', 'BUH deleted successfully!');
         } catch (\Exception $e) {
             DB::rollBack(); // Rollback the transaction on error
@@ -823,9 +825,9 @@ class AdminController extends Controller
             return redirect()->back()->with('error', 'Failed to delete BUH.');
         }
     }
-    
+
     public function updateStatusSaleAgent(Request $request, $owner_pid)
-    
+
     {
         // Log incoming request data
         Log::info('Update Status Request:', [
@@ -863,7 +865,8 @@ class AdminController extends Controller
         }
     }
 
-    public function getProgress(){
+    public function getProgress()
+    {
         return response()->json(['progress' => Session::get('progress', 0)]);
     }
 

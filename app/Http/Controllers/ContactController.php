@@ -6,6 +6,8 @@ use App\Models\Contact;
 use App\Models\ContactArchive;
 use App\Models\ContactDiscard;
 use App\Models\ArchiveActivities;
+use App\Models\BuCountry;
+use App\Models\BUH;
 use App\Models\Engagement;
 use App\Models\EngagementArchive;
 use App\Models\EngagementDiscard;
@@ -625,35 +627,45 @@ class ContactController extends Controller
 
     public function hubspotContacts()
     {
-        $ownerPid = Auth::user()->id; // Get the authenticated user's ID as owner_pid
+        $userEmail = Auth::user()->email;
 
-        log::info("buh id " . $ownerPid);
+        // Fetch the BUH record associated with the logged-in user's email
+        $buh = BUH::where('email', $userEmail)->first();
 
-        // Get HubSpot contacts using Eloquent with joins and pagination
-        $hubspotContacts = Contact::join('owners as o', 'contacts.fk_contacts__owner_pid', '=', 'o.owner_pid')
-            ->join('users as u', 'o.fk_buh', '=', 'u.id')
-            ->where('u.id', $ownerPid)
-            ->where('contacts.status', 'Hubspot Contact')
-            ->select('contacts.*') // Adjust as necessary
-            ->paginate(50);
+        if (!$buh) {
+            return redirect()->back()->with('error', 'No BUH found for the logged-in user.');
+        }
 
-        // Get HubSpot contacts where datetime_of_hubspot_sync is null using the same query structure
-        $hubspotContactsNoSync = Contact::join('owners as o', 'contacts.fk_contacts__owner_pid', '=', 'o.owner_pid')
-            ->join('users as u', 'o.fk_buh', '=', 'u.id')
-            ->where('u.id', $ownerPid)
-            ->where('contacts.status', 'Hubspot Contact')
-            ->whereNull('contacts.datetime_of_hubspot_sync')
-            ->select('contacts.*') // Adjust as necessary
-            ->paginate(50);
+        // Fetch all BuCountry records associated with this BUH
+        $buCountries = $buh->buCountries;
 
-        // Get HubSpot contacts where datetime_of_hubspot_sync has a value using the same query structure
-        $hubspotContactsSynced = Contact::join('owners as o', 'contacts.fk_contacts__owner_pid', '=', 'o.owner_pid')
-            ->join('users as u', 'o.fk_buh', '=', 'u.id')
-            ->where('u.id', $ownerPid)
-            ->where('contacts.status', 'Hubspot Contact')
-            ->whereNotNull('contacts.datetime_of_hubspot_sync')
-            ->select('contacts.*') // Adjust as necessary
-            ->paginate(50);
+        if ($buCountries->isEmpty()) {
+            return redirect()->back()->with('error', 'No Business Units associated with this BUH.');
+        }
+
+        // Fetch all SaleAgent records associated with the BuCountry records
+        $saleAgents = $buCountries->flatMap->saleAgents;
+
+        // Define the base query
+        $baseQuery = Contact::whereHas('saleAgent', function ($query) use ($saleAgents) {
+            $query->whereIn('id', $saleAgents->pluck('id'));
+        })->where('status', 'Hubspot Contact');
+
+
+        // Get HubSpot contacts using Eloquent with pagination
+        $hubspotContacts = $baseQuery->paginate(50);
+
+        // Get HubSpot contacts where datetime_of_hubspot_sync is null
+        $hubspotContactsNoSync = $baseQuery->whereNull('datetime_of_hubspot_sync')->paginate(50);
+
+
+        // Get HubSpot contacts where datetime_of_hubspot_sync has a value
+        $hubspotContactsSynced = $baseQuery->whereNotNull('datetime_of_hubspot_sync')->paginate(50);
+
+        Log::debug("hubspot baseQuery:", ['query' => $baseQuery->toSql()]);
+        Log::debug("hubspot contact:", ['contacts' => $hubspotContacts->toArray()]);
+        Log::debug("hubspot contact no sync:", ['contacts' => $hubspotContactsNoSync->toArray()]);
+        Log::debug("hubspot contact synced:", ['contacts' => $hubspotContactsSynced->toArray()]);
 
         // Pass data to view
         return view('Hubspot_Contact_Listing', [
