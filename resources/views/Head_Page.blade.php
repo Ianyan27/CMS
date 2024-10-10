@@ -357,66 +357,49 @@
     @endif
 
     <script src="{{ asset('js/add_agent_validation.js') }}"></script>
-    {{-- <!-- <script src="{{ asset('js/sort.js') }}"></script> --> --}}
-    <script>
-        function toggleSort(downIconId, upIconId) {
-            const sortDown = document.getElementById(downIconId);
-            const sortUp = document.getElementById(upIconId);
+<script>
+    function toggleSort(downIconId, upIconId) {
+        const sortDown = document.getElementById(downIconId);
+        const sortUp = document.getElementById(upIconId);
 
-            if (sortDown.style.display === 'none') {
-                sortDown.style.display = 'inline';
-                sortUp.style.display = 'none';
-            } else {
-                sortDown.style.display = 'none';
-                sortUp.style.display = 'inline';
-            }
+        if (sortDown.style.display === 'none') {
+            sortDown.style.display = 'inline';
+            sortUp.style.display = 'none';
+        } else {
+            sortDown.style.display = 'none';
+            sortUp.style.display = 'inline';
         }
+    }
 
-        function sortTable(columnName, order) {
-            let table, rows, switching, i, x, y, shouldSwitch;
-            table = document.querySelector(".table");
-            switching = true;
+    function sortTable(columnName, order) {
+        let table = document.querySelector(".table");
+        let rows = table.rows;
+        let switching = true;
 
-        // Loop until no switching has been done
+        // Determine column index based on columnName
+        const columnIndex = {
+            'bu_name': 1,
+            'country_name': 2,
+            'buh_name': 3,
+            'buh_email': 4,
+            'nationality': 5
+        }[columnName];
+
+        // Loop until no switching is done
         while (switching) {
             switching = false;
-            rows = table.rows;
-
-            for (i = 1; i < (rows.length - 1); i++) {
-                shouldSwitch = false;
-
-                // Determine the column index based on columnName
-                let columnIndex;
-                if (columnName === 'bu_name') {
-                    columnIndex = 1; // Index for the 'Business Unit' column
-                } else if (columnName === 'country_name') {
-                    columnIndex = 2; // Index for the 'Country' column
-                } else if (columnName === 'buh_name') {
-                    columnIndex = 3; // Index for 'BUH' column
-                } else if (columnName === 'buh_email') {
-                    columnIndex = 4; // Index for 'BUH Email' column
-                } else if (columnName === 'nationality') {
-                    columnIndex = 5; // Index for 'Nationality' column
-                }
-
-                // Compare the two elements in the column to see if they should switch
-                x = rows[i].querySelectorAll("td")[columnIndex];
-                y = rows[i + 1].querySelectorAll("td")[columnIndex];
-
+            for (let i = 1; i < (rows.length - 1); i++) {
+                let x = rows[i].querySelectorAll("td")[columnIndex];
+                let y = rows[i + 1].querySelectorAll("td")[columnIndex];
                 if (x && y) {
-                    if (order === 'asc' && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                        shouldSwitch = true;
-                        break;
-                    } else if (order === 'desc' && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                        shouldSwitch = true;
+                    let shouldSwitch = (order === 'asc' && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) || 
+                                       (order === 'desc' && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase());
+                    if (shouldSwitch) {
+                        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                        switching = true;
                         break;
                     }
                 }
-            }
-            if (shouldSwitch) {
-                // If a switch has been marked, make the switch and mark the switch as done
-                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                switching = true;
             }
         }
         reassignRowNumbersTableContainer();
@@ -425,208 +408,117 @@
     function reassignRowNumbersTableContainer() {
         const table = document.querySelector(".table");
         const rows = table.rows;
-        const currentPage = {{ $currentPage }};
-        const perPage = {{ $perPage }};
-        const offset = (currentPage - 1) * perPage;
+        const offset = ({{ $currentPage }} - 1) * {{ $perPage }};
 
-            for (let i = 1; i < rows.length; i++) {
-                rows[i].querySelectorAll("td")[0].innerText = offset + i; // Reassign "No #" column (index 1)
-            }
+        for (let i = 1; i < rows.length; i++) {
+            rows[i].querySelectorAll("td")[0].innerText = offset + i;
         }
-    </script>
-    <script>
-    $(document).ready(function () {
-        // Event handler for when the country dropdown is changed
-        $('#countryDropdown').on('change', function () {
-            const selectedCountry = $(this).val();
-            $('#buDropdown')
-            updateSelectedCountryAndBuh(selectedCountry);
-        });
+    }
 
-    });
-    // Function to update countries and BUH based on selected BU
     function updateCountryDropdown() {
         const buDropdown = document.getElementById('buDropdown');
         const selectedBU = buDropdown.value;
-        console.log("Selected BU:", selectedBU);
-
-
-        // Clear previous country options
         const countryDropdown = document.getElementById('countryDropdown');
-        countryDropdown.innerHTML = '<option value="" selected disabled>Select Country</option>'; // Reset options
 
+        countryDropdown.innerHTML = '<option value="" selected disabled>Select Country</option>';
 
+        if (!selectedBU) return;
 
-        // If no BU is selected, clear the BUH display
-        if (!selectedBU) {
-            console.log("No BU selected. Exiting updateCountryDropdown.");
-            return; // Do not fetch data if no BU is selected
-        }
-
-        // Fetch the countries and BUH from the server
         console.log("Fetching BU data for:", selectedBU);
-        fetch({{ route('get.bu.data') }}, {
-            method: 'POST', // Use POST method
-            headers: {
-                'Content-Type': 'application/json', // Specify the content type
-                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token for Laravel
-            },
-            body: JSON.stringify({
-                business_unit: selectedBU
-            }) // Send the selected BU in the request body
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json(); // Parse response as JSON
-            })
-            .then(data => {
-                // Log the complete data received from the server to inspect its structure
-                console.log("Complete data received from server:", data);
-                console.log("buh: ", data.buh[0]);
+            fetch(`{{ route('get.bu.data') }}`, {
+                    method: 'POST', // Use POST method
+                    headers: {
+                        'Content-Type': 'application/json', // Specify the content type
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token for Laravel
+                    },
+                    body: JSON.stringify({
+                        business_unit: selectedBU
+                    }) // Send the selected BU in the request body
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json(); // Parse response as JSON
+                })
+                .then(data => {
+                    // Log the complete data received from the server to inspect its structure
+                    console.log("Complete data received from server:", data);
+                    console.log("buh: ", data.buh[0]);
 
-                // $.each(buhData, function(index, value) {
-                //     $('#buhDropdown').append(<option value="${value.id}">${value.name}</option>);
-                // });
-                // Update country dropdown
-                data.countries.forEach(country => {
-                    const option = document.createElement('option');
-                    option.value = country;
-                    option.textContent = country;
-                    countryDropdown.appendChild(option);
-                });
+                    // $.each(buhData, function(index, value) {
+                    //     $('#buhDropdown').append(`<option value="${value.id}">${value.name}</option>`);
+                    // });
+                    // Update country dropdown
+                    data.countries.forEach(country => {
+                        const option = document.createElement('option');
+                        option.value = country;
+                        option.textContent = country;
+                        countryDropdown.appendChild(option);
+                    });
 
-            })
-            .catch(error => console.error('Error fetching BU data:', error));
-    }
+                })
+                .catch(error => console.error('Error fetching BU data:', error));
+        }
 
     function updateCountryDropdowninEdit(id) {
-        console.log(id);
-        console.log('buDropdowninedit' + id);
-        var dropdownid = 'buDropdowninedit' + id;
-
-
-        const buDropdown = document.getElementById(dropdownid);
+        const buDropdown = document.getElementById(`buDropdowninedit${id}`);
         const selectedBU = buDropdown.value;
-        console.log("Selected BU:", selectedBU);
+        const countryDropdown = document.getElementById(`countryDropdown${id}`);
 
-        const tagid = 'countryDropdown'+id;
-        console.log(tagid);
+        countryDropdown.innerHTML = '<option value="" selected disabled>Select Country</option>';
 
-        // Clear previous country options
-        const countryDropdown = document.getElementById(tagid);
-        countryDropdown.innerHTML = '<option value="" selected disabled>Select Country</option>'; // Reset options
+        if (!selectedBU) return;
 
-        // If no BU is selected, clear the country dropdown
-        if (!selectedBU) {
-            console.log("No BU selected. Exiting updateCountryDropdown.");
-            return; // Do not fetch data if no BU is selected
-        }
-
-        // Fetch the countries and BUH from the server
-        console.log("Fetching BU data for:", selectedBU);
-        fetch({{ route('get.bu.data') }}, {
-            method: 'POST', // Use POST method
+        fetch(`{{ route('get.bu.data') }}`, {
+            method: 'POST',
             headers: {
-                'Content-Type': 'application/json', // Specify the content type
-                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token for Laravel
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
-            body: JSON.stringify({
-                business_unit: selectedBU
-            }) // Send the selected BU in the request body
+            body: JSON.stringify({ business_unit: selectedBU })
         })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json(); // Parse response as JSON
-            })
-            .then(data => {
-                // Log the complete data received from the server to inspect its structure
-                console.log("Complete data received from server:", data);
-
-                // Update country dropdown
-                data.countries.forEach(country => {
-                    const option = document.createElement('option');
-                    option.value = country; // Ensure this matches your data structure
-                    option.textContent = country; // Ensure this matches your data structure
-                    countryDropdown.appendChild(option);
-                });
-            })
-            .catch(error => console.error('Error fetching BU data:', error));
+        .then(response => response.json())
+        .then(data => {
+            data.countries.forEach(country => {
+                const option = document.createElement('option');
+                option.value = country;
+                option.textContent = country;
+                countryDropdown.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error fetching BU data:', error));
     }
 
-    // Function to update selected country and automatically select the BUH
-    // Function to update selected country and automatically select the BUH
     function updateSelectedCountryAndBuh() {
-
-        console.log('some')
         const countryDropdown = document.getElementById('countryDropdown');
         const selectedCountry = countryDropdown.value;
 
-        console.log("Selected country:", selectedCountry);
-
-        // Update the selected country display
         document.getElementById('selectedCountry').textContent = selectedCountry || 'None';
 
-        // Update the BUH dropdown based on the selected country
         const buhDropdown = document.getElementById('buhDropdown');
-
-        if (!selectedCountry) {
-            console.log("No country selected for BUH.");
-            document.getElementById('selectedBUH').textContent = 'None';
-            return;
-        }
-
-        // Log the BUH data to inspect it
-        console.log("BUH data by country:", buhDropdown);
-
-        // Get BUH for the selected country
         const buhValue = buhDropdown.value;
 
-
-        // Check if buhValue exists and is not an array (since it's a string in your case)
-        if (typeof buhValue === 'string') {
-            // Create a single option for the BUH dropdown
+        if (buhValue) {
             const option = document.createElement('option');
             option.value = buhValue;
             option.textContent = buhValue;
             buhDropdown.appendChild(option);
-
-            // Automatically select the first (and only) BUH
             buhDropdown.value = buhValue;
-            document.getElementById('selectedBUH').textContent = buhValue; // Update the BUH display
-            console.log("Automatically selected BUH:", buhValue);
+            document.getElementById('selectedBUH').textContent = buhValue;
         } else {
-            console.error("BUH data is not available or not valid for selected country:", selectedCountry);
             document.getElementById('selectedBUH').textContent = 'None';
         }
     }
 
-
-
-    // Function to reset all hidden containers
     function hideAll() {
         document.getElementById('country-container').classList.add('d-none');
         document.getElementById('buh-container').classList.add('d-none');
         document.getElementById('import-container').classList.add('d-none');
     }
 
-    // Initially hide everything
     document.addEventListener('DOMContentLoaded', function () {
         hideAll();
     });
 </script>
 @endsection
-
-<!-- <script>
-    $(document).ready(function() {
-        $('#successModal').modal('show');
-        // Show the Add User modal if needed
-        $('#addUserModal').on('show.bs.modal', function() {
-            $('#addUserForm')[0].reset(); // Reset form fields
-        });
-
-    });
-</script> -->
