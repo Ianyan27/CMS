@@ -30,13 +30,17 @@
                                     <option value="">Select Country</option>
                                 </select>
                             </div>
-                            <div class="d-none">
-                                <div class="col-lg-12 d-none" id="buh-container">
-                                    <label for="buhDropdown">Select BUH:</label>
-                                    <select id="buhDropdown" class="w-100 platforms search-bar" name="buh">
-                                        <option value="" selected disabled>Select BUH</option>
-                                    </select>
-                                </div>
+                            <div class="col-lg-12 " id="buh-container">
+                                <label for="buhDropdown" class="font-educ d-block">Select BUH:</label>
+                                <select id="buhDropdown" class="w-100 platforms search-bar" name="buh">
+                                    <option value="" disabled>Select BUH</option>
+                                </select>
+                            </div>
+                            <div class="d-none " id="buh-container">
+                                <label for="reset" class="font-educ d-block">Select BUH:</label>
+                                <select id="reset" class="w-100 platforms search-bar">
+                                    <option value="" disabled>Select BUH</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -141,6 +145,11 @@
                 updateSelectedCountryAndBuh(selectedCountry);
             });
 
+            $('#buhDropdown').on('change', function() {
+                const selectedBUH = $(this).val();
+                document.getElementById('selectedBUH').textContent = selectedBUH || 'None';
+            });
+
         });
         // Function to update countries and BUH based on selected BU
         function updateCountryDropdown() {
@@ -220,7 +229,8 @@
 
             // Update the BUH dropdown based on the selected country
             const buhDropdown = document.getElementById('buhDropdown');
-
+            const selectedIndex = buhDropdown.selectedIndex;
+            const selectedBUHValue = buhDropdown.options[selectedIndex].value;
             if (!selectedCountry) {
                 console.log("No country selected for BUH.");
                 document.getElementById('selectedBUH').textContent = 'None';
@@ -229,6 +239,9 @@
 
             // Log the BUH data to inspect it
             console.log("BUH data by country:", buhDropdown);
+
+            // Clear BUH dropdown
+            buhDropdown.innerHTML = '<option value="" selected disabled>Select BUH</option>'; // Reset options
 
             // Get BUH for the selected country
             const buhValue = buhDropdown.value;
@@ -244,8 +257,8 @@
 
                 // Automatically select the first (and only) BUH
                 buhDropdown.value = buhValue;
-                document.getElementById('selectedBUH').textContent = buhValue; // Update the BUH display
-                console.log("Automatically selected BUH:", buhValue);
+                document.getElementById('selectedBUH').textContent = selectedBUHValue; // Update the BUH display
+                console.log("Automatically selected BUH:", selectedCountry);
             } else {
                 console.error("BUH data is not available or not valid for selected country:", selectedCountry);
                 document.getElementById('selectedBUH').textContent = 'None';
@@ -271,6 +284,8 @@
         function handleCountryChange() {
             const countryDropdown = document.getElementById('countryDropdown');
             const selectedCountry = countryDropdown.value;
+            // Assuming BUH has an id field and a name field
+            const buhDropdown = document.getElementById('buhDropdown');
             const buId = document.getElementById('buDropdown')
                 .value; // Assuming you have a BU dropdown with ID 'buDropdown'
 
@@ -312,15 +327,14 @@
                     console.log("Complete data received from server:", data);
 
                     console.log("buh ", data.buh)
+
+                    buhDropdown.innerHTML = '<option value="" selected disabled>Select BUH</option>'; // Reset options
                     // Populate BUH dropdown
                     data.buh.forEach(buh => {
-                        const selectedBUH = document.getElementById('selectedBUH');
-                        selectedBUH.textContent = buh.name;
-                        // Assuming BUH has an id field and a name field
                         const option = document.createElement('option');
-                        const buhDropdown = document.getElementById('buhDropdown');
-                        buhDropdown.options[0].value = buh.name; // Set value to the id of the BUH
-                        buhDropdown.options[0].textContent = buh.name;
+                        option.value = buh.name; // Set value to the name of the BUH
+                        option.textContent = buh.name; // Display the name of the BUH in the dropdown
+                        buhDropdown.appendChild(option); // Add the option to the dropdown
                     });
                 })
                 .catch(error => console.error('Error fetching BUH data:', error));
