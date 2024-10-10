@@ -49,7 +49,8 @@ class SaleAdminController extends Controller
             ->where('bu_id', $buId)
             ->get();
 
-        Log::info("country id " . $buCountries);
+        $countryNames = $buCountries->pluck('country.name')->unique()->values()->toArray();
+        Log::info("Countries associated with BU [{$buName}]: ", ['countries' => $countryNames]);
 
         $buhList = BUH::whereHas('buCountries', function ($query) use ($buId) {
             $query->where('bu_id', $buId);
@@ -58,7 +59,7 @@ class SaleAdminController extends Controller
 
         // Prepare the response by extracting the unique country names
         $response = [
-            'countries' => $buCountries->pluck('country.name'),
+            'countries' => $countryNames,
             'buh' => $buhList->pluck('name'), // Get the names of the BUHs related to this BU
         ];
 
@@ -94,14 +95,14 @@ class SaleAdminController extends Controller
         $buhList = BUH::whereHas('buCountries', function ($query) use ($bu, $country) {
             $query->where('bu_id', $bu->id)
                 ->where('country_id', $country->id);
-        })->get();
+        })->get()->unique('id'); // Ensure uniqueness based on BUH ID
 
         // Check if any BUHs were found
         if ($buhList->isEmpty()) {
             return response()->json(['error' => 'No BUH found for the specified country and business unit'], 404);
         }
 
-        // Return the list of BUHs as JSON
+        // Return the list of unique BUHs as JSON
         return response()->json(['buh' => $buhList]);
     }
 }
