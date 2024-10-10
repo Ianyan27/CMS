@@ -25,8 +25,8 @@ class HubspotContactController extends Controller
 
         // Retrieve contacts with the selected IDs and join with the owners table to get the HubSpot owner ID
         $contacts = Contact::whereIn('contact_pid', $selectedContacts)
-            ->join('owners', 'contacts.fk_contacts__owner_pid', '=', 'owners.owner_pid')
-            ->select('contacts.*', 'owners.owner_hubspot_id')
+            ->join('sale_agent', 'contacts.fk_contacts__sale_agent_id', '=', 'sale_agent.id')
+            ->select('contacts.*', 'sale_agent.hubspot_id')
             ->get();
 
         // Convert the retrieved contacts to an array suitable for HubSpot
