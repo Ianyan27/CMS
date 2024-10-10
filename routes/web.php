@@ -405,7 +405,7 @@ Route::group(['prefix' => 'buh'], function () {
     Route::get('/view-contact/{contact_pid}', [
         OwnerController::class,
         'viewContact'
-    ])->name('owner#view-contact');
+    ])->name('buh#view-contact');
     Route::get('/transfer-contacts/{owner_pid}', [
         BUHController::class,
         'transferContact'

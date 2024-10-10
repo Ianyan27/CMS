@@ -237,23 +237,30 @@ class AdminController extends Controller
 
     public function viewContact($contact_pid)
     {
-        /* Retrieve the contact record with the specified 'contact_pid' and pass
-         it to the 'Edit_Contact_Detail_Page' view for editing. */
+        // Log the incoming request with the contact_pid
+        Log::info('View Contact method called with contact_pid: ' . $contact_pid);
 
         // Retrieve the contact record with the specified 'contact_pid'
         $editContact = Contact::where('contact_pid', $contact_pid)->first();
+        Log::info('Retrieved Edit Contact: ', [$editContact]);
 
         // Check if the contact exists
         if (!$editContact) {
+            Log::warning('Contact not found for contact_pid: ' . $contact_pid);
             return redirect()->route('admin#view-contact', $contact_pid)->with('error', 'Contact not found.');
         }
 
         // Retrieve the authenticated user
         $user = Auth::user();
+        Log::info('Authenticated User: ', [$user]);
+
+        // Retrieve the owner details
         $owner = User::where('email', $user->email)->first();
+        Log::info('Owner details: ', [$owner]);
 
         // Retrieve all engagements for the contact
         $engagements = Engagement::where('fk_engagements__contact_pid', $contact_pid)->get();
+        Log::info('Retrieved Engagements: ', [$engagements]);
 
         // Decrypt images in engagements
         foreach ($engagements as $engagement) {
@@ -274,19 +281,24 @@ class AdminController extends Controller
             }
         }
 
+        // Log after processing attachments
+        Log::info('Engagements after processing attachments: ', [$engagements]);
+
         // Retrieve engagements archived for the contact
         $engagementsArchive = EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $contact_pid)->get();
+        Log::info('Retrieved Engagement Archives: ', [$engagementsArchive]);
+
+        // Retrieve deleted engagements
         $deletedEngagement = ArchiveActivities::where('fk_engagements__contact_pid', $contact_pid)->get();
+        Log::info('Retrieved Deleted Engagements: ', [$deletedEngagement]);
+
         // Use the first engagement for updates if available
         $updateEngagement = $engagements->first();
-        Log::info('Owner: ', [$owner]);
-        Log::info('Edit Contact: ', [$editContact]);
-        Log::info('Engagements: ', [$engagements]);
         Log::info('Update Engagement: ', [$updateEngagement]);
-        Log::info('Engagement Archive: ', [$engagementsArchive]);
-        Log::info('Deleted Engagement: ', [$deletedEngagement]);
 
         // Pass data to the view
+        Log::info('Passing data to view...');
+
         return view('Edit_Contact_Detail_Page')->with([
             'user' => $user,
             'owner' => $owner,
@@ -297,6 +309,7 @@ class AdminController extends Controller
             'deletedEngagement' => $deletedEngagement
         ]);
     }
+
 
     public function saleAdmin()
     {

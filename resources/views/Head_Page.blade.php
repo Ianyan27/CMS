@@ -44,8 +44,7 @@
                 <div class="search-box d-flex align-items-center mr-3 mb-2">
                     <input type="search" class="form-control mr-1" placeholder="Search by Email or Name" id="search-input"
                         aria-label="Search">
-                    <button class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search"
-                        style="padding: 10px 12px;">
+                    <button class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
                 </div>
@@ -108,11 +107,11 @@
                                 <td>{{ $user->nationality }}</td> <!-- Displaying Nationality -->
                                 <td>
                                     <a class="btn hover-action" data-toggle="modal"
-                                        data-target="#editUserModal{{ $user->id }}" style="padding: 10px 12px;">
+                                        data-target="#editUserModal{{ $user->id }}">
                                         <i class="fa-solid fa-pen-to-square"></i>
                                     </a>
                                     <a class="btn hover-action" data-toggle="modal"
-                                        data-target="#deleteUserModal{{ $user->id }}" style="padding: 10px 12px;">
+                                        data-target="#deleteUserModal{{ $user->id }}">
                                         <i class="fa-solid fa-trash"></i>
                                     </a>
                                 </td>
@@ -261,8 +260,10 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                             {{ $user->id }}
-                            <form action="{{ Auth::user()->role == 'Admin' ? route('admin#delete-buh', ['id' => $user->id]) : route('head#delete-user', $user->id) }}" method="POST">
-                            {{-- <form action="{{ route('head#delete-user', $user->id) }}" method="POST"> --}}
+                            <form
+                                action="{{ Auth::user()->role == 'Admin' ? route('admin#delete-buh', ['id' => $user->id]) : route('head#delete-user', $user->id) }}"
+                                method="POST">
+                                {{-- <form action="{{ route('head#delete-user', $user->id) }}" method="POST"> --}}
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger">Delete</button>
@@ -343,13 +344,13 @@
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>
-                        </div>
-                        <div class="modal-footer" style="border:none;">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn hover-action" style="background: #91264c; color:white;">
-                                Add BUH
-                            </button>
-                        </div>
+                    </div>
+                    <div class="modal-footer" style="border:none;">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn hover-action" style="background: #91264c; color:white;">
+                            Add BUH
+                        </button>
+                    </div>
                     </form>
                 </div>
             </div>
@@ -362,8 +363,21 @@
     @endif
 
     <script src="{{ asset('js/add_agent_validation.js') }}"></script>
-    <!-- <script src="{{ asset('js/sort.js') }}"></script> -->
+    {{-- <!-- <script src="{{ asset('js/sort.js') }}"></script> --> --}}
     <script>
+        function toggleSort(downIconId, upIconId) {
+            const sortDown = document.getElementById(downIconId);
+            const sortUp = document.getElementById(upIconId);
+
+            if (sortDown.style.display === 'none') {
+                sortDown.style.display = 'inline';
+                sortUp.style.display = 'none';
+            } else {
+                sortDown.style.display = 'none';
+                sortUp.style.display = 'inline';
+            }
+        }
+
         function sortTable(columnName, order) {
             let table, rows, switching, i, x, y, shouldSwitch;
             table = document.querySelector(".table");
@@ -426,37 +440,7 @@
             }
         }
     </script>
-    <script>
-        // Add an event listener to the search input field
-        document.getElementById('search-input').addEventListener('input', function() {
-            // Get the search query
-            const searchQuery = this.value.toLowerCase();
-
-            // Get all table rows
-            const rows = document.querySelectorAll('.table tbody tr');
-
-            // Loop through each row
-            rows.forEach(function(row) {
-                // Get the row's text content
-                const buhName = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
-                const buhEmail = row.querySelector('td:nth-child(5)').textContent.toLowerCase();
-
-                // Check if the row's text content matches the search query
-                if (buhName.includes(searchQuery) || buhEmail.includes(searchQuery)) {
-                    // Show the row if it matches the search query
-                    row.style.display = '';
-                } else {
-                    // Hide the row if it doesn't match the search query
-                    row.style.display = 'none';
-                }
-            });
-        });
-    </script>
 @endsection
-
-
-<script src="{{ asset('js/add_agent_validation.js') }}"></script>
-<script src="{{ asset('js/sort.js') }}"></script>
 
 <!-- <script>
     $(document).ready(function() {

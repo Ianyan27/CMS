@@ -65,7 +65,6 @@
                             <label class="font-educ" for="email">Email</label>
                             <h5 class="fonts text-truncate" id="email">{{ $owner->email }}</h5>
                         </div>
-
                     </div>
                     <div class="col-md-6">
                         <div class="form-group mb-3">
@@ -274,7 +273,7 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <a href=" {{ Auth::user()->role == 'Admin' ? route('admin#view-contact', ['contact_pid' => $contact->contact_pid]) : route('owner#view-contact', ['contact_pid' => $contact->contact_pid]) }} "
+                                    <a href=" {{ Auth::user()->role == 'Admin' ? route('admin#view-contact', ['contact_pid' => $contact->contact_pid]) : route('buh#view-contact', ['contact_pid' => $contact->contact_pid]) }} "
                                         class="btn hover-action" data-toggle="tooltip" title="View"
                                         style="padding: 10px 12px;">
                                         <i class="fa-solid fa-eye"></i>

@@ -152,7 +152,7 @@ class ContactController extends Controller
         ]);
     }
 
-    public function updateContact(Request $request, $contact_pid, $owner_pid)
+    public function updateContact(Request $request, $contact_pid, $id)
     {
         // Checking for admin role and redirect if true
         $user = Auth::user();
@@ -187,16 +187,16 @@ class ContactController extends Controller
         $request->validate($rules);
 
         // Check if the owner exists
-        $owner = SaleAgent::find($owner_pid);
+        $owner = SaleAgent::find($id);
         if (!$owner) {
-            Log::error('Owner not found', ['owner_id' => $owner_pid]);
+            Log::error('Owner not found', ['owner_id' => $id]);
             return redirect()->route('contact-listing')->with('error', 'Owner not found.');
         }
 
         // Log the owner and contact details
         Log::info('Updating contact', [
             'contact_pid' => $contact_pid,
-            'owner_pid' => $owner_pid,
+            'owner_pid' => $id,
             'status' => $request->input('status')
         ]);
 
@@ -221,14 +221,14 @@ class ContactController extends Controller
 
             // Set the owner PID
             if ($request->input('status') === 'Archive') {
-                $targetContactModel->fk_contacts__sale_agent_id = $owner_pid;
+                $targetContactModel->fk_contacts__sale_agent_id = $id;
             } else {
-                $targetContactModel->fk_contacts__sale_agent_id = $owner_pid;
+                $targetContactModel->fk_contacts__sale_agent_id = $id;
             }
 
             Log::info('Saving contact to archive/discard', [
                 'model' => $request->input('status') === 'Archive' ? 'ContactArchive' : 'ContactDiscard',
-                'owner_pid' => $owner_pid
+                'id' => $id
             ]);
 
             try {
@@ -236,7 +236,7 @@ class ContactController extends Controller
             } catch (\Exception $e) {
                 Log::error('Failed to save contact to archive/discard', [
                     'error' => $e->getMessage(),
-                    'owner_pid' => $owner_pid
+                    'id' => $id
                 ]);
                 return redirect()->route('contact-listing')->with('error', 'Failed to save contact to archive/discard.');
             }

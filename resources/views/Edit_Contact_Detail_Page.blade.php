@@ -2,11 +2,11 @@
 
 @extends('layouts.app')
 
+@extends('layouts.Update_Activity_Modal')
+@extends('layouts.Edit_Contact_Modal')
+@extends('layouts.Add_Activity_Modal')
+@extends('layouts.Attachment_Error_Modal')
 @section('content')
-    @extends('layouts.Update_Activity_Modal')
-    @extends('layouts.Edit_Contact_Modal')
-    @extends('layouts.Add_Activity_Modal')
-    @extends('layouts.Attachment_Error_Modal')
     @if (
         Auth::check() && Auth::user()->role == 'Admin' ||
             Auth::user()->role == 'BUH' ||
