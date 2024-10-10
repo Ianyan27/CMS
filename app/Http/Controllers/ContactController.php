@@ -59,7 +59,8 @@ class ContactController extends Controller
     }
 
 
-    public function contactsByOwner(){
+    public function contactsByOwner()
+    {
 
         $user = Auth::user();
 
@@ -612,6 +613,7 @@ class ContactController extends Controller
 
 
 
+
     public function hubspotContacts()
     {
         $userEmail = Auth::user()->email;
@@ -624,14 +626,10 @@ class ContactController extends Controller
         }
 
         // Fetch all BuCountry records associated with this BUH
-        $buCountries = $buh->buCountries;
-
-        if ($buCountries->isEmpty()) {
-            return redirect()->back()->with('error', 'No Business Units associated with this BUH.');
-        }
+        $buCountries = BuCountry::where('buh_id', $buh->id)->first();
 
         // Fetch all SaleAgent records associated with the BuCountry records
-        $saleAgents = $buCountries->flatMap->saleAgents;
+        $saleAgents = SaleAgent::where('bu_country_id', $buCountries->id)->get();
 
         // Define the base query
         $baseQuery = Contact::whereHas('saleAgent', function ($query) use ($saleAgents) {
@@ -643,16 +641,22 @@ class ContactController extends Controller
         $hubspotContacts = $baseQuery->paginate(50);
 
         // Get HubSpot contacts where datetime_of_hubspot_sync is null
-        $hubspotContactsNoSync = $baseQuery->whereNull('datetime_of_hubspot_sync')->paginate(50);
+        $hubspotContactsNoSync = $baseQuery->clone()->whereNull('datetime_of_hubspot_sync')->paginate(50);
 
+        $hubspotContactsSynced1 = $baseQuery->whereNotNull('datetime_of_hubspot_sync')->get();
+        Log::debug("hubspot contacts synced:", ['contacts' => $hubspotContactsSynced1->toArray()]);
+        Log::debug("Sale Agent IDs:", ['sale_agent_ids' => $saleAgents->pluck('id')->toArray()]);
+        Log::info("BU Country: " . $buCountries);
 
         // Get HubSpot contacts where datetime_of_hubspot_sync has a value
-        $hubspotContactsSynced = $baseQuery->whereNotNull('datetime_of_hubspot_sync')->paginate(50);
+        $hubspotContactsSynced = $baseQuery->clone()->whereNotNull('datetime_of_hubspot_sync')->paginate(50);
 
         Log::debug("hubspot baseQuery:", ['query' => $baseQuery->toSql()]);
         Log::debug("hubspot contact:", ['contacts' => $hubspotContacts->toArray()]);
         Log::debug("hubspot contact no sync:", ['contacts' => $hubspotContactsNoSync->toArray()]);
         Log::debug("hubspot contact synced:", ['contacts' => $hubspotContactsSynced->toArray()]);
+
+
 
         // Pass data to view
         return view('Hubspot_Contact_Listing', [
@@ -662,7 +666,8 @@ class ContactController extends Controller
         ]);
     }
 
-    private function saveLog($contact_pid, $action_type, $action_description){
+    private function saveLog($contact_pid, $action_type, $action_description)
+    {
 
         $ownerEmail = Auth::user()->email; // Get the authenticated user's ID as owner_pid
 
