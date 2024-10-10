@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Log;
 class OwnerController extends Controller
 {
 
-    public function owner()
+    public function saleAgent()
     {
         // Get the current authenticated user
         $user = Auth::user();

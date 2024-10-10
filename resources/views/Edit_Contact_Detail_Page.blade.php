@@ -8,7 +8,7 @@
     @extends('layouts.Add_Activity_Modal')
     @extends('layouts.Attachment_Error_Modal')
     @if (
-        (Auth::check() && Auth::user()->role == 'Admin') ||
+        Auth::check() && Auth::user()->role == 'Admin' ||
             Auth::user()->role == 'BUH' ||
             Auth::user()->role == 'Sales_Agent')
         @if (session('success'))
@@ -49,15 +49,20 @@
             <div class="col-md-5 border-right" id="contact-detail">
                 <div class="table-title d-flex justify-content-between align-items-center my-3">
                     <h2 class="mt-2 headings">Contact Detail</h2>
-                    @if (Auth::check() && Auth::user()->role == 'Sales_Agent' || Auth::check() && Auth::user()->role == 'Admin')
-                    <a href="{{ Auth::user()->role == 'Admin' 
-                        ? route('admin#edit-contact', ['contact_pid' => $editContact->contact_pid ?? $editContact->contact_archive_pid ?? $editContact->contact_discard_pid])
-                        : route('contact#edit', ['contact_pid' => $editContact->contact_pid ?? $editContact->contact_archive_pid ?? $editContact->contact_discard_pid]) }}" 
-                    class="btn hover-action mx-1"
-                    data-toggle="modal" data-target="#editContactModal">
-                        <i class="fa-solid fa-pen-to-square"></i>
-                    </a>
-            
+                    @if ((Auth::check() && Auth::user()->role == 'Sales_Agent') || (Auth::check() && Auth::user()->role == 'Admin'))
+                        <a href="{{ Auth::user()->role == 'Admin'
+                            ? route('admin#edit-contact', [
+                                'contact_pid' =>
+                                    $editContact->contact_pid ?? ($editContact->contact_archive_pid ?? $editContact->contact_discard_pid),
+                            ])
+                            : route('contact#edit', [
+                                'contact_pid' =>
+                                    $editContact->contact_pid ?? ($editContact->contact_archive_pid ?? $editContact->contact_discard_pid),
+                            ]) }}"
+                            class="btn hover-action mx-1" data-toggle="modal" data-target="#editContactModal">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+
                         {{-- <a href="{{ route('contact#edit', $editContact->contact_pid) }}" class="btn hover-action mx-1"
                             data-toggle="modal" data-target="#editContactModal">
                             <i class="fa-solid fa-pen-to-square"></i>
@@ -90,13 +95,15 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="font-educ" for="address">Address</label>
-                            <h5 class="fonts p-1 text-truncate" id="address" style="min-height: 103px;">{{ $editContact->address }}</h5>
+                            <h5 class="fonts p-1 text-truncate" id="address" style="min-height: 103px;">
+                                {{ $editContact->address }}</h5>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="font-educ" for="date-of-allocation">Date of Allocation</label>
-                            <h5 class="fonts p-1 text-truncate" id="date-of-allocation">{{ $editContact->date_of_allocation }}</h5>
+                            <h5 class="fonts p-1 text-truncate" id="date-of-allocation">
+                                {{ $editContact->date_of_allocation }}</h5>
                         </div>
                         <div class="form-group">
                             <label class="font-educ" for="qualification">Qualification</label>
@@ -156,8 +163,8 @@
                 </div>
                 <div class="activities">
                     @forelse ($engagements->groupBy(function ($date) {
-                        return \Carbon\Carbon::parse($date->date)->format('F Y');
-                        }) as $month => $activitiesInMonth)
+                            return \Carbon\Carbon::parse($date->date)->format('F Y');
+                            }) as $month => $activitiesInMonth)
                         <div class="activity-list" data-month="{{ $month }}">
                             <div class="activity-date my-3 ml-3">
                                 <span class="text-muted">{{ $month }}</span>
@@ -210,7 +217,9 @@
             </div>
             <div class="d-flex align-items-center mr-2 mb-2">
                 <!-- Button to trigger the modal -->
-                @if (Auth::check() && Auth::user()->role == 'Sales_Agent' || Auth::check() && Auth::user()->role == 'Admin' && $editContact->status !== 'HubSpot Contact')
+                @if (
+                    (Auth::check() && Auth::user()->role == 'Sales_Agent') ||
+                        (Auth::check() && Auth::user()->role == 'Admin' && $editContact->status !== 'HubSpot Contact'))
                     <button style="display: block;" class="btn hover-action add-activity-button" data-toggle="modal"
                         data-target="#addActivityModal" id="addActivityBtn">
                         <i style="font-size: 22px;" class="fa-solid fa-square-plus p-1"></i>
@@ -230,8 +239,10 @@
                         <th scope="col">Type</th>
                         <th scope="col">Description</th>
                         <th scope="col">Attachment</th>
-                        
-                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent' || Auth::check() && Auth::user()->role == 'Admin' && $editContact->status !== 'HubSpot Contact')
+
+                        @if (
+                            (Auth::check() && Auth::user()->role == 'Sales_Agent') ||
+                                (Auth::check() && Auth::user()->role == 'Admin' && $editContact->status !== 'HubSpot Contact'))
                             <th scope="col" class="text-center">Action</th>
                         @endif
                     </tr>
@@ -247,8 +258,10 @@
                         <tr>
                             <td>{{ ++$i }}</td>
                             <td>{{ $engagement->date }}</td>
-                            <td>{{ \Carbon\Carbon::parse($engagement->created_at)->format('Y-m-d H:i:s') }}</td> <!-- Created Date -->
-                            <td>{{ \Carbon\Carbon::parse($engagement->updated_at)->format('Y-m-d H:i:s') }}</td> <!-- Modified Date -->
+                            <td>{{ \Carbon\Carbon::parse($engagement->created_at)->format('Y-m-d H:i:s') }}</td>
+                            <!-- Created Date -->
+                            <td>{{ \Carbon\Carbon::parse($engagement->updated_at)->format('Y-m-d H:i:s') }}</td>
+                            <!-- Modified Date -->
                             <td>{{ $engagement->activity_name }}</td>
                             <td>{{ $engagement->details }}</td>
                             <td>
@@ -262,15 +275,15 @@
                                     No Image Available
                                 @endif
                             </td>
-                            
+
                             @if (Auth::user()->role == 'Sales_Agent' || Auth::user()->role == 'Admin')
                                 <td class="text-center">
-                                    @if($editContact->status !== 'HubSpot Contact')
+                                    @if ($editContact->status !== 'HubSpot Contact')
                                         <a href="{{ Auth::user()->role == 'Sales_Agent' ? route('contact#update-activity', ['contact_id' => $engagement->fk_engagements__contact_pid, 'activity_id' => $engagement->engagement_pid]) : '#' }}"
-                                        data-toggle="modal"
-                                        {{ Auth::user()->role == 'Sales_Agent' ? 'data-target=#updateActivityModal-' . $engagement->engagement_pid : '' }}
-                                        class="btn hover-action">
-                                        <i class="fa-solid fa-pen-to-square"></i>
+                                            data-toggle="modal"
+                                            {{ Auth::user()->role == 'Sales_Agent' ? 'data-target=#updateActivityModal-' . $engagement->engagement_pid : '' }}
+                                            class="btn hover-action">
+                                            <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
                                         <a class="btn hover-action" data-toggle="modal"
                                             data-target="#deleteUserModal{{ $engagement->engagement_pid }}">
@@ -288,7 +301,8 @@
                 </tbody>
             </table>
         </div>
-        <div class="table-container" style="max-height: 350px; overflow-y:auto; display: none;" id="deleted-activity-table">
+        <div class="table-container" style="max-height: 350px; overflow-y:auto; display: none;"
+            id="deleted-activity-table">
             <table class="table table-hover mt-2">
                 <thead class="font-educ text-left">
                     <tr>
@@ -299,8 +313,8 @@
                         <th scope="col">Type</th>
                         <th scope="col">Description</th>
                         <th scope="col">Attachment</th>
-                        
-                        @if (Auth::check() && Auth::user()->role == 'Sales_Agent' || Auth::user()->role == 'Admin')
+
+                        @if ((Auth::check() && Auth::user()->role == 'Sales_Agent') || Auth::user()->role == 'Admin')
                             <th scope="col" class="text-center">Action</th>
                         @endif
                     </tr>
@@ -316,8 +330,10 @@
                         <tr>
                             <td>{{ ++$i }}</td>
                             <td>{{ $deletedActivity->date }}</td>
-                            <td>{{ \Carbon\Carbon::parse($deletedActivity->created_at)->format('Y-m-d H:i:s') }}</td> <!-- Created Date -->
-                            <td>{{ \Carbon\Carbon::parse($deletedActivity->updated_at)->format('Y-m-d H:i:s') }}</td> <!-- Modified Date -->
+                            <td>{{ \Carbon\Carbon::parse($deletedActivity->created_at)->format('Y-m-d H:i:s') }}</td>
+                            <!-- Created Date -->
+                            <td>{{ \Carbon\Carbon::parse($deletedActivity->updated_at)->format('Y-m-d H:i:s') }}</td>
+                            <!-- Modified Date -->
                             <td>{{ $deletedActivity->activity_name }}</td>
                             <td>{{ $deletedActivity->details }}</td>
                             <td>
@@ -349,8 +365,7 @@
                 </tbody>
             </table>
         </div>
-</div>
-
+        </div>
     @else
         <div class="alert alert-danger text-center mt-5">
             <strong>Access Denied!</strong> You do not have permission to view this page.
@@ -502,13 +517,13 @@
         });
     </script>
     <script>
-    document.addEventListener('click', function(event) {
-        if (event.target && event.target.id === 'attachmentImage') {
-            const imageUrl = event.target.getAttribute('data-image-url');
-            document.getElementById('modalImage').src = imageUrl;
-            $('#imageModal').modal('show');
-        }
-    });
-</script>
+        document.addEventListener('click', function(event) {
+            if (event.target && event.target.id === 'attachmentImage') {
+                const imageUrl = event.target.getAttribute('data-image-url');
+                document.getElementById('modalImage').src = imageUrl;
+                $('#imageModal').modal('show');
+            }
+        });
+    </script>
 
 @endsection

@@ -250,7 +250,7 @@ class AdminController extends Controller
 
         // Retrieve the authenticated user
         $user = Auth::user();
-        $owner = Owner::where('owner_email_id', $user->email)->first();
+        $owner = User::where('email', $user->email)->first();
 
         // Retrieve all engagements for the contact
         $engagements = Engagement::where('fk_engagements__contact_pid', $contact_pid)->get();
@@ -279,6 +279,12 @@ class AdminController extends Controller
         $deletedEngagement = ArchiveActivities::where('fk_engagements__contact_pid', $contact_pid)->get();
         // Use the first engagement for updates if available
         $updateEngagement = $engagements->first();
+        Log::info('Owner: ', [$owner]);
+        Log::info('Edit Contact: ', [$editContact]);
+        Log::info('Engagements: ', [$engagements]);
+        Log::info('Update Engagement: ', [$updateEngagement]);
+        Log::info('Engagement Archive: ', [$engagementsArchive]);
+        Log::info('Deleted Engagement: ', [$deletedEngagement]);
 
         // Pass data to the view
         return view('Edit_Contact_Detail_Page')->with([

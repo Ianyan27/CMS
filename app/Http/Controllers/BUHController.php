@@ -394,7 +394,7 @@ class BUHController extends Controller
 
             // If "Select all Contacts" is chosen, get all contact PIDs associated with the provided owner_pid
             if ($transferMethod === 'Select all Contacts') {
-                $selectedContacts = Contact::where('fk_contacts__owner_pid', $owner_pid)->pluck('contact_pid')->toArray();
+                $selectedContacts = Contact::where('fk_contacts__sale_agent_id', $owner_pid)->pluck('contact_pid')->toArray();
             }
 
             // Check if there are any contacts selected

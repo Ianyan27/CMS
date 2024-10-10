@@ -253,11 +253,11 @@ Route::group(['prefix' => 'sales-agent'], function () {
     Route::get('/contact-listing', [
         ContactController::class,
         'contactsByOwner'
-    ])->name('contact-listing');
+    ])->name('sale-agent#contact-listing');
     Route::get('view-contact/{contact_pid}', [
         ContactController::class,
         'viewContact'
-    ])->name('contact#view');
+    ])->name('sale-agent#view');
     Route::get('/edit-contact/{contact_pid}', [
         ContactController::class,
         'editContact'
@@ -359,7 +359,7 @@ Route::group(['prefix' => 'buh'], function () {
     ])->name('view-user');
     Route::get('/import-csv', function () {
         return view('csv_import_form');
-    })->name('importcsv');
+    })->name('buh#import-csv');
     Route::post('/import', [
         BUHController::class,
         'import'
@@ -378,10 +378,10 @@ Route::group(['prefix' => 'buh'], function () {
         HubspotContactController::class,
         'submitHubspotContacts'
     ])->name('submit-hubspot-contacts');
-    Route::get('/owner', [
+    Route::get('/sale-agent', [
         OwnerController::class,
-        'owner'
-    ])->name('owner#view');
+        'saleAgent'
+    ])->name('buh#view');
     Route::get('/view-owner/{owner_pid}', [
         OwnerController::class,
         'viewSaleAgent'
@@ -409,7 +409,7 @@ Route::group(['prefix' => 'buh'], function () {
     Route::get('/transfer-contacts/{owner_pid}', [
         BUHController::class,
         'transferContact'
-    ])->name('owner#transfer-contact');
+    ])->name('buh#transfer-contact');
     Route::post('/transfer', [
         BUHController::class,
         'transfer'
@@ -417,10 +417,10 @@ Route::group(['prefix' => 'buh'], function () {
     // Route::post('/assign-contact', [
     //     BUHController::class, 'assignContacts'
     // ])->name('owner#assign-contact');
-    Route::post('/update-status-owner/{owner_pid}', [
+    Route::post('/update-status-sale-agent/{id}', [
         BUHController::class,
         'updateStatusOwner'
-    ])->name('owner#update-status-owner');
+    ])->name('buh#update-status-sale-agent');
     Route::get('/progress', [
         BUHController::class,
         'getProgress'

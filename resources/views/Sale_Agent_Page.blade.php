@@ -169,7 +169,7 @@
                                         class="btn hover-action" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-right-left"></i>
                                     </a> --}}
-                                    <a href="{{ Auth::user()->role == 'Admin' ? route('admin#transfer-contact', ['id' => $owners->id]) : route('owner#transfer-contact', $owners->owner_pid) }}"
+                                    <a href="{{ Auth::user()->role == 'Admin' ? route('admin#transfer-contact', ['id' => $owners->id]) : route('buh#transfer-contact', $owners->id) }}"
                                         class="btn hover-action" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-right-left"></i>
                                     </a>

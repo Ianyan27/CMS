@@ -104,7 +104,7 @@
                             </button>
                             <div class="switch-container" style="margin: 1.25rem 0.5rem 0; ">
                                 <label class="switch">
-                                    <input type="checkbox" id="statusSwitch" data-owner-pid="{{ $owner->id }}" data-user-type="{{Auth::user()->role}}" @if ($owner->status === 'active') checked @endif>
+                                    <input type="checkbox" id="statusSwitch" data-owner-pid="{{$owner->id}}" data-user-type="{{Auth::user()->role}}" @if ($owner->status === 'active') checked @endif>
                                     <span class="slider round"></span>
                                 </label>
                                 <span style="width:105px;"
