@@ -265,7 +265,7 @@
                                                 'contact_pid' => $contact->contact_pid ?? $contact->contact_archive_pid ?? $contact->contact_discard_pid,
                                                 'type' => isset($contact->contact_pid) ? $contact->status : (isset($contact->contact_archive_pid) ? 'Archive' : 'Discard')
                                             ]) 
-                                            : route('owner#view-contact', [
+                                            : route('buh#view-contact', [
                                                 'contact_pid' => $contact->contact_pid ?? $contact->contact_archive_pid ?? $contact->contact_discard_pid,
                                                 'type' => isset($contact->contact_pid) ? 'active' : (isset($contact->contact_archive_pid) ? 'Archive' : 'Discard')
                                             ]) }}"

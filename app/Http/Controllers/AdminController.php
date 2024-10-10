@@ -1000,7 +1000,7 @@ class AdminController extends Controller
             // Call the assignContacts method to assign contacts back to the contacts table using round-robin
             $this->assignContacts($allocator);
             Log::info('Contacts successfully moved.');
-            return redirect()->back()->with('success', 'Contacts successfully moved to the moved_contacts table.');
+            return redirect()->back()->with('success', 'Contacts successfully transfered to sales agent.');
         } catch (ValidationException $e) {
             Log::error("Validation error during contact transfer: " . $e->getMessage());
             return redirect()->back()->with('error', 'Contact transfer failed.');

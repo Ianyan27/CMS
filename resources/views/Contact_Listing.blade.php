@@ -141,7 +141,7 @@
                                         Auth::user()->role == 'Admin' ? 
                                             route('admin#view-contact',['contact_pid' => $contact->contact_pid]) : 
                                         (Auth::user()->role == 'BUH' ? 
-                                            route('owner#view-contact',['contact_pid' => $contact->contact_pid]) : 
+                                            route('buh#view-contact',['contact_pid' => $contact->contact_pid]) : 
                                         (Auth::user()->role == 'Sales_Agent' ? 
                                             route('sale-agent#view', ['contact_pid' => $contact->contact_pid]) : 
                                             route('sale-agent#view', ['contact_pid' => $contact->contact_pid])

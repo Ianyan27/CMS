@@ -105,7 +105,7 @@
                                 </li>
                             @endif
                             <li
-                                class="{{ in_array(Route::currentRouteName(), ['admin#contact-listing', 'buh#contact-listing', 'contact-listing']) ? 'active-link' : 'nav-item' }} dashboard-link">
+                                class="{{ in_array(Route::currentRouteName(), ['admin#contact-listing', 'buh#contact-listing', 'sale-agent#contact-listing']) ? 'active-link' : 'nav-item' }} dashboard-link">
                                 <a class="nav-link" href="{{ 
                                     Auth::user()->role == 'Admin' ? route('admin#contact-listing') : 
                                     (Auth::user()->role == 'BUH' ? route('buh#contact-listing') : 
