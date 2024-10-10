@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Log;
 class OwnerController extends Controller
 {
 
-    public function owner()
+    public function saleAgent()
     {
         // Get the current authenticated user
         $user = Auth::user();
@@ -148,14 +148,14 @@ class OwnerController extends Controller
     public function updateSaleAgent(Request $request, $id)
     {
 
-        $owner = SaleAgent::find($owner_pid);
+        $owner = SaleAgent::find($id);
 
         $owner->update([
             $owner->business_unit = $request->input('business_unit'),
             $owner->nationality = $request->input('country')
         ]);
 
-        return redirect()->route('owner#view-owner', ['owner_pid' => $owner_pid])->with('success', 'Sale Agent updated successfully.');
+        return redirect()->route('owner#view-owner', ['owner_pid' => $id])->with('success', 'Sale Agent updated successfully.');
     }
 
     public function viewContact($contact_pid)
@@ -173,7 +173,8 @@ class OwnerController extends Controller
 
         // Retrieve the authenticated user
         $user = Auth::user();
-        $owner = SaleAgent::where('email', $user->email)->first();
+        Log::info('User email:' . $user->email);
+        $owner = BUH::where('email', $user->email)->first();
 
         // Retrieve all engagements for the contact
         $engagements = Engagement::where('fk_engagements__contact_pid', $contact_pid)->get();

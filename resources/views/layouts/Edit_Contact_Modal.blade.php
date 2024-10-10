@@ -14,7 +14,7 @@
             </div>
             <div class="modal-body">
                 <form
-                    action="{{ Auth::user()->role == 'Admin'
+                    action="{{ Auth::user()->role === 'Admin'
                         ? route('admin#save-edit-contact', [
                             'contact_pid' =>
                                 $editContact->contact_pid ?? ($editContact->contact_archive_pid ?? $editContact->contact_discard_pid),

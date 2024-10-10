@@ -63,7 +63,7 @@ class ArchiveController extends Controller
     {
         $user = Auth::user();
         $archive = ContactArchive::find($contact_archive_pid);
-        $owner = Owner::where('owner_email_id', $user->email)->first();
+        $owner = SaleAgent::where('owner_email_id', $user->email)->first();
         if (!$archive) {
             return redirect()->back()->with('error', 'Contact archive not found.');
         }

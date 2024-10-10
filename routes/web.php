@@ -102,12 +102,14 @@ Route::group(['prefix' => 'admin'], function () {
     ])->name('admin#view-contact');
 
     Route::get('/view-transferable-contact/{contact_pid}/{type}', [
-        AdminController::class, 'viewTransferableContact'
+        AdminController::class,
+        'viewTransferableContact'
     ])->name('admin#view-transferable-contact');
 
     // CSV Import Routes
     Route::get('/import-csv', [
-        AdminController::class, 'importCSV'
+        AdminController::class,
+        'importCSV'
     ])->name('admin#importcsv');
 
     Route::post('/import', [
@@ -224,15 +226,18 @@ Route::group(['prefix' => 'admin'], function () {
         'saveActivity'
     ])->name('admin#save-activity');
     Route::get('/view-buh', [
-        AdminController::class, 'viewBUH'
+        AdminController::class,
+        'viewBUH'
     ])->name('admin#view-buh');
 
     Route::post('/save-buh', [
-        AdminController::class, 'saveBUH'
+        AdminController::class,
+        'saveBUH'
     ])->name('admin#save-buh');
 
     Route::delete('/delete-buh/{id}', [
-        AdminController::class, 'deleteBUH'
+        AdminController::class,
+        'deleteBUH'
     ])->name('admin#delete-buh');
 
     Route::post('/update-status-sale-agent/{owner_pid}', [
@@ -253,11 +258,11 @@ Route::group(['prefix' => 'sales-agent'], function () {
     Route::get('/contact-listing', [
         ContactController::class,
         'contactsByOwner'
-    ])->name('contact-listing');
+    ])->name('sale-agent#contact-listing');
     Route::get('view-contact/{contact_pid}', [
         ContactController::class,
         'viewContact'
-    ])->name('contact#view');
+    ])->name('sale-agent#view');
     Route::get('/edit-contact/{contact_pid}', [
         ContactController::class,
         'editContact'
@@ -357,9 +362,10 @@ Route::group(['prefix' => 'buh'], function () {
         UserController::class,
         'viewUser'
     ])->name('view-user');
-    Route::get('/import-csv', function () {
-        return view('csv_import_form');
-    })->name('importcsv');
+    Route::get('/import-csv', [
+        BUHController::class,
+        'index'
+    ])->name('buh#import-csv');
     Route::post('/import', [
         BUHController::class,
         'import'
@@ -378,10 +384,10 @@ Route::group(['prefix' => 'buh'], function () {
         HubspotContactController::class,
         'submitHubspotContacts'
     ])->name('submit-hubspot-contacts');
-    Route::get('/owner', [
+    Route::get('/sale-agent', [
         OwnerController::class,
-        'owner'
-    ])->name('owner#view');
+        'saleAgent'
+    ])->name('buh#view');
     Route::get('/view-owner/{owner_pid}', [
         OwnerController::class,
         'viewSaleAgent'
@@ -405,11 +411,11 @@ Route::group(['prefix' => 'buh'], function () {
     Route::get('/view-contact/{contact_pid}', [
         OwnerController::class,
         'viewContact'
-    ])->name('owner#view-contact');
+    ])->name('buh#view-contact');
     Route::get('/transfer-contacts/{owner_pid}', [
         BUHController::class,
         'transferContact'
-    ])->name('owner#transfer-contact');
+    ])->name('buh#transfer-contact');
     Route::post('/transfer', [
         BUHController::class,
         'transfer'
@@ -417,10 +423,10 @@ Route::group(['prefix' => 'buh'], function () {
     // Route::post('/assign-contact', [
     //     BUHController::class, 'assignContacts'
     // ])->name('owner#assign-contact');
-    Route::post('/update-status-owner/{owner_pid}', [
+    Route::post('/update-status-sale-agent/{id}', [
         BUHController::class,
         'updateStatusOwner'
-    ])->name('owner#update-status-owner');
+    ])->name('buh#update-status-sale-agent');
     Route::get('/progress', [
         BUHController::class,
         'getProgress'
@@ -434,17 +440,20 @@ Route::group(['prefix' => 'buh'], function () {
 // Define routes for the Head role
 Route::group(['prefix' => 'head', 'as' => 'head#'], function () {
     Route::get('/', [
-        HeadController::class, 'index'
+        HeadController::class,
+        'index'
     ])->name('index');
 
     // View user details
     Route::get('/view-user', [
-        HeadController::class, 'viewUser'
+        HeadController::class,
+        'viewUser'
     ])->name('head#view-user');
 
     // Save a new user
     Route::post('/save-user', [
-        HeadController::class, 'saveUser'
+        HeadController::class,
+        'saveUser'
     ])->name('save-user');
 
     // Edit user details
@@ -452,17 +461,20 @@ Route::group(['prefix' => 'head', 'as' => 'head#'], function () {
 
     // Update user details (change this line)
     Route::put('/update-user/{id}', [
-        HeadController::class, 'updateUser'
+        HeadController::class,
+        'updateUser'
     ])->name('update-user'); // Change from POST to PUT
-    
+
     // Delete a user
     Route::delete('/delete-user/{id}', [
-        HeadController::class, 'deleteUser'
+        HeadController::class,
+        'deleteUser'
     ])->name('delete-user');
 
     // View contact details
     Route::get('/view-contact/{contact_pid}', [
-        HeadController::class, 'viewContact'
+        HeadController::class,
+        'viewContact'
     ])->name('view-contact');
 });
 

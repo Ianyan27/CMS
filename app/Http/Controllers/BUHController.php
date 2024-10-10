@@ -35,7 +35,13 @@ class BUHController extends Controller
 
     public function index()
     {
-        return view('csv_import_form');
+        $userEmail = Auth::user()->email;
+        $buh = BUH::where("email", $userEmail)->first();
+        // Get the BUH country
+        $buCountries = $buh->buCountries;
+        $countryNames = $buCountries->pluck('country.name');
+
+        return view('csv_import_form', ['countries' => $countryNames]);
     }
 
     public function import(Request $request)
@@ -63,60 +69,61 @@ class BUHController extends Controller
         $file = $request->file('csv_file');
         $platform = $request->input('platform'); // Get the platform value
         $country = $request->input('country');
+        $userEmail = Auth::user()->email;
         $bu = $request->input('bu');
         $buh = $request->input('buh');
 
         Log::info('Received country: ' . $request->input('country'));
         Log::info('Received BUH: ' . $request->input('buh'));
+        Log::info('Received User email: ' . $userEmail);
 
 
         Log::info('reterived bu ' . $bu . ' buh ' . $buh);
 
-        // Retrieve Country ID based on Country Name
-        $country = Country::where('name', $country)->first();
-        if (!$country) {
-            return response()->json([
-                'success' => false,
-                'message' => "Country not found."
-            ], 404);
-        }
-        $countryId = $country->id;
+        // check if the user have role BUH or not to get the correct country name value
+        if (Auth::user()->role != 'BUH') {
+            // Retrieve Country ID based on Country Name
+            $country = Country::where('name', $country)->first();
+            if (!$country) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Country not found."
+                ], 404);
+            }
 
-        // Retrieve BU ID based on BUH Name
-        $buh = BUH::where('name', $buh)->first();
-        if (!$buh) {
-            return response()->json([
-                'success' => false,
-                'message' => "Business Unit Head not found."
-            ], 404);
+            // Retrieve BU ID based on BUH Name
+            $buh = BUH::where('name', $buh)->first();
+            if (!$buh) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Business Unit Head not found."
+                ], 404);
+            }
+
+            $countryName = $country->name;
+        } else {
+            // get buh based on email
+            $buh = BUH::where("email", $userEmail)->first();
+            Log::info("buh: " . $buh);
+            $countryName = $country;
         }
+
+        // get buh Id
         $buhId = $buh->id;
-
-        // Retrieve owners (sales agents) under the specified BUH
-
-        $bu_country = BuCountry::where('buh_id', $buhId)->first();
-        $bu_country_id = $bu_country->id;
-        Log::info("bu country id " . $bu_country_id);
-        $owners = SaleAgent::where('bu_country_id', $bu_country_id)->get();
-        Log::info('Total owners retrieved for BUH_Country ID ' . $bu_country->id . ':', ['count' => $owners->count()]);
-
-        if ($owners->isEmpty()) {
-            return response()->json([
-                'success' => false,
-                'message' => "No sales agent is assigned. Please make sure to assign the appropriate sales agents to continue."
-            ], 500);
-        }
 
         try {
             // Store the file in public storage
             //$filePath = Storage::disk('public')->putFile('csv_uploads', $file);
             // Import the data into the database using the ContactsImport class
-            $import = new ContactsImport($platform, $country->name);
+            $import = new ContactsImport($platform, $country);
             Excel::import($import, $file);
             $allocator = new RoundRobinAllocator();
-            $allocator->allocate($buhId, $country->name);
-        } catch (\Exception $e) {
 
+            Log::info("country name: " . $countryName);
+
+            $allocator->allocate($buhId, $countryName);
+        } catch (\Exception $e) {
+            Log::info("Error: " . $e);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to import data: ' . $e->getMessage()
@@ -394,7 +401,7 @@ class BUHController extends Controller
 
             // If "Select all Contacts" is chosen, get all contact PIDs associated with the provided owner_pid
             if ($transferMethod === 'Select all Contacts') {
-                $selectedContacts = Contact::where('fk_contacts__owner_pid', $owner_pid)->pluck('contact_pid')->toArray();
+                $selectedContacts = Contact::where('fk_contacts__sale_agent_id', $owner_pid)->pluck('contact_pid')->toArray();
             }
 
             // Check if there are any contacts selected

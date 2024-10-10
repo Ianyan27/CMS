@@ -57,17 +57,8 @@ class ContactController extends Controller
             'contactDiscard' => $contactDiscard
         ]);
     }
-        // Pass the data to the view
-        return view('Contact_Listing', [
-            'contacts' => $contacts,
-            'contactArchive' => $contactArchive,
-            'contactDiscard' => $contactDiscard
-        ]);
-    }
 
 
-    public function contactsByOwner()
-    {
     public function contactsByOwner()
     {
 
@@ -100,14 +91,14 @@ class ContactController extends Controller
 
     public function viewContact($contact_pid)
     {
-    public function viewContact($contact_pid)
-    {
+        Log::info('View Contact ID: ' . $contact_pid);
         /* Retrieve the contact record with the specified 'contact_pid' and pass
          it to the 'Edit_Contact_Detail_Page' view for editing. */
 
         // Retrieve the contact record with the specified 'contact_pid'
         $editContact = Contact::where('contact_pid', $contact_pid)->first();
 
+        Log::info($editContact);
         // Check if the contact exists
         if (!$editContact) {
             return redirect()->route('sales-agent#index')->with('error', 'Contact not found.');
@@ -141,9 +132,15 @@ class ContactController extends Controller
 
         // Retrieve engagements archived for the contact
         $engagementsArchive = EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $contact_pid)->get();
-        $deletedEngagement = Delete_contacts::where('fk_engagement_discards__contact_discard_pid', $contact_pid)->get();
+        $deletedEngagement = ArchiveActivities::where('fk_engagements__contact_pid', $contact_pid)->get();
         // Use the first engagement for updates if available
         $updateEngagement = $engagements->first();
+        Log::info('Owner: ', [$owner]);
+        Log::info('Edit Contact: ', [$editContact]);
+        Log::info('Engagements: ', [$engagements]);
+        Log::info('Update Engagement: ', [$updateEngagement]);
+        Log::info('Engagement Archive: ', [$engagementsArchive]);
+        Log::info('Deleted Engagement: ', [$deletedEngagement]);
 
         // Pass data to the view
         return view('Edit_Contact_Detail_Page')->with([
@@ -156,9 +153,7 @@ class ContactController extends Controller
         ]);
     }
 
-    public function updateContact(Request $request, $contact_pid, $owner_pid)
-    {
-    public function updateContact(Request $request, $contact_pid, $owner_pid)
+    public function updateContact(Request $request, $contact_pid, $id)
     {
         // Checking for admin role and redirect if true
         $user = Auth::user();
@@ -193,16 +188,16 @@ class ContactController extends Controller
         $request->validate($rules);
 
         // Check if the owner exists
-        $owner = SaleAgent::find($owner_pid);
+        $owner = SaleAgent::find($id);
         if (!$owner) {
-            Log::error('Owner not found', ['owner_id' => $owner_pid]);
+            Log::error('Owner not found', ['owner_id' => $id]);
             return redirect()->route('contact-listing')->with('error', 'Owner not found.');
         }
 
         // Log the owner and contact details
         Log::info('Updating contact', [
             'contact_pid' => $contact_pid,
-            'owner_pid' => $owner_pid,
+            'owner_pid' => $id,
             'status' => $request->input('status')
         ]);
 
@@ -227,14 +222,14 @@ class ContactController extends Controller
 
             // Set the owner PID
             if ($request->input('status') === 'Archive') {
-                $targetContactModel->fk_contacts__sale_agent_id = $owner_pid;
+                $targetContactModel->fk_contacts__sale_agent_id = $id;
             } else {
-                $targetContactModel->fk_contacts__sale_agent_id = $owner_pid;
+                $targetContactModel->fk_contacts__sale_agent_id = $id;
             }
 
             Log::info('Saving contact to archive/discard', [
                 'model' => $request->input('status') === 'Archive' ? 'ContactArchive' : 'ContactDiscard',
-                'owner_pid' => $owner_pid
+                'id' => $id
             ]);
 
             try {
@@ -242,7 +237,7 @@ class ContactController extends Controller
             } catch (\Exception $e) {
                 Log::error('Failed to save contact to archive/discard', [
                     'error' => $e->getMessage(),
-                    'owner_pid' => $owner_pid
+                    'id' => $id
                 ]);
                 return redirect()->route('contact-listing')->with('error', 'Failed to save contact to archive/discard.');
             }
@@ -296,8 +291,6 @@ class ContactController extends Controller
         ])->with('success', 'Contact updated successfully.');
     }
 
-    public function saveActivity(Request $request, $contact_pid)
-    {
     public function saveActivity(Request $request, $contact_pid)
     {
         // Checking for admin role and redirecting if true
@@ -371,11 +364,6 @@ class ContactController extends Controller
             ->with('success', 'Activity added successfully.');
     }
 
-
-
-
-    public function editActivity($fk_engagements__contact_pid, $activity_id)
-    {
     public function editActivity($fk_engagements__contact_pid, $activity_id)
     {
         // Fetch all activities related to the contact ID
@@ -572,7 +560,7 @@ class ContactController extends Controller
     public function deleteActivity($engagement_pid)
     {
         // Find the engagement by its engagement_pid
-        $engagement = Delete_contacts::findOrFail($engagement_pid);
+        $engagement = ArchiveActivities::findOrFail($engagement_pid);
 
         // Permanently delete the engagement
         $engagement->delete();
@@ -583,7 +571,7 @@ class ContactController extends Controller
     public function retrieveActivity($id)
     {
         // Retrieve the deleted activities based on engagement_pid
-        $deletedContacts = Delete_contacts::where('id', $id)->get();
+        $deletedContacts = ArchiveActivities::where('id', $id)->get();
 
         if ($deletedContacts->isEmpty()) {
             return redirect()->back()->with('error', 'No activities found in archived contacts.');
@@ -625,6 +613,7 @@ class ContactController extends Controller
 
 
 
+
     public function hubspotContacts()
     {
         $userEmail = Auth::user()->email;
@@ -637,14 +626,10 @@ class ContactController extends Controller
         }
 
         // Fetch all BuCountry records associated with this BUH
-        $buCountries = $buh->buCountries;
-
-        if ($buCountries->isEmpty()) {
-            return redirect()->back()->with('error', 'No Business Units associated with this BUH.');
-        }
+        $buCountries = BuCountry::where('buh_id', $buh->id)->first();
 
         // Fetch all SaleAgent records associated with the BuCountry records
-        $saleAgents = $buCountries->flatMap->saleAgents;
+        $saleAgents = SaleAgent::where('bu_country_id', $buCountries->id)->get();
 
         // Define the base query
         $baseQuery = Contact::whereHas('saleAgent', function ($query) use ($saleAgents) {
@@ -656,16 +641,22 @@ class ContactController extends Controller
         $hubspotContacts = $baseQuery->paginate(50);
 
         // Get HubSpot contacts where datetime_of_hubspot_sync is null
-        $hubspotContactsNoSync = $baseQuery->whereNull('datetime_of_hubspot_sync')->paginate(50);
+        $hubspotContactsNoSync = $baseQuery->clone()->whereNull('datetime_of_hubspot_sync')->paginate(50);
 
+        $hubspotContactsSynced1 = $baseQuery->whereNotNull('datetime_of_hubspot_sync')->get();
+        Log::debug("hubspot contacts synced:", ['contacts' => $hubspotContactsSynced1->toArray()]);
+        Log::debug("Sale Agent IDs:", ['sale_agent_ids' => $saleAgents->pluck('id')->toArray()]);
+        Log::info("BU Country: " . $buCountries);
 
         // Get HubSpot contacts where datetime_of_hubspot_sync has a value
-        $hubspotContactsSynced = $baseQuery->whereNotNull('datetime_of_hubspot_sync')->paginate(50);
+        $hubspotContactsSynced = $baseQuery->clone()->whereNotNull('datetime_of_hubspot_sync')->paginate(50);
 
         Log::debug("hubspot baseQuery:", ['query' => $baseQuery->toSql()]);
         Log::debug("hubspot contact:", ['contacts' => $hubspotContacts->toArray()]);
         Log::debug("hubspot contact no sync:", ['contacts' => $hubspotContactsNoSync->toArray()]);
         Log::debug("hubspot contact synced:", ['contacts' => $hubspotContactsSynced->toArray()]);
+
+
 
         // Pass data to view
         return view('Hubspot_Contact_Listing', [
@@ -677,9 +668,7 @@ class ContactController extends Controller
 
     private function saveLog($contact_pid, $action_type, $action_description)
     {
-        $ownerEmail = Auth::user()->email; // Get the authenticated user's ID as owner_pid
-    private function saveLog($contact_pid, $action_type, $action_description)
-    {
+
         $ownerEmail = Auth::user()->email; // Get the authenticated user's ID as owner_pid
 
         // Check if the owner exists in the owners table
@@ -720,8 +709,6 @@ class ContactController extends Controller
             'updated_at' => now()
         ]);
 
-        return true;
-    }
         return true;
     }
 }

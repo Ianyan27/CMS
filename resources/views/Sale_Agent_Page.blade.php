@@ -122,6 +122,7 @@
                         <?php $i = ($owner->currentPage() - 1) * $owner->perPage() + 1; ?>
                         @foreach ($owner as $owners)
                             <tr data-status="{{ $owners->status }}">
+                                <td> {{ $i++ }} </td>
                                 <td>{{ $owners->name }}</td>
                                 <td>{{ $owners->hubspot_id }}</td>
                                 <td>
@@ -168,28 +169,20 @@
                                         class="btn hover-action" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-right-left"></i>
                                     </a> --}}
-                                    <<<<<<< HEAD <a
-                                        href="{{ Auth::user()->role == 'Admin' ? route('admin#transfer-contact', ['id' => $owners->id]) : route('owner#transfer-contact', $owners->owner_pid) }}"
+                                    <a href="{{ Auth::user()->role == 'Admin' ? route('admin#transfer-contact', ['id' => $owners->id]) : route('buh#transfer-contact', $owners->id) }}"
                                         class="btn hover-action" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-right-left"></i>
-                                        </a>
-                                        <a href="{{ Auth::user()->role == 'Admin' ? route('admin#view-sale-agent', ['id' => $owners->id]) : route('owner#view-owner', $owners->owner_pid) }}"=======<a
-                                            href="{{ Auth::user()->role == 'Admin' ? route('admin#transfer-contact', $owners->id) : route('owner#transfer-contact', $owners->id) }}"
-                                            class="btn hover-action" style="padding: 10px 12px;">
-                                            <i class="fa-solid fa-right-left"></i>
-                                        </a>
-                                        <a
-                                            href="{{ Auth::user()->role == 'Admin' ? route('admin#view-owner', $owners->id) : route('owner#view-owner', $owners->id) }}">>>>>>>
-                                            4a487f4 (retrieve the owner_pid to id)
-                                            class="btn hover-action mx-2" style="padding: 10px 12px;">
-                                            <i class="fa-solid fa-eye"></i>
-                                        </a>
-                                        {{-- <a href="{{ route('owner#view-owner', $owners->owner_pid) }}"
+                                    </a>
+                                    <a href="{{ Auth::user()->role == 'Admin' ? route('admin#view-sale-agent', $owners->id) : route('owner#view-owner', $owners->id) }}"
+                                        class="btn hover-action mx-2" style="padding: 10px 12px;">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                    {{-- <a href="{{ route('owner#view-owner', $owners->owner_pid) }}"
                                         class="btn hover-action mx-2" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-eye"></i>
                                     </a> --}}
 
-                                        {{-- <a class="btn hover-action" style="padding: 10px 12px;" data-toggle="modal"
+                                    {{-- <a class="btn hover-action" style="padding: 10px 12px;" data-toggle="modal"
                                         data-target="#deleteOwnerModal{{ $owners->owner_pid }}">
                                         <i class="fa-solid fa-trash"></i>
                                     </a> --}}
@@ -263,14 +256,12 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                            <<<<<<< HEAD <form action="{{ route('buh#delete-sale-agent', $owners->id) }}" method="post">
-                                =======
-                                <form action="{{ route('owner#delete', $owners->id) }}" method="post">
-                                    >>>>>>> 4a487f4 (retrieve the owner_pid to id)
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                </form>
+                            <form action="{{ route('buh#delete-sale-agent', $owners->id) }}" method="post">
+                                {{-- <form action="{{ route('buh#delete-sale-agent', $owners->id) }}" method="post"> --}}
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
                         </div>
                     </div>
                 </div>
