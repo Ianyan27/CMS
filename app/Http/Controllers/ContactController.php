@@ -59,7 +59,8 @@ class ContactController extends Controller
     }
 
 
-    public function contactsByOwner(){
+    public function contactsByOwner()
+    {
 
         $user = Auth::user();
 
@@ -662,7 +663,8 @@ class ContactController extends Controller
         ]);
     }
 
-    private function saveLog($contact_pid, $action_type, $action_description){
+    private function saveLog($contact_pid, $action_type, $action_description)
+    {
 
         $ownerEmail = Auth::user()->email; // Get the authenticated user's ID as owner_pid
 
