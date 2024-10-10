@@ -2,13 +2,10 @@
 
 @extends('layouts.app')
 
-@extends('layouts.Update_Activity_Modal')
-@extends('layouts.Edit_Contact_Modal')
-@extends('layouts.Add_Activity_Modal')
-@extends('layouts.Attachment_Error_Modal')
+
 @section('content')
     @if (
-        Auth::check() && Auth::user()->role == 'Admin' ||
+        (Auth::check() && Auth::user()->role == 'Admin') ||
             Auth::user()->role == 'BUH' ||
             Auth::user()->role == 'Sales_Agent')
         @if (session('success'))
@@ -163,8 +160,8 @@
                 </div>
                 <div class="activities">
                     @forelse ($engagements->groupBy(function ($date) {
-                            return \Carbon\Carbon::parse($date->date)->format('F Y');
-                            }) as $month => $activitiesInMonth)
+                                    return \Carbon\Carbon::parse($date->date)->format('F Y');
+                                    }) as $month => $activitiesInMonth)
                         <div class="activity-list" data-month="{{ $month }}">
                             <div class="activity-date my-3 ml-3">
                                 <span class="text-muted">{{ $month }}</span>
@@ -253,7 +250,7 @@
                         @php
                             // Decode the JSON or handle the attachments array properly
                             $attachments = json_decode($engagement->attachments, true); // Assuming it's a JSON string
-                            $filename = $attachments[0] ?? ''; // Get the first filename from the array
+$filename = $attachments[0] ?? ''; // Get the first filename from the array
                         @endphp
                         <tr>
                             <td>{{ ++$i }}</td>
@@ -325,7 +322,7 @@
                         @php
                             // Decode the JSON or handle the attachments array properly
                             $attachments = json_decode($deletedActivity->attachments, true); // Assuming it's a JSON string
-                            $filename = $attachments[0] ?? ''; // Get the first filename from the array
+$filename = $attachments[0] ?? ''; // Get the first filename from the array
                         @endphp
                         <tr>
                             <td>{{ ++$i }}</td>
