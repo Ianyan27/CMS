@@ -104,8 +104,7 @@
                             </button>
                             <div class="switch-container" style="margin: 1.25rem 0.5rem 0; ">
                                 <label class="switch">
-                                    <input type="checkbox" id="statusSwitch" data-owner-pid="{{ $owner->id }}"
-                                        @if ($owner->status === 'active') checked @endif>
+                                    <input type="checkbox" id="statusSwitch" data-owner-pid="{{ $owner->id }}" data-user-type="{{Auth::user()->role}}" @if ($owner->status === 'active') checked @endif>
                                     <span class="slider round"></span>
                                 </label>
                                 <span style="width:105px;"
@@ -261,9 +260,16 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <a href=" {{ Auth::user()->role == 'Admin' ? route('admin#view-contact', ['contact_pid' => $contact->contact_pid]) : route('owner#view-contact', ['contact_pid' => $contact->contact_pid]) }} "
-                                            class="btn hover-action" style="padding:10px 12px;" data-toggle="tooltip"
-                                            title="View">
+                                        <a href="{{ Auth::user()->role == 'Admin' 
+                                            ? route('admin#view-transferable-contact', [
+                                                'contact_pid' => $contact->contact_pid ?? $contact->contact_archive_pid ?? $contact->contact_discard_pid,
+                                                'type' => isset($contact->contact_pid) ? $contact->status : (isset($contact->contact_archive_pid) ? 'Archive' : 'Discard')
+                                            ]) 
+                                            : route('owner#view-contact', [
+                                                'contact_pid' => $contact->contact_pid ?? $contact->contact_archive_pid ?? $contact->contact_discard_pid,
+                                                'type' => isset($contact->contact_pid) ? 'active' : (isset($contact->contact_archive_pid) ? 'Archive' : 'Discard')
+                                            ]) }}"
+                                            class="btn hover-action" style="padding:10px 12px;" data-toggle="tooltip" title="View">
                                             <i class="fa-solid fa-eye"></i>
                                         </a>
                                         {{-- <a href=" {{ route('owner#view-contact', $contact->contact_pid) }} "

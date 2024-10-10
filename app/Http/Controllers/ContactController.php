@@ -57,19 +57,9 @@ class ContactController extends Controller
             'contactDiscard' => $contactDiscard
         ]);
     }
-        // Pass the data to the view
-        return view('Contact_Listing', [
-            'contacts' => $contacts,
-            'contactArchive' => $contactArchive,
-            'contactDiscard' => $contactDiscard
-        ]);
-    }
 
 
-    public function contactsByOwner()
-    {
-    public function contactsByOwner()
-    {
+    public function contactsByOwner(){
 
         $user = Auth::user();
 
@@ -98,8 +88,6 @@ class ContactController extends Controller
         // Get the logged-in user (sales agent)
     }
 
-    public function viewContact($contact_pid)
-    {
     public function viewContact($contact_pid)
     {
         /* Retrieve the contact record with the specified 'contact_pid' and pass
@@ -141,7 +129,7 @@ class ContactController extends Controller
 
         // Retrieve engagements archived for the contact
         $engagementsArchive = EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $contact_pid)->get();
-        $deletedEngagement = Delete_contacts::where('fk_engagement_discards__contact_discard_pid', $contact_pid)->get();
+        $deletedEngagement = ArchiveActivities::where('fk_engagement_discards__contact_discard_pid', $contact_pid)->get();
         // Use the first engagement for updates if available
         $updateEngagement = $engagements->first();
 
@@ -156,8 +144,6 @@ class ContactController extends Controller
         ]);
     }
 
-    public function updateContact(Request $request, $contact_pid, $owner_pid)
-    {
     public function updateContact(Request $request, $contact_pid, $owner_pid)
     {
         // Checking for admin role and redirect if true
@@ -298,8 +284,6 @@ class ContactController extends Controller
 
     public function saveActivity(Request $request, $contact_pid)
     {
-    public function saveActivity(Request $request, $contact_pid)
-    {
         // Checking for admin role and redirecting if true
         $user = Auth::user();
 
@@ -371,11 +355,6 @@ class ContactController extends Controller
             ->with('success', 'Activity added successfully.');
     }
 
-
-
-
-    public function editActivity($fk_engagements__contact_pid, $activity_id)
-    {
     public function editActivity($fk_engagements__contact_pid, $activity_id)
     {
         // Fetch all activities related to the contact ID
@@ -572,7 +551,7 @@ class ContactController extends Controller
     public function deleteActivity($engagement_pid)
     {
         // Find the engagement by its engagement_pid
-        $engagement = Delete_contacts::findOrFail($engagement_pid);
+        $engagement = ArchiveActivities::findOrFail($engagement_pid);
 
         // Permanently delete the engagement
         $engagement->delete();
@@ -583,7 +562,7 @@ class ContactController extends Controller
     public function retrieveActivity($id)
     {
         // Retrieve the deleted activities based on engagement_pid
-        $deletedContacts = Delete_contacts::where('id', $id)->get();
+        $deletedContacts = ArchiveActivities::where('id', $id)->get();
 
         if ($deletedContacts->isEmpty()) {
             return redirect()->back()->with('error', 'No activities found in archived contacts.');
@@ -675,11 +654,8 @@ class ContactController extends Controller
         ]);
     }
 
-    private function saveLog($contact_pid, $action_type, $action_description)
-    {
-        $ownerEmail = Auth::user()->email; // Get the authenticated user's ID as owner_pid
-    private function saveLog($contact_pid, $action_type, $action_description)
-    {
+    private function saveLog($contact_pid, $action_type, $action_description){
+
         $ownerEmail = Auth::user()->email; // Get the authenticated user's ID as owner_pid
 
         // Check if the owner exists in the owners table
@@ -720,8 +696,6 @@ class ContactController extends Controller
             'updated_at' => now()
         ]);
 
-        return true;
-    }
         return true;
     }
 }

@@ -123,8 +123,45 @@ class AdminController extends Controller
         return redirect()->route('admin#index')->with('success', 'User Deleted Successfully');
     }
 
+    public function transferContact($owner_pid)
+
+    {
+        Session::put('progress', 0);
+        $user = Auth::user();
+        // if ($user->role == 'BUH') {
+        $contacts = Contact::where('fk_contacts__sale_agent_id', $owner_pid)->get();
+        $archivedContacts = ContactArchive::where('fk_contact_archives__owner_pid', $owner_pid)->get();
+        $discardedContacts = ContactDiscard::where('fk_contact_discards__owner_pid', $owner_pid)->get();
+        // } else {
+        //     $contacts = Contact::get();
+        //     $archivedContacts = ContactArchive::get();
+        //     $discardedContacts = ContactDiscard::get();
+        // }=
+        $owner = SaleAgent::where('id', $owner_pid)->first();
+        $allContacts = $contacts->concat($archivedContacts)->concat($discardedContacts);
+        $countAllContacts = $allContacts->count();
+        $countEligibleContacts = $contacts->concat($archivedContacts);
+        $totalEligibleContacts = $countEligibleContacts->count();
+        $perPage = 50;
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $currentPageItems = $allContacts->slice(($currentPage - 1) * $perPage, $perPage)->all();
+        $paginatedContacts = new LengthAwarePaginator($currentPageItems, $allContacts->count(), $perPage);
+        $paginatedContacts->setPath(request()->url());
+
+        // Determine if the combined collection is empty
+        $isEmpty = $allContacts->isEmpty();
+        return view('Transfer_Contacts_Page', [
+            'owner' => $owner,
+            'viewContact' => $paginatedContacts,
+            'isEmpty' => $isEmpty,
+            'countAllContacts' => $countAllContacts,
+            'totalEligibleContacts' => $totalEligibleContacts
+        ]);
+    }
+
     public function viewTransferableContact($contact_pid, $type)
     {
+        Log::info("Welcome to Transfer Contact Page");
         /* Retrieve the contact record with the specified 'contact_pid' and pass
          it to the 'Edit_Contact_Detail_Page' view for editing. */
 
@@ -138,10 +175,10 @@ class AdminController extends Controller
             case 'InProgress':
                 $contact = Contact::where('contact_pid', $contact_pid)->first();
                 break;
-            case 'archive':
+            case 'Archive':
                 $contact = ContactArchive::where('contact_archive_pid', $contact_pid)->first();
                 break;
-            case 'discard':
+            case 'Discard':
                 $contact = ContactDiscard::where('contact_discard_pid', $contact_pid)->first();
                 break;
             default:
@@ -150,12 +187,12 @@ class AdminController extends Controller
 
         // Check if the contact exists
         if (!$contact) {
-            return redirect()->route('admin#view-sale-agent')->with('error', 'Contact not found.');
+            return redirect()->route('admin#view-sale-agent', ['id' => $contact_pid])->with('error', 'Contact not found.');
         }
 
         // Retrieve the authenticated user
         $user = Auth::user();
-        $owner = Owner::where('owner_email_id', $user->email)->first();
+        $owner = SaleAgent::where('email', $user->email)->first();
 
         // Retrieve all engagements for the contact
         $engagements = Engagement::where('fk_engagements__contact_pid', $contact_pid)->get();
@@ -686,37 +723,6 @@ class AdminController extends Controller
             'perPage' => $perPage,
             'countries' => DB::table('country')->get(),
             'businessUnits' => DB::table('bu')->get()
-        ]);
-    }
-
-    public function transferContact($id)
-    {
-        Session::put('progress', 0);
-        $user = Auth::user();
-
-        $contacts = Contact::get();
-        $archivedContacts = ContactArchive::get();
-        $discardedContacts = ContactDiscard::get();
-
-        $owner = SaleAgent::where('id', $id)->first();
-        $allContacts = $contacts->concat($archivedContacts)->concat($discardedContacts);
-        $countAllContacts = $allContacts->count();
-        $countEligibleContacts = $contacts->concat($archivedContacts);
-        $totalEligibleContacts = $countEligibleContacts->count();
-        $perPage = 50;
-        $currentPage = LengthAwarePaginator::resolveCurrentPage();
-        $currentPageItems = $allContacts->slice(($currentPage - 1) * $perPage, $perPage)->all();
-        $paginatedContacts = new LengthAwarePaginator($currentPageItems, $allContacts->count(), $perPage);
-        $paginatedContacts->setPath(request()->url());
-
-        // Determine if the combined collection is empty
-        $isEmpty = $allContacts->isEmpty();
-        return view('Transfer_Contacts_Page', [
-            'owner' => $owner,
-            'viewContact' => $paginatedContacts,
-            'isEmpty' => $isEmpty,
-            'countAllContacts' => $countAllContacts,
-            'totalEligibleContacts' => $totalEligibleContacts
         ]);
     }
 

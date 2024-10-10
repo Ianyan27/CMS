@@ -116,13 +116,6 @@
                                 </a>
                             </li>
                         @endif
-                        <li
-                            class="{{ in_array(Route::currentRouteName(), ['admin#contact-listing', 'contact-listing']) ? 'active-link' : 'nav-item' }} dashboard-link">
-                            <a class="nav-link"
-                                href="{{ route(Auth::user()->role == 'Admin' ? 'admin#contact-listing' : 'contact-listing') }}">
-                                <i class="fa-solid fa-address-book"></i><span>Contacts</span>
-                            </a>
-                        </li>
                     </ul>
                 </ul>
             </div>
