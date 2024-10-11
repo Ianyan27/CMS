@@ -165,6 +165,11 @@ class ContactController extends Controller
         // Find the contact based on the contact_pid
         $contact = Contact::find($contact_pid);
 
+        //Lists all activities found on that contact
+        $archiveActivities = ArchiveActivities::where('fk_engagements__contact_pid', $contact_pid)->get();
+        Log::info('Lists of Archive Activities Found: ', $archiveActivities->toArray());
+        Log::info('Number of Archive Activities: ' . $archiveActivities->count());
+
         // Check if the contact exists
         if (!$contact) {
             Log::error('Contact not found', ['contact_pid' => $contact_pid]);
@@ -178,7 +183,7 @@ class ContactController extends Controller
         // Validation rules
         $rules = [
             'status' => function ($attribute, $value, $fail) use ($activitiesCount) {
-                if (in_array($value, ['InProgress', 'HubSpot Contact', 'Archive', 'Discard']) && $activitiesCount === 0) {
+                if (in_array($value, ['HubSpot Contact', 'Archive', 'Discard']) && $activitiesCount === 0) {
                     $fail('Status cannot be updated: No engagement activities for this contact.');
                 }
             }
@@ -267,6 +272,22 @@ class ContactController extends Controller
                         'contact_id' => $newContactId
                     ]);
                     return redirect()->route('sale-agent#contact-listing')->with('error', 'Failed to save engagement activities.');
+                }
+            }
+
+            // After saving the new activities, update archive activities with the new contact ID
+            foreach ($archiveActivities as $archivedActivity) {
+                $archivedActivity->fk_engagements__contact_pid = $newContactId;
+
+                try {
+                    $archivedActivity->save();
+                } catch (\Exception $e) {
+                    Log::error('Failed to update archived activity with new contact ID', [
+                        'error' => $e->getMessage(),
+                        'archived_activity_id' => $archivedActivity->id,
+                        'new_contact_id' => $newContactId
+                    ]);
+                    return redirect()->route('sale-agent#contact-listing')->with('error', 'Failed to update archived activities.');
                 }
             }
 
@@ -496,7 +517,7 @@ class ContactController extends Controller
     public function archiveContactActivities($engagement_archive_pid)
     {
         // Find the engagement activity by its ID (engagement_pid)
-        $engagement = EngagementArchive::where('engagement_archive_pid',$engagement_archive_pid)->first();
+        $engagement = EngagementArchive::where('engagement_archive_pid', $engagement_archive_pid)->first();
         Log::info($engagement);
 
         if (!$engagement) {
@@ -558,10 +579,10 @@ class ContactController extends Controller
         }
     }
 
-    public function deleteActivity($engagement_pid)
+    public function deleteActivity($id)
     {
         // Find the engagement by its engagement_pid
-        $engagement = ArchiveActivities::where('fk_engagements__contact_pid',$engagement_pid);
+        $engagement = ArchiveActivities::where('id', $id);
 
         // Permanently delete the engagement
         $engagement->delete();
@@ -570,8 +591,16 @@ class ContactController extends Controller
         return redirect()->back()->with('success', 'Activity deleted permanently.');
     }
 
-    public function deleteArchiveActivity(){
-        
+    public function deleteArchiveActivity($id)
+    {
+        // Find the engagement by its engagement_pid
+        $engagement = ArchiveActivities::where('id', $id);
+
+        // Permanently delete the engagement
+        $engagement->delete();
+
+        // Redirect with a success message
+        return redirect()->back()->with('success', 'Activity deleted permanently.');
     }
     public function retrieveActivity($id)
     {

@@ -168,8 +168,9 @@ Route::group(['prefix' => 'admin'], function () {
     ])->name('admin#transfer');
 
     // Delete Activity Route
-    Route::post('/archive-activities/{engagement_archive_pid}', [
-        ContactController::class, 'archiveContactActivities'
+    Route::post('/admin-archive-activities/{engagement_archive_pid}', [
+        AdminController::class,
+        'archiveContactActivities'
     ])->name('admin#archiveActivity');
     // Delete the activity from the archive activities table
     Route::post('/delete-activity/{engagement_pid}', [
@@ -183,7 +184,7 @@ Route::group(['prefix' => 'admin'], function () {
         'deleteArchivedActivity'
     ])->name('admin#deleteArchivedActivity');
 
-    Route::get('/delete-archive-activity/{engagement_archive_pid}', [
+    Route::get('/admin/delete-archive-activity/{engagement_archive_pid}', [
         ContactController::class,
         'deleteArchiveActivity'
     ])->name('admin#deleteArchiveActivity');
@@ -266,10 +267,10 @@ Route::group(['prefix' => 'sales-agent'], function () {
         ContactController::class,
         'editContact'
     ])->name('contact#edit');
-    Route::post('/save-contact/{contact_pid}/{owner_pid}', [
+    Route::post('/save-contact/{contact_pid}/{id}', [
         ContactController::class,
         'updateContact'
-    ])->name('contact#update-contact');
+    ])->name('sale-agent#update-contact');
     Route::get('/edit-archive/{contact_archive_pid}', [
         ArchiveController::class,
         'editArchive'
@@ -278,7 +279,7 @@ Route::group(['prefix' => 'sales-agent'], function () {
         ArchiveController::class,
         'viewArchive'
     ])->name('archive#view');
-    Route::post('/save-archive/{contact_archive_pid}/{owner_pid}', [
+    Route::post('/save-archive/{contact_archive_pid}/{id}', [
         ArchiveController::class,
         'updateArchive'
     ])->name('archive#update-archive');
@@ -304,12 +305,12 @@ Route::group(['prefix' => 'sales-agent'], function () {
         'archiveActivity'
     ])->name('archiveActivity');
     //Archive Contacts
-    Route::post('/archive-activities/{engagement_archive_pid}', [
+    Route::post('/sale-agent-archive-activities/{engagement_archive_pid}', [
         ContactController::class,
         'archiveContactActivities'
     ])->name('sale-agent#archiveContactActivities');
     
-    Route::post('/delete-archive-activity/{engagement_archive_pid}', [
+    Route::post('/sale-agent/delete-archive-activity/{engagement_archive_pid}', [
         ContactController::class,
         'deleteArchiveActivity'
     ])->name('sale-agent#deleteArchiveActivity');

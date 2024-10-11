@@ -1063,4 +1063,38 @@ class AdminController extends Controller
             return redirect()->back()->with('error', 'Failed to assign contacts. Please try again.');
         }
     }
+
+    public function archiveContactActivities($engagement_archive_pid)
+    {
+        // Find the engagement activity by its ID (engagement_pid)
+        $engagement = EngagementArchive::where('engagement_archive_pid',$engagement_archive_pid)->first();
+        Log::info($engagement);
+
+        if (!$engagement) {
+            return redirect()->back()->with('error', 'Activity not found.');
+        }
+
+        try {
+            // Move the activity to the "deleted" table
+            ArchiveActivities::create([
+                'fk_engagements__contact_pid' => $engagement->fk_engagement_archives__contact_archive_pid,
+                'activity_name' => $engagement->activity_name,
+                'date' => $engagement->date,
+                'details' => $engagement->details,
+                'attachments' => $engagement->attachments,
+            ]);
+
+            // Delete the activity from the "engagements" table
+            $engagement->delete();
+            // Log the deletion action
+            Log::info('Activity moved to deleted table and removed from engagements table', [
+                'engagement_pid' => $engagement_archive_pid,
+                'contact_pid' => $engagement->fk_engagements__contact_pid,
+            ]);
+            return redirect()->back()->with('success', 'Activity archived and moved to the archive table successfully.');
+        } catch (\Exception $e) {
+            Log::error('Failed to delete activity', ['error' => $e->getMessage()]);
+            return redirect()->back()->with('error', 'An error occurred while deleting the activity.');
+        }
+    }
 }

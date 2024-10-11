@@ -19,7 +19,7 @@
                                 $editContact->contact_pid ?? ($editContact->contact_archive_pid ?? $editContact->contact_discard_pid),
                             'id' => Auth::user()->id,
                         ])
-                        : route('contact#update-contact', ['contact_pid' => $editContact->contact_pid, 'owner_pid' => $owner->id]) }}"
+                        : route('sale-agent#update-contact', ['contact_pid' => $editContact->contact_pid, 'id' => $owner->id]) }}"
                     method="POST" id="editContactForm">
                     @csrf
                     <div class="row">

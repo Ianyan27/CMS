@@ -28,7 +28,7 @@
                             border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
                             <h5 class="modal-title font-educ" id="successModalLabel">Success</h5>
                         </div>
-                        <div class="modal-body" style="color: #91264c">
+                        <div class="modal-body text-center font-educ">
                             {{ session('success') }}
                         </div>
                         <div class="modal-footer" style="border:none">
@@ -222,7 +222,7 @@
             <table class="table table-hover mt-2">
                 <thead class="font-educ text-left">
                     <tr>
-                        <th scope="col">No</th>
+                        <th scope="col">No#</th>
                         <th scope="col">Date</th>
                         <th scope="col">Created Date</th>
                         <th scope="col">Modified Date</th>

@@ -56,8 +56,8 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    {{-- <form action="{{ route('login.microsoft') }}" method="POST"> --}}
-                    <form action="{{ route('microsoft.login') }}" method="POST">
+                    <form action="{{ route('login.microsoft') }}" method="POST">
+                    {{-- <form action="{{ route('microsoft.login') }}" method="POST"> --}}
                         @csrf
                         <div class="form-group">
                             <label for="email" style="color: #91264c;">Email address</label>

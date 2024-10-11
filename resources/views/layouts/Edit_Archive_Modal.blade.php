@@ -21,7 +21,7 @@
                         ])
                         : route('archive#update-archive', [
                             'contact_archive_pid' => $editArchive->contact_archive_pid,
-                            'owner_pid' => $owner->id,
+                            'id' => $owner->id,
                         ]) }}"
                     method="POST" id="editContactForm">
                     {{-- <form
