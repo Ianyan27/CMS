@@ -2,6 +2,7 @@
 // Need to be implement by Kyaw Naing Win still not finished
 namespace App\Http\Controllers;
 
+use App\Models\Country;
 use App\Models\User; // Make sure to import the User model
 use App\Models\Contact; // Import the Contact model
 use App\Models\Engagement; // Import the Engagement model
@@ -10,6 +11,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Db;
+use App\Models\BU;
+use App\Models\BuCountry;
+use App\Models\BUH;
 
 class HeadController extends Controller
 {
@@ -36,7 +40,10 @@ public function index()
 
     $currentPage = $userData->currentPage();
     $perPage = $userData->perPage();
-
+    $businessUnit = BU::all();
+    $countries = Country::all();
+    
+   
     // $dropdownData = DB::table('Business_Unit')->select('business_unit','country')->get();
     // Log::info('dropdown Data are - '.$dropdownData);
 
@@ -45,8 +52,9 @@ public function index()
         'userData' => $userData,
         'currentPage' => $currentPage,
         'perPage' => $perPage,
-        'countries' => DB::table('country')->get(),
-        'businessUnits' => DB::table('bu')->get()
+        'businessUnit' => $businessUnit,
+        'countries' => $countries
+    
     ]);
 }
 
@@ -69,79 +77,89 @@ public function index()
         // Pass the current page and per page values to the view
         $currentPage = $userData->currentPage();
         $perPage = $userData->perPage();
+        $businessUnit = BU::all();
+        $businessUnit = BU::with('countries')->get();
 
         // Pass the results to the view
         return view('Head_page', [
             'userData' => $userData,
             'currentPage' => $currentPage,
             'perPage' => $perPage,
-            'countries' => DB::table('country')->get(),
-            'businessUnits' => DB::table('bu')->get()
+            'businessUnit' => $businessUnit
         ]);
     }
     // Save a new user
     public function saveUser(Request $request)
-{
-    // Define the allowed email domains as a regular expression
-    $domainRegex = 'lithan.com|educlaas.com|learning.educlaas.com';
-
-    // Validate the request data
-    $validatedData = $request->validate([
-        'name' => 'required|string|min:3|max:50',
-        'email' => [
-            'required',
-            'string',
-            'email',
-            'max:255',
-            'unique:users', // Ensures the email is unique in the users table
-            function ($attribute, $value, $fail) use ($domainRegex) {
-                // Validates the email domain against the allowed domains
-                if (!preg_match('/@(' . $domainRegex . ')$/', $value)) {
-                    $fail('The email address must be one of the following domains: ' . str_replace('|', ', ', $domainRegex));
+    {
+        // Define the allowed email domains as a regular expression
+        $domainRegex = 'lithan.com|educlaas.com|learning.educlaas.com';
+    
+        // Validate the request data
+        $validatedData = $request->validate([
+            'name' => 'required|string|min:3|max:50',
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                'unique:users', // Ensures the email is unique in the users table
+                function ($attribute, $value, $fail) use ($domainRegex) {
+                    // Validates the email domain against the allowed domains
+                    if (!preg_match('/@(' . $domainRegex . ')$/', $value)) {
+                        $fail('The email address must be one of the following domains: ' . str_replace('|', ', ', $domainRegex));
+                    }
                 }
-            }
-        ],
-        'nationality' => 'required|string|max:255', // Validation for nationality
-        'bu_id' => 'required|integer', // Validation for Business Unit
-        'country_id' => 'required|integer', // Validation for Country
-    ]);
-
-    // Insert into the users table
-    $userId = DB::table('users')->insertGetId([
-        'name' => $validatedData['name'],
-        'email' => $validatedData['email'],
-        'role' => $request->input('role'),
-        'password' => bcrypt('default'), // Password is hashed before saving
-        'created_at' => now(),
-        'updated_at' => now(),
-    ]);
-
-    // Get the authenticated head ID
-    $headId = Auth::id();
-
-    // Insert into the buh table, including the head_id
-    $buhId = DB::table('buh')->insertGetId([
-        'name' => $validatedData['name'],
-        'email' => $validatedData['email'],
-        'nationality' => $validatedData['nationality'],
-        'head_id' => $headId, // Automatically assign the head_id
-        'created_at' => now(),
-        'updated_at' => now(),
-    ]);
-
-
-    // Insert into the bu_country table
-    DB::table('bu_country')->insert([
-        'buh_id' => $buhId,
-        'bu_id' => $validatedData['bu_id'],
-        'country_id' => $validatedData['country_id'],
-        'created_at' => now(),
-        'updated_at' => now(),
-    ]);
-
-    return redirect()->back()->with('success', 'User added successfully!');
-}
-
+            ],
+            'nationality' => 'required|string|max:255', // Validation for nationality
+            'business_unit' => 'required',
+            'country' => 'required',
+        ]);
+        Log::info('U');
+        // Insert into the users table
+        $userId = DB::table('users')->insertGetId([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'role' => $request->input('role'),
+            'password' => bcrypt('default'), // Password is hashed before saving
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    
+        // Get the authenticated head ID
+        $headId = Auth::id();
+    
+        // Insert into the buh table, including the head_id
+        $buhId = DB::table('buh')->insertGetId([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'nationality' => $validatedData['nationality'],
+            'head_id' => $headId, // Automatically assign the head_id
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    
+        // Retrieve the ID from the 'bu' table based on the business_unit name
+        $buId = DB::table('bu')
+                  ->where('name', $validatedData['business_unit'])
+                  ->value('id');
+    
+        // Retrieve the ID from the 'country' table based on the country name
+        $countryId = DB::table('country')
+                       ->where('name', $validatedData['country'])
+                       ->value('id');
+    
+        // Insert into the bu_country table
+        DB::table('bu_country')->insert([
+            'buh_id' => $buhId,
+            'bu_id' => $buId,
+            'country_id' => $countryId,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    
+        return redirect()->back()->with('success', 'User added successfully!');
+    }
+    
     // Edit user details
     public function editUser($id)
     {
@@ -162,7 +180,6 @@ public function index()
             'businessUnits' => $businessUnits
         ]);
     }
-
     public function updateUser(Request $request, $id)
     {
         try {
@@ -198,10 +215,20 @@ public function index()
                 'updated_at' => now(),
             ]);
     
-            // Update the bu_country table
+            // Retrieve the ID from the bu table based on the business unit name
+            $buId = DB::table('bu')
+                  ->where('name', $request->input('business_unit'))
+                  ->value('id');
+            
+            // Retrieve the ID from the country table based on the country name
+            $countryId = DB::table('country')
+                  ->where('name', $request->input('country'))
+                  ->value('id');
+            
+            // Update the bu_country table without affecting the business unit table
             DB::table('bu_country')->where('id', $id)->update([
-                'bu_id' => $request->input('bu_id'),
-                'country_id' => $request->input('country_id'),
+                'bu_id' => $buId,
+                'country_id' => $countryId,
                 'updated_at' => now(),
             ]);
     
@@ -213,6 +240,7 @@ public function index()
             return redirect()->back()->with('error', 'Failed to update user.');
         }
     }
+    
     
 
     // Delete a user// Delete a user
@@ -259,7 +287,76 @@ public function index()
         }
     }
 
+    public function getBUData(Request $request)
+    {
+        // Validate that the business_unit is provided as a string
+        $request->validate([
+            'business_unit' => 'required|string',
+        ]);
+    
+        // Get the name of the Business Unit from the request
+        $buName = $request->get('business_unit');
+    
+        // Find the Business Unit by its name
+        $bu = BU::where('name', $buName)->first();
+    
+        // If no BU is found, return an error response
+        if (!$bu) {
+            return response()->json(['error' => 'Business Unit not found'], 404);
+        }
+    
+        // Get the corresponding BU ID
+        $buId = $bu->id;
+    
+        // Assuming the BU model has a 'country' relationship
+        $countryName = $bu->country; // Access country name directly from BU
+    
+        // Find the BUH records related to this BU
+        $buhList = BUH::whereHas('buCountries', function ($query) use ($buId) {
+            $query->where('bu_id', $buId);
+        })->get();
+    
+        // Prepare the response including the country name and BUHs
+        $response = [
+            'country' => $countryName,
+            'buh' => $buhList->pluck('name'), // Get the names of the BUHs related to this BU
+        ];
+    
+        // Return the response as JSON
+        return response()->json($response);
+    }
+    
 
+    public function getBUHByBusinessUnit(Request $request)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'business_unit' => 'required|string',
+        ]);
+    
+        // Get business unit from request
+        $businessUnitName = $request->input('business_unit');
+    
+        // Find the corresponding BU
+        $bu = BU::where('name', $businessUnitName)->first();
+        if (!$bu) {
+            return response()->json(['error' => 'Business Unit not found'], 404);
+        }
+    
+        // Retrieve BUHs associated with this BU
+        $buhList = BUH::whereHas('buCountries', function ($query) use ($bu) {
+            $query->where('bu_id', $bu->id);
+        })->get();
+    
+        // Check if any BUHs were found
+        if ($buhList->isEmpty()) {
+            return response()->json(['error' => 'No BUH found for the specified business unit'], 404);
+        }
+    
+        // Return the list of BUHs as JSON
+        return response()->json(['buh' => $buhList]);
+    }
+    
     // View contact details
     public function viewContact($contact_pid) {}
 }

@@ -28,7 +28,7 @@ class BuCountry extends Model
     // BU Country belongs to a single BUH
     public function buh()
     {
-        return $this->belongsTo(Buh::class, 'buh_id');
+        return $this->belongsTo(BUH::class, 'buh_id');
     }
 
     // BU Country has many Sale Agents

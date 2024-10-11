@@ -21,7 +21,9 @@ function deactivateAllButtons() {
 showActivitiesBtn.addEventListener('click', function() {
     hideAllTables();
     activityContainer.style.display = 'block';
+    if (addActivityBtn) {
     addActivityBtn.style.display = 'block';
+    }
 
     // Set active button
     deactivateAllButtons();
@@ -32,7 +34,9 @@ showActivitiesBtn.addEventListener('click', function() {
 showDeletedActivitiesBtn.addEventListener('click', function() {
     hideAllTables();
     deletedActivityContainer.style.display = 'block';
+    if (addActivityBtn) {
     addActivityBtn.style.display = 'none';
+    }
 
     // Set active button
     deactivateAllButtons();

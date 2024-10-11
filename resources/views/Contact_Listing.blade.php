@@ -137,20 +137,17 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="{{ 
-                                        Auth::user()->role == 'Admin' ? 
-                                            route('admin#view-contact',['contact_pid' => $contact->contact_pid]) : 
-                                        (Auth::user()->role == 'BUH' ? 
-                                            route('buh#view-contact',['contact_pid' => $contact->contact_pid]) : 
-                                        (Auth::user()->role == 'Sales_Agent' ? 
-                                            route('sale-agent#view', ['contact_pid' => $contact->contact_pid]) : 
-                                            route('sale-agent#view', ['contact_pid' => $contact->contact_pid])
-                                        )) 
-                                    }}"
-                                    class="btn hover-action" data-toggle="tooltip" title="View">
+                                    <a href="{{ Auth::user()->role == 'Admin'
+                                        ? route('admin#view-contact', ['contact_pid' => $contact->contact_pid])
+                                        : (Auth::user()->role == 'BUH'
+                                            ? route('buh#view-contact', ['contact_pid' => $contact->contact_pid])
+                                            : (Auth::user()->role == 'Sales_Agent'
+                                                ? route('sale-agent#view', ['contact_pid' => $contact->contact_pid])
+                                                : route('sale-agent#view', ['contact_pid' => $contact->contact_pid]))) }}"
+                                        class="btn hover-action" data-toggle="tooltip" title="View">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
-                                    
+
                                     {{-- <a href=" {{ Auth::user()->role == 'Admin' ? route('admin#view-contact', ['contact_pid' => $contact->contact_pid]) : route('sale-agent#view', $contact->contact_pid) }} "
                                         class="btn hover-action" data-toggle="tooltip" title="View">
                                         <i class="fa-solid fa-eye"></i>
@@ -223,9 +220,9 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <a href=" {{ Auth::user()->role == 'Admin' ? 
-                                    route('admin#archive-view', $archive->contact_archive_pid) :
-                                    route('archive#view', $archive->contact_archive_pid) }} "
+                                    <a href=" {{ Auth::user()->role == 'Admin'
+                                        ? route('admin#archive-view', $archive->contact_archive_pid)
+                                        : route('archive#view', $archive->contact_archive_pid) }} "
                                         class="btn hover-action" data-toggle="tooltip" title="View">
                                         <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
                                     </a>
