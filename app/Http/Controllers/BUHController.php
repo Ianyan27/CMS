@@ -115,7 +115,7 @@ class BUHController extends Controller
             // Store the file in public storage
             //$filePath = Storage::disk('public')->putFile('csv_uploads', $file);
             // Import the data into the database using the ContactsImport class
-            $import = new ContactsImport($platform, $country);
+            $import = new ContactsImport($platform, $countryName);
             Excel::import($import, $file);
             $allocator = new RoundRobinAllocator();
 
@@ -372,8 +372,7 @@ class BUHController extends Controller
         $country = $request->input('country');
         $user = Auth::user();
         Log::info("email user: " . $user->email);
-        $userId = BUH::where("email", $user->email)->get()->first();
-        Log::info("user id: " . $userId->id);
+
 
         try {
             // Validate the input
@@ -397,6 +396,13 @@ class BUHController extends Controller
             if ($owner->status === 'active') {
                 Log::error('Sales agent is inactive or not found. Transfer cannot proceed.', ['owner_pid' => $owner_pid]);
                 return redirect()->back()->with('error', 'The selected sales agent status is active. Please deactivate sales agent.');
+            }
+
+            if ($user->role === 'BUH') {
+                $userId = BUH::where("email", $user->email)->get()->first();
+            } else {
+                $buCountry = $owner->buCountry;
+                $userId = $buCountry->buh;
             }
 
             // If "Select all Contacts" is chosen, get all contact PIDs associated with the provided owner_pid
