@@ -1,6 +1,6 @@
 @foreach ($engagementArchive as $engagement)
-    <div class="modal fade" id="deleteUserModal{{ $engagement->engagement_archive_pid }}" tabindex="-1"
-        aria-labelledby="deleteUserModalLabel{{ $engagement->engagement_archive_pid }}" aria-hidden="true">
+    <div class="modal fade" id="archiveActivityModal{{ $engagement->engagement_archive_pid }}" tabindex="-1"
+        aria-labelledby="archiveActivityModal{{ $engagement->engagement_archive_pid }}" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content text-center">
                 <div class="icon-container mx-auto">
@@ -15,18 +15,13 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     <!-- Archive Form -->
-                    <form action="{{ Auth::user()->role == 'Admin' ? 
+                    <form action="{{ Auth::check() && Auth::user()->role == 'Admin' ? 
                     route('admin#archiveActivity', ['engagement_archive_pid' => $engagement->engagement_archive_pid]) : 
-                    route('archiveContactActivities', ['engagement_archive_pid' => $engagement->engagement_archive_pid]) }}"
+                    route('sale-agent#archiveContactActivities', ['engagement_archive_pid' => $engagement->engagement_archive_pid]) }}"
                         method="POST" style="margin-right: 10px;">
                         @csrf
                         <button type="submit" class="btn archive-table">Archive</button>
                     </form>
-                    {{-- <form action="{{ route('archiveActivity', ['engagement_pid' => $engagement->engagement_pid]) }}"
-                        method="POST" style="margin-right: 10px;">
-                        @csrf
-                        <button type="submit" class="btn archive-table">Archive</button>
-                    </form> --}}
                 </div>
             </div>
         </div>
@@ -57,7 +52,7 @@
                     </form>
                     <form action="{{ Auth::user()->role == 'Admin' ? 
                     route('admin#deleteArchivedActivity', ['engagement_archive_pid' => $deletedActivity->fk_engagements__contact_pid]) : 
-                    route('deleteArchiveActivity', ['engagement_archive_pid' => $deletedActivity->fk_engagements__contact_pid]) }}"
+                    route('sale-agent#deleteArchiveActivity', ['engagement_archive_pid' => $deletedActivity->fk_engagements__contact_pid]) }}"
                         method="POST">
                         @csrf
                         <button type="submit" class="btn discard-table">Delete Permanently</button>

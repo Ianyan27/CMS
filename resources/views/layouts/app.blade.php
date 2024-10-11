@@ -146,17 +146,6 @@
             <div class="col-11 px-4 min-height content-width mb-4">
                 @yield('content')
             </div>
-
-            <!-- Include the modals here -->
-            @if (Route::currentRouteNamed('admin#view-contact') ||
-                    Route::currentRouteNamed('owner#view-contact') ||
-                    Route::currentRouteNamed('sale-agent#view') ||
-                    Route::currentRouteNamed('sale-agent#view'))
-                @include('layouts.Update_Activity_Modal')
-                @include('layouts.Edit_Contact_Modal')
-                @include('layouts.Add_Activity_Modal')
-                @include('layouts.Attachment_Error_Modal')
-            @endif
         </div>
     </div>
     <footer style="position: sticky; bottom: 0;" class="bg-educ color-white text-center py-3 mt-auto">

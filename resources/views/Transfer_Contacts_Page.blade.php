@@ -90,7 +90,12 @@
             </div>
         @endif
         <div class="container-max-height">
-            <form class="transfer-form-container" action=" {{ route('owner#transfer') }} " method="POST">
+            <form class="transfer-form-container" action=" 
+            {{ Auth::user()->role == 'Admin' ? 
+            route('admin#transfer') : 
+            route('buh#transfer') 
+            }} " method="POST">
+            {{-- <form class="transfer-form-container" action=" {{ route('owner#transfer') }} " method="POST"> --}}
                 @csrf
                 <input type="hidden" name="owner_pid" value=" {{ $owner->id }} " readonly>
                 <input type="hidden" name="country" value=" {{ $owner->nationality }} " readonly>

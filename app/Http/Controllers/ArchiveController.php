@@ -6,7 +6,6 @@ use App\Models\ArchiveActivities;
 use App\Models\Contact;
 use App\Models\ContactArchive;
 use App\Models\ContactDiscard;
-use App\Models\Delete_contacts;
 use App\Models\Engagement;
 use App\Models\EngagementArchive;
 use App\Models\EngagementDiscard;
@@ -63,7 +62,7 @@ class ArchiveController extends Controller
     {
         $user = Auth::user();
         $archive = ContactArchive::find($contact_archive_pid);
-        $owner = SaleAgent::where('owner_email_id', $user->email)->first();
+        $owner = SaleAgent::where('email', $user->email)->first();
         if (!$archive) {
             return redirect()->back()->with('error', 'Contact archive not found.');
         }
@@ -146,8 +145,8 @@ class ArchiveController extends Controller
         if($user->role == 'Admin'){
             $id = $user->id;
         } else {
-            $owner = Owner::where('owner_email_id', $user->email)->first();
-            $id = $owner->owner_pid;
+            $owner = SaleAgent::where('email', $user->email)->first();
+            $id = $owner->id;
         }
         DB::table('archive__logs')->insert([
             'fk_logs__archive_contact_pid' => $contact_archive_pid,

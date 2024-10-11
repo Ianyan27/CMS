@@ -309,6 +309,7 @@
                                     <i class="fa-solid fa-info-circle text-muted"></i>
                                 </span>
                             </th>
+                            <th scope="col">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="text-left bg-row">
@@ -351,9 +352,12 @@
                                 data-toggle="tooltip" title="View">
                                 <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i> --}}
                                     </a>
-                                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </a>
+                                    <a href=" {{ Auth::user()->role == 'Admin' ? 
+                                        route('admin#archive-view', $archive->contact_archive_pid) :
+                                        route('archive#view', $archive->contact_archive_pid) }} "
+                                            class="btn hover-action" data-toggle="tooltip" title="View">
+                                            <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
+                                        </a>
                                 </td>
                             </tr>
                         @empty

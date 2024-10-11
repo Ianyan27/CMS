@@ -169,8 +169,7 @@ Route::group(['prefix' => 'admin'], function () {
 
     // Delete Activity Route
     Route::post('/archive-activities/{engagement_archive_pid}', [
-        ContactController::class,
-        'archiveContactActivities'
+        ContactController::class, 'archiveContactActivities'
     ])->name('admin#archiveActivity');
     // Delete the activity from the archive activities table
     Route::post('/delete-activity/{engagement_pid}', [
@@ -308,16 +307,17 @@ Route::group(['prefix' => 'sales-agent'], function () {
     Route::post('/archive-activities/{engagement_archive_pid}', [
         ContactController::class,
         'archiveContactActivities'
-    ])->name('archiveContactActivities');
+    ])->name('sale-agent#archiveContactActivities');
+    
     Route::post('/delete-archive-activity/{engagement_archive_pid}', [
         ContactController::class,
         'deleteArchiveActivity'
-    ])->name('deleteArchiveActivity');
+    ])->name('sale-agent#deleteArchiveActivity');
 
     Route::post('/delete-activity/{engagement_pid}', [
         ContactController::class,
         'deleteActivity'
-    ])->name('deleteActivity');
+    ])->name('sale-agent#deleteActivity');
     Route::post('/retrieve-activity/{id}', [
         ContactController::class,
         'retrieveActivity'
@@ -419,7 +419,7 @@ Route::group(['prefix' => 'buh'], function () {
     Route::post('/transfer', [
         BUHController::class,
         'transfer'
-    ])->name('owner#transfer');
+    ])->name('buh#transfer');
     // Route::post('/assign-contact', [
     //     BUHController::class, 'assignContacts'
     // ])->name('owner#assign-contact');

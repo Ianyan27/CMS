@@ -915,17 +915,17 @@ class AdminController extends Controller
             Log::info('Owner PID: ' . $owner_pid);
 
             // **Check if the sales agent is inactive**
-            $owner = Owner::where('owner_pid', $owner_pid)->first();
+            $owner = SaleAgent::where('id', $owner_pid)->first();
 
             Log::info("Owner Status: " . $owner->status);
             if ($owner->status === 'active') {
-                Log::error('Sales agent is inactive or not found. Transfer cannot proceed.', ['owner_pid' => $owner_pid]);
+                Log::error('Sales agent is inactive or not found. Transfer cannot proceed.', ['id' => $owner_pid]);
                 return redirect()->back()->with('error', 'The selected sales agent status is active. Please deactivate sales agent.');
             }
 
             // If "Select all Contacts" is chosen, get all contact PIDs associated with the provided owner_pid
             if ($transferMethod === 'Select all Contacts') {
-                $selectedContacts = Contact::where('fk_contacts__owner_pid', $owner_pid)->pluck('contact_pid')->toArray();
+                $selectedContacts = Contact::where('fk_contacts__sale_agent_id', $owner_pid)->pluck('contact_pid')->toArray();
             }
 
             // Check if there are any contacts selected
@@ -943,7 +943,7 @@ class AdminController extends Controller
                 foreach ($contactsBatch as $contact_pid) {
                     // Find the contact in the contacts table
                     $contact = Contact::where('contact_pid', $contact_pid)
-                        ->where('fk_contacts__owner_pid', $owner_pid)
+                        ->where('fk_contacts__sale_agent_id', $owner_pid)
                         ->first();
 
                     if ($contact) {

@@ -2,6 +2,10 @@
 
 @extends('layouts.app')
 
+@extends('layouts.Update_Activity_Modal')
+@extends('layouts.Edit_Contact_Modal')
+@extends('layouts.Add_Activity_Modal')
+@extends('layouts.Attachment_Error_Modal')
 
 @section('content')
     @if (
@@ -276,14 +280,12 @@ $filename = $attachments[0] ?? ''; // Get the first filename from the array
                             @if (Auth::user()->role == 'Sales_Agent' || Auth::user()->role == 'Admin')
                                 <td class="text-center">
                                     @if ($editContact->status !== 'HubSpot Contact')
-                                        <a href="{{ Auth::user()->role == 'Sales_Agent' ? route('contact#update-activity', ['contact_id' => $engagement->fk_engagements__contact_pid, 'activity_id' => $engagement->engagement_pid]) : '#' }}"
-                                            data-toggle="modal"
-                                            {{ Auth::user()->role == 'Sales_Agent' ? 'data-target=#updateActivityModal-' . $engagement->engagement_pid : '' }}
-                                            class="btn hover-action">
+                                        <a class="btn hover-action" data-toggle="modal"
+                                            data-target="#updateActivityModal{{$engagement->engagement_pid}}">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
                                         <a class="btn hover-action" data-toggle="modal"
-                                            data-target="#deleteUserModal{{ $engagement->engagement_pid }}">
+                                            data-target="#deleteUserModal{{$engagement->engagement_pid}}">
                                             <i class="fa-solid fa-trash"></i>
                                         </a>
                                     @endif

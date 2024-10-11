@@ -272,7 +272,7 @@
                                         <i class="fa-solid fa-pen-to-square"></i>
                                     </a>
                                     <a class="btn hover-action" data-toggle="modal"
-                                        data-target="#deleteUserModal{{ $engagement->engagement_archive_pid }}">
+                                        data-target="#archiveActivityModal{{ $engagement->engagement_archive_pid }}">
                                         <i class="fa-solid fa-trash"></i>
                                     </a>
                                 </td>

@@ -16,7 +16,7 @@ return new class extends Migration
         
             $table->id('archive_log_pid');
             $table->foreignId('fk_logs__archive_contact_pid')->nullable()->constrained('contact_archives','contact_archive_pid');
-            $table->foreignId('fk_logs__owner_pid')->nullable()->constrained('owners','owner_pid');
+            $table->foreignId('fk_logs__owner_pid')->nullable()->constrained('sale_agent','id');
             $table->enum('action_type', ['Allocated', 'Accessed', 'Updated', 'Converted to Archive', 'Converted to Discard', 'Deleted', 'Save New Activity']);
             $table->text('action_description')->nullable();
             $table->dateTime('action_timestamp')->default(DB::raw('CURRENT_TIMESTAMP'));

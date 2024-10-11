@@ -141,7 +141,7 @@
                     </form>
                     <form action="{{ Auth::user()->role == 'Admin' ? 
                     route('admin#deleteActivity', ['engagement_pid' => $deletedActivity->fk_engagements__contact_pid]) : 
-                    route('deleteActivity', ['engagement_pid' => $deletedActivity->fk_engagements__contact_pid]) }}"
+                    route('sale-agent#deleteActivity', ['engagement_pid' => $deletedActivity->fk_engagements__contact_pid]) }}"
                         method="POST">
                         @csrf
                         <button type="submit" class="btn discard-table">Delete Permanently</button>

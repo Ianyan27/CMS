@@ -31,6 +31,6 @@ class ArchiveLogs extends Model
 
     public function owner()
     {
-        return $this->belongsTo(Owner::class, 'fk_logs__owner_pid');
+        return $this->belongsTo(SaleAgent::class, 'fk_logs__owner_pid');
     }
 }

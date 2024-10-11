@@ -168,7 +168,7 @@ class ContactController extends Controller
         // Check if the contact exists
         if (!$contact) {
             Log::error('Contact not found', ['contact_pid' => $contact_pid]);
-            return redirect()->route('contact-listing')->with('error', 'Contact not found.');
+            return redirect()->route('sale-agent#contact-listing')->with('error', 'Contact not found.');
         }
 
         // Fetch engagement activities associated with the contact
@@ -191,7 +191,7 @@ class ContactController extends Controller
         $owner = SaleAgent::find($id);
         if (!$owner) {
             Log::error('Owner not found', ['owner_id' => $id]);
-            return redirect()->route('contact-listing')->with('error', 'Owner not found.');
+            return redirect()->route('sale-agent#contact-listing')->with('error', 'Owner not found.');
         }
 
         // Log the owner and contact details
@@ -239,7 +239,7 @@ class ContactController extends Controller
                     'error' => $e->getMessage(),
                     'id' => $id
                 ]);
-                return redirect()->route('contact-listing')->with('error', 'Failed to save contact to archive/discard.');
+                return redirect()->route('sale-agent#contact-listing')->with('error', 'Failed to save contact to archive/discard.');
             }
 
             $newContactId = $request->input('status') === 'Archive'
@@ -266,7 +266,7 @@ class ContactController extends Controller
                         'activity_id' => $activity->id,
                         'contact_id' => $newContactId
                     ]);
-                    return redirect()->route('contact-listing')->with('error', 'Failed to save engagement activities.');
+                    return redirect()->route('sale-agent#contact-listing')->with('error', 'Failed to save engagement activities.');
                 }
             }
 
@@ -279,14 +279,14 @@ class ContactController extends Controller
                 'status' => $request->input('status')
             ]);
 
-            return redirect()->route('contact-listing')->with('success', 'Contact and activities moved to ' . $request->input('status') . ' successfully.');
+            return redirect()->route('sale-agent#contact-listing')->with('success', 'Contact and activities moved to ' . $request->input('status') . ' successfully.');
         }
 
         Log::info('Contact updated successfully', [
             'contact_pid' => $contact_pid
         ]);
 
-        return redirect()->route('contact#view', [
+        return redirect()->route('sale-agent#view', [
             'contact_pid' => $contact_pid
         ])->with('success', 'Contact updated successfully.');
     }
@@ -360,7 +360,7 @@ class ContactController extends Controller
 
 
         // Redirect to the contact view page with a success message
-        return redirect()->route('contact#view', ['contact_pid' => $contact_pid])
+        return redirect()->route('sale-agent#view', ['contact_pid' => $contact_pid])
             ->with('success', 'Activity added successfully.');
     }
 
@@ -373,13 +373,13 @@ class ContactController extends Controller
         $activity = $updateEngagements->where('id', $activity_id)->first();
 
         if (!$activity) {
-            return redirect()->route('contact#view', ['contact_pid' => $fk_engagements__contact_pid])
+            return redirect()->route('sale-agent#view', ['contact_pid' => $fk_engagements__contact_pid])
                 ->with('error', 'Activity not found.');
         }
 
 
         // Redirect back to the contact view with the specific activity ID
-        return redirect()->route('contact#view', [
+        return redirect()->route('sale-agent#view', [
             'contact_pid' => $fk_engagements__contact_pid,
             'updateEngagement' => $activity_id
         ])->with([
@@ -454,7 +454,7 @@ class ContactController extends Controller
         Log::info("Edit Activity: " . $editActivity);
 
         // Redirect to the contact view page with a success message
-        return redirect()->route('contact#view', ['contact_pid' => $contact_pid])
+        return redirect()->route('sale-agent#view', ['contact_pid' => $contact_pid])
             ->with('success', 'Activity updated successfully.');
     }
 
@@ -496,7 +496,8 @@ class ContactController extends Controller
     public function archiveContactActivities($engagement_archive_pid)
     {
         // Find the engagement activity by its ID (engagement_pid)
-        $engagement = EngagementArchive::find($engagement_archive_pid);
+        $engagement = EngagementArchive::where('engagement_archive_pid',$engagement_archive_pid)->first();
+        Log::info($engagement);
 
         if (!$engagement) {
             return redirect()->back()->with('error', 'Activity not found.');
@@ -560,13 +561,17 @@ class ContactController extends Controller
     public function deleteActivity($engagement_pid)
     {
         // Find the engagement by its engagement_pid
-        $engagement = ArchiveActivities::findOrFail($engagement_pid);
+        $engagement = ArchiveActivities::where('fk_engagements__contact_pid',$engagement_pid);
 
         // Permanently delete the engagement
         $engagement->delete();
 
         // Redirect with a success message
         return redirect()->back()->with('success', 'Activity deleted permanently.');
+    }
+
+    public function deleteArchiveActivity(){
+        
     }
     public function retrieveActivity($id)
     {
@@ -610,9 +615,6 @@ class ContactController extends Controller
             return redirect()->back()->with('error', 'An error occurred while restoring the activities.');
         }
     }
-
-
-
 
     public function hubspotContacts()
     {
