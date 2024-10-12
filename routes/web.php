@@ -23,8 +23,12 @@ Route::get('/', function () {
     return view('Login');
 })->name('login');
 
-Route::post('/get-bu-data', [SaleAdminController::class, 'getBUData'])->name('get.bu.data');
-Route::post('/get-buh-by-country', [SaleAdminController::class, 'getBUHByCountry'])->name('get.buh.by.country');
+Route::post('/get-bu-data', [
+    SaleAdminController::class, 'getBUData'
+])->name('get.bu.data');
+Route::post('/get-buh-by-country', [
+    SaleAdminController::class, 'getBUHByCountry'
+])->name('get.buh.by.country');
 
 
 // Microsoft OAuth Login

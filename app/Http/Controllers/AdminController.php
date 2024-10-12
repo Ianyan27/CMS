@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ArchiveActivities;
 use App\Models\BU;
+use App\Models\BUH;
 use App\Models\Contact;
 use App\Models\ContactArchive;
 use App\Models\ContactDiscard;
