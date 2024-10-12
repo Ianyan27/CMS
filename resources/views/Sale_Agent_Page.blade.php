@@ -173,7 +173,7 @@
                                         class="btn hover-action" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-right-left"></i>
                                     </a>
-                                    <a href="{{ Auth::user()->role == 'Admin' ? route('admin#view-sale-agent', $owners->id) : route('owner#view-owner', $owners->id) }}"
+                                    <a href="{{ Auth::user()->role == 'Admin' ? route('admin#view-sale-agent', $owners->id) : route('buh#view-sale-agent', $owners->id) }}"
                                         class="btn hover-action mx-2" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>

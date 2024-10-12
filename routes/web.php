@@ -389,10 +389,10 @@ Route::group(['prefix' => 'buh'], function () {
         OwnerController::class,
         'saleAgent'
     ])->name('buh#view');
-    Route::get('/view-owner/{owner_pid}', [
+    Route::get('/view-sale-agent/{id}', [
         OwnerController::class,
         'viewSaleAgent'
-    ])->name('owner#view-owner');
+    ])->name('buh#view-sale-agent');
     Route::post('/save-user', [
         BUHController::class,
         'saveUser'

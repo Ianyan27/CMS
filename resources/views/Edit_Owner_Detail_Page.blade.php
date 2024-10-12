@@ -20,7 +20,7 @@
                         border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
                             <h5 class="modal-title font-educ" id="successModalLabel">Success</h5>
                         </div>
-                        <div class="modal-body">
+                        <div class="modal-body font-educ text-center">
                             {{ session('success') }}
                         </div>
                         <div class="modal-footer">
@@ -29,12 +29,6 @@
                     </div>
                 </div>
             </div>
-            <!-- Script to trigger the modal -->
-            <script type="text/javascript">
-                window.onload = function() {
-                    document.getElementById('successModalBtn').click();
-                };
-            </script>
         @endif
         <link rel="stylesheet" href="{{ URL::asset('css/contact_detail.css') }}">
         <div class="row border-educ rounded mb-3 owner-container">
@@ -352,12 +346,12 @@
                                 data-toggle="tooltip" title="View">
                                 <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i> --}}
                                     </a>
-                                    <a href=" {{ Auth::user()->role == 'Admin' ? 
-                                        route('admin#archive-view', $archive->contact_archive_pid) :
-                                        route('archive#view', $archive->contact_archive_pid) }} "
-                                            class="btn hover-action" data-toggle="tooltip" title="View">
-                                            <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
-                                        </a>
+                                    <a href=" {{ Auth::user()->role == 'Admin'
+                                        ? route('admin#archive-view', $archive->contact_archive_pid)
+                                        : route('archive#view', $archive->contact_archive_pid) }} "
+                                        class="btn hover-action" data-toggle="tooltip" title="View">
+                                        <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
+                                    </a>
                                 </td>
                             </tr>
                         @empty
@@ -475,6 +469,13 @@
     <script src="{{ asset('js/active_activity_buttons.js') }}"></script>
     <script src="{{ asset('js/sort.js') }}"></script>
     <script src="{{ asset('js/active_buttons.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            @if (session('success'))
+                $('#successModal').modal('show');
+            @endif
+        });
+    </script>
     <script>
         function showSection(sectionId) {
             // Hide all sections
