@@ -18,6 +18,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
 </head>
+@php
+    $userRole = Auth::user()->role;
+@endphp
 
 <body class="d-flex flex-column">
     <div class="container-fluid flex-grow-1">
@@ -55,91 +58,65 @@
         </div>
         <div class="row my-4 content-height">
             <div id="side-bar" class="col-md-auto col-sm-auto dashboard rounded-right navigation-width right-shadow">
-                <ul class="nav flex-column fonts my-2">
+                <ul class="nav flex-column fonts my-2 navbar-nav">
                     <!-- Sidebar Navigation Items -->
-                    <ul class="navbar-nav">
-                        @if (Auth::check() && Auth::user()->role == 'Admin')
-                            <li
-                                class="{{ Route::currentRouteName() != 'admin#index' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'admin#index' ? 'active-link' : '' }}">
-                                <a class="nav-link" href="{{ route('admin#index') }}">
-                                    <i class="fa-solid fa-user"></i><span>Users</span>
-                                </a>
-                            </li>
-                        @endif
-                        {{-- <li
-                            class="{{ Route::currentRouteName() != 'admin#contact-listing' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'admin#contact-listing' ? 'active-link' : '' }}">
-                            <a class="nav-link " href="{{ route('admin#contact-listing') }}">
-                                <i class="fa-solid fa-address-book"></i><span>Contacts</span>
+                    @if ($userRole == 'Admin')
+                        <li
+                            class="{{ Route::currentRouteName() != 'admin#index' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'admin#index' ? 'active-link' : '' }}">
+                            <a class="nav-link" href="{{ route('admin#index') }}">
+                                <i class="fa-solid fa-user"></i><span>Users</span>
                             </a>
-                        </li> --}}
-                        {{-- <li
-                            class="{{ Route::currentRouteName() != 'importcsv' ? 'nav-item' : '' }} dashboard-link {{ Route::currentRouteName() == 'importcsv' ? 'active-link' : '' }}">
-                            <a class="nav-link" href="{{ route('importcsv') }}">
-                                <i class="fa-solid fa-file-arrow-up disabled"></i><span>Import CSV</span>
+                        </li>
+                    @endif
+
+                    @if (in_array($userRole, ['Admin', 'BUH']))
+                        <li
+                            class="{{ in_array(Route::currentRouteName(), ['admin#viewSaleAgent', 'buh#view']) ? 'active-link' : 'nav-item' }} dashboard-link">
+                            <a class="nav-link"
+                                href="{{ route($userRole == 'Admin' ? 'admin#viewSaleAgent' : 'buh#view') }}">
+                                <i class="fa-solid fa-universal-access"></i><span>Sales Agent</span>
                             </a>
-                        </li> --}}
-                        @if ((Auth::check() && Auth::user()->role == 'BUH') || Auth::user()->role == 'Admin')
-                            <li
-                                class="{{ in_array(Route::currentRouteName(), ['admin#viewSaleAgent', 'admin#transfer-contact', 'buh#view']) ? 'active-link' : 'nav-item' }} dashboard-link">
-                                <a class="nav-link"
-                                    href="{{ route(Auth::user()->role == 'Admin' ? 'admin#viewSaleAgent' : 'buh#view') }}">
-                                    <i class="fa-solid fa-universal-access"></i><span>Sales Agent</span>
-                                </a>
-                            </li>
-                        @endif
-                        @if ((Auth::check() && Auth::user()->role == 'Head') || Auth::user()->role == 'Admin')
-                            <li
-                                class="{{ in_array(Route::currentRouteName(), ['admin#view-buh', 'head#index']) ? 'active-link' : 'nav-item' }} dashboard-link">
-                                <a class="nav-link"
-                                    href="{{ route(Auth::user()->role == 'Admin' ? 'admin#view-buh' : 'head#index') }}">
-                                    <i class="fa-solid fa-universal-access"></i><span>BUH</span>
-                                </a>
-                            </li>
-                        @endif
+                        </li>
                         <li
                             class="{{ in_array(Route::currentRouteName(), ['admin#hubspot-contact', 'hubspot-contact']) ? 'active-link' : 'nav-item' }} dashboard-link">
                             <a class="nav-link"
-                                href="{{ route(Auth::user()->role == 'Admin' ? 'admin#hubspot-contact' : 'hubspot-contact') }}">
+                                href="{{ route($userRole == 'Admin' ? 'admin#hubspot-contact' : 'hubspot-contact') }}">
                                 <i class="fa-brands fa-hubspot"></i><span>Hubspot Contacts</span>
                             </a>
                         </li>
-                        @if (Auth::user()->role == 'Admin' || Auth::user()->role == 'BUH' || Auth::user()->role == 'Sales_Agent')
-                            <li
-                                class="{{ in_array(Route::currentRouteName(), ['admin#contact-listing', 'buh#contact-listing', 'sale-agent#contact-listing']) ? 'active-link' : 'nav-item' }} dashboard-link">
-                                <a class="nav-link"
-                                    href="{{ Auth::user()->role == 'Admin'
-                                        ? route('admin#contact-listing')
-                                        : (Auth::user()->role == 'BUH'
-                                            ? route('buh#contact-listing')
-                                            : (Auth::user()->role == 'Sales_Agent'
-                                                ? route('sale-agent#contact-listing')
-                                                : '#')) }}">
-                                    <i class="fa-solid fa-address-book"></i><span>Contacts</span>
-                                </a>
-                            </li>
-                        @endif
+                    @endif
 
-                        @if ((Auth::check() && Auth::user()->role == 'Admin') || Auth::user()->role == 'BUH' || Auth::user()->role == 'Head')
-                            <li
-                                class="nav-item dashboard-link 
-                                    {{ Route::currentRouteName() == 'sale_admin' ? 'active-link' : '' }}
-                                    {{ Route::currentRouteName() == 'admin#sales-admin' ? 'admin-active' : '' }}
-                                    {{ Route::currentRouteName() == 'buh#import-csv' ? 'buh-active' : '' }}">
-                                <a class="nav-link"
-                                    href="{{ Auth::user()->role == 'Admin'
-                                        ? route('admin#sales-admin')
-                                        : (Auth::user()->role == 'BUH'
-                                            ? route('buh#import-csv')
-                                            : (Auth::user()->role == 'sale-admin'
-                                                ? route('sale_admin')
-                                                : '#')) }}">
-                                    {{-- <a class="nav-link" href="{{ route('admin#sales-admin') }}"> --}}
-                                    <i class="fa-solid fa-file-arrow-up"></i><span>Import CSV</span>
-                                </a>
-                            </li>
-                        @endif
+                    @if (in_array($userRole, ['Admin', 'Head']))
+                        <li
+                            class="{{ in_array(Route::currentRouteName(), ['admin#view-buh', 'head#index']) ? 'active-link' : 'nav-item' }} dashboard-link">
+                            <a class="nav-link"
+                                href="{{ route($userRole == 'Admin' ? 'admin#view-buh' : 'head#index') }}">
+                                <i class="fa-solid fa-universal-access"></i><span>BUH</span>
+                            </a>
+                        </li>
+                    @endif
 
-                    </ul>
+                    @if (in_array($userRole, ['Admin', 'BUH', 'Sales_Agent']))
+                        <li
+                            class="{{ in_array(Route::currentRouteName(), ['admin#contact-listing', 'buh#contact-listing', 'saleAgent#contact-listing']) ? 'active-link' : 'nav-item' }} dashboard-link">
+                            <a class="nav-link"
+                                href="{{ route($userRole == 'Admin' ? 'admin#contact-listing' : ($userRole == 'BUH' ? 'buh#contact-listing' : 'saleAgent#contact-listing')) }}">
+                                <i class="fa-solid fa-address-book"></i><span>Contacts</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if (in_array($userRole, ['Admin', 'BUH', 'Sale_Admin']))
+                        <li
+                            class="nav-item dashboard-link 
+                            {{ Route::currentRouteName() == 'sale_admin' ? 'active-link' : '' }}
+                            {{ Route::currentRouteName() == 'admin#sales-admin' ? 'admin-active' : '' }}
+                            {{ Route::currentRouteName() == 'buh#import-csv' ? 'buh-active' : '' }}">
+                            <a class="nav-link"
+                                href="{{ route($userRole == 'Admin' ? 'admin#sales-admin' : ($userRole == 'BUH' ? 'buh#import-csv' : 'sale_admin')) }}">
+                                <i class="fa-solid fa-file-arrow-up"></i><span>Import CSV</span>
+                            </a>
+                        </li>
+                    @endif
                 </ul>
             </div>
             <div class="col-11 px-4 min-height content-width mb-4">
