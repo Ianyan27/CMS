@@ -52,7 +52,7 @@
             <div class="table-title d-flex justify-content-between align-items-center mb-3">
                 <div class="d-flex align-items-center">
                     <h2 style="margin: 0 0.5rem 0 0.25rem;" class="font-educ headings">Sales Agents</h2>
-                    <button class="btn hover-action add-sales-agent-button" data-toggle="modal"
+                    <button class="btn hover-action" data-toggle="modal"
                         data-target="#addSalesAgentModal" style="padding: 10px 12px;">
                         <i class="fa-solid fa-square-plus"></i>
                     </button>

@@ -114,9 +114,9 @@
                                 </label>
                                 <span style="width:105px;"
                                     class="owner-status text-left
-                                @if ($owner->status === 'active') status-text
+                                @if ($owner->status === 'active') status-active
                                 @elseif($owner->status === 'inactive')
-                                inactive-text @endif">Status:
+                                inactive-status @endif">Status:
                                     @if ($owner->status === 'active')
                                         Active
                                     @elseif ($owner->status === 'inactive')

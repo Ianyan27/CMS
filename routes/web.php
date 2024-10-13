@@ -234,6 +234,10 @@ Route::group(['prefix' => 'admin'], function () {
         'viewBUH'
     ])->name('admin#view-buh');
 
+    Route::get('/admin/view-buh/{id}', [
+        AdminController::class ,'viewBUHDetails'
+    ])->name('admin#view-buh-detail');
+
     Route::post('/save-buh', [
         AdminController::class,
         'saveBUH'

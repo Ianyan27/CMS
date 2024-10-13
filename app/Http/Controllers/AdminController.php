@@ -8,6 +8,7 @@ use App\Models\BUH;
 use App\Models\Contact;
 use App\Models\ContactArchive;
 use App\Models\ContactDiscard;
+use App\Models\Country;
 use App\Models\Delete_contacts;
 use App\Models\Engagement;
 use App\Models\EngagementArchive;
@@ -235,7 +236,6 @@ class AdminController extends Controller
         ]);
     }
 
-
     public function viewContact($contact_pid)
     {
         // Log the incoming request with the contact_pid
@@ -310,8 +310,6 @@ class AdminController extends Controller
             'deletedEngagement' => $deletedEngagement
         ]);
     }
-
-
     public function saleAdmin()
     {
         $businessUnit = BU::all();
@@ -616,7 +614,6 @@ class AdminController extends Controller
             'contact_pid' => $contact_pid
         ])->with('success', 'Contact updated successfully.');
     }
-
     public function saveActivity(Request $request, $contact_pid)
     {
         // Checking for admin role and redirecting if true
@@ -728,21 +725,26 @@ class AdminController extends Controller
                 'country.name as country_name',
                 'buh.name as buh_name',
                 'buh.email as buh_email',
-                'buh.nationality' // Include nationality here
+                'buh.nationality'
             )
             ->paginate(10);
 
-        // // Pass the current page and per page values to the view
         $currentPage = $userData->currentPage();
         $perPage = $userData->perPage();
+        $businessUnit = BU::all();
+        $countries = Country::all();
 
-        // Pass the results to the view
-        return view('Head_Page', [
+        // $dropdownData = DB::table('Business_Unit')->select('business_unit','country')->get();
+        // Log::info('dropdown Data are - '.$dropdownData);
+
+        // Return the data to the view
+        return view('Head_page', [
             'userData' => $userData,
             'currentPage' => $currentPage,
             'perPage' => $perPage,
-            'countries' => DB::table('country')->get(),
-            'businessUnits' => DB::table('bu')->get()
+            'businessUnit' => $businessUnit,
+            'countries' => $countries
+
         ]);
     }
 
@@ -850,6 +852,37 @@ class AdminController extends Controller
             Log::error('Error deleting BUH: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to delete BUH.');
         }
+    }
+
+    public function viewBUHDetails($id){
+
+        $buhData = DB::table('bu_country as bc')
+        ->join('bu', 'bc.bu_id', '=', 'bu.id')
+        ->join('country', 'bc.country_id', '=', 'country.id')
+        ->join('buh', 'bc.buh_id', '=', 'buh.id')
+        ->select(
+            'bc.id as id',
+            'bu.name as bu_name',
+            'country.name as country_name',
+            'buh.name as buh_name',
+            'buh.email as buh_email',
+            'buh.nationality as buh_nationality'
+        )
+        ->where('bc.id', $id)
+        ->first();
+        $saleAgents = SaleAgent::where('bu_country_id', $id)->get();
+        $totalSaleAgents = $saleAgents->count();
+        $totalDisabledSaleAgents = SaleAgent::where('bu_country_id', $id)
+        ->where('status', 'inactive')->count();
+
+        $buhSaleAgents =SaleAgent::where('bu_country_id', $id)->paginate(10);
+
+        return view('Edit_BUH_Detail_Page', [
+            'buhSaleAgents' => $buhSaleAgents,
+            'buhData' => $buhData, 
+            'totalSaleAgents' => $totalSaleAgents,
+            'totalDisabledSaleAgents' => $totalDisabledSaleAgents
+        ]);
     }
 
     public function updateStatusSaleAgent(Request $request, $owner_pid)
@@ -1068,7 +1101,7 @@ class AdminController extends Controller
     public function archiveContactActivities($engagement_archive_pid)
     {
         // Find the engagement activity by its ID (engagement_pid)
-        $engagement = EngagementArchive::where('engagement_archive_pid',$engagement_archive_pid)->first();
+        $engagement = EngagementArchive::where('engagement_archive_pid', $engagement_archive_pid)->first();
         Log::info($engagement);
 
         if (!$engagement) {

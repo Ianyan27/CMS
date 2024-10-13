@@ -211,7 +211,7 @@ tbody {
     background-color: #ff9c84;
 }
 
-.inactive-text{
+.inactive-status{
     color: #FF4C4C;
 }
 
@@ -708,7 +708,7 @@ th, label{
             /* Custom progress bar color */
         }
 
-        .status-text {
+        .status-active {
             color: green;
         }
 

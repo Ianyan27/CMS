@@ -78,35 +78,32 @@
                                 <i class="fa-solid fa-file-arrow-up disabled"></i><span>Import CSV</span>
                             </a>
                         </li> --}}
-                        @if (
-                            (Auth::check() && Auth::user()->role == 'BUH') ||
-                                Auth::user()->role == 'Admin' ||
-                                Auth::user()->role == 'Sales_Agent')
-                            @if ((Auth::check() && Auth::user()->role == 'BUH') || Auth::user()->role == 'Admin')
-                                <li
-                                    class="{{ in_array(Route::currentRouteName(), ['admin#viewSaleAgent', 'admin#transfer-contact', 'buh#view']) ? 'active-link' : 'nav-item' }} dashboard-link">
-                                    <a class="nav-link"
-                                        href="{{ route(Auth::user()->role == 'Admin' ? 'admin#viewSaleAgent' : 'buh#view') }}">
-                                        <i class="fa-solid fa-universal-access"></i><span>Sales Agent</span>
-                                    </a>
-                                </li>
-                            @endif
-                            @if ((Auth::check() && Auth::user()->role == 'Head') || Auth::user()->role == 'Admin')
-                                <li
-                                    class="{{ in_array(Route::currentRouteName(), ['admin#view-buh', 'head#index']) ? 'active-link' : 'nav-item' }} dashboard-link">
-                                    <a class="nav-link"
-                                        href="{{ route(Auth::user()->role == 'Admin' ? 'admin#view-buh' : 'head#index') }}">
-                                        <i class="fa-solid fa-universal-access"></i><span>BUH</span>
-                                    </a>
-                                </li>
-                                <li
-                                    class="{{ in_array(Route::currentRouteName(), ['admin#hubspot-contact', 'hubspot-contact']) ? 'active-link' : 'nav-item' }} dashboard-link">
-                                    <a class="nav-link"
-                                        href="{{ route(Auth::user()->role == 'Admin' ? 'admin#hubspot-contact' : 'hubspot-contact') }}">
-                                        <i class="fa-brands fa-hubspot"></i><span>Hubspot Contacts</span>
-                                    </a>
-                                </li>
-                            @endif
+                        @if ((Auth::check() && Auth::user()->role == 'BUH') || Auth::user()->role == 'Admin')
+                            <li
+                                class="{{ in_array(Route::currentRouteName(), ['admin#viewSaleAgent', 'admin#transfer-contact', 'buh#view']) ? 'active-link' : 'nav-item' }} dashboard-link">
+                                <a class="nav-link"
+                                    href="{{ route(Auth::user()->role == 'Admin' ? 'admin#viewSaleAgent' : 'buh#view') }}">
+                                    <i class="fa-solid fa-universal-access"></i><span>Sales Agent</span>
+                                </a>
+                            </li>
+                        @endif
+                        @if ((Auth::check() && Auth::user()->role == 'Head') || Auth::user()->role == 'Admin')
+                            <li
+                                class="{{ in_array(Route::currentRouteName(), ['admin#view-buh', 'head#index']) ? 'active-link' : 'nav-item' }} dashboard-link">
+                                <a class="nav-link"
+                                    href="{{ route(Auth::user()->role == 'Admin' ? 'admin#view-buh' : 'head#index') }}">
+                                    <i class="fa-solid fa-universal-access"></i><span>BUH</span>
+                                </a>
+                            </li>
+                        @endif
+                        <li
+                            class="{{ in_array(Route::currentRouteName(), ['admin#hubspot-contact', 'hubspot-contact']) ? 'active-link' : 'nav-item' }} dashboard-link">
+                            <a class="nav-link"
+                                href="{{ route(Auth::user()->role == 'Admin' ? 'admin#hubspot-contact' : 'hubspot-contact') }}">
+                                <i class="fa-brands fa-hubspot"></i><span>Hubspot Contacts</span>
+                            </a>
+                        </li>
+                        @if (Auth::user()->role == 'Admin' || Auth::user()->role == 'BUH' || Auth::user()->role == 'Sales_Agent')
                             <li
                                 class="{{ in_array(Route::currentRouteName(), ['admin#contact-listing', 'buh#contact-listing', 'sale-agent#contact-listing']) ? 'active-link' : 'nav-item' }} dashboard-link">
                                 <a class="nav-link"
@@ -120,26 +117,28 @@
                                     <i class="fa-solid fa-address-book"></i><span>Contacts</span>
                                 </a>
                             </li>
-                            @if ((Auth::check() && Auth::user()->role == 'Admin') || Auth::user()->role == 'BUH' || Auth::user()->role == 'head')
-                                <li
-                                    class="nav-item dashboard-link 
+                        @endif
+
+                        @if ((Auth::check() && Auth::user()->role == 'Admin') || Auth::user()->role == 'BUH' || Auth::user()->role == 'Head')
+                            <li
+                                class="nav-item dashboard-link 
                                     {{ Route::currentRouteName() == 'sale_admin' ? 'active-link' : '' }}
                                     {{ Route::currentRouteName() == 'admin#sales-admin' ? 'admin-active' : '' }}
                                     {{ Route::currentRouteName() == 'buh#import-csv' ? 'buh-active' : '' }}">
-                                    <a class="nav-link"
-                                        href="{{ Auth::user()->role == 'Admin'
-                                            ? route('admin#sales-admin')
-                                            : (Auth::user()->role == 'BUH'
-                                                ? route('buh#import-csv')
-                                                : (Auth::user()->role == 'sale-admin'
-                                                    ? route('sale_admin')
-                                                    : '#')) }}">
-                                        {{-- <a class="nav-link" href="{{ route('admin#sales-admin') }}"> --}}
-                                        <i class="fa-solid fa-file-arrow-up"></i><span>Import CSV</span>
-                                    </a>
-                                </li>
-                            @endif
+                                <a class="nav-link"
+                                    href="{{ Auth::user()->role == 'Admin'
+                                        ? route('admin#sales-admin')
+                                        : (Auth::user()->role == 'BUH'
+                                            ? route('buh#import-csv')
+                                            : (Auth::user()->role == 'sale-admin'
+                                                ? route('sale_admin')
+                                                : '#')) }}">
+                                    {{-- <a class="nav-link" href="{{ route('admin#sales-admin') }}"> --}}
+                                    <i class="fa-solid fa-file-arrow-up"></i><span>Import CSV</span>
+                                </a>
+                            </li>
                         @endif
+
                     </ul>
                 </ul>
             </div>

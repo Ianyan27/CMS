@@ -43,7 +43,6 @@ public function index()
     $businessUnit = BU::all();
     $countries = Country::all();
     
-   
     // $dropdownData = DB::table('Business_Unit')->select('business_unit','country')->get();
     // Log::info('dropdown Data are - '.$dropdownData);
 

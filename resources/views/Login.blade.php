@@ -30,8 +30,8 @@
                 <p class="text-muted">To keep connected, consider signing in using your official Microsoft account</p>
                 <!-- Sign in with Microsoft Button -->
                 <a href="{{ route('login.microsoft') }}" class="btn d-flex align-items-center justify-content-center"
-                    style="background-color: #91264c; color: white; padding: 0.75rem 1.5rem; border-radius: 5px;">
-                    {{-- data-toggle="modal" data-target="#loginModal"> --}}
+                    style="background-color: #91264c; color: white; padding: 0.75rem 1.5rem; border-radius: 5px;"
+                    data-toggle="modal" data-target="#loginModal">
                     <img src="{{ url('/images/image.png') }}" style="width: 30px; height: 30px;" alt="Microsoft Logo"
                         class="mr-2">
                     Sign in with Microsoft
