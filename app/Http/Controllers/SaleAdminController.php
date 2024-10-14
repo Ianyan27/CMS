@@ -23,6 +23,16 @@ class SaleAdminController extends Controller
             'businessUnit' => $businessUnit
         ]);
     }
+
+    // Check the BU and Country list
+    public function buCountry()
+    {
+        $bus = BU::paginate(10); // adjust the pagination limit as needed
+        $countries = Country::paginate(10); // adjust the pagination limit as needed
+
+        return view('BU_Country', compact('bus', 'countries'));
+    }
+
     public function getBUData(Request $request)
     {
         // Validate that the business_unit is provided as a string
@@ -104,5 +114,70 @@ class SaleAdminController extends Controller
 
         // Return the list of unique BUHs as JSON
         return response()->json(['buh' => $buhList]);
+    }
+
+    public function saveCountry(Request $request)
+    {
+        $request->validate([
+            'country-name' => 'required',
+        ]);
+
+        $country = new Country();
+        $country->name = $request->input('country-name');
+        $country->save();
+
+        return redirect()->back()->with('country-success', 'Country added successfully!');
+    }
+
+    public function saveBU(Request $request)
+    {
+        $request->validate([
+            'bu-name' => 'required',
+        ]);
+
+        $bu = new BU();
+        $bu->name = $request->input('bu-name');
+        $bu->save();
+
+        return redirect()->back()->with('bu-success', 'Business Unit added successfully!');
+    }
+
+    public function updateBU(Request $request, $id)
+    {
+        $request->validate([
+            'bu-name' => 'required',
+        ]);
+
+        $bu = BU::find($id);
+
+        if (!$bu) {
+            // Handle the case where the business unit is not found
+            return redirect()->back()->withErrors('Business Unit not found');
+        }
+
+        Log::info("bu name: " . $request->input('bu-name'));
+        $bu->name = $request->input('bu-name');
+        $bu->save();
+
+        return redirect()->back()->with('bu-success', 'Business Unit updated successfully!');
+    }
+
+    public function updateCountry(Request $request, $id)
+    {
+        $request->validate([
+            'country-name' => 'required',
+        ]);
+
+        $country = Country::find($id);
+
+        if (!$country) {
+            // Handle the case where the country is not found
+            return redirect()->back()->withErrors('Country not found');
+        }
+
+        $country->name = $request->input('country-name');
+        $country->save();
+
+        return redirect()->back()->with('country-success', 'Country updated successfully!');
     }
 }
