@@ -110,10 +110,6 @@
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
                                     {{-- <a class="btn hover-action" data-toggle="modal"
-                                        data-target="#editUserModal{{ $user->id }}">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </a> --}}
-                                    {{-- <a class="btn hover-action" data-toggle="modal"
                                         data-target="#deleteUserModal{{ $user->id }}">
                                         <i class="fa-solid fa-trash"></i>
                                     </a> --}}
@@ -175,7 +171,7 @@
                 </ul>
             </div>
         </div>
-    <!-- Edit User Modal -->
+    {{-- <!-- Edit User Modal -->
     @foreach ($userData as $user)
         <div class="modal fade" id="editUserModal{{ $user->id }}" tabindex="-1"
             aria-labelledby="editUserModalLabel{{ $user->id }}" aria-hidden="true">
@@ -187,7 +183,7 @@
                             <strong>Edit BUH</strong>
                         </h5>
                     </div>
-                    <form action="{{ route('head#update-user', $user->id) }}" method="POST">
+                    <form action="{{ route('head#update-BUH', $user->id) }}" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="modal-body">
@@ -242,7 +238,7 @@
                 </div>
             </div>
         </div>
-    @endforeach
+    @endforeach --}}
         @foreach ($userData as $user)
             <!-- Delete User Modal -->
             <div class="modal fade" id="deleteUserModal{{ $user->id }}" tabindex="-1"

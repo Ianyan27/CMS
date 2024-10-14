@@ -2,7 +2,7 @@
 
 @extends('layouts.app')
 @section('content')
-    @if ((Auth::check() && Auth::user()->role == 'Admin') || Auth::user()->role == 'BUH')
+    @if ((Auth::check() && Auth::user()->role == 'Admin') || Auth::user()->role == 'Head')
         @if (session('success'))
             <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
             <button id="successModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal"
@@ -34,7 +34,11 @@
             <div class="col-md-5 border-right" id="contact-detail">
                 <div class="table-title d-flex justify-content-between align-items-center my-3">
                     <h2 class="mt-2 ml-3 headings">BUH Detail</h2>
-                    @if ((Auth::check() && Auth::user()->role == 'BUH') || (Auth::check() && Auth::user()->role == 'Admin'))
+                    @if ((Auth::check() && Auth::user()->role == 'Head') || (Auth::check() && Auth::user()->role == 'Admin'))
+                        <a class="btn hover-action" data-toggle="modal"
+                            data-target="#editUserModal{{ $buhData->id }}">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
                         {{-- <a style="padding: 10px 12px;"
                             href="{{ Auth::user()->role == 'Admin'
                                 ? route('admin#update-sale-agent', ['id' => $owner->id])
@@ -279,6 +283,72 @@
                             aria-label="Next">&#62;</a>
                     </li>
                 </ul>
+            </div>
+        </div>
+        <div class="modal fade" id="editUserModal{{ $buhData->id }}" tabindex="-1"
+            aria-labelledby="editUserModalLabel{{ $buhData->id }}" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content rounded-0">
+                    <div class="modal-header d-flex justify-content-between align-items-center"
+                        style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+                    border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
+                        <h5 class="modal-title font-educ" id="editUserModalLabel{{ $buhData->id }}">
+                            <strong>Edit BUH</strong>
+                        </h5>
+                    </div>
+                    <form action="{{ route('head#update-buh', $buhData->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="name{{ $buhData->id }}" class="form-label font-educ">BUH Name</label>
+                                <input type="text" class="form-control" name="name" id="name{{ $buhData->id }}"
+                                    value="{{ $buhData->buh_name }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email{{ $buhData->id }}" class="form-label font-educ">Email</label>
+                                <input type="email" class="form-control" name="email" id="email{{ $buhData->id }}"
+                                    value="{{ $buhData->buh_email }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="nationality{{ $buhData->id }}" class="form-label font-educ">Nationality</label>
+                                <input type="text" class="form-control" name="nationality" id="nationality{{ $buhData->id }}"
+                                    value="{{ $buhData->buh_nationality }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="bu" class="form-label font-educ">Business Unit (BU)</label>
+                                <select id="buDropdowninedit{{ $buhData->id }}" class="platforms search-bar form-control"
+                                    name="business_unit" onchange="updateCountryDropdowninEdit({{ $buhData->id }});">
+                                    <option value="">Select BU</option>
+                                    @foreach ($businessUnit as $bu)
+                                        <option value="{{ $bu->name }}" {{ $buhData->bu_name === $bu->name ? 'selected' : '' }}>
+                                            {{ $bu->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('bu_id')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label for="country" class="form-label font-educ">Country</label>
+                                <select id="countryDropdown{{ $buhData->id }}" class="platforms search-bar form-control" name="country"
+                                    onchange="updateSelectedCountryAndBuh({{ $buhData->id }});">
+                                    <option value="">Select Country</option>
+                                    @foreach ($countries as $country)
+                                        <option value="{{ $country->name }}" {{ $buhData->country_name === $country->name ? 'selected' : '' }}>{{ $country->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('country_id')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn hover-action">Update User</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     @else

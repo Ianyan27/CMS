@@ -469,10 +469,10 @@ Route::group(['prefix' => 'head', 'as' => 'head#'], function () {
     Route::get('/edit-user/{id}', [HeadController::class, 'editUser'])->name('edit-user');
 
     // Update user details (change this line)
-    Route::put('/update-user/{id}', [
+    Route::put('/update-buh/{id}', [
         HeadController::class,
-        'updateUser'
-    ])->name('update-user'); // Change from POST to PUT
+        'updateBUH'
+    ])->name('update-buh'); // Change from POST to PUT
 
     // Delete a user
     Route::delete('/delete-user/{id}', [

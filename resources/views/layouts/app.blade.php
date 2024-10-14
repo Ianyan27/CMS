@@ -71,9 +71,9 @@
 
                     @if (in_array($userRole, ['Admin', 'BUH']))
                         <li
-                            class="{{ in_array(Route::currentRouteName(), ['admin#viewSaleAgent', 'buh#view']) ? 'active-link' : 'nav-item' }} dashboard-link">
+                            class="{{ in_array(Route::currentRouteName(), ['admin#viewsale-agent', 'buh#view']) ? 'active-link' : 'nav-item' }} dashboard-link">
                             <a class="nav-link"
-                                href="{{ route($userRole == 'Admin' ? 'admin#viewSaleAgent' : 'buh#view') }}">
+                                href="{{ route($userRole == 'Admin' ? 'admin#viewsale-agent' : 'buh#view') }}">
                                 <i class="fa-solid fa-universal-access"></i><span>Sales Agent</span>
                             </a>
                         </li>
@@ -98,9 +98,9 @@
 
                     @if (in_array($userRole, ['Admin', 'BUH', 'Sales_Agent']))
                         <li
-                            class="{{ in_array(Route::currentRouteName(), ['admin#contact-listing', 'buh#contact-listing', 'saleAgent#contact-listing']) ? 'active-link' : 'nav-item' }} dashboard-link">
+                            class="{{ in_array(Route::currentRouteName(), ['admin#contact-listing', 'buh#contact-listing', 'sale-agent#contact-listing']) ? 'active-link' : 'nav-item' }} dashboard-link">
                             <a class="nav-link"
-                                href="{{ route($userRole == 'Admin' ? 'admin#contact-listing' : ($userRole == 'BUH' ? 'buh#contact-listing' : 'saleAgent#contact-listing')) }}">
+                                href="{{ route($userRole == 'Admin' ? 'admin#contact-listing' : ($userRole == 'BUH' ? 'buh#contact-listing' : 'sale-agent#contact-listing')) }}">
                                 <i class="fa-solid fa-address-book"></i><span>Contacts</span>
                             </a>
                         </li>

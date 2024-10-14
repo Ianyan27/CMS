@@ -738,7 +738,7 @@ class AdminController extends Controller
         // Log::info('dropdown Data are - '.$dropdownData);
 
         // Return the data to the view
-        return view('Head_page', [
+        return view('Head_Page', [
             'userData' => $userData,
             'currentPage' => $currentPage,
             'perPage' => $perPage,
@@ -877,11 +877,16 @@ class AdminController extends Controller
 
         $buhSaleAgents =SaleAgent::where('bu_country_id', $id)->paginate(10);
 
+        $businessUnit = BU::all();
+        $countries = Country::all();
+
         return view('Edit_BUH_Detail_Page', [
             'buhSaleAgents' => $buhSaleAgents,
             'buhData' => $buhData, 
             'totalSaleAgents' => $totalSaleAgents,
-            'totalDisabledSaleAgents' => $totalDisabledSaleAgents
+            'totalDisabledSaleAgents' => $totalDisabledSaleAgents,
+            'businessUnit' => $businessUnit,
+            'countries' => $countries
         ]);
     }
 

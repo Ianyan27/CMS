@@ -281,7 +281,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="text-center">No ownerContacts found.</td>
+                                <td colspan="9" class="text-center">No contacts found.</td>
                             </tr>
                         @endforelse
                     </tbody>
