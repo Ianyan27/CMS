@@ -248,7 +248,7 @@ Route::group(['prefix' => 'admin'], function () {
         'deleteBUH'
     ])->name('admin#delete-buh');
 
-    Route::post('/update-status-sale-agent/{owner_pid}', [
+    Route::post('/update-status-sale-agent/{id}', [
         AdminController::class,
         'updateStatusSaleAgent'
     ])->name('admin#update-status-sale-agent');

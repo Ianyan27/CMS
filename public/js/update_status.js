@@ -1,19 +1,15 @@
 document.getElementById('statusSwitch').addEventListener('change', function() {
     const isChecked = this.checked;
-    const statusText = document.querySelector('.owner-status');
+    const statusText = this.nextElementSibling.querySelector('.status-text');
     const ownerPid = this.getAttribute('data-owner-pid');
     const userType = this.getAttribute('data-user-type'); // Attribute indicating if it's admin or buh
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     // Update status text
     if (isChecked) {
-        statusText.textContent = 'Status: Active';
-        statusText.classList.remove('inactive-text');
-        statusText.classList.add('status-text');
+        statusText.textContent = 'Active';
     } else {
-        statusText.textContent = 'Status: Inactive';
-        statusText.classList.remove('status-text');
-        statusText.classList.add('inactive-text');
+        statusText.textContent = 'Inactive';
     }
 
     // Determine the correct endpoint based on user type

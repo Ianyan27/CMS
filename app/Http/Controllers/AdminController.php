@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ArchiveActivities;
 use App\Models\BU;
+use App\Models\BuCountry;
 use App\Models\BUH;
 use App\Models\Contact;
 use App\Models\ContactArchive;
@@ -890,18 +891,18 @@ class AdminController extends Controller
         ]);
     }
 
-    public function updateStatusSaleAgent(Request $request, $owner_pid)
+    public function updateStatusSaleAgent(Request $request, $id)
 
     {
         // Log incoming request data
         Log::info('Update Status Request:', [
-            'owner_pid' => $owner_pid,
+            'id' => $id,
             'request_data' => $request->all()
         ]);
 
         try {
             // Retrieve the owner by their primary ID (assuming owner_pid is the primary key)
-            $owner = SaleAgent::find($owner_pid);
+            $owner = SaleAgent::find($id);
 
             if ($owner) {
                 // Update the status
@@ -916,7 +917,7 @@ class AdminController extends Controller
                 // Return a success message as JSON
                 return response()->json(['message' => 'Owner status updated successfully.']);
             } else {
-                Log::warning('Owner not found:', ['owner_pid' => $owner_pid]);
+                Log::warning('Owner not found:', ['owner_pid' => $id]);
 
                 return response()->json(['message' => 'Owner not found.'], 404);
             }
