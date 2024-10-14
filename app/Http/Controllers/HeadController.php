@@ -47,7 +47,7 @@ class HeadController extends Controller
         // Log::info('dropdown Data are - '.$dropdownData);
 
         // Return the data to the view
-        return view('Head_page', [
+        return view('Head_Page', [
             'userData' => $userData,
             'currentPage' => $currentPage,
             'perPage' => $perPage,
