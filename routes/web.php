@@ -377,8 +377,7 @@ Route::group(['prefix' => 'sales-agent'], function () {
     Route::post('/contact/{contact_pid}/activity/{activity_id}/update', [
         ContactController::class,
         'saveUpdateActivity'
-    ])
-        ->name('contact#save-update-activity');
+    ])->name('contact#save-update-activity');
     Route::post('/archive/{contact_archive_pid}/activity/{activity_id}/update', [
         ArchiveController::class,
         'updateActivity'

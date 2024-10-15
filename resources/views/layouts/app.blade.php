@@ -65,7 +65,7 @@
                         </a>
                     </li>
                     @endif
-                    @if (Auth::check() && Auth::user()->role == 'Admin' ?? 'BUH')
+                    @if (Auth::check() && Auth::user()->role == 'Admin' || Auth::user()->role == 'BUH')
                         <li
                             class="{{ in_array(Route::currentRouteName(), ['admin#viewSaleAgent', 'buh#view']) ? 'active-link' : 'nav-item' }} dashboard-link">
                             <a class="nav-link"
@@ -83,7 +83,7 @@
                             </a>
                         </li>
                     @endif
-                    @if (Auth::check() && Auth::user()->role == 'Admin' ?? 'BUH')
+                    @if (Auth::check() && Auth::user()->role == 'Admin' || Auth::user()->role == 'Head')
                         <li
                             class="{{ in_array(Route::currentRouteName(), ['admin#view-buh', 'head#index']) ? 'active-link' : 'nav-item' }} dashboard-link">
                             <a class="nav-link" href="{{ route(Auth::user()->role == 'Admin' ? 'admin#view-buh' : 'head#index') }}">
@@ -91,9 +91,9 @@
                             </a>
                         </li>
                     @endif
-                    @if (Auth::check() && Auth::user()->role == 'Admin' ?? 'BUH')
+                    @if (Auth::check() && Auth::user()->role == 'Admin' || Auth::user()->role == 'BUH' || Auth::user()->role == 'Sales_Agent')
                         <li
-                            class="{{ in_array(Route::currentRouteName(), ['admin#contact-listing', 'buh#contact-listing', 'sale-agent#contact-listing']) ? 'active-link' : 'nav-item' }} dashboard-link">
+                            class="{{ in_array(Route::currentRouteName(), ['admin#contact-listing', 'buh#contact-listing', 'sale-agent#contact-listing', 'sales-agent#index']) ? 'active-link' : 'nav-item' }} dashboard-link">
                             <a class="nav-link"
                                 href="{{ route(Auth::user()->role == 'Admin' ? 'admin#contact-listing' : (Auth::user()->role == 'BUH' ? 'buh#contact-listing' : 'sale-agent#contact-listing')) }}">
                                 <i class="fa-solid fa-address-book"></i><span>Contacts</span>
@@ -102,7 +102,7 @@
                     @endif
                     @if (Auth::check() && Auth::user()->role == 'Admin' || Auth::user()->role == 'BUH' || Auth::user()->role == 'Sales_Admin')
                         <li
-                            class="{{ in_array(Route::currentRouteName(), ['admin#sales-admin', 'sale_admin', 'buh#import-csv']) ? 'active-link' : 'nav-item' }} dashboard-link">
+                            class="{{ in_array(Route::currentRouteName(), ['admin#sales-admin', 'sale_admin', 'buh#import-csv', 'buh#index', 'sales-admin#index']) ? 'active-link' : 'nav-item' }} dashboard-link">
                             <a class="nav-link"
                                 href="{{ route(Auth::user()->role == 'Admin' ? 'admin#sales-admin' : (Auth::user()->role == 'BUH' ? 'buh#import-csv' : 'sales-admin#index')) }}">
                                 <i class="fa-solid fa-file-arrow-up"></i><span>Import CSV</span>

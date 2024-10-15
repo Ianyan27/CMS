@@ -17,7 +17,7 @@
                     action="{{ Auth::user()->role == 'Admin'
                         ? route('archive#update-archive', [
                             'contact_archive_pid' => $editArchive->contact_archive_pid,
-                            'owner_pid' => Auth::user()->id,
+                            'id' => Auth::user()->id,
                         ])
                         : route('archive#update-archive', [
                             'contact_archive_pid' => $editArchive->contact_archive_pid,

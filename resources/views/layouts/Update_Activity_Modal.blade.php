@@ -9,7 +9,9 @@
                     <div class="modal-header d-flex justify-content-between align-items-center"
                         style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
                 border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
-                        <h5 class="modal-title" id="updateActivityModalLabel"><strong>Update Activity</strong></h5>
+                        <h5 class="modal-title font-educ" id="updateActivityModalLabel">
+                            <strong>Update Activity</strong>
+                        </h5>
                         <!-- Logo on the right side -->
                         <img src="{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}" alt="Company Logo"
                             style="height: 30px;">

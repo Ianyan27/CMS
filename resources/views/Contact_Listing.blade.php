@@ -108,21 +108,21 @@
                                 </td>
                                 @if (Auth::user()->role === 'Admin')
                                     <!-- Display Sales Agent only for Admins -->
-                                    <td>{{ $contact->owner->owner_name ?? 'Not Assigned' }}</td>
+                                    <td>{{ $contact->saleAgent->name ?? 'Not Assigned' }}</td>
                                 @endif
                                 <td>
                                     <span class="status-indicator"
                                         style="background-color:
-                                @if ($contact['status'] === 'HubSpot Contact') #FFE8E2;color:#FF5C35;
-                                @elseif ($contact['status'] === 'discard')
-                                    #FF7F86; color: #BD000C;
-                                @elseif ($contact['status'] === 'InProgress')
-                                    #FFF3CD; color: #FF8300; padding: 5px 10px;
-                                @elseif ($contact['status'] === 'New')
-                                    #CCE5FF ; color:  #318FFC;
-                                @elseif ($contact['status'] === 'Archive')
-                                #E2E3E5; color: #303030; @endif
-                            ">
+                                        @if ($contact['status'] === 'HubSpot Contact') #FFE8E2; color: #FF5C35;
+                                        @elseif ($contact['status'] === 'discard')
+                                            #FF7F86; color: #BD000C;
+                                        @elseif ($contact['status'] === 'InProgress')
+                                            #FFF3CD; color: #FF8300; padding: 5px 10px;
+                                        @elseif ($contact['status'] === 'New')
+                                            #CCE5FF; color: #318FFC;
+                                        @elseif ($contact['status'] === 'Archive')
+                                            #E2E3E5; color: #303030; @endif
+                                    ">
                                         @if ($contact['status'] === 'HubSpot Contact')
                                             HubSpot
                                         @elseif ($contact['status'] === 'discard')
@@ -147,15 +147,6 @@
                                         class="btn hover-action" data-toggle="tooltip" title="View">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
-
-                                    {{-- <a href=" {{ Auth::user()->role == 'Admin' ? route('admin#view-contact', ['contact_pid' => $contact->contact_pid]) : route('sale-agent#view', $contact->contact_pid) }} "
-                                        class="btn hover-action" data-toggle="tooltip" title="View">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </a> --}}
-                                    {{-- <a href=" {{ route('contact#view', $contact->contact_pid) }} "
-                                        class="btn hover-action" data-toggle="tooltip" title="View">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </a> --}}
                                 </td>
                             </tr>
                         @empty
@@ -164,6 +155,7 @@
                             </tr>
                         @endforelse
                     </tbody>
+                    
                 </table>
             </div>
             <div class="table-container" id="archive">

@@ -25,7 +25,7 @@
     </script>
 </head>
 @section('content')
-    @if ((Auth::check() && Auth::user()->role == 'BUH') || (Auth::check() && Auth::user()->role == 'Admin'))
+    @if ((Auth::check() && Auth::user()->role == 'BUH'))
         <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content rounded-0">

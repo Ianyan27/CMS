@@ -111,7 +111,7 @@ class ArchiveController extends Controller
                 if ($request->input('status') === 'InProgress') {
                     $newActivity->fk_engagements__contact_pid = $newContactId;
                 } else {
-                    $newActivity->fk_engagements_discards__contact_pid = $newContactId;
+                    $newActivity->fk_engagement_discards__contact_discard_pid = $newContactId;
                 }
                 $newActivity->save();
             }

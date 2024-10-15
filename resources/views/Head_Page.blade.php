@@ -316,7 +316,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="bu">Business Unit (BU)</label>
-                                <select id="buDropdown" class="w-75 platforms search-bar" name="business_unit"
+                                <select id="buDropdown" class="form-control platforms search-bar" name="business_unit"
                                     onchange="updateCountryDropdown(); ">
                                     <option value="">Select BU</option>
                                     @foreach ($businessUnit as $bu)
@@ -329,7 +329,7 @@
                             </div>
                             <div class="form-group">
                                 <label class="font-educ d-block" for="countryDropdown">Select Country</label>
-                                <select id="countryDropdown" class="w-75 platforms search-bar" name="country"
+                                <select id="countryDropdown" class="form-control platforms search-bar" name="country"
                                     onchange="updateSelectedCountryAndBuh(); ">
                                     <option value="">Select Country</option>
                                 </select>

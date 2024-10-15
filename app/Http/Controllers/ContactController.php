@@ -412,11 +412,7 @@ class ContactController extends Controller
     public function saveUpdateActivity(Request $request, $contact_pid, $activity_id)
     {
         // Checking for admin role and redirecting if needed
-        $user = Auth::user();
-        if ($user->role === 'Admin') {
-            return redirect()->route('admin#contact-listing')->with('error', 'Admin cannot update the contact activity');
-        }
-
+        
         // Validate the input data
         $validator = Validator::make($request->all(), [
             'activity-date' => 'required|date',
@@ -568,7 +564,7 @@ class ContactController extends Controller
             // Delete the activity from the "engagements" table
             $engagement->delete();
             // Log the deletion action
-            Log::info('Activity moved to deleted table and removed from engagements table', [
+            Log::info('Activity moved to archive table and removed from engagements table', [
                 'engagement_pid' => $engagement_pid,
                 'contact_pid' => $engagement->fk_engagements__contact_pid,
             ]);

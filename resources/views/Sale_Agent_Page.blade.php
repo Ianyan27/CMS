@@ -186,7 +186,7 @@
                                         <i class="fa-solid fa-right-left"></i>
                                     </a> --}}
                                     <a href="{{ Auth::user()->role == 'Admin' ? route('admin#transfer-contact', ['id' => $owners->id]) : route('buh#transfer-contact', $owners->id) }}"
-                                        class="btn hover-action" style="padding: 10px 12px;">
+                                        class="btn hover-action @if (Auth::user()->role == 'Admin') d-none @endif" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-right-left"></i>
                                     </a>
                                     <a href="{{ Auth::user()->role == 'Admin' ? route('admin#view-sale-agent', $owners->id) : route('buh#view-sale-agent', $owners->id) }}"
