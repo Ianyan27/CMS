@@ -23,8 +23,15 @@ Route::get('/', function () {
     return view('Login');
 })->name('login');
 
-Route::post('/get-bu-data', [SaleAdminController::class, 'getBUData'])->name('get.bu.data');
-Route::post('/get-buh-by-country', [SaleAdminController::class, 'getBUHByCountry'])->name('get.buh.by.country');
+Route::post('/get-bu-data', [
+    SaleAdminController::class,
+    'getBUData'
+])->name('get.bu.data');
+
+Route::post('/get-buh-by-country', [
+    SaleAdminController::class,
+    'getBUHByCountry'
+])->name('get.buh.by.country');
 
 
 // Microsoft OAuth Login
@@ -168,8 +175,8 @@ Route::group(['prefix' => 'admin'], function () {
     ])->name('admin#transfer');
 
     // Delete Activity Route
-    Route::post('/archive-activities/{engagement_archive_pid}', [
-        ContactController::class,
+    Route::post('/admin-archive-activities/{engagement_archive_pid}', [
+        AdminController::class,
         'archiveContactActivities'
     ])->name('admin#archiveActivity');
     // Delete the activity from the archive activities table
@@ -184,7 +191,7 @@ Route::group(['prefix' => 'admin'], function () {
         'deleteArchivedActivity'
     ])->name('admin#deleteArchivedActivity');
 
-    Route::get('/delete-archive-activity/{engagement_archive_pid}', [
+    Route::get('/admin/delete-archive-activity/{engagement_archive_pid}', [
         ContactController::class,
         'deleteArchiveActivity'
     ])->name('admin#deleteArchiveActivity');
@@ -230,6 +237,11 @@ Route::group(['prefix' => 'admin'], function () {
         'viewBUH'
     ])->name('admin#view-buh');
 
+    Route::get('/admin/view-buh/{id}', [
+        AdminController::class,
+        'viewBUHDetails'
+    ])->name('admin#view-buh-detail');
+
     Route::post('/save-buh', [
         AdminController::class,
         'saveBUH'
@@ -240,7 +252,7 @@ Route::group(['prefix' => 'admin'], function () {
         'deleteBUH'
     ])->name('admin#delete-buh');
 
-    Route::post('/update-status-sale-agent/{owner_pid}', [
+    Route::post('/update-status-sale-agent/{id}', [
         AdminController::class,
         'updateStatusSaleAgent'
     ])->name('admin#update-status-sale-agent');
@@ -248,6 +260,29 @@ Route::group(['prefix' => 'admin'], function () {
         AdminController::class,
         'getProgress'
     ])->name('progress');
+
+
+    // BU and Country routes
+    Route::get('/bu-country', [
+        SaleAdminController::class,
+        'buCountry'
+    ])->name('admin#bu-country');
+    Route::post('/add-bu', [
+        SaleAdminController::class,
+        'saveBU'
+    ])->name('admin#add-bu');
+    Route::post('/add-country', [
+        SaleAdminController::class,
+        'saveCountry'
+    ])->name('admin#add-country');
+    Route::post('/update-country/{id}', [
+        SaleAdminController::class,
+        'updateCountry'
+    ])->name('admin#update-country');
+    Route::post('/update-bu/{id}', [
+        SaleAdminController::class,
+        'updateBU'
+    ])->name('admin#update-bu');
 });
 
 Route::group(['prefix' => 'sales-agent'], function () {
@@ -267,10 +302,10 @@ Route::group(['prefix' => 'sales-agent'], function () {
         ContactController::class,
         'editContact'
     ])->name('contact#edit');
-    Route::post('/save-contact/{contact_pid}/{owner_pid}', [
+    Route::post('/save-contact/{contact_pid}/{id}', [
         ContactController::class,
         'updateContact'
-    ])->name('contact#update-contact');
+    ])->name('sale-agent#update-contact');
     Route::get('/edit-archive/{contact_archive_pid}', [
         ArchiveController::class,
         'editArchive'
@@ -279,7 +314,7 @@ Route::group(['prefix' => 'sales-agent'], function () {
         ArchiveController::class,
         'viewArchive'
     ])->name('archive#view');
-    Route::post('/save-archive/{contact_archive_pid}/{owner_pid}', [
+    Route::post('/save-archive/{contact_archive_pid}/{id}', [
         ArchiveController::class,
         'updateArchive'
     ])->name('archive#update-archive');
@@ -305,19 +340,20 @@ Route::group(['prefix' => 'sales-agent'], function () {
         'archiveActivity'
     ])->name('archiveActivity');
     //Archive Contacts
-    Route::post('/archive-activities/{engagement_archive_pid}', [
+    Route::post('/sale-agent-archive-activities/{engagement_archive_pid}', [
         ContactController::class,
         'archiveContactActivities'
-    ])->name('archiveContactActivities');
-    Route::post('/delete-archive-activity/{engagement_archive_pid}', [
+    ])->name('sale-agent#archiveContactActivities');
+
+    Route::post('/sale-agent/delete-archive-activity/{engagement_archive_pid}', [
         ContactController::class,
         'deleteArchiveActivity'
-    ])->name('deleteArchiveActivity');
+    ])->name('sale-agent#deleteArchiveActivity');
 
     Route::post('/delete-activity/{engagement_pid}', [
         ContactController::class,
         'deleteActivity'
-    ])->name('deleteActivity');
+    ])->name('sale-agent#deleteActivity');
     Route::post('/retrieve-activity/{id}', [
         ContactController::class,
         'retrieveActivity'
@@ -388,10 +424,10 @@ Route::group(['prefix' => 'buh'], function () {
         OwnerController::class,
         'saleAgent'
     ])->name('buh#view');
-    Route::get('/view-owner/{owner_pid}', [
+    Route::get('/view-sale-agent/{id}', [
         OwnerController::class,
         'viewSaleAgent'
-    ])->name('owner#view-owner');
+    ])->name('buh#view-sale-agent');
     Route::post('/save-user', [
         BUHController::class,
         'saveUser'
@@ -419,7 +455,7 @@ Route::group(['prefix' => 'buh'], function () {
     Route::post('/transfer', [
         BUHController::class,
         'transfer'
-    ])->name('owner#transfer');
+    ])->name('buh#transfer');
     // Route::post('/assign-contact', [
     //     BUHController::class, 'assignContacts'
     // ])->name('owner#assign-contact');
@@ -460,10 +496,10 @@ Route::group(['prefix' => 'head', 'as' => 'head#'], function () {
     Route::get('/edit-user/{id}', [HeadController::class, 'editUser'])->name('edit-user');
 
     // Update user details (change this line)
-    Route::put('/update-user/{id}', [
+    Route::put('/update-buh/{id}', [
         HeadController::class,
-        'updateUser'
-    ])->name('update-user'); // Change from POST to PUT
+        'updateBUH'
+    ])->name('update-buh'); // Change from POST to PUT
 
     // Delete a user
     Route::delete('/delete-user/{id}', [
@@ -483,4 +519,27 @@ Route::group(['prefix' => 'sales-admin'], function () {
         SaleAdminController::class,
         'index'
     ])->name('sales-admin#index');
+
+    // BU and Country routes
+    Route::get('/bu-country', [
+        SaleAdminController::class,
+        'buCountry'
+    ])->name('sales-admin#bu-country');
+
+    Route::post('/add-bu', [
+        SaleAdminController::class,
+        'saveBU'
+    ])->name('sales-admin#add-bu');
+    Route::post('/add-country', [
+        SaleAdminController::class,
+        'saveCountry'
+    ])->name('sales-admin#add-country');
+    Route::post('/update-country/{id}', [
+        SaleAdminController::class,
+        'updateCountry'
+    ])->name('sales-admin#update-country');
+    Route::post('/update-bu/{id}', [
+        SaleAdminController::class,
+        'updateBU'
+    ])->name('sales-admin#update-bu');
 });

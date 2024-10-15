@@ -6,7 +6,6 @@ use App\Models\ArchiveActivities;
 use App\Models\Contact;
 use App\Models\ContactArchive;
 use App\Models\ContactDiscard;
-use App\Models\Delete_contacts;
 use App\Models\Engagement;
 use App\Models\EngagementArchive;
 use App\Models\EngagementDiscard;
@@ -59,14 +58,19 @@ class ArchiveController extends Controller
     }
 
 
-    public function updateArchive(Request $request, $contact_archive_pid, $owner_pid)
+    public function updateArchive(Request $request, $contact_archive_pid, $id)
     {
         $user = Auth::user();
         $archive = ContactArchive::find($contact_archive_pid);
-        $owner = SaleAgent::where('owner_email_id', $user->email)->first();
+        $owner = SaleAgent::where('email', $user->email)->first();
         if (!$archive) {
             return redirect()->back()->with('error', 'Contact archive not found.');
         }
+
+        //Lists all activities found on that contact
+        $archiveActivities = ArchiveActivities::where('fk_engagements__contact_pid', $contact_archive_pid)->get();
+        Log::info('Lists of Archive Activities Found: ', $archiveActivities->toArray());
+        Log::info('Number of Archive Activities: ' . $archiveActivities->count());
 
         $archive->update([
             'name' => $request->input('name'),
@@ -86,9 +90,9 @@ class ArchiveController extends Controller
             $targetModel->status = $request->input('status');
 
             if ($request->input('status') === 'InProgress') {
-                $targetModel->fk_contacts__owner_pid = $owner_pid;
+                $targetModel->fk_contacts__sale_agent_id = $id;
             } else {
-                $targetModel->fk_contact_discards__owner_pid = $owner_pid;
+                $targetModel->fk_contacts__sale_agent_id = $id;
             }
             $targetModel->save();
 
@@ -112,13 +116,32 @@ class ArchiveController extends Controller
                 $newActivity->save();
             }
 
-            // Delete the archived engagements after moving
+            foreach ($archiveActivities as $archivedActivity) {
+                $archivedActivity->fk_engagements__contact_pid = $newContactId;
+            
+                try {
+                    $archivedActivity->save();
+                } catch (\Exception $e) {
+                    Log::error('Failed to update archived activity with new contact ID', [
+                        'error' => $e->getMessage(),
+                        'archived_activity_id' => $archivedActivity->id,
+                        'new_contact_id' => $newContactId
+                    ]);
+                    return redirect()->route('sale-agent#contact-listing')->with('error', 'Failed to update archived activities.');
+                }
+            } 
+
+            // Delete logs related to this contact archive before deleting the archive itself
+            DB::table('archive__logs')->where('fk_logs__archive_contact_pid', $contact_archive_pid)->delete();
+
+            // Now delete the archived engagements after moving
             EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $contact_archive_pid)->delete();
 
             // Finally, delete the archive
             $archive->delete();
 
-            return redirect()->route('contact-listing')->with('success', 'Contact moved to ' . $request->input('status') . ' successfully.');
+
+            return redirect()->route('sale-agent#contact-listing')->with('success', 'Contact moved to ' . $request->input('status') . ' successfully.');
         }
 
         // Your existing logic for updating the archive
@@ -132,7 +155,6 @@ class ArchiveController extends Controller
                 "Status changed from '$oldStatus' to '$newStatus'."
             );
         }
-
         return redirect()->route('archive#view', [
             'contact_archive_pid' => $contact_archive_pid
         ])->with('success', 'Contact updated successfully.');
@@ -146,8 +168,8 @@ class ArchiveController extends Controller
         if($user->role == 'Admin'){
             $id = $user->id;
         } else {
-            $owner = Owner::where('owner_email_id', $user->email)->first();
-            $id = $owner->owner_pid;
+            $owner = SaleAgent::where('email', $user->email)->first();
+            $id = $owner->id;
         }
         DB::table('archive__logs')->insert([
             'fk_logs__archive_contact_pid' => $contact_archive_pid,

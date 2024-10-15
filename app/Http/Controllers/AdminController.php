@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\ArchiveActivities;
 use App\Models\BU;
+use App\Models\BuCountry;
+use App\Models\BUH;
 use App\Models\Contact;
 use App\Models\ContactArchive;
 use App\Models\ContactDiscard;
+use App\Models\Country;
 use App\Models\Delete_contacts;
 use App\Models\Engagement;
 use App\Models\EngagementArchive;
@@ -234,7 +237,6 @@ class AdminController extends Controller
         ]);
     }
 
-
     public function viewContact($contact_pid)
     {
         // Log the incoming request with the contact_pid
@@ -309,8 +311,6 @@ class AdminController extends Controller
             'deletedEngagement' => $deletedEngagement
         ]);
     }
-
-
     public function saleAdmin()
     {
         $businessUnit = BU::all();
@@ -548,25 +548,27 @@ class AdminController extends Controller
 
             // Set the owner PID
             if ($request->input('status') === 'Archive') {
-                $targetContactModel->fk_contact_archives__owner_pid = $id;
+                $targetContactModel->fk_contacts__sale_agent_id = $id;
             } else {
-                $targetContactModel->fk_contact_discards__owner_pid = $id;
+                $targetContactModel->fk_contacts__sale_agent_id = $id;
             }
 
             Log::info('Saving contact to archive/discard', [
                 'model' => $request->input('status') === 'Archive' ? 'ContactArchive' : 'ContactDiscard',
-                'owner_pid' => $id
+                'id' => $id
             ]);
 
-            try {
-                $targetContactModel->save();
-            } catch (\Exception $e) {
-                Log::error('Failed to save contact to archive/discard', [
-                    'error' => $e->getMessage(),
-                    'owner_pid' => $id
-                ]);
-                return redirect()->route('admin#contact-listing')->with('error', 'Failed to save contact to archive/discard.');
-            }
+            $targetContactModel->save();
+
+            // try {
+            //     $targetContactModel->save();
+            // } catch (\Exception $e) {
+            //     Log::error('Failed to save contact to archive/discard', [
+            //         'error' => $e->getMessage(),
+            //         'owner_pid' => $id
+            //     ]);
+            //     return redirect()->route('admin#contact-listing')->with('error', 'Failed to save contact to archive/discard.');
+            // }
 
             $newContactId = $request->input('status') === 'Archive'
                 ? $targetContactModel->contact_archive_pid
@@ -615,7 +617,6 @@ class AdminController extends Controller
             'contact_pid' => $contact_pid
         ])->with('success', 'Contact updated successfully.');
     }
-
     public function saveActivity(Request $request, $contact_pid)
     {
         // Checking for admin role and redirecting if true
@@ -727,21 +728,26 @@ class AdminController extends Controller
                 'country.name as country_name',
                 'buh.name as buh_name',
                 'buh.email as buh_email',
-                'buh.nationality' // Include nationality here
+                'buh.nationality'
             )
             ->paginate(10);
 
-        // // Pass the current page and per page values to the view
         $currentPage = $userData->currentPage();
         $perPage = $userData->perPage();
+        $businessUnit = BU::all();
+        $countries = Country::all();
 
-        // Pass the results to the view
+        // $dropdownData = DB::table('Business_Unit')->select('business_unit','country')->get();
+        // Log::info('dropdown Data are - '.$dropdownData);
+
+        // Return the data to the view
         return view('Head_Page', [
             'userData' => $userData,
             'currentPage' => $currentPage,
             'perPage' => $perPage,
-            'countries' => DB::table('country')->get(),
-            'businessUnits' => DB::table('bu')->get()
+            'businessUnit' => $businessUnit,
+            'countries' => $countries
+
         ]);
     }
 
@@ -851,18 +857,55 @@ class AdminController extends Controller
         }
     }
 
-    public function updateStatusSaleAgent(Request $request, $owner_pid)
+    public function viewBUHDetails($id)
+    {
+
+        $buhData = DB::table('bu_country as bc')
+            ->join('bu', 'bc.bu_id', '=', 'bu.id')
+            ->join('country', 'bc.country_id', '=', 'country.id')
+            ->join('buh', 'bc.buh_id', '=', 'buh.id')
+            ->select(
+                'bc.id as id',
+                'bu.name as bu_name',
+                'country.name as country_name',
+                'buh.name as buh_name',
+                'buh.email as buh_email',
+                'buh.nationality as buh_nationality'
+            )
+            ->where('bc.id', $id)
+            ->first();
+        $saleAgents = SaleAgent::where('bu_country_id', $id)->get();
+        $totalSaleAgents = $saleAgents->count();
+        $totalDisabledSaleAgents = SaleAgent::where('bu_country_id', $id)
+            ->where('status', 'inactive')->count();
+
+        $buhSaleAgents = SaleAgent::where('bu_country_id', $id)->paginate(10);
+
+        $businessUnit = BU::all();
+        $countries = Country::all();
+
+        return view('Edit_BUH_Detail_Page', [
+            'buhSaleAgents' => $buhSaleAgents,
+            'buhData' => $buhData,
+            'totalSaleAgents' => $totalSaleAgents,
+            'totalDisabledSaleAgents' => $totalDisabledSaleAgents,
+            'businessUnit' => $businessUnit,
+            'countries' => $countries
+        ]);
+    }
+
+    public function updateStatusSaleAgent(Request $request, $id)
 
     {
         // Log incoming request data
         Log::info('Update Status Request:', [
-            'owner_pid' => $owner_pid,
+            'id' => $id,
             'request_data' => $request->all()
         ]);
 
         try {
             // Retrieve the owner by their primary ID (assuming owner_pid is the primary key)
-            $owner = SaleAgent::find($owner_pid);
+            $owner = SaleAgent::find($id);
 
             if ($owner) {
                 // Update the status
@@ -877,7 +920,7 @@ class AdminController extends Controller
                 // Return a success message as JSON
                 return response()->json(['message' => 'Owner status updated successfully.']);
             } else {
-                Log::warning('Owner not found:', ['owner_pid' => $owner_pid]);
+                Log::warning('Owner not found:', ['owner_pid' => $id]);
 
                 return response()->json(['message' => 'Owner not found.'], 404);
             }
@@ -915,17 +958,17 @@ class AdminController extends Controller
             Log::info('Owner PID: ' . $owner_pid);
 
             // **Check if the sales agent is inactive**
-            $owner = Owner::where('owner_pid', $owner_pid)->first();
+            $owner = SaleAgent::where('id', $owner_pid)->first();
 
             Log::info("Owner Status: " . $owner->status);
             if ($owner->status === 'active') {
-                Log::error('Sales agent is inactive or not found. Transfer cannot proceed.', ['owner_pid' => $owner_pid]);
+                Log::error('Sales agent is inactive or not found. Transfer cannot proceed.', ['id' => $owner_pid]);
                 return redirect()->back()->with('error', 'The selected sales agent status is active. Please deactivate sales agent.');
             }
 
             // If "Select all Contacts" is chosen, get all contact PIDs associated with the provided owner_pid
             if ($transferMethod === 'Select all Contacts') {
-                $selectedContacts = Contact::where('fk_contacts__owner_pid', $owner_pid)->pluck('contact_pid')->toArray();
+                $selectedContacts = Contact::where('fk_contacts__sale_agent_id', $owner_pid)->pluck('contact_pid')->toArray();
             }
 
             // Check if there are any contacts selected
@@ -943,7 +986,7 @@ class AdminController extends Controller
                 foreach ($contactsBatch as $contact_pid) {
                     // Find the contact in the contacts table
                     $contact = Contact::where('contact_pid', $contact_pid)
-                        ->where('fk_contacts__owner_pid', $owner_pid)
+                        ->where('fk_contacts__sale_agent_id', $owner_pid)
                         ->first();
 
                     if ($contact) {
@@ -1061,6 +1104,40 @@ class AdminController extends Controller
             // If there is an error during allocation, log the error and redirect back with an error message
             Log::error('Failed to assign contacts: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to assign contacts. Please try again.');
+        }
+    }
+
+    public function archiveContactActivities($engagement_archive_pid)
+    {
+        // Find the engagement activity by its ID (engagement_pid)
+        $engagement = EngagementArchive::where('engagement_archive_pid', $engagement_archive_pid)->first();
+        Log::info($engagement);
+
+        if (!$engagement) {
+            return redirect()->back()->with('error', 'Activity not found.');
+        }
+
+        try {
+            // Move the activity to the "deleted" table
+            ArchiveActivities::create([
+                'fk_engagements__contact_pid' => $engagement->fk_engagement_archives__contact_archive_pid,
+                'activity_name' => $engagement->activity_name,
+                'date' => $engagement->date,
+                'details' => $engagement->details,
+                'attachments' => $engagement->attachments,
+            ]);
+
+            // Delete the activity from the "engagements" table
+            $engagement->delete();
+            // Log the deletion action
+            Log::info('Activity moved to deleted table and removed from engagements table', [
+                'engagement_pid' => $engagement_archive_pid,
+                'contact_pid' => $engagement->fk_engagements__contact_pid,
+            ]);
+            return redirect()->back()->with('success', 'Activity archived and moved to the archive table successfully.');
+        } catch (\Exception $e) {
+            Log::error('Failed to delete activity', ['error' => $e->getMessage()]);
+            return redirect()->back()->with('error', 'An error occurred while deleting the activity.');
         }
     }
 }

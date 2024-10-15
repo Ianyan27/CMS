@@ -87,25 +87,25 @@ class OwnerController extends Controller
         }
     }
 
-    public function viewSaleAgent($owner_pid)
+    public function viewSaleAgent($id)
     {
-        $owner = SaleAgent::where('id', $owner_pid)->first();
+        $owner = SaleAgent::where('id', $id)->first();
         // Execute the queries to get the actual data
-        $editOwner = SaleAgent::where('id', $owner_pid)->first();
+        $editOwner = SaleAgent::where('id', $id)->first();
 
         // Get the total contacts count allocated to this owner
-        $totalContacts = Contact::where('fk_contacts__sale_agent_id', $owner_pid)->count();
-        $totalArchive = ContactArchive::where('fk_contacts__sale_agent_id', $owner_pid)->count();
-        $totalDiscard = ContactDiscard::where('fk_contacts__sale_agent_id', $owner_pid)->count();
+        $totalContacts = Contact::where('fk_contacts__sale_agent_id', $id)->count();
+        $totalArchive = ContactArchive::where('fk_contacts__sale_agent_id', $id)->count();
+        $totalDiscard = ContactDiscard::where('fk_contacts__sale_agent_id', $id)->count();
 
         $totalContact = $totalContacts + $totalArchive + $totalDiscard;
         // Get the count of contacts where status is 'HubSpot'
-        $hubspotContactsCount = Contact::where('fk_contacts__owner_pid', $owner_pid)
+        $hubspotContactsCount = Contact::where('fk_contacts__sale_agent_id', $id)
             ->where('status', 'HubSpot Contact')
             ->count();
 
         // Get the count of current engaging contact
-        $hubspotCurrentEngagingContact = Contact::where('fk_contacts__owner_pid', $owner_pid)
+        $hubspotCurrentEngagingContact = Contact::where('fk_contacts__sale_agent_id', $id)
             ->where('status', 'InProgress')
             ->count();
 
@@ -120,16 +120,16 @@ class OwnerController extends Controller
         // Get the contacts
         $ownerContacts = Contact::where(
             'fk_contacts__sale_agent_id',
-            $owner_pid
+            $id
         )->paginate(50);
 
         $ownerArchive = ContactArchive::where(
             'fk_contacts__sale_agent_id',
-            $owner_pid
+            $id
         )->paginate(50);
         $ownerDiscard = ContactDiscard::where(
             'fk_contacts__sale_agent_id',
-            $owner_pid
+            $id
         )->paginate(50);
 
         // Pass the data to the view
@@ -155,7 +155,7 @@ class OwnerController extends Controller
             $owner->nationality = $request->input('country')
         ]);
 
-        return redirect()->route('owner#view-owner', ['owner_pid' => $id])->with('success', 'Sale Agent updated successfully.');
+        return redirect()->route('buh#view-sale-agent', ['id' => $id])->with('success', 'Sale Agent updated successfully.');
     }
 
     public function viewContact($contact_pid)

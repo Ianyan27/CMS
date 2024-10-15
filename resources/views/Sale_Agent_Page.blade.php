@@ -4,6 +4,13 @@
 @extends('layouts.Add_Sales-Agent_Modal')
 
 @section('content')
+    @if (Session::has('success'))
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('#successModal').modal('show');
+            });
+        </script>
+    @endif
     @if ((Auth::check() && Auth::user()->role == 'BUH') || (Auth::check() && Auth::user()->role == 'Admin'))
         @if ($errors->any() || session('error'))
             <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="false">
@@ -52,8 +59,8 @@
             <div class="table-title d-flex justify-content-between align-items-center mb-3">
                 <div class="d-flex align-items-center">
                     <h2 style="margin: 0 0.5rem 0 0.25rem;" class="font-educ headings">Sales Agents</h2>
-                    <button class="btn hover-action add-sales-agent-button" data-toggle="modal"
-                        data-target="#addSalesAgentModal" style="padding: 10px 12px;">
+                    <button class="btn hover-action" data-toggle="modal" data-target="#addSalesAgentModal"
+                        style="padding: 10px 12px;">
                         <i class="fa-solid fa-square-plus"></i>
                     </button>
                 </div>
@@ -75,21 +82,29 @@
                             <th scope="col">No#</th>
                             <th scope="col" id="name-header">Name
                                 <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name"
-                                    onclick="sortByColumn('name', 'asc'); toggleSort('sortDown-name', 'sortUp-name')"></i>
+                                    onclick="sortTable('name', 'asc'); toggleSort('sortDown-name', 'sortUp-name')"></i>
                                 <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name"
-                                    onclick="sortByColumn('name', 'desc'); toggleSort('sortUp-name', 'sortDown-name')"
+                                    onclick="sortTable('name', 'desc'); toggleSort('sortUp-name', 'sortDown-name')"
                                     style="display: none;"></i>
                             </th>
                             <th scope="col">Hubspot ID</th>
                             <th scope="col" id="country-header">Country
                                 <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-country"
-                                    onclick="sortByColumn('country', 'asc'); toggleSort('sortDown-country', 'sortUp-country')"></i>
+                                    onclick="sortTable('country', 'asc'); toggleSort('sortDown-country', 'sortUp-country')"></i>
                                 <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-country"
-                                    onclick="sortByColumn('country', 'desc'); toggleSort('sortUp-country', 'sortDown-country')"
+                                    onclick="sortTable('country', 'desc'); toggleSort('sortUp-country', 'sortDown-country')"
+                                    style="display: none;"></i>
+                            </th>
+                            <th scope="col" id="bu-header">BU
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-bu"
+                                    onclick="sortTable('bu', 'asc'); toggleSort('sortDown-bu', 'sortUp-bu')"></i>
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-bu"
+                                    onclick="sortTable('bu', 'desc'); toggleSort('sortUp-bu', 'sortDown-bu')"
                                     style="display: none;"></i>
                             </th>
                             <th scope="col" class="text-center" data-toggle="tooltip" data-placement="top"
-                                title="Total contacts in Interested, Archive, and Discard tables">Total Assign Contacts</th>
+                                title="Total contacts in Interested, Archive, and Discard tables">Total Assign Contacts
+                            </th>
                             <th scope="col" class="text-center" data-toggle="tooltip" data-placement="top"
                                 title="Total contacts synced in HubSpot">Total Hubspot Sync</th>
                             <th scope="col" class="text-center" data-toggle="tooltip" data-placement="top"
@@ -127,12 +142,10 @@
                                 <td>{{ $owners->hubspot_id }}</td>
                                 <td>
                                     @inject('countryCodeMapper', 'App\Services\CountryCodeMapper')
-
                                     @php
                                         // Fetch the country code using the injected service
                                         $countryCode = $countryCodeMapper->getCountryCode($owners['nationality']);
                                     @endphp
-
                                     @if ($countryCode)
                                         <img src="{{ asset('flags/' . strtolower($countryCode) . '.svg') }}"
                                             alt="{{ $owners['country'] }}" width="20" height="15">
@@ -141,6 +154,9 @@
                                         <span>No flag available</span>
                                     @endif
                                     {{ $owners['nationality'] }}
+                                </td>
+                                <td>
+                                    {{ $owners['business_unit'] }}
                                 </td>
                                 @inject('contactModel', 'App\Models\Contact')
                                 @inject('contactArchiveModel', 'App\Models\ContactArchive')
@@ -173,7 +189,7 @@
                                         class="btn hover-action" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-right-left"></i>
                                     </a>
-                                    <a href="{{ Auth::user()->role == 'Admin' ? route('admin#view-sale-agent', $owners->id) : route('owner#view-owner', $owners->id) }}"
+                                    <a href="{{ Auth::user()->role == 'Admin' ? route('admin#view-sale-agent', $owners->id) : route('buh#view-sale-agent', $owners->id) }}"
                                         class="btn hover-action mx-2" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
@@ -181,7 +197,6 @@
                                         class="btn hover-action mx-2" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-eye"></i>
                                     </a> --}}
-
                                     {{-- <a class="btn hover-action" style="padding: 10px 12px;" data-toggle="modal"
                                         data-target="#deleteOwnerModal{{ $owners->owner_pid }}">
                                         <i class="fa-solid fa-trash"></i>
@@ -274,13 +289,6 @@
     @endif
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src=" {{ asset('js/filter_status.js') }} "></script>
-    @if (Session::has('success'))
-        <script type="text/javascript">
-            $(document).ready(function() {
-                $('#successModal').modal('show');
-            });
-        </script>
-    @endif
     <script src=" {{ asset('js/agent_form_handler.js') }} "></script>
     <script src=" {{ asset('js/search_name.js') }} "></script>
     <script src=" {{ asset('js/sort.js') }} "></script>

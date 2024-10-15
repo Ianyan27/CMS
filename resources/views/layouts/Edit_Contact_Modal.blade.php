@@ -8,7 +8,6 @@
                 <h5 class="modal-title" id="editContactModalLabel">
                     <strong>Edit Contact</strong>
                 </h5>
-                <!-- Adding the logo on the right side -->
                 <img src="{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}" alt="Company Logo"
                     style="height: 30px;">
             </div>
@@ -18,10 +17,10 @@
                         ? route('admin#save-edit-contact', [
                             'contact_pid' =>
                                 $editContact->contact_pid ?? ($editContact->contact_archive_pid ?? $editContact->contact_discard_pid),
-                            'id' => Auth::user()->id,
+                            'id' => $editContact->fk_contacts__sale_agent_id,
                         ])
-                        : route('contact#update-contact', ['contact_pid' => $editContact->contact_pid, 'owner_pid' => $owner->id]) }}"
-                    {{-- <form action="{{ route('contact#update-contact',['contact_pid' => $editContact->contact_pid, 'owner_pid' => $owner->owner_pid]) }}"  --}} method="POST" id="editContactForm">
+                        : route('sale-agent#update-contact', ['contact_pid' => $editContact->contact_pid, 'id' => $owner->id]) }}"
+                    method="POST" id="editContactForm">
                     @csrf
                     <div class="row">
                         <!-- Left Column -->
@@ -50,104 +49,71 @@
                         <!-- Middle Column -->
                         <div class="col-md-4">
                             <div class="form-group">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <label class="font-educ" for="contact-number">Contact Number</label>
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-educ" for="contact-email">Email</label>
-                                    <input type="email" class="form-control fonts" id="email" name="email"
-                                        value="{{ $editContact->email }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-educ" for="contact-country">Country</label>
-                                    <input type="text" class="form-control fonts" id="contact-country" name="country"
-                                        value="{{ $editContact->country }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-educ" for="contact-address">Address</label>
-                                    <input class="form-control fonts" style="height: 103px;" type="text"
-                                        name="address" id="address" value="{{ $editContact->address }}">
-                                </div>
+                                <label class="font-educ" for="contact-number">Contact Number</label>
+                                <input type="text" class="form-control fonts" id="contact-number" name="contact_number"
+                                    value="{{ $editContact->contact_number }}" required>
                             </div>
-                            <!-- Middle Column -->
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <label class="font-educ" for="contact-number">Contact Number</label>
-                                    </div>
-                                    <div>
-                                        <input type="text" class="form-control fonts" id="contact-number"
-                                            name="contact_number" value="{{ $editContact->contact_number }}" required>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <label class="font-educ" for="contact-qualification">Qualification</label>
-                                    </div>
-                                    <div>
-                                        <input type="text" class="form-control fonts" id="contact-qualification"
-                                            value="{{ $editContact->qualification }}" name="qualification" required>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-educ" for="contact-role">Job Role</label>
-                                    <input type="text" class="form-control fonts" name="job_role"
-                                        id="contact-role" value="{{ $editContact->job_role }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-educ" for="contact-skills">Skills</label>
-                                    <input type="text" class="form-control fonts" name="skills"
-                                        id="contact-skills" value="{{ $editContact->skills }}" required>
-                                </div>
+                            <div class="form-group">
+                                <label class="font-educ" for="contact-qualification">Qualification</label>
+                                <input type="text" class="form-control fonts" id="contact-qualification"
+                                    value="{{ $editContact->qualification }}" name="qualification" required>
                             </div>
-                            <!-- Right Column -->
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="font-educ" for="contact-allocation">Date of Allocation</label>
-                                    <input type="datetime" class="form-control fonts" id="contact-allocation"
-                                        value="{{ $editContact->date_of_allocation }}" readonly>
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-educ" for="contact-source">Source</label>
-                                    <input type="text" class="form-control fonts" id="contact-source"
-                                        value="{{ $editContact->source }}" readonly>
-                                </div>
-                                <div class="form-group">
-                                    <label class="font-educ" for="contact-status">Status</label>
-                                    <select class="form-control fonts" id="contact-status" name="status" required>
-                                        <option value="InProgress"
-                                            {{ $editContact->status === 'InProgress' ? 'selected' : '' }}>
-                                            In Progress
-                                        </option>
-                                        <option value="HubSpot Contact"
-                                            {{ $editContact->status === 'HubSpot Contact' ? 'selected' : '' }}>
-                                            HubSpot
-                                        </option>
-                                        <option value="Discard"
-                                            {{ $editContact->status === 'discard' ? 'selected' : '' }}>
-                                            Discard
-                                        </option>
-                                        <option value="New" {{ $editContact->status === 'New' ? 'selected' : '' }}>
-                                            New
-                                        </option>
-                                        <option value="Archive"
-                                            {{ $editContact->status === 'Archive' ? 'selected' : '' }}>
-                                            Archive
-                                        </option>
-                                    </select>
-                                    @if ($errors->has('status'))
-                                        <div class="text-danger">
-                                            {{ $errors->first('status') }}
-                                        </div>
-                                    @endif
-                                </div>
+                            <div class="form-group">
+                                <label class="font-educ" for="contact-role">Job Role</label>
+                                <input type="text" class="form-control fonts" name="job_role" id="contact-role"
+                                    value="{{ $editContact->job_role }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-educ" for="contact-skills">Skills</label>
+                                <input type="text" class="form-control fonts" name="skills" id="contact-skills"
+                                    value="{{ $editContact->skills }}" required>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn "
-                                style="background: #91264c; color:white;">Save</button>
+                        <!-- Right Column -->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="font-educ" for="contact-allocation">Date of Allocation</label>
+                                <input type="datetime" class="form-control fonts" id="contact-allocation"
+                                    value="{{ $editContact->date_of_allocation }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-educ" for="contact-source">Source</label>
+                                <input type="text" class="form-control fonts" id="contact-source"
+                                    value="{{ $editContact->source }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label class="font-educ" for="contact-status">Status</label>
+                                <select class="form-control fonts" id="contact-status" name="status" required>
+                                    <option value="InProgress"
+                                        {{ $editContact->status === 'InProgress' ? 'selected' : '' }}>
+                                        In Progress
+                                    </option>
+                                    <option value="HubSpot Contact"
+                                        {{ $editContact->status === 'HubSpot Contact' ? 'selected' : '' }}>
+                                        HubSpot
+                                    </option>
+                                    <option value="Discard" {{ $editContact->status === 'Discard' ? 'selected' : '' }}>
+                                        Discard
+                                    </option>
+                                    <option value="New" {{ $editContact->status === 'New' ? 'selected' : '' }}>
+                                        New
+                                    </option>
+                                    <option value="Archive" {{ $editContact->status === 'Archive' ? 'selected' : '' }}>
+                                        Archive
+                                    </option>
+                                </select>
+                                @if ($errors->has('status'))
+                                    <div class="text-danger">
+                                        {{ $errors->first('status') }}
+                                    </div>
+                                @endif
+                            </div>
                         </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn" style="background: #91264c; color:white;">Save</button>
+                    </div>
                 </form>
             </div>
         </div>

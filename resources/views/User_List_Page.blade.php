@@ -6,7 +6,6 @@
         <script>
             $(document).ready(function() {
                 $('#successModal').modal('show');
-                console.log('Modal triggered!');
             });
         </script>
         @if (Session::has('success'))
@@ -20,7 +19,7 @@
                             <h5 class="modal-title" id="successModalLabel" style="color: #91264c"><strong>Success</strong>
                             </h5>
                         </div>
-                        <div class="modal-body" style="color: #91264c;border:none;">
+                        <div class="modal-body font-educ text-center">
                             {{ Session::get('success') }}
                         </div>
                         <div class="modal-footer" style="border:none;">
@@ -83,7 +82,21 @@
                                 <td>{{ $i++ }}</td>
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->email }}</td>
-                                <td>{{ $user->role }}</td>
+                                <td>
+                                    @if ($user->role == 'Admin')
+                                        Admin
+                                    @elseif ($user->role == 'Sales_Agent')
+                                        Sales Agent
+                                    @elseif($user->role == 'BUH')
+                                        BUH
+                                    @elseif($user->role == 'Head')
+                                        Head
+                                    @elseif($user->role == 'Sales_Admin')
+                                        Sales Admin
+                                    @elseif($user->role == 'NA')
+                                        Not Assigned
+                                    @endif
+                                </td>
                                 <td>
                                     <a class="btn hover-action" data-toggle="modal"
                                         data-target="#editUserModal{{ $user->id }}">
@@ -188,25 +201,46 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label class="font-educ" for="editRole{{ $user->id }}">Role</label>
-                                            <select name="role" id="editRole{{ $user->id }}"
-                                                class="form-control fonts" required>
+                                            <select name="role" id="editRole{{ $user->id }}" class="form-control fonts dropdown-role" required>
                                                 @if (Auth::user()->role == 'Admin')
                                                     <!-- Admin can view and select all roles -->
-                                                    <option value="Admin" {{ $user->role == 'Admin' ? 'selected' : '' }}>
-                                                        Admin</option>
-                                                    <option value="BUH" {{ $user->role == 'BUH' ? 'selected' : '' }}>
-                                                        Business Unit Head</option>
-                                                    <option value="" {{ $user->role == '' ? 'selected' : '' }}>Not
-                                                        Assigned</option>
-                                                @elseif (Auth::user()->role == 'BUH')
-                                                    <!-- BUH can only view and select Sales Agent -->
-                                                    <option value="Sales_Agent"
-                                                        {{ $user->role == 'Sales_Agent' ? 'selected' : '' }}>Sales Agent
-                                                    </option>
-                                                    <option value="" {{ $user->role == 'null' ? 'selected' : '' }}>
-                                                        Not
-                                                        Assigned</option>
+                                                    <option value="Admin" {{ $user->role == 'Admin' ? 'selected' : '' }}>Admin</option>
+                                                    <option value="BUH" {{ $user->role == 'BUH' ? 'selected' : '' }}>Business Unit Head</option>
+                                                    <option value="Sales_Agent" {{ $user->role == 'Sales_Agent' ? 'selected' : '' }}>Sales Agent</option>
+                                                    <option value="Head" {{ $user->role == 'Head' ? 'selected' : '' }}>Head</option>
+                                                    <option value="Sale_Admin" {{ $user->role == 'Sale_Admin' ? 'selected' : '' }}>Sale Admin</option>
+                                                    <option value="NA" {{ $user->role == 'NA' ? 'selected' : '' }}>Not Assigned</option>
                                                 @endif
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!-- BUH Inputs -->
+                                    <div class="col-md-12" id="buhDiv">
+                                        <div class="form-group">
+                                            <label for="headList" class="font-educ">Head</label>
+                                            <select name="headList" id="headList" class="form-control fonts">
+                                                <option value="">Select an Option</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="buhCountry" class="font-educ">Country</label>
+                                            <select name="buhCountry" id="buhCountry" class="form-control fonts">
+                                                <option value="">Select an Option</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!-- Sale Agent Inputs -->
+                                    <div class="col-md-12" id="saleAgentDiv">
+                                        <div class="form-group">
+                                            <label for="selectBUH" class="font-educ">BUH</label>
+                                            <select name="selectBUH" id="selectBUH" class="form-control fonts">
+                                                <option value="">Select an Option</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="saleAgentCountry" class="font-educ">Country</label>
+                                            <select name="saleAgentCountry" id="saleAgentCountry" class="form-control fonts">
+                                                <option value="">Select an Option</option>
                                             </select>
                                         </div>
                                     </div>

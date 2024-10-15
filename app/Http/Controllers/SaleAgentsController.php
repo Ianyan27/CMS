@@ -77,12 +77,12 @@ class SaleAgentsController extends Controller
 
         $totalContact = $totalContacts + $totalArchive + $totalDiscard;
         // Get the count of contacts where status is 'HubSpot'
-        $hubspotContactsCount = Contact::where('fk_contacts__owner_pid', $id)
+        $hubspotContactsCount = Contact::where('fk_contacts__sale_agent_id', $id)
             ->where('status', 'HubSpot Contact')
             ->count();
 
         // Get the count of current engaging contact
-        $hubspotCurrentEngagingContact = Contact::where('fk_contacts__owner_pid', $id)
+        $hubspotCurrentEngagingContact = Contact::where('fk_contacts__sale_agent_id', $id)
             ->where('status', 'InProgress')
             ->count();
 

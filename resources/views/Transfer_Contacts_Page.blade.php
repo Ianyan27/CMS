@@ -9,7 +9,6 @@
             $(document).ready(function() {
                 $('#successModal').modal('show');
                 console.log('this is ready');
-
             });
         </script>
     @endif
@@ -32,7 +31,7 @@
                 <div class="modal-content rounded-0">
                     <div class="modal-header"
                         style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
-                border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
+                        border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
                         <h5 class="modal-title" id="successModalLabel" style="color: #91264c"><strong>Success</strong></h5>
                     </div>
                     <div class="modal-body" style="color: #91264c;border:none;">
@@ -90,7 +89,12 @@
             </div>
         @endif
         <div class="container-max-height">
-            <form class="transfer-form-container" action=" {{ route('owner#transfer') }} " method="POST">
+            <form class="transfer-form-container" action=" 
+            {{ Auth::user()->role == 'Admin' ? 
+            route('admin#transfer') : 
+            route('buh#transfer') 
+            }} " method="POST">
+            {{-- <form class="transfer-form-container" action=" {{ route('owner#transfer') }} " method="POST"> --}}
                 @csrf
                 <input type="hidden" name="owner_pid" value=" {{ $owner->id }} " readonly>
                 <input type="hidden" name="country" value=" {{ $owner->nationality }} " readonly>
@@ -102,22 +106,16 @@
                                 class="btn hover-action" onclick="toggleInfoCollapse()">
                                 <i style="font-size: 1.25rem;" class="fa-solid fa-circle-question"></i>
                             </button>
-                            <div class="switch-container" style="margin: 1.25rem 0.5rem 0; ">
+                            <div class="switch-container mx-3">
                                 <label class="switch">
                                     <input type="checkbox" id="statusSwitch" data-owner-pid="{{$owner->id}}" data-user-type="{{Auth::user()->role}}" @if ($owner->status === 'active') checked @endif>
-                                    <span class="slider round"></span>
+                                    <span class="slider round">
+                                        <span class="status-text">
+                                        @if ($owner->status === 'active')Active 
+                                        @else Inactive @endif
+                                        </span>
+                                    </span>
                                 </label>
-                                <span style="width:105px;"
-                                    class="owner-status text-left
-                                @if ($owner->status === 'active') status-text
-                                @elseif($owner->status === 'inactive')
-                                inactive-text @endif">Status:
-                                    @if ($owner->status === 'active')
-                                        Active
-                                    @elseif ($owner->status === 'inactive')
-                                        Inactive
-                                    @endif
-                                </span>
                             </div>
                             <button type="button" class="btn hover-action" data-toggle="modal"
                                 data-target="#transferContact">

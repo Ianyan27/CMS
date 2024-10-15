@@ -1,129 +1,131 @@
- /* Activity styling  */
- #activity-container .activities{
+/* Activity styling  */
+#activity-container .activities {
     max-height: 550px;
     min-height: 500px;
-    overflow-y: hidden;/* Hide scrollbar by default */
- }
- 
- #activity-container .activities.scrollable {
-     overflow-y: auto;
-     /* Show scrollbar when this class is added */
- }
- 
- /* Modal Styling */
- .btn-delete {
-     background-color: #91264c;
-     color: white;
-     border-radius: 50%;
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     height: 38px;
-     width: 30px;
- }
+    overflow-y: hidden; /* Hide scrollbar by default */
+}
 
- .input-group-append {
-     /* Adjust margin to ensure button overlaps with the input */
-     z-index: 1;
- }
+#activity-container .activities.scrollable {
+    overflow-y: auto;
+    /* Show scrollbar when this class is added */
+}
 
- #editContactModal .modal-body,
- #editContactModal .modal-footer {
-     color: #91264c;
-     /* Change to desired font color */
- }
+/* Modal Styling */
+.btn-delete {
+    background-color: #91264c;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    width: 30px;
+}
 
- #editContactModal label {
-     color: #91264c;
-     /* Change to desired label color */
- }
+.input-group-append {
+    /* Adjust margin to ensure button overlaps with the input */
+    z-index: 1;
+}
 
- #editContactModal .form-control {
-     color: #000;
-     /* Change to desired input text color */
- }
+#editContactModal .modal-body,
+#editContactModal .modal-footer {
+    color: #91264c;
+    /* Change to desired font color */
+}
 
- #editContactModal .modal-title,
- .updateActivityModal .modal-title,
- #addActivityModal .modal-title {
-     color: #91264c;
-     /* Change to desired modal title color */
- }
+#editContactModal label {
+    color: #91264c;
+    /* Change to desired label color */
+}
 
- /* Apply gradient background to the modal header */
- #editContactModal .modal-header,
- .updateActivityModal .modal-header,
- #addActivityModal .modal-header {
-     height: 90px;
-     background: hsla(339, 100%, 73%, 1);
+#editContactModal .form-control {
+    color: #000;
+    /* Change to desired input text color */
+}
 
-     background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
- }
+#editContactModal .modal-title,
+.updateActivityModal .modal-title,
+#addActivityModal .modal-title {
+    color: #91264c;
+    /* Change to desired modal title color */
+}
 
- #editContactModal .modal-body,
- #editContactModal .modal-footer,
- #addActivityModal .modal-body {
-     color: #91264c;
-     /* Change to desired font color */
- }
+/* Apply gradient background to the modal header */
+#editContactModal .modal-header,
+.updateActivityModal .modal-header,
+#addActivityModal .modal-header {
+    height: 90px;
+    background: hsla(339, 100%, 73%, 1);
 
- #editContactModal label,
- #addActivityModal label {
-     color: #91264c;
-     /* Change to desired label color */
- }
+    background: linear-gradient(
+        180deg,
+        rgb(255, 180, 206) 0%,
+        hsla(0, 0%, 100%, 1) 100%
+    );
+}
 
- #editContactModal .form-control {
-     color: #000;
-     /* Change to desired input text color */
- }
+#editContactModal .modal-body,
+#editContactModal .modal-footer,
+#addActivityModal .modal-body {
+    color: #91264c;
+    /* Change to desired font color */
+}
 
- /* remove the border bottom */
- #editContactModal .modal-header,
- #editContactModal .modal-footer,
- .updateActivityModal .modal-header,
- .updateActivityModal .modal-footer,
- #addActivityModal .modal-header,
- #addActivityModal .modal-footer 
- .editUserModal .modal-header,
- .editUserModal .modal-footer{
-     border-bottom: none;
-     border-top: none;
- }
+#editContactModal label,
+#addActivityModal label {
+    color: #91264c;
+    /* Change to desired label color */
+}
 
- .file-name {
-     margin-top: 10px;
-     padding: 0px 5px;
-     border-radius: 5px;
-     border: 1px solid #ddd;
-     background-color: #f9f9f9;
-     color: rgb(41, 41, 41);
- }
+#editContactModal .form-control {
+    color: #000;
+    /* Change to desired input text color */
+}
 
- /* Style for the upload button */
- .btn-upload {
-     background-color: #91264c;
-     color: white;
-     border: none;
-     padding: 5px 10px;
-     border-radius: 5px;
-     cursor: pointer;
-     margin-left: 10px;
- }
+/* remove the border bottom */
+#editContactModal .modal-header,
+#editContactModal .modal-footer,
+.updateActivityModal .modal-header,
+.updateActivityModal .modal-footer,
+#addActivityModal .modal-header,
+#addActivityModal .modal-footer .editUserModal .modal-header,
+.editUserModal .modal-footer {
+    border-bottom: none;
+    border-top: none;
+}
 
+.file-name {
+    margin-top: 10px;
+    padding: 0px 5px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    color: rgb(41, 41, 41);
+}
 
+/* Style for the upload button */
+.btn-upload {
+    background-color: #91264c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+}
 
- /* Attachment container styling to align the button */
- .attachment-container {
-     display: flex;
-     align-items: center;
- }
+/* Attachment container styling to align the button */
+.attachment-container {
+    display: flex;
+    align-items: center;
+}
 
- .attachment-container label {
-     margin-right: 10px;
- }
+.attachment-container label {
+    margin-right: 10px;
+}
 
- /* create rounded pop ups */
- .modal-header, .modal-content{
+/* create rounded pop ups */
+.modal-header,
+.modal-content {
     border-radius: 10px;
- }
+}

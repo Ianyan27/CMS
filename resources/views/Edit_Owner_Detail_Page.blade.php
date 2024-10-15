@@ -20,7 +20,7 @@
                         border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
                             <h5 class="modal-title font-educ" id="successModalLabel">Success</h5>
                         </div>
-                        <div class="modal-body">
+                        <div class="modal-body font-educ text-center">
                             {{ session('success') }}
                         </div>
                         <div class="modal-footer">
@@ -29,12 +29,6 @@
                     </div>
                 </div>
             </div>
-            <!-- Script to trigger the modal -->
-            <script type="text/javascript">
-                window.onload = function() {
-                    document.getElementById('successModalBtn').click();
-                };
-            </script>
         @endif
         <link rel="stylesheet" href="{{ URL::asset('css/contact_detail.css') }}">
         <div class="row border-educ rounded mb-3 owner-container">
@@ -90,7 +84,7 @@
             </div>
             <div class="col-md-7 px-3">
                 <div class="d-flex justify-content-between align-items-center my-3">
-                    <h2 class="mt-2 ml-2 headings">Sales Engagement</h2>
+                    <h2 class="mt-2 ml-2 headings">Contact Overview</h2>
                 </div>
                 <div class="row">
                     <div class="col">
@@ -287,7 +281,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="text-center">No ownerContacts found.</td>
+                                <td colspan="9" class="text-center">No contacts found.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -309,6 +303,7 @@
                                     <i class="fa-solid fa-info-circle text-muted"></i>
                                 </span>
                             </th>
+                            <th scope="col">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="text-left bg-row">
@@ -351,8 +346,11 @@
                                 data-toggle="tooltip" title="View">
                                 <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i> --}}
                                     </a>
-                                    <a href="#" class="btn hover-action" data-toggle="tooltip" title="">
-                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    <a href=" {{ Auth::user()->role == 'Admin'
+                                        ? route('admin#archive-view', $archive->contact_archive_pid)
+                                        : route('archive#view', $archive->contact_archive_pid) }} "
+                                        class="btn hover-action" data-toggle="tooltip" title="View">
+                                        <i class="fa-solid fa-eye " style="font-educ-size: 1.5rem"></i>
                                     </a>
                                 </td>
                             </tr>
@@ -471,6 +469,13 @@
     <script src="{{ asset('js/active_activity_buttons.js') }}"></script>
     <script src="{{ asset('js/sort.js') }}"></script>
     <script src="{{ asset('js/active_buttons.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            @if (session('success'))
+                $('#successModal').modal('show');
+            @endif
+        });
+    </script>
     <script>
         function showSection(sectionId) {
             // Hide all sections

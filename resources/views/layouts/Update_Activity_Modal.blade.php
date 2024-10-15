@@ -1,8 +1,8 @@
 @if ($updateEngagement)
     @foreach ($engagements as $engagement)
         <!-- Edit Activity Modal -->
-        <div class="modal fade updateActivityModal" id="updateActivityModal-{{ $engagement->engagement_pid }}"
-            tabindex="-1" aria-labelledby="updateActivityModalLabel-{{ $engagement->engagement_pid }}" aria-hidden="true">
+        <div class="modal fade" id="updateActivityModal{{$engagement->engagement_pid}}"
+            tabindex="-1" aria-labelledby="updateActivityModalLabel{{$engagement->engagement_pid}}" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content rounded-0">
                     <!-- Modal Header -->

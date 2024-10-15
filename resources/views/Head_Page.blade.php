@@ -7,7 +7,6 @@
         <script>
             $(document).ready(function() {
                 $('#successModal').modal('show');
-                console.log('Modal triggered!');
             });
         </script>
         @if (Session::has('success'))
@@ -33,23 +32,24 @@
             </div>
         @endif
         <div class="container-max-height">
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="table-title d-flex justify-content-between align-items-center mb-3">
                 <div class="d-flex align-items-center">
-                    <h2 class="my-2 mr-3 headings">Business Unit Head</h2>
-                    <button class="btn hover-action mx-3" type="button" data-toggle="modal" data-target="#addUserModal"
-                        style="padding: 10px 12px;">
+                    <h2 style="margin: 0 0.5rem 0 0.25rem;" class="headings">Business Unit Head</h2>
+                    <button class="btn hover-action d-flex align-items-center justify-content-center" data-toggle="modal"
+                        data-target="#addUserModal" style="padding: 10px 12px;">
                         <i class="fa-solid fa-square-plus"></i>
                     </button>
                 </div>
-                <div class="search-box d-flex align-items-center mr-3 mb-2">
-                    <input type="search" class="form-control mr-1" placeholder="Search by Email or Name" id="search-input"
-                        aria-label="Search">
-                    <button class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
+                <div class="f-flex align-items-center mr-3">
+                    <div class="search-box d-flex align-items-center mr-3 mb-2">
+                        <input type="search" class="form-control mr-1" placeholder="Search by Email or Name" id="search-input"
+                            aria-label="Search">
+                        <button class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
-
         <div class="table-container">
             <table class="table table-hover mt-2">
                 <thead class="text-left font-educ">
@@ -92,7 +92,7 @@
                                     onclick="sortTable('nationality', 'desc'); toggleSort('sortUp-nationality', 'sortDown-nationality')"
                                     style="display: none;"></i>
                             </th>
-                            <th scope="col">Actions</th>
+                            <th scope="col" class="text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="text-left bg-row fonts">
@@ -105,15 +105,14 @@
                                 <td>{{ $user->buh_name }}</td> <!-- Displaying BUH -->
                                 <td>{{ $user->buh_email }}</td> <!-- Displaying BUH Email-->
                                 <td>{{ $user->nationality }}</td> <!-- Displaying Nationality -->
-                                <td>
-                                    <a class="btn hover-action" data-toggle="modal"
-                                        data-target="#editUserModal{{ $user->id }}">
-                                        <i class="fa-solid fa-pen-to-square"></i>
+                                <td class="d-flex justify-content-center">
+                                    <a class="btn hover-action" href=" {{ route('admin#view-buh-detail', ['id' => $user->id]) }} ">
+                                        <i class="fa-solid fa-eye"></i>
                                     </a>
-                                    <a class="btn hover-action" data-toggle="modal"
+                                    {{-- <a class="btn hover-action" data-toggle="modal"
                                         data-target="#deleteUserModal{{ $user->id }}">
                                         <i class="fa-solid fa-trash"></i>
-                                    </a>
+                                    </a> --}}
                                 </td>
                             </tr>
                         @empty
@@ -172,7 +171,7 @@
                 </ul>
             </div>
         </div>
-    <!-- Edit User Modal -->
+    {{-- <!-- Edit User Modal -->
     @foreach ($userData as $user)
         <div class="modal fade" id="editUserModal{{ $user->id }}" tabindex="-1"
             aria-labelledby="editUserModalLabel{{ $user->id }}" aria-hidden="true">
@@ -184,7 +183,7 @@
                             <strong>Edit BUH</strong>
                         </h5>
                     </div>
-                    <form action="{{ route('head#update-user', $user->id) }}" method="POST">
+                    <form action="{{ route('head#update-BUH', $user->id) }}" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="modal-body">
@@ -239,7 +238,7 @@
                 </div>
             </div>
         </div>
-    @endforeach
+    @endforeach --}}
         @foreach ($userData as $user)
             <!-- Delete User Modal -->
             <div class="modal fade" id="deleteUserModal{{ $user->id }}" tabindex="-1"
@@ -393,7 +392,7 @@
                 let y = rows[i + 1].querySelectorAll("td")[columnIndex];
                 if (x && y) {
                     let shouldSwitch = (order === 'asc' && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) || 
-                                       (order === 'desc' && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase());
+                                        (order === 'desc' && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase());
                     if (shouldSwitch) {
                         rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
                         switching = true;

@@ -140,8 +140,8 @@
                         <button type="submit" class="btn hover-action">Restore</button>
                     </form>
                     <form action="{{ Auth::user()->role == 'Admin' ? 
-                    route('admin#deleteActivity', ['engagement_pid' => $deletedActivity->fk_engagements__contact_pid]) : 
-                    route('deleteActivity', ['engagement_pid' => $deletedActivity->fk_engagements__contact_pid]) }}"
+                    route('admin#deleteActivity', ['engagement_pid' => $deletedActivity->id]) : 
+                    route('sale-agent#deleteActivity', ['engagement_pid' => $deletedActivity->id]) }}"
                         method="POST">
                         @csrf
                         <button type="submit" class="btn discard-table">Delete Permanently</button>
