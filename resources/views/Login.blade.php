@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,10 +9,26 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="{{ URL::asset('css/admin_style.css') }}">
+    <style>
+    .btn:hover {
+        background-color: #751f3e;
+    }
+
+    .btn:active {
+        background-color: #5e1833;
+    }
+
+    .form-control:focus {
+        border-color: #91264c;
+        box-shadow: 0 0 0 2px rgba(145, 38, 76, 0.3);
+    }
+    </style>
 </head>
+
 <body>
     <div class="container-fluid d-flex flex-column" style="min-height: 100vh; padding: 0; overflow-x: hidden;">
         <div class="row shadow-sm py-3" style="margin: 0;">
@@ -43,28 +60,28 @@
         </footer>
     </div>
     <!-- Login Modal -->
-    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header"
-                    style="height: 90px; background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%); border:none;">
-                    <h5 class="modal-title" id="loginModalLabel" style="color: #91264c;"><strong>Microsoft
-                            Login</strong></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true" style="color: red;">&times;</span>
+            <div class="modal-content" style="border-radius: 12px; background: #f9f9f9; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);">
+                <div class="modal-header" style="border-bottom: none; height: 80px; background-color: #91264c; color: white; border-radius: 12px 12px 0 0;">
+                    <h5 class="modal-title" id="loginModalLabel" style="font-weight: 600;">
+                        Microsoft Login
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="background: none; border: none; color: white; font-size: 24px;">
+                        &times;
                     </button>
                 </div>
-                <div class="modal-body">
-                    {{-- <form action="{{ route('login.microsoft') }}" method="POST"> --}}
+                <div class="modal-body" style="padding: 30px;">
                     <form action="{{ route('microsoft.login') }}" method="POST">
                         @csrf
                         <div class="form-group">
-                            <label for="email" style="color: #91264c;">Email address</label>
-                            <input type="email" class="form-control" id="email" name="email"
-                                placeholder="Enter your Microsoft account email" required>
+                            <label for="email" style="color: #91264c; font-weight: 500;">Email Address</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your Microsoft account email" required
+                                style="border-radius: 8px; border: 1px solid #ddd; padding: 12px; font-size: 16px;">
                         </div>
-                        <button type="submit" class="btn" style="background: #91264c; color: white;">Login</button>
+                        <button type="submit" class="btn btn-block" style="background-color: #91264c; color: white; font-weight: 600; border-radius: 8px; padding: 12px; transition: background 0.3s ease;">
+                            Login
+                        </button>
                     </form>
                 </div>
             </div>
