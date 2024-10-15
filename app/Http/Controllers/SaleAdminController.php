@@ -180,4 +180,32 @@ class SaleAdminController extends Controller
 
         return redirect()->back()->with('country-success', 'Country updated successfully!');
     }
+
+    public function deleteBU($id)
+    {
+        $bu = BU::find($id);
+
+        if (!$bu) {
+            // Handle the case where the business unit is not found
+            return redirect()->back()->withErrors('Business Unit not found');
+        }
+
+        $bu->delete();
+
+        return redirect()->back()->with('bu-success', 'Business Unit deleted successfully!');
+    }
+
+    public function deleteCountry($id)
+    {
+        $country = Country::find($id);
+
+        if (!$country) {
+            // Handle the case where the country is not found
+            return redirect()->back()->withErrors('Country not found');
+        }
+
+        $country->delete();
+
+        return redirect()->back()->with('country-success', 'Country deleted successfully!');
+    }
 }
