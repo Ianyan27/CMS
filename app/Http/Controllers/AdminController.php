@@ -548,25 +548,27 @@ class AdminController extends Controller
 
             // Set the owner PID
             if ($request->input('status') === 'Archive') {
-                $targetContactModel->fk_contact_archives__owner_pid = $id;
+                $targetContactModel->fk_contacts__sale_agent_id = $id;
             } else {
-                $targetContactModel->fk_contact_discards__owner_pid = $id;
+                $targetContactModel->fk_contacts__sale_agent_id = $id;
             }
 
             Log::info('Saving contact to archive/discard', [
                 'model' => $request->input('status') === 'Archive' ? 'ContactArchive' : 'ContactDiscard',
-                'owner_pid' => $id
+                'id' => $id
             ]);
 
-            try {
-                $targetContactModel->save();
-            } catch (\Exception $e) {
-                Log::error('Failed to save contact to archive/discard', [
-                    'error' => $e->getMessage(),
-                    'owner_pid' => $id
-                ]);
-                return redirect()->route('admin#contact-listing')->with('error', 'Failed to save contact to archive/discard.');
-            }
+            $targetContactModel->save();
+
+            // try {
+            //     $targetContactModel->save();
+            // } catch (\Exception $e) {
+            //     Log::error('Failed to save contact to archive/discard', [
+            //         'error' => $e->getMessage(),
+            //         'owner_pid' => $id
+            //     ]);
+            //     return redirect()->route('admin#contact-listing')->with('error', 'Failed to save contact to archive/discard.');
+            // }
 
             $newContactId = $request->input('status') === 'Archive'
                 ? $targetContactModel->contact_archive_pid

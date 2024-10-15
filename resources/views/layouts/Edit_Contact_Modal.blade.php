@@ -17,7 +17,7 @@
                         ? route('admin#save-edit-contact', [
                             'contact_pid' =>
                                 $editContact->contact_pid ?? ($editContact->contact_archive_pid ?? $editContact->contact_discard_pid),
-                            'id' => Auth::user()->id,
+                            'id' => $editContact->fk_contacts__sale_agent_id,
                         ])
                         : route('sale-agent#update-contact', ['contact_pid' => $editContact->contact_pid, 'id' => $owner->id]) }}"
                     method="POST" id="editContactForm">
