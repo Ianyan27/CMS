@@ -81,7 +81,10 @@
                         @if (
                             (Auth::check() && Auth::user()->role == 'BUH') ||
                                 Auth::user()->role == 'Admin' ||
-                                Auth::user()->role == 'Sales_Agent')
+                                Auth::user()->role == 'Sales_Agent'||
+                                Auth::user()->role == 'Sales_Admin'||
+                                 Auth::user()->role == 'Head'                                
+                                )
                             @if ((Auth::check() && Auth::user()->role == 'BUH') || Auth::user()->role == 'Admin')
                                 <li
                                     class="{{ in_array(Route::currentRouteName(), ['admin#viewSaleAgent', 'admin#transfer-contact', 'buh#view']) ? 'active-link' : 'nav-item' }} dashboard-link">
@@ -120,7 +123,7 @@
                                     <i class="fa-solid fa-address-book"></i><span>Contacts</span>
                                 </a>
                             </li>
-                            @if ((Auth::check() && Auth::user()->role == 'Admin') || Auth::user()->role == 'BUH' || Auth::user()->role == 'head')
+                            @if ((Auth::check() && Auth::user()->role == 'Admin') || Auth::user()->role == 'BUH' || Auth::user()->role == 'Sales_Admin')
                                 <li
                                     class="nav-item dashboard-link 
                                     {{ Route::currentRouteName() == 'sale_admin' ? 'active-link' : '' }}
