@@ -481,7 +481,6 @@ Route::group(['prefix' => 'buh'], function () {
     ])->name('buh#contact-listing');
 });
 
-// Define routes for the Head role
 Route::group(['prefix' => 'head', 'as' => 'head#'], function () {
     Route::get('/', [
         HeadController::class,

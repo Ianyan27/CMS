@@ -28,10 +28,13 @@ class SaleAdminController extends Controller
     // Check the BU and Country list
     public function buCountry()
     {
+        $user = Auth::user();
+        Log::info($user);
         $bus = BU::paginate(10); // adjust the pagination limit as needed
         $countries = Country::paginate(10); // adjust the pagination limit as needed
 
         return view('BU_Country')->with([
+            'user' => $user,
             'bus' => $bus,
             'countries' => $countries
         ]);

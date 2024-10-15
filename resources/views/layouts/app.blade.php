@@ -113,7 +113,7 @@
                         <li
                             class="{{ Route::currentRouteName() == 'sales-admin#bu-country' ? 'active-link' : 'nav-item' }} dashboard-link">
                             <a class="nav-link" href="{{ route('sales-admin#bu-country') }}">
-                                <i class="fa-solid fa-globe" style="padding-left: 10px"></i><span>BU & Country {{ Auth::user()->role}}</span>
+                                <i class="fa-solid fa-globe" style="padding-left: 10px"></i><span>BU & Country</span>
                             </a>
                         </li>
                     @endif
