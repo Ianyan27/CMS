@@ -10,7 +10,7 @@ use App\Models\EngagementArchive; // Import the EngagementArchive model
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Db;
+use Illuminate\Support\Facades\DB;
 use App\Models\BU;
 use App\Models\BuCountry;
 use App\Models\BUH;
@@ -47,7 +47,7 @@ class HeadController extends Controller
         // Log::info('dropdown Data are - '.$dropdownData);
 
         // Return the data to the view
-        return view('Head_page', [
+        return view('Head_Page', [
             'userData' => $userData,
             'currentPage' => $currentPage,
             'perPage' => $perPage,

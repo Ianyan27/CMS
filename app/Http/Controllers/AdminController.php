@@ -857,35 +857,36 @@ class AdminController extends Controller
         }
     }
 
-    public function viewBUHDetails($id){
+    public function viewBUHDetails($id)
+    {
 
         $buhData = DB::table('bu_country as bc')
-        ->join('bu', 'bc.bu_id', '=', 'bu.id')
-        ->join('country', 'bc.country_id', '=', 'country.id')
-        ->join('buh', 'bc.buh_id', '=', 'buh.id')
-        ->select(
-            'bc.id as id',
-            'bu.name as bu_name',
-            'country.name as country_name',
-            'buh.name as buh_name',
-            'buh.email as buh_email',
-            'buh.nationality as buh_nationality'
-        )
-        ->where('bc.id', $id)
-        ->first();
+            ->join('bu', 'bc.bu_id', '=', 'bu.id')
+            ->join('country', 'bc.country_id', '=', 'country.id')
+            ->join('buh', 'bc.buh_id', '=', 'buh.id')
+            ->select(
+                'bc.id as id',
+                'bu.name as bu_name',
+                'country.name as country_name',
+                'buh.name as buh_name',
+                'buh.email as buh_email',
+                'buh.nationality as buh_nationality'
+            )
+            ->where('bc.id', $id)
+            ->first();
         $saleAgents = SaleAgent::where('bu_country_id', $id)->get();
         $totalSaleAgents = $saleAgents->count();
         $totalDisabledSaleAgents = SaleAgent::where('bu_country_id', $id)
-        ->where('status', 'inactive')->count();
+            ->where('status', 'inactive')->count();
 
-        $buhSaleAgents =SaleAgent::where('bu_country_id', $id)->paginate(10);
+        $buhSaleAgents = SaleAgent::where('bu_country_id', $id)->paginate(10);
 
         $businessUnit = BU::all();
         $countries = Country::all();
 
         return view('Edit_BUH_Detail_Page', [
             'buhSaleAgents' => $buhSaleAgents,
-            'buhData' => $buhData, 
+            'buhData' => $buhData,
             'totalSaleAgents' => $totalSaleAgents,
             'totalDisabledSaleAgents' => $totalDisabledSaleAgents,
             'businessUnit' => $businessUnit,

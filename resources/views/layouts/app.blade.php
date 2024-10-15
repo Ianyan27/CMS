@@ -58,7 +58,7 @@
         </div>
         <div class="row my-4 content-height">
             <div id="side-bar" class="col-md-auto col-sm-auto dashboard rounded-right navigation-width right-shadow">
-                <ul class="nav flex-column fonts my-2 navbar-nav">
+                <ul class="nav flex-column fonts my-2 navbar-nav" style="background: white;">
                     <!-- Sidebar Navigation Items -->
                     @if ($userRole == 'Admin')
                         <li
@@ -105,18 +105,31 @@
                             </a>
                         </li>
                     @endif
-                    @if (in_array($userRole, ['Admin', 'BUH', 'Sale_Admin']))
+                    @if (in_array($userRole, ['Admin', 'BUH', 'Sales_Admin']))
                         <li
                             class="nav-item dashboard-link 
                             {{ Route::currentRouteName() == 'sale_admin' ? 'active-link' : '' }}
                             {{ Route::currentRouteName() == 'admin#sales-admin' ? 'admin-active' : '' }}
                             {{ Route::currentRouteName() == 'buh#import-csv' ? 'buh-active' : '' }}">
                             <a class="nav-link"
-                                href="{{ route($userRole == 'Admin' ? 'admin#sales-admin' : ($userRole == 'BUH' ? 'buh#import-csv' : 'sale_admin')) }}">
+                                href="{{ route($userRole == 'Admin' ? 'admin#sales-admin' : ($userRole == 'BUH' ? 'buh#import-csv' : 'sales-admin#index')) }}">
                                 <i class="fa-solid fa-file-arrow-up"></i><span>Import CSV</span>
                             </a>
                         </li>
                     @endif
+
+                    @if (in_array($userRole, ['Admin', 'Sales_Admin']))
+                        <li
+                            class="nav-item dashboard-link 
+                            {{ Route::currentRouteName() == 'sales-admin#bu-country' ? 'active-link' : '' }}
+                            {{ Route::currentRouteName() == 'admin#bu-country' ? 'admin-active' : '' }}">
+                            <a class="nav-link"
+                                href="{{ route($userRole == 'Admin' ? 'admin#bu-country' : 'sales-admin#bu-country') }}">
+                                <i class="fa-solid fa-file-arrow-up"></i><span>BU and Country</span>
+                            </a>
+                        </li>
+                    @endif
+
                 </ul>
             </div>
             <div class="col-11 px-4 min-height content-width mb-4">

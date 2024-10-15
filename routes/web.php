@@ -24,10 +24,13 @@ Route::get('/', function () {
 })->name('login');
 
 Route::post('/get-bu-data', [
-    SaleAdminController::class, 'getBUData'
+    SaleAdminController::class,
+    'getBUData'
 ])->name('get.bu.data');
+
 Route::post('/get-buh-by-country', [
-    SaleAdminController::class, 'getBUHByCountry'
+    SaleAdminController::class,
+    'getBUHByCountry'
 ])->name('get.buh.by.country');
 
 
@@ -235,7 +238,8 @@ Route::group(['prefix' => 'admin'], function () {
     ])->name('admin#view-buh');
 
     Route::get('/admin/view-buh/{id}', [
-        AdminController::class ,'viewBUHDetails'
+        AdminController::class,
+        'viewBUHDetails'
     ])->name('admin#view-buh-detail');
 
     Route::post('/save-buh', [
@@ -256,6 +260,29 @@ Route::group(['prefix' => 'admin'], function () {
         AdminController::class,
         'getProgress'
     ])->name('progress');
+
+
+    // BU and Country routes
+    Route::get('/bu-country', [
+        SaleAdminController::class,
+        'buCountry'
+    ])->name('admin#bu-country');
+    Route::post('/add-bu', [
+        SaleAdminController::class,
+        'saveBU'
+    ])->name('admin#add-bu');
+    Route::post('/add-country', [
+        SaleAdminController::class,
+        'saveCountry'
+    ])->name('admin#add-country');
+    Route::post('/update-country/{id}', [
+        SaleAdminController::class,
+        'updateCountry'
+    ])->name('admin#update-country');
+    Route::post('/update-bu/{id}', [
+        SaleAdminController::class,
+        'updateBU'
+    ])->name('admin#update-bu');
 });
 
 Route::group(['prefix' => 'sales-agent'], function () {
@@ -317,7 +344,7 @@ Route::group(['prefix' => 'sales-agent'], function () {
         ContactController::class,
         'archiveContactActivities'
     ])->name('sale-agent#archiveContactActivities');
-    
+
     Route::post('/sale-agent/delete-archive-activity/{engagement_archive_pid}', [
         ContactController::class,
         'deleteArchiveActivity'
@@ -492,4 +519,27 @@ Route::group(['prefix' => 'sales-admin'], function () {
         SaleAdminController::class,
         'index'
     ])->name('sales-admin#index');
+
+    // BU and Country routes
+    Route::get('/bu-country', [
+        SaleAdminController::class,
+        'buCountry'
+    ])->name('sales-admin#bu-country');
+
+    Route::post('/add-bu', [
+        SaleAdminController::class,
+        'saveBU'
+    ])->name('sales-admin#add-bu');
+    Route::post('/add-country', [
+        SaleAdminController::class,
+        'saveCountry'
+    ])->name('sales-admin#add-country');
+    Route::post('/update-country/{id}', [
+        SaleAdminController::class,
+        'updateCountry'
+    ])->name('sales-admin#update-country');
+    Route::post('/update-bu/{id}', [
+        SaleAdminController::class,
+        'updateBU'
+    ])->name('sales-admin#update-bu');
 });
