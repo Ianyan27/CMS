@@ -283,6 +283,14 @@ Route::group(['prefix' => 'admin'], function () {
         SaleAdminController::class,
         'updateBU'
     ])->name('admin#update-bu');
+    Route::post('/delete-country/{id}', [
+        SaleAdminController::class,
+        'deleteCountry'
+    ])->name('admin#delete-country');
+    Route::post('/delete-bu/{id}', [
+        SaleAdminController::class,
+        'deleteBU'
+    ])->name('admin#delete-bu');
 });
 
 Route::group(['prefix' => 'sales-agent'], function () {
@@ -542,4 +550,13 @@ Route::group(['prefix' => 'sales-admin'], function () {
         SaleAdminController::class,
         'updateBU'
     ])->name('sales-admin#update-bu');
+
+    Route::post('/delete-bu/{id}', [
+        SaleAdminController::class,
+        'deleteBU'
+    ])->name('sales-admin#delete-bu');
+    Route::post('/delete-country/{id}', [
+        SaleAdminController::class,
+        'deleteCountry'
+    ])->name('sales-admin#delete-bu');
 });

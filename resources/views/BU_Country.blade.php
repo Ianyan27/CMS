@@ -4,7 +4,9 @@
 
 @include('layouts.BU_Modal')
 @include('layouts.Country_Modal')
-
+@php
+    $userRole = Auth::user()->role;
+@endphp
 @section('content')
     @if (Auth::user()->role = 'Admin' && (Auth::user()->role = 'Sale_Admin'))
         {{-- Error modal --}}
@@ -114,6 +116,19 @@
                                                     data-target="#editBUModal{{ $bu->id }}">
                                                     <i class="fa-solid fa-pen-to-square"></i>
                                                 </a>
+                                                @if ($userRole == 'Admin')
+                                                    <a class="btn hover-action" data-toggle="modal"
+                                                        data-target="#deleteModal" data-entity-id="{{ $bu->id }}"
+                                                        data-entity-type="BU" data-section="admin">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </a>
+                                                @else
+                                                    <a class="btn hover-action" data-toggle="modal"
+                                                        data-target="#deleteModal" data-entity-id="{{ $bu->id }}"
+                                                        data-entity-type="BU" data-section="sales-admin">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </a>
+                                                @endif
                                             </td>
                                         </tr>
                                     @empty
@@ -223,6 +238,20 @@
                                                     data-target="#editCountryModal{{ $country->id }}">
                                                     <i class="fa-solid fa-pen-to-square"></i>
                                                 </a>
+
+                                                @if ($userRole == 'Admin')
+                                                    <a class="btn hover-action" data-toggle="modal"
+                                                        data-target="#deleteModal" data-entity-id="{{ $country->id }}"
+                                                        data-entity-type="Country" data-section="admin">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </a>
+                                                @else
+                                                    <a class="btn hover-action" data-toggle="modal"
+                                                        data-target="#deleteModal" data-entity-id="{{ $country->id }}"
+                                                        data-entity-type="Country" data-section="sales-admin">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </a>
+                                                @endif
                                             </td>
                                         </tr>
                                     @empty
@@ -286,6 +315,11 @@
             </div>
         </div>
 
+
+
+
+
+
         <script>
             $(document).ready(function() {
 
@@ -316,11 +350,5 @@
                 @endif
             });
         </script>
-        {{-- sorting name --}}
-        <script src=" {{ asset('js/sort.js') }} "></script>
-        @else
-            <div class="alert alert-danger text-center mt-5">
-                <strong>Access Denied!</strong> You do not have permission to view this page.
-            </div>
-        @endif
+    @endif
 @endsection
