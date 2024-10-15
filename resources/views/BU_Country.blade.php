@@ -2,7 +2,9 @@
 
 @include('layouts.BU_Modal')
 @include('layouts.Country_Modal')
-
+@php
+    $userRole = Auth::user()->role;
+@endphp
 @section('content')
     @if (Auth::user()->role = 'Admin' && (Auth::user()->role = 'Sale_Admin'))
         {{-- Error modal --}}
@@ -107,6 +109,19 @@
                                                     data-target="#editBUModal{{ $bu->id }}">
                                                     <i class="fa-solid fa-pen-to-square"></i>
                                                 </a>
+                                                @if ($userRole == 'Admin')
+                                                    <a class="btn hover-action" data-toggle="modal"
+                                                        data-target="#deleteModal" data-entity-id="{{ $bu->id }}"
+                                                        data-entity-type="BU" data-section="admin">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </a>
+                                                @else
+                                                    <a class="btn hover-action" data-toggle="modal"
+                                                        data-target="#deleteModal" data-entity-id="{{ $bu->id }}"
+                                                        data-entity-type="BU" data-section="sales-admin">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </a>
+                                                @endif
                                             </td>
                                         </tr>
                                     @empty
@@ -202,6 +217,20 @@
                                                     data-target="#editCountryModal{{ $country->id }}">
                                                     <i class="fa-solid fa-pen-to-square"></i>
                                                 </a>
+
+                                                @if ($userRole == 'Admin')
+                                                    <a class="btn hover-action" data-toggle="modal"
+                                                        data-target="#deleteModal" data-entity-id="{{ $country->id }}"
+                                                        data-entity-type="Country" data-section="admin">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </a>
+                                                @else
+                                                    <a class="btn hover-action" data-toggle="modal"
+                                                        data-target="#deleteModal" data-entity-id="{{ $country->id }}"
+                                                        data-entity-type="Country" data-section="sales-admin">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </a>
+                                                @endif
                                             </td>
                                         </tr>
                                     @empty
@@ -266,9 +295,35 @@
         </div>
 
 
+        {{-- Delete Modal --}}
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content text-center">
+                    <div class="icon-container mx-auto">
+                        <i class="fa-solid fa-trash"></i>
+                    </div>
+                    <div class="modal-header border-0"></div>
+                    <div class="modal-body">
+                        <p>You are about to delete this <span id="entity-type-label"></span></p>
+                        <p class="text-muted">This action will delete the <span id="entity-type-label-again"></span> from
+                            your list.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <!-- The form action will be dynamically updated using JavaScript -->
+                        <form id="delete-form" method="POST">
+                            @csrf
+                            @method('POST')
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
-
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
         <script>
             $(document).ready(function() {
@@ -314,6 +369,47 @@
                 @if (Session::has('country-success') || Session::has('bu-success'))
                     $('#successModal').modal('show');
                 @endif
+            });
+        </script>
+        {{-- modal logic --}}
+        <script>
+            $(document).ready(function() {
+                $('#deleteModal').on('show.bs.modal', function(event) {
+                    var button = $(event.relatedTarget); // Button that triggered the modal
+                    var entityId = button.data('entity-id'); // Extract info from data-* attributes
+                    var entityType = button.data('entity-type'); // 'BU' or 'Country'
+                    var section = button.data('section'); // 'admin' or 'sales-admin'
+
+                    console.log('Entity Type:', entityType); // Check if entityType is being logged
+                    console.log('Entity ID:', entityId); // Check if entityId is being logged
+                    console.log('Section:', section); // Check if section is being logged
+
+                    var modal = $(this);
+                    var entityLabel = entityType === 'BU' ? 'Business Unit' : 'Country';
+
+                    // Update the modal content
+                    modal.find('#entity-type-label').text(entityLabel);
+                    modal.find('#entity-type-label-again').text(entityLabel);
+
+                    // Update the form action based on the section and entity type
+                    var formAction = '';
+                    if (section === 'admin') {
+                        if (entityType === 'BU') {
+                            formAction = '/admin/delete-bu/' + entityId;
+                        } else if (entityType === 'Country') {
+                            formAction = '/admin/delete-country/' + entityId;
+                        }
+                    } else if (section === 'sales-admin') {
+                        if (entityType === 'BU') {
+                            formAction = '/sales-admin/delete-bu/' + entityId;
+                        } else if (entityType === 'Country') {
+                            formAction = '/sales-admin/delete-country/' + entityId;
+                        }
+                    }
+
+                    console.log('Form Action:', formAction); // Check if formAction is being logged
+                    modal.find('#delete-form').attr('action', formAction);
+                });
             });
         </script>
     @endif
