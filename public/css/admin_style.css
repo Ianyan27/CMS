@@ -946,3 +946,7 @@ input:checked + .slider:before {
 input:checked + .slider .status-text {
     color: white;
 }
+
+.bu-buttons{
+    min-width: 100px;
+}

@@ -27,7 +27,7 @@ class HeadController extends Controller
             ->join('bu', 'bc.bu_id', '=', 'bu.id')
             ->join('country', 'bc.country_id', '=', 'country.id')
             ->join('buh', 'bc.buh_id', '=', 'buh.id')
-            ->where('buh.head_id', $headId) // Filter by head_id
+            ->where('buh.id', $headId) // Filter by head_id
             ->select(
                 'bc.id as id',
                 'bu.name as bu_name',

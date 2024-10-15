@@ -10,6 +10,7 @@ use App\Models\Country;
 use App\Models\Owner;
 use App\Models\SaleAgent;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class SaleAdminController extends Controller
@@ -30,7 +31,10 @@ class SaleAdminController extends Controller
         $bus = BU::paginate(10); // adjust the pagination limit as needed
         $countries = Country::paginate(10); // adjust the pagination limit as needed
 
-        return view('BU_Country', compact('bus', 'countries'));
+        return view('BU_Country')->with([
+            'bus' => $bus,
+            'countries' => $countries
+        ]);
     }
 
     public function getBUData(Request $request)

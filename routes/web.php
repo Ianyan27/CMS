@@ -263,7 +263,7 @@ Route::group(['prefix' => 'admin'], function () {
 
 
     // BU and Country routes
-    Route::get('/bu-country', [
+    Route::get('/admin/bu-country', [
         SaleAdminController::class,
         'buCountry'
     ])->name('admin#bu-country');
@@ -521,7 +521,7 @@ Route::group(['prefix' => 'sales-admin'], function () {
     ])->name('sales-admin#index');
 
     // BU and Country routes
-    Route::get('/bu-country', [
+    Route::get('/bu&country', [
         SaleAdminController::class,
         'buCountry'
     ])->name('sales-admin#bu-country');

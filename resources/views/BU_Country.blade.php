@@ -1,3 +1,5 @@
+@section('title', 'BU & Countries')
+
 @extends('layouts.app')
 
 @include('layouts.BU_Modal')
@@ -12,7 +14,7 @@
                     <div class="modal-content">
                         <div class="modal-header"
                             style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
-                border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
+                            border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
                             <h5 class="modal-title" id="errorModalLabel" style="color: #91264c"><strong>Error</strong>
                             </h5>
                         </div>
@@ -41,7 +43,7 @@
                     <div class="modal-content rounded-0">
                         <div class="modal-header"
                             style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
-                border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
+                            border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
                             <h5 class="modal-title" id="successModalLabel" style="color: #91264c"><strong>Success</strong>
                             </h5>
                         </div>
@@ -60,40 +62,45 @@
                 </div>
             </div>
         @endif
-
-        <div class="container">
+        <div class="container-max-height">
             <div class="row">
                 <div class="col-md-12">
-                    <button class="btn hover-action mx-3" id="show-bu">
-                        Show BU
-                    </button>
-                    <button class="btn hover-action mx-3" id="show-country">
-                        Show Country
-                    </button>
-                </div>
-                <div class="col-md-12">
                     <div id="bu-table">
-                        <div class="d-flex align-items-center mr-3 my-2">
-                            <h3 class="mr-3 my-2 headings" style="margin-right: 10px">BU Table</h3>
-                            <button class="btn hover-action" data-toggle="modal" data-target="#addBUModal"
-                                style="padding: 10px 12px;">
-                                <i class="fa-solid fa-square-plus"></i>
-                            </button>
+                        <div class="d-flex justify-content-between align-items-center mr-3 my-2">
+                            <div class="d-flex align-items-center">
+                                <h5 class="mr-3 my-2 headings" style="margin-right: 10px; min-width: 235px;">BU Table</h5>
+                                <button class="btn hover-action" data-toggle="modal" data-target="#addBUModal"
+                                    style="padding: 10px 12px;">
+                                    <i class="fa-solid fa-square-plus"></i>
+                                </button>
+                                <button class="btn hover-action mx-3 bu-buttons active" id="show-bu">
+                                    BU
+                                </button>
+                                <button class="btn hover-action bu-buttons" id="show-country">
+                                    Country
+                                </button>
+                            </div>
+                            <div class="search-box d-flex align-items-center mr-3 mb-2">
+                                <input type="search" class="form-control mr-1" placeholder="Search Name or Email..."
+                                    id="search-input" aria-label="Search">
+                                <button class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                </button>
+                            </div>
                         </div>
-
                         <div class="table-container" id="contacts">
                             <table class=" table table-hover mt-2" id="contacts-table">
                                 <thead class="text-left font-educ">
                                     <tr class="text-left font-educ">
-                                        <th scope="col">No #</th>
-                                        <th scope="col" id="name-header">Name
+                                        <th scope="col" style="width:20%;">No #</th>
+                                        <th scope="col" style="width:60%;" id="name-header">Name
                                             <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name"
                                                 onclick="sortTable('name', 'asc'); toggleSort('sortDown-name', 'sortUp-name')"></i>
                                             <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name"
                                                 onclick="sortTable('name', 'desc'); toggleSort('sortUp-name', 'sortDown-name')"
                                                 style="display: none;"></i>
                                         </th>
-                                        <th scope="col">Action</th>
+                                        <th scope="col" style="width:20%;" class="text-center">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody class="text-left bg-row fonts">
@@ -102,7 +109,7 @@
                                         <tr>
                                             <td>{{ ++$i }}</td>
                                             <td>{{ $bu->name }}</td>
-                                            <td>
+                                            <td class="d-flex justify-content-center">
                                                 <a class="btn hover-action" data-toggle="modal"
                                                     data-target="#editBUModal{{ $bu->id }}">
                                                     <i class="fa-solid fa-pen-to-square"></i>
@@ -116,7 +123,6 @@
                                     @endforelse
                                 </tbody>
                             </table>
-
                         </div>
                         {{-- BU navigation --}}
                         <div aria-label="Page navigation example " class="paginationContainer">
@@ -168,27 +174,42 @@
                         </div>
                     </div>
                     <div id="country-table" style="display: none;">
-                        <div class="d-flex align-items-center mr-3 my-2">
-                            <h3 class="mr-3 my-2 headings" style="margin-right: 10px">Country Table</h3>
-                            <button class="btn hover-action" data-toggle="modal" data-target="#addCountryModal"
-                                style="padding: 10px 12px;">
-                                <i class="fa-solid fa-square-plus"></i>
-                            </button>
+                        <div class="d-flex justify-content-between align-items-center mr-3 my-2">
+                            <div class="d-flex align-items-center">
+                                <h5 class="mr-3 my-2 headings" style="margin-right: 10px; min-width: 235px;">Country Table</h5>
+                                <button class="btn hover-action" data-toggle="modal" data-target="#addCountryModal"
+                                    style="padding: 10px 12px;">
+                                    <i class="fa-solid fa-square-plus"></i>
+                                </button>
+                                <button class="btn hover-action mx-3 bu-buttons" id="show-bu-2">
+                                    BU
+                                </button>
+                                <button class="btn hover-action bu-buttons active" id="show-country-2">
+                                    Country
+                                </button>
+                            </div>
+                            <div class="search-box d-flex align-items-center mr-3 mb-2">
+                                <input type="search" class="form-control mr-1" placeholder="Search Name or Email..."
+                                    id="search-input" aria-label="Search">
+                                <button class="btn hover-action mx-1" type="submit" data-toggle="tooltip"
+                                    title="Search">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                </button>
+                            </div>
                         </div>
-
                         <div class="table-container" id="countries">
                             <table class=" table table-hover mt-2" id="countries-table">
                                 <thead class="text-left font-educ">
                                     <tr class="text-left font-educ">
-                                        <th scope="col">No #</th>
-                                        <th scope="col" id="name-header">Name
+                                        <th scope="col" style="width:20%;">No #</th>
+                                        <th scope="col" style="width:60%;" id="name-header">Name
                                             <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name"
                                                 onclick="sortTable('name', 'asc'); toggleSort('sortDown-name', 'sortUp-name')"></i>
                                             <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name"
                                                 onclick="sortTable('name', 'desc'); toggleSort('sortUp-name', 'sortDown-name')"
                                                 style="display: none;"></i>
                                         </th>
-                                        <th scope="col">Action</th>
+                                        <th scope="col" style="width:20%;" class="text-center">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody class="text-left bg-row fonts">
@@ -197,7 +218,7 @@
                                         <tr>
                                             <td>{{ ++$i }}</td>
                                             <td>{{ $country->name }}</td>
-                                            <td>
+                                            <td class="d-flex justify-content-center">
                                                 <a class="btn hover-action" data-toggle="modal"
                                                     data-target="#editCountryModal{{ $country->id }}">
                                                     <i class="fa-solid fa-pen-to-square"></i>
@@ -265,45 +286,24 @@
             </div>
         </div>
 
-
-
-
-
-
         <script>
             $(document).ready(function() {
+
                 function hideAllTables() {
                     $('#bu-table, #country-table').hide();
                 }
 
-                $('#show-bu').click(function() {
+                $('#show-bu, #show-bu-2').click(function() {
                     hideAllTables();
-                    $('#bu-table').toggle();
+                    $('#bu-table').show();
                 });
 
-                $('#show-country').click(function() {
+                $('#show-country, #show-country-2').click(function() {
                     hideAllTables();
-                    $('#country-table').toggle();
-                });
-
-                $('#show-contacts').click(function() {
-                    hideAllTables();
-                    $('#contacts').show();
-                });
-
-                $('#show-archive').click(function() {
-                    hideAllTables();
-                    $('#archive').show();
-                });
-
-                $('#show-discard').click(function() {
-                    hideAllTables();
-                    $('#discard').show();
+                    $('#country-table').show();
                 });
             });
         </script>
-        {{-- sorting name --}}
-        <script></script>
         {{-- show modal --}}
         <script>
             $(document).ready(function() {
@@ -316,5 +316,11 @@
                 @endif
             });
         </script>
-    @endif
+        {{-- sorting name --}}
+        <script src=" {{ asset('js/sort.js') }} "></script>
+        @else
+            <div class="alert alert-danger text-center mt-5">
+                <strong>Access Denied!</strong> You do not have permission to view this page.
+            </div>
+        @endif
 @endsection
