@@ -125,7 +125,7 @@
                             {{ Route::currentRouteName() == 'admin#bu-country' ? 'admin-active' : '' }}">
                             <a class="nav-link"
                                 href="{{ route($userRole == 'Admin' ? 'admin#bu-country' : 'sales-admin#bu-country') }}">
-                                <i class="fa-solid fa-globe" style="padding-left: 10px"></i><span>BU and Country</span>
+                                <i class="fa-solid fa-globe" style="padding-left: 10px"></i><span>BU & Country</span>
                             </a>
                         </li>
                     @endif
