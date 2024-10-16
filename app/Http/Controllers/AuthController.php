@@ -11,10 +11,12 @@ use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Str;
 
 
-class AuthController extends Controller{
+class AuthController extends Controller
+{
 
     // Redirect to Microsoft OAuth page
-    public function redirectToMicrosoft(){
+    public function redirectToMicrosoft()
+    {
         /**
          * Re login method
          */
@@ -30,37 +32,48 @@ class AuthController extends Controller{
         //     ->redirect();
     }
     // Handle the callback from Microsoft
-    public function handleMicrosoftCallback(){
+    public function handleMicrosoftCallback()
+    {
         try {
-            // Retrieve the user from Microsoft
+            // Retrieve the user from Microsoft's OAuth provider
             $microsoftUser = Socialite::driver('microsoft')->user();
-            // Find or create the user in your application
-            $user = User::firstOrCreate(
-                ['email' => $microsoftUser->getEmail()],
-                [
-                    'name' => $microsoftUser->getName(),
-                    'password' => bcrypt(Str::random(16)), // Use Str::random() to generate a secure password
-                ]
-            );
+
+            // Find the user in your application based on email and name
+            $user = User::where('email', $microsoftUser->getEmail())
+                ->where('name', $microsoftUser->getName())
+                ->first();
+
             if ($user) {
                 // Log the user in manually
                 Auth::login($user);
-                // Store user information including role in session
-                session()->put('name', $user->name);
-                session()->put('email', $user->email);
-                session()->put('role', $user->role); // Assuming 'role' is a column in the users table
-                Log::info('Checking User table \n');
-                Log::info('The role: ' . $user);
-                // Redirect to the intended page
+
+                // Store user details in session (including role)
+                session([
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role, // Assuming 'role' exists in the User model
+                ]);
+
+                // Log the successful login and user role
+                Log::info('User login successful', ['user' => $user, 'role' => $user->role]);
+
+                // Redirect the user to the intended page or fallback
                 return redirect()->intended('view-user');
+            } else {
+                // If user is not found, you can handle it here (optional)
+                return redirect('/')->withErrors(['msg' => 'User not found. Please try again.']);
             }
         } catch (\Exception $e) {
-            // Handle exceptions like user canceling the login
-            return redirect('/')->withErrors(['msg' => 'Login failed. Please try again. Error code: ' . $e]);
+            // Handle exceptions, e.g., login cancellation or other errors
+            Log::error('Login failed', ['error' => $e->getMessage()]);
+
+            // Redirect with an error message
+            return redirect('/')->withErrors(['msg' => 'Login failed. Please try again. Error: ' . $e->getMessage()]);
         }
     }
-    
-    public function microsoftLogin(Request $request){
+
+    public function microsoftLogin(Request $request)
+    {
         // Validate the input
         $request->validate([
             'email' => 'required|email'
@@ -109,7 +122,8 @@ class AuthController extends Controller{
         ])->withInput($request->except('email'));
     }
 
-    public function logout(Request $request){
+    public function logout(Request $request)
+    {
         $request->session()->forget(['name', 'email', 'role']);
         // Log the user out
         Auth::logout();
