@@ -111,8 +111,8 @@
                     @endif
                     @if (Auth::check() && Auth::user()->role == 'Admin' || Auth::user()->role == 'Sales_Admin')
                         <li
-                            class="{{ Route::currentRouteName() == 'sales-admin#bu-country' ? 'active-link' : 'nav-item' }} dashboard-link">
-                            <a class="nav-link" href="{{ route('sales-admin#bu-country') }}">
+                            class="{{ in_array(Route::currentRouteName(), ['admin#bu-country','sales-admin#bu-country']) ? 'active-link' : 'nav-item' }} dashboard-link">
+                            <a class="nav-link" href="{{ Auth::user()->role == 'Admin' ? route('admin#bu-country') : route('sales-admin#bu-country') }}">
                                 <i class="fa-solid fa-globe" style="padding-left: 10px"></i><span>BU & Country</span>
                             </a>
                         </li>

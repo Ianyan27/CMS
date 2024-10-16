@@ -263,7 +263,7 @@ Route::group(['prefix' => 'admin'], function () {
 
 
     // BU and Country routes
-    Route::get('/admin/bu-country', [
+    Route::get('/bu-country', [
         SaleAdminController::class,
         'buCountry'
     ])->name('admin#bu-country');
