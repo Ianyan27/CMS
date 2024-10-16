@@ -183,7 +183,7 @@ class ContactController extends Controller
         // Validation rules
         $rules = [
             'status' => function ($attribute, $value, $fail) use ($activitiesCount) {
-                if (in_array($value, ['HubSpot Contact', 'Archive', 'Discard']) && $activitiesCount === 0) {
+                if (in_array($value, ['InProgress', 'HubSpot Contact', 'Archive', 'Discard']) && $activitiesCount === 0) {
                     $fail('Status cannot be updated: No engagement activities for this contact.');
                 }
             }

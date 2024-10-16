@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\ContactDiscard;
 use App\Models\EngagementDiscard;
-use App\Models\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class DiscardController extends Controller

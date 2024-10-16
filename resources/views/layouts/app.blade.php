@@ -74,11 +74,11 @@
                             </a>
                         </li>
                     @endif
-                    @if (Auth::check() && Auth::user()->role == 'Admin' ?? 'BUH')
+                    @if (Auth::check() && Auth::user()->role == 'BUH')
                         <li
-                            class="{{ in_array(Route::currentRouteName(), ['admin#hubspot-contact', 'hubspot-contact']) ? 'active-link' : 'nav-item' }} dashboard-link">
+                            class="{{ in_array(Route::currentRouteName(), ['hubspot-contact']) ? 'active-link' : 'nav-item' }} dashboard-link">
                             <a class="nav-link"
-                                href="{{ route(Auth::user()->role == 'Admin' ? 'admin#hubspot-contact' : 'hubspot-contact') }}">
+                                href="{{ route('hubspot-contact') }}">
                                 <i class="fa-brands fa-hubspot"></i><span>Hubspot Contacts</span>
                             </a>
                         </li>
