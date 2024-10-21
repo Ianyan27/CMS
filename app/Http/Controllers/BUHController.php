@@ -298,7 +298,7 @@ class BUHController extends Controller
             Log::info('Successfully saved user : ' . $user->email);
             Log::info("Successfully sale agent for email: " .  $saleAgent->email);
 
-            return redirect()->route('owner#view')->with('success', 'Sale Agent successfully added');
+            return redirect()->route('buh#view')->with('success', 'Sale Agent successfully added');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Failed to save user and sale agent for email: ' . $request->input('email') . '. Error: ' . $e->getMessage());
