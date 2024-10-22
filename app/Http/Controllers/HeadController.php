@@ -28,7 +28,7 @@ class HeadController extends Controller
             ->join('bu', 'bc.bu_id', '=', 'bu.id')
             ->join('country', 'bc.country_id', '=', 'country.id')
             ->join('buh', 'bc.buh_id', '=', 'buh.id')
-            ->where('buh.id', $headId) // Filter by head_id
+            ->where('buh.head_id', $headId) // Filter by head_id
             ->select(
                 'bc.id as id',
                 'bu.name as bu_name',
@@ -133,7 +133,7 @@ class HeadController extends Controller
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'nationality' => $validatedData['nationality'],
-            'id' => $headId, // Automatically assign the head_id
+            'head_id' => $headId, // Automatically assign the head_id
             'created_at' => now(),
             'updated_at' => now(),
         ]);

@@ -112,10 +112,10 @@
                                     {{-- <a class="btn hover-action" href=" {{ route('admin#view-buh-detail', ['id' => $user->id]) }} "> --}}
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
-                                    {{-- <a class="btn hover-action" data-toggle="modal"
+                                     <a class="btn hover-action" data-toggle="modal"
                                         data-target="#deleteUserModal{{ $user->id }}">
                                         <i class="fa-solid fa-trash"></i>
-                                    </a> --}}
+                                    </a> 
                                 </td>
                             </tr>
                         @empty
