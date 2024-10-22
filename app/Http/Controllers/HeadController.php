@@ -133,7 +133,7 @@ class HeadController extends Controller
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'nationality' => $validatedData['nationality'],
-            'id' => $headId, // Automatically assign the head_id
+            'head_id' => $headId, // Automatically assign the head_id
             'created_at' => now(),
             'updated_at' => now(),
         ]);
