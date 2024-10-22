@@ -412,7 +412,7 @@ class ContactController extends Controller
     public function saveUpdateActivity(Request $request, $contact_pid, $activity_id)
     {
         // Checking for admin role and redirecting if needed
-        
+
         // Validate the input data
         $validator = Validator::make($request->all(), [
             'activity-date' => 'required|date',
@@ -643,54 +643,77 @@ class ContactController extends Controller
 
     public function hubspotContacts()
     {
-        $userEmail = Auth::user()->email;
+        if (Auth::user()->role == 'BUH') {
+            $userEmail = Auth::user()->email;
 
-        // Fetch the BUH record associated with the logged-in user's email
-        $buh = BUH::where('email', $userEmail)->first();
+            // Fetch the BUH record associated with the logged-in user's email
+            $buh = BUH::where('email', $userEmail)->first();
 
-        if (!$buh) {
-            return redirect()->back()->with('error', 'No BUH found for the logged-in user.');
+            if (!$buh) {
+                return redirect()->back()->with('error', 'No BUH found for the logged-in user.');
+            }
+
+            // Fetch all BuCountry records associated with this BUH
+            $buCountries = BuCountry::where('buh_id', $buh->id)->first();
+
+            // Fetch all SaleAgent records associated with the BuCountry records
+            $saleAgents = SaleAgent::where('bu_country_id', $buCountries->id)->get();
+
+            // Define the base query
+            $baseQuery = Contact::whereHas('saleAgent', function ($query) use ($saleAgents) {
+                $query->whereIn('id', $saleAgents->pluck('id'));
+            })->where('status', 'Hubspot Contact');
+
+
+            // Get HubSpot contacts using Eloquent with pagination
+            $hubspotContacts = $baseQuery->paginate(50);
+
+            // Get HubSpot contacts where datetime_of_hubspot_sync is null
+            $hubspotContactsNoSync = $baseQuery->clone()->whereNull('datetime_of_hubspot_sync')->paginate(50);
+
+            $hubspotContactsSynced1 = $baseQuery->whereNotNull('datetime_of_hubspot_sync')->get();
+            Log::debug("hubspot contacts synced:", ['contacts' => $hubspotContactsSynced1->toArray()]);
+            Log::debug("Sale Agent IDs:", ['sale_agent_ids' => $saleAgents->pluck('id')->toArray()]);
+            Log::info("BU Country: " . $buCountries);
+
+            // Get HubSpot contacts where datetime_of_hubspot_sync has a value
+            $hubspotContactsSynced = $baseQuery->clone()->whereNotNull('datetime_of_hubspot_sync')->paginate(50);
+
+            Log::debug("hubspot baseQuery:", ['query' => $baseQuery->toSql()]);
+            Log::debug("hubspot contact:", ['contacts' => $hubspotContacts->toArray()]);
+            Log::debug("hubspot contact no sync:", ['contacts' => $hubspotContactsNoSync->toArray()]);
+            Log::debug("hubspot contact synced:", ['contacts' => $hubspotContactsSynced->toArray()]);
+
+
+
+            // Pass data to view
+            return view('Hubspot_Contact_Listing', [
+                'hubspotContacts' => $hubspotContacts,
+                'hubspotContactsNoSync' => $hubspotContactsNoSync,
+                'hubspotContactsSynced' => $hubspotContactsSynced
+            ]);
         }
+        // Admin can view all contacts
+        elseif (Auth::user()->role == 'Admin') {
+            // Define the base query
+            $baseQuery = Contact::where('status', 'Hubspot Contact');
 
-        // Fetch all BuCountry records associated with this BUH
-        $buCountries = BuCountry::where('buh_id', $buh->id)->first();
+            // Get HubSpot contacts using Eloquent with pagination
+            $hubspotContacts = $baseQuery->paginate(50);
 
-        // Fetch all SaleAgent records associated with the BuCountry records
-        $saleAgents = SaleAgent::where('bu_country_id', $buCountries->id)->get();
+            // Get HubSpot contacts where datetime_of_hubspot_sync is null
+            $hubspotContactsNoSync = $baseQuery->clone()->whereNull('datetime_of_hubspot_sync')->paginate(50);
 
-        // Define the base query
-        $baseQuery = Contact::whereHas('saleAgent', function ($query) use ($saleAgents) {
-            $query->whereIn('id', $saleAgents->pluck('id'));
-        })->where('status', 'Hubspot Contact');
+            // Get HubSpot contacts where datetime_of_hubspot_sync has a value
+            $hubspotContactsSynced = $baseQuery->clone()->whereNotNull('datetime_of_hubspot_sync')->paginate(50);
 
-
-        // Get HubSpot contacts using Eloquent with pagination
-        $hubspotContacts = $baseQuery->paginate(50);
-
-        // Get HubSpot contacts where datetime_of_hubspot_sync is null
-        $hubspotContactsNoSync = $baseQuery->clone()->whereNull('datetime_of_hubspot_sync')->paginate(50);
-
-        $hubspotContactsSynced1 = $baseQuery->whereNotNull('datetime_of_hubspot_sync')->get();
-        Log::debug("hubspot contacts synced:", ['contacts' => $hubspotContactsSynced1->toArray()]);
-        Log::debug("Sale Agent IDs:", ['sale_agent_ids' => $saleAgents->pluck('id')->toArray()]);
-        Log::info("BU Country: " . $buCountries);
-
-        // Get HubSpot contacts where datetime_of_hubspot_sync has a value
-        $hubspotContactsSynced = $baseQuery->clone()->whereNotNull('datetime_of_hubspot_sync')->paginate(50);
-
-        Log::debug("hubspot baseQuery:", ['query' => $baseQuery->toSql()]);
-        Log::debug("hubspot contact:", ['contacts' => $hubspotContacts->toArray()]);
-        Log::debug("hubspot contact no sync:", ['contacts' => $hubspotContactsNoSync->toArray()]);
-        Log::debug("hubspot contact synced:", ['contacts' => $hubspotContactsSynced->toArray()]);
-
-
-
-        // Pass data to view
-        return view('Hubspot_Contact_Listing', [
-            'hubspotContacts' => $hubspotContacts,
-            'hubspotContactsNoSync' => $hubspotContactsNoSync,
-            'hubspotContactsSynced' => $hubspotContactsSynced
-        ]);
+            // Pass data to view
+            return view('Hubspot_Contact_Listing', [
+                'hubspotContacts' => $hubspotContacts,
+                'hubspotContactsNoSync' => $hubspotContactsNoSync,
+                'hubspotContactsSynced' => $hubspotContactsSynced
+            ]);
+        }
     }
 
     private function saveLog($contact_pid, $action_type, $action_description)

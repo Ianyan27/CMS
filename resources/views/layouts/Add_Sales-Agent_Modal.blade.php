@@ -28,12 +28,14 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="font-educ" for="agentName"></label>
-                                <input type="hidden" name="agentName" class="form-control fonts" id="agentName"
-                                    placeholder="Enter agent name" required readonly>
+                                <label class="font-educ" for="agentName">Name</label>
+                                <input type="text" name="agentName" class="form-control fonts" id="agentName"
+                                    placeholder="Enter agent name" required>
                             </div>
                         </div>
-                        <div lass="col-md-6">
+
+                        {{--reterive from hubspot--}}
+                        {{-- <div lass="col-md-6">
                             <div class="form-group">
                                 <label for="teamMembers">Select Your Sale Agent:</label>
                                 <select name="team_member" id="teamMembers">
@@ -52,14 +54,14 @@
                                     @endif
                                 </select>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="email" class="font-educ">Email</label>
                                 <input type="email" name="email" class="form-control fonts" id="email"
                                     placeholder="Enter Email"
                                     pattern="[a-zA-Z0-9._%+-]+@(lithan\.com|educlaas\.com|learning\.educlaas\.com)$"
-                                    required readonly>
+                                    required >
                                 <small id="emailError" class="form-text text-danger"></small>
                             </div>
                         </div>
@@ -68,7 +70,7 @@
                                 <label class="font-educ" for="hubspotId">HubSpot ID</label>
                                 <input type="text" name="hubspotId" class="form-control fonts" id="hubspotId"
                                     placeholder="Enter your HubSpot ID" required pattern="\d+"
-                                    title="Please enter your numeric HubSpot ID." readonly>
+                                    title="Please enter your numeric HubSpot ID." >
                                 <small class="form-text text-muted">Your HubSpot ID is a numeric value.</small>
                             </div>
                         </div>

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\BU;
 use App\Models\BuCountry;
 use App\Models\BUH;
+use App\Models\SaleAgent;
 
 class HeadController extends Controller
 {
@@ -132,7 +133,7 @@ class HeadController extends Controller
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'nationality' => $validatedData['nationality'],
-            'head_id' => $headId, // Automatically assign the head_id
+            'id' => $headId, // Automatically assign the head_id
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -354,6 +355,43 @@ class HeadController extends Controller
 
         // Return the list of BUHs as JSON
         return response()->json(['buh' => $buhList]);
+    }
+
+    public function viewBUHDetails($id)
+    {
+
+        $buhData = DB::table('bu_country as bc')
+            ->join('bu', 'bc.bu_id', '=', 'bu.id')
+            ->join('country', 'bc.country_id', '=', 'country.id')
+            ->join('buh', 'bc.buh_id', '=', 'buh.id')
+            ->select(
+                'bc.id as id',
+                'bu.name as bu_name',
+                'country.name as country_name',
+                'buh.name as buh_name',
+                'buh.email as buh_email',
+                'buh.nationality as buh_nationality'
+            )
+            ->where('bc.id', $id)
+            ->first();
+        $saleAgents = SaleAgent::where('bu_country_id', $id)->get();
+        $totalSaleAgents = $saleAgents->count();
+        $totalDisabledSaleAgents = SaleAgent::where('bu_country_id', $id)
+            ->where('status', 'inactive')->count();
+
+        $buhSaleAgents = SaleAgent::where('bu_country_id', $id)->paginate(10);
+
+        $businessUnit = BU::all();
+        $countries = Country::all();
+
+        return view('Edit_BUH_Detail_Page', [
+            'buhSaleAgents' => $buhSaleAgents,
+            'buhData' => $buhData,
+            'totalSaleAgents' => $totalSaleAgents,
+            'totalDisabledSaleAgents' => $totalDisabledSaleAgents,
+            'businessUnit' => $businessUnit,
+            'countries' => $countries
+        ]);
     }
 
     // View contact details

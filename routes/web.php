@@ -237,7 +237,7 @@ Route::group(['prefix' => 'admin'], function () {
         'viewBUH'
     ])->name('admin#view-buh');
 
-    Route::get('/admin/view-buh/{id}', [
+    Route::get('/view-buh/{id}', [
         AdminController::class,
         'viewBUHDetails'
     ])->name('admin#view-buh-detail');
@@ -518,6 +518,10 @@ Route::group(['prefix' => 'head', 'as' => 'head#'], function () {
         HeadController::class,
         'viewContact'
     ])->name('view-contact');
+    Route::get('/view-buh-detail/{id}', [
+        HeadController::class,
+        'viewBUHDetails'
+    ])->name('view-buh-detail');
 });
 
 Route::group(['prefix' => 'sales-admin'], function () {

@@ -228,27 +228,26 @@
                         progressBar.style.width = '100%';
                         progressMessage.textContent = 'Upload complete!';
 
-
                         let valid_count = data.data.valid_count;
                         let invalid_count = data.data.invalid_count;
                         let duplicate_count = data.data.duplicate_count;
-                        let total_count = valid_count + invalid_count + duplicate_count;
+                        let unselected_country_count = data.data.unselected_country_count;
+                        let total_count = valid_count + invalid_count + duplicate_count +
+                            unselected_country_count;
 
                         setTimeout(() => {
 
-
                             const {
                                 invalid_rows,
-                                duplicate_rows
+                                duplicate_rows,
+                                unselected_country_rows
                             } = data.data.file_links;
 
                             showDownloadPrompt(valid_count, invalid_count, duplicate_count,
+                                unselected_country_count,
                                 total_count,
-                                invalid_rows, duplicate_rows, );
+                                invalid_rows, duplicate_rows, unselected_country_rows);
                         }, 800);
-
-
-
 
                         progressMessage.classList.remove('d-none');
                     } else {
@@ -266,9 +265,10 @@
 
 
 
-        //show download promt
-        function showDownloadPrompt(valid_count, invalid_count, duplicate_count, total_count, invalid_rows_link,
-            duplicate_rows_link) {
+       //show download promt
+       function showDownloadPrompt(valid_count, invalid_count, duplicate_count, unselected_country_count, total_count,
+            invalid_rows_link,
+            duplicate_rows_link, unselected_country_rows_link) {
             // Create the modal element
             const downloadPrompt = document.createElement('div');
 
@@ -286,18 +286,18 @@
             // Add the logo image and text in a flex container
             const logoUrl = "{{ url('/images/02-EduCLaaS-Logo-Raspberry-300x94.png') }}";
             const headerContent = `
-           <div style="
-            padding: 15px; 
-            background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
-            border-radius: 8px 8px 0 0;
-        "   class="d-flex justify-content-between align-items-center">
-        <div>
-                <p style=" margin-right: 30px; margin-bottom: 0;" class="headings">Import Status</p>
+                <div style="
+                    padding: 15px; 
+                    background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+                    border-radius: 8px 8px 0 0;
+                "   class="d-flex justify-content-between align-items-center">
+                <div>
+                        <p style=" margin-right: 30px; margin-bottom: 0;" class="headings">Import Status</p>
+                        </div>
+                        <div>
+                        <img src="${logoUrl}" alt="Company Logo" style="height: 30px;">
+                        </div>
                 </div>
-                 <div>
-                <img src="${logoUrl}" alt="Company Logo" style="height: 30px;">
-                 </div>
-        </div>
     `;
             const bodyContent = `
     <div style="padding : 20px" class="fonts">
@@ -324,26 +324,34 @@
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <p style="margin: 5px 0; font-size: 16px;">Duplicate Rows:</p>
         ${duplicate_rows_link ? `<a href="${duplicate_rows_link}" id="download-duplicate-btn" style="color: #007bff; text-decoration: underline; margin-left: 10px;">Download</a>` : ''}
-       
+        
         <div style="display: flex; align-items: center;">
             <strong>${duplicate_count}</strong>
-             </div>
+        </div>
     </div>
     <hr style="margin: 10px 0;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <p style="margin: 5px 0; font-size: 16px;">Unselected CountryRows:</p>
+        ${unselected_country_rows_link ? `<a href="${unselected_country_rows_link}" id="download-duplicate-btn" style="color: #007bff; text-decoration: underline; margin-left: 10px;">Download</a>` : ''}
         
+        <div style="display: flex; align-items: center;">
+            <strong>${unselected_country_count}</strong>
+        </div>
+    </div>
+    <hr style="margin: 10px 0;">
         <div class="text-end">
             <button id="cancel-btn" class="btn" style="background-color: #6c757d; color: white; padding: 5px 10px; border-radius: 4px;">Close</button>
         </div>
-    </div>    
+    </div> 
+      
     `;
 
             downloadPrompt.innerHTML = `
         ${headerContent}
         ${bodyContent}
-       
+
         
     `;
-
 
             // Append the modal to the body
             document.body.appendChild(downloadPrompt);
