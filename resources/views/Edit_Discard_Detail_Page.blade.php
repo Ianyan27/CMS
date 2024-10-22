@@ -243,7 +243,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center">No Activity Taken.</td>
+                            <td colspan="7" class="text-center">No Activity Taken.</td>
                         </tr>
                     @endforelse
                 </tbody>

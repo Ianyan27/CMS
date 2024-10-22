@@ -4,6 +4,11 @@ document.getElementById('search-input').addEventListener('input', function() {
     // Get all tables to apply the search
     let tables = document.querySelectorAll('.table-container table');
 
+    if (tables.length === 0) {
+        // If no tables found in .table-container, use the second selector
+        tables = document.querySelectorAll('#sales-agents-table tbody tr');
+    }
+
     tables.forEach(table => {
         let rows = table.querySelectorAll('tbody tr');
 

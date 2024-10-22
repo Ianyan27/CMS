@@ -66,7 +66,7 @@
                 </div>
                 <div class="d-flex align-items-center mr-3">
                     <div class="search-box d-flex align-items-center ml-3">
-                        <input type="search" class="form-control mr-1" placeholder="Search Name" id="search-name"
+                        <input type="search" class="form-control mr-1" placeholder="Search by Name and Country" id="search-input"
                             aria-label="Search">
                         <button style="padding: 10px 12px;" class="btn hover-action" type="button" data-toggle="tooltip"
                             title="Search">
@@ -290,6 +290,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src=" {{ asset('js/filter_status.js') }} "></script>
     <script src=" {{ asset('js/agent_form_handler.js') }} "></script>
-    <script src=" {{ asset('js/search_name.js') }} "></script>
     <script src=" {{ asset('js/sort.js') }} "></script>
+    <script src=" {{ asset('js/search_input.js') }}" ></script>
 @endsection

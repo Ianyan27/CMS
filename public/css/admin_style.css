@@ -398,7 +398,6 @@ tbody {
 .hover-action {
     border: 1px solid #91264c;
     color: #91264c;
-    font-style: center;
 }
 
 .hover-action:hover {
@@ -950,4 +949,10 @@ input:checked + .slider .status-text {
 
 .bu-buttons{
     min-width: 100px;
+}
+
+.filter-option{
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
 }

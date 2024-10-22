@@ -224,7 +224,7 @@
                                                 <span class="status-text">
                                                     @if ($buhSaleAgent->status === 'active')
                                                         Active
-                                                    @else
+                                                    @else()
                                                         Inactive
                                                     @endif
                                                 </span>
@@ -241,7 +241,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="text-center">No ownerContacts found.</td>
+                                <td colspan="9" class="text-center">No Sale Agents found.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -376,70 +376,8 @@
     <script src="{{ asset('js/active_activity_buttons.js') }}"></script>
     <script src="{{ asset('js/sort.js') }}"></script>
     <script src="{{ asset('js/active_buttons.js') }}"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const statusSwitches = document.querySelectorAll('.statusSwitch');
-
-            // Initialize counts
-            let activeCount = 0;
-            let inactiveCount = 0;
-
-            statusSwitches.forEach(switchElement => {
-                if (switchElement.checked) {
-                    activeCount++;
-                } else {
-                    inactiveCount++;
-                }
-            });
-
-            // Function to update displayed counts
-            function updateDisplayedCounts() {
-                document.querySelector('#hubspotContactsSection .font-educ').textContent = activeCount;
-                document.querySelector('#engagingContactsSection .font-educ').textContent = inactiveCount;
-            }
-
-            // Update displayed counts initially
-            updateDisplayedCounts();
-
-            // Add event listeners to each switch
-            statusSwitches.forEach(switchElement => {
-                switchElement.addEventListener('change', function() {
-                    if (this.checked) {
-                        activeCount++;
-                        inactiveCount--;
-                    } else {
-                        inactiveCount++;
-                    }
-
-                    // Update the displayed counts
-                    updateDisplayedCounts();
-                });
-            });
-        });
-
-        function toggleFilter() {
-            const filterContainer = document.getElementById('filterContainer');
-            filterContainer.style.display = filterContainer.style.display === 'none' ? 'block' : 'none';
-        }
-
-        function applyFilter() {
-            const activeChecked = document.getElementById('active').checked;
-            const inactiveChecked = document.getElementById('inactive').checked;
-
-            const rows = document.querySelectorAll('tbody tr');
-
-            rows.forEach(row => {
-                const status = row.getAttribute('data-status');
-
-                // Check if the row should be visible based on the selected filters
-                if ((activeChecked && status === 'active') || (inactiveChecked && status === 'inactive')) {
-                    row.style.display = ''; // Show row
-                } else {
-                    row.style.display = 'none'; // Hide row
-                }
-            });
-        }
-    </script>
+    <script src="{{ asset('js/filter_sale_agent_by_status.js') }}"></script>
+    <script src=" {{ asset('js/sale_agent_status_counter.js') }} "></script>
     <script>
         function showSection(sectionId) {
             // Hide all sections

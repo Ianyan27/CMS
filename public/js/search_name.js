@@ -1,9 +1,9 @@
-document.getElementById('search-name').addEventListener('keyup', function() {
+document.getElementById('search-name').addEventListener('input', function() {
     var input = this.value.toLowerCase();
     var rows = document.querySelectorAll('#sales-agents-table tbody tr');
 
     rows.forEach(function(row) {
-        var nameCell = row.querySelector('td:nth-child(1)'); // Target the first column (Name)
+        var nameCell = row.querySelector('td:nth-child(2)'); // Target the first column (Name)
         var nameText = nameCell.textContent || nameCell.innerText;
 
         if (nameText.toLowerCase().includes(input)) {

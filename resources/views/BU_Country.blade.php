@@ -106,7 +106,7 @@
                                     <tr>
                                         <td>{{ ++$i }}</td>
                                         <td>{{ $bu->name }}</td>
-                                        <td class="d-flex justify-content-center">
+                                        <td class="d-flex justify-content-center" style="gap: 0.75rem;">
                                             <a class="btn hover-action" data-toggle="modal"
                                                 data-target="#editBUModal{{ $bu->id }}">
                                                 <i class="fa-solid fa-pen-to-square"></i>

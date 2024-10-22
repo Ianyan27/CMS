@@ -1,10 +1,12 @@
-// Select all checkboxes with the class 'statusSwitch'
-document.querySelectorAll('.statusSwitch').forEach(function(checkbox) {
-    checkbox.addEventListener('change', function() {
-        const isChecked = this.checked;
-        const statusText = this.nextElementSibling.querySelector('.status-text'); // Find the status text inside the slider
-        const id = this.getAttribute('data-saleagent-pid');
-        const userType = this.getAttribute('data-user-type');
+// Attach event listener to a parent element (e.g., the container holding the checkboxes)
+document.querySelector('.owner-contacts-container').addEventListener('change', function(event) {
+    // Check if the event is triggered by a checkbox with the class 'statusSwitch'
+    if (event.target.classList.contains('statusSwitch')) {
+        const checkbox = event.target;
+        const isChecked = checkbox.checked;
+        const statusText = checkbox.nextElementSibling.querySelector('.status-text'); // Find the status text inside the slider
+        const id = checkbox.getAttribute('data-saleagent-pid');
+        const userType = checkbox.getAttribute('data-user-type');
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
         // Update status text and background color dynamically
@@ -51,5 +53,19 @@ document.querySelectorAll('.statusSwitch').forEach(function(checkbox) {
             $('#errorModal .modal-body').text('An error occurred while updating status.');
             $('#errorModal').modal('show');
         });
+    }
+});
+
+document.querySelectorAll('.statusSwitch').forEach(switchElement => {
+    switchElement.addEventListener('change', function() {
+        const row = this.closest('tr');  // Get the current row
+        const newStatus = this.checked ? 'active' : 'inactive';  // Determine the new status
+        row.setAttribute('data-status', newStatus);  // Update the row's data-status attribute
+
+        // Optionally update the status text displayed in the UI
+        const statusText = row.querySelector('.status-text');
+        if (statusText) {
+            statusText.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+        }
     });
 });
