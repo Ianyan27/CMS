@@ -74,7 +74,7 @@
                             </a>
                         </li>
                     @endif
-                    @if (Auth::check() && Auth::user()->role == 'BUH')
+                    @if (Auth::check() && Auth::user()->role == 'BUH' || Auth::user()->role == 'Admin')
                         <li
                             class="{{ in_array(Route::currentRouteName(), ['hubspot-contact']) ? 'active-link' : 'nav-item' }} dashboard-link">
                             <a class="nav-link"
