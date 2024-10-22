@@ -84,9 +84,12 @@
                         </div>
                         <div class="form-group mb-3">
                             <label class="font-educ" for="country">Country</label>
+                            <h5 class="fonts text-truncate" id="country">{{ $buhData->country_name }}</h5>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="font-educ" for="country">Country</label>
                             <h5 class="fonts text-truncate" id="country">{{ $buhData->buh_nationality }}</h5>
                         </div>
-
                     </div>
                 </div>
             </div>

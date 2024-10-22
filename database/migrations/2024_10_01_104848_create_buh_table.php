@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('nationality');
             $table->string('hubspot_id')->nullable(); // Nullable in case it's not available yet
+            $table->string('head_id')->nullable();
             $table->timestamps();
         });
     }
