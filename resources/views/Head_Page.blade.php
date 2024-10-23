@@ -523,4 +523,5 @@
         hideAll();
     });
 </script>
+<script src=" {{ asset('js/search_input.js') }}" ></script>
 @endsection

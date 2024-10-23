@@ -369,6 +369,7 @@
     </script>
     <script src=" {{ asset('js/show_hide_contacts_table.js') }} "></script>
     <script src=" {{ asset('js/active_buttons.js') }} "></script>
+    <script src=" {{ asset('js/search_input.js') }}" ></script>
 @endsection
 @section('scripts')
     <!-- Add Bootstrap Tooltip Initialization -->

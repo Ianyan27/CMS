@@ -2,7 +2,7 @@ document.getElementById('search-input').addEventListener('input', function() {
     let input = this.value.toLowerCase();
 
     // Get all tables to apply the search
-    let tables = document.querySelectorAll('.table-container table');
+    let tables = document.querySelectorAll('.table-container');
 
     if (tables.length === 0) {
         // If no tables found in .table-container, use the second selector

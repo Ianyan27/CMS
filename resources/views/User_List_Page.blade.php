@@ -365,4 +365,5 @@
     <!-- JavaScript for Validation -->
     <script src=" {{ asset('js/add_agent_validation.js') }} "></script>
     <script src=" {{ asset('js/sort.js') }} "></script>
+    <script src=" {{ asset('js/search_input.js') }}" ></script>
 @endsection
