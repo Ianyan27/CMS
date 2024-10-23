@@ -11,7 +11,7 @@
             });
         </script>
     @endif
-    @if ((Auth::check() && Auth::user()->role == 'BUH') || (Auth::check() && Auth::user()->role == 'Admin'))
+    @if ((Auth::check() && Auth::user()->role == 'BUH') || (Auth::check() && Auth::user()->role == 'Admin' ) || (Auth::check() && Auth::user()->role == 'Head' ))
         @if ($errors->any() || session('error'))
             <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="false">
                 <div class="modal-dialog">
@@ -144,19 +144,19 @@
                                     @inject('countryCodeMapper', 'App\Services\CountryCodeMapper')
                                     @php
                                         // Fetch the country code using the injected service
-                                        $countryCode = $countryCodeMapper->getCountryCode($owners['nationality']);
+                                        $countryCode = $countryCodeMapper->getCountryCode($owners->nationality);
                                     @endphp
                                     @if ($countryCode)
                                         <img src="{{ asset('flags/' . strtolower($countryCode) . '.svg') }}"
-                                            alt="{{ $owners['country'] }}" width="20" height="15">
+                                            alt="{{ $owners->nationality }}" width="20" height="15">
                                     @else
                                         <!-- Optional: Add a fallback image or text when the country code is not found -->
                                         <span>No flag available</span>
                                     @endif
-                                    {{ $owners['nationality'] }}
+                                    {{ $owners->nationality}}
                                 </td>
                                 <td>
-                                    {{ $owners['business_unit'] }}
+                                    {{ $owners->business_unit }}
                                 </td>
                                 @inject('contactModel', 'App\Models\Contact')
                                 @inject('contactArchiveModel', 'App\Models\ContactArchive')
