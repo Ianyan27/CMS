@@ -10,6 +10,7 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class SaleAgentsController extends Controller
 {
@@ -24,7 +25,19 @@ class SaleAgentsController extends Controller
             // $archiveContact = ContactArchive::where('fk_contact_archives__owner_pid', null)->count();
             // $discardContact = ContactDiscard::where('fk_contact_discards__owner_pid', null)->count();
             Log::info("Total of unassigned contacts: " . $contact);
-        } else {
+        }else if ($user->role == 'Head'){
+            $owner = DB::table('sale_agent as sa')
+            ->join('bu_country as bc', 'sa.bu_country_id', '=', 'bc.id')
+            ->join('buh', 'buh.id', '=', 'bc.buh_id')
+            ->where('buh.head_id', $user->id)  // Filter by the head's ID
+            ->select('sa.*')  // Select sale agents only
+            ->paginate(10);  // Paginate results
+
+            $contact = Contact::where('fk_contacts__owner_pid', null)->count();
+            // Log the count of unassigned contacts for Head role
+            Log::info("Total of unassigned contacts: " . $contact);
+        }
+         else {
             // If the user is Admin, show all owners
             $owner = SaleAgent::paginate(10);
             $contact = Contact::get();
