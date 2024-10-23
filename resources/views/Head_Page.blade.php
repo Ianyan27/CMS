@@ -42,34 +42,34 @@
                 </div>
                 <div class="f-flex align-items-center mr-3">
                     <div class="search-box d-flex align-items-center mr-3 mb-2">
-                        <input type="search" class="form-control mr-1" placeholder="Search by Email or Name" id="search-input"
-                            aria-label="Search">
+                        <input type="search" class="form-control mr-1" placeholder="Search by Email or Name"
+                            id="search-input" aria-label="Search">
                         <button class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search">
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </button>
                     </div>
                 </div>
             </div>
-        <div class="table-container">
-            <table class="table table-hover mt-2">
-                <thead class="text-left font-educ">
-                    <tr>
-                        <th scope="col">No #</th>
+            <div class="table-container">
+                <table class="table table-hover mt-2">
+                    <thead class="text-left font-educ">
+                        <tr>
+                            <th scope="col">No #</th>
 
-                        <th scope="col" id="bu-header">Business Unit
-                            <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-bu"
-                                onclick="sortTable('bu_name', 'asc'); toggleSort('sortDown-bu', 'sortUp-bu')"></i>
-                            <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-bu"
-                                onclick="sortTable('bu_name', 'desc'); toggleSort('sortUp-bu', 'sortDown-bu')"
-                                style="display: none;"></i>
-                        </th>
-                        <th scope="col" id="country-header">Country
-                            <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-country"
-                                onclick="sortTable('country_name', 'asc'); toggleSort('sortDown-country', 'sortUp-country')"></i>
-                            <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-country"
-                                onclick="sortTable('country_name', 'desc'); toggleSort('sortUp-country', 'sortDown-country')"
-                                style="display: none;"></i>
-                        </th>
+                            <th scope="col" id="bu-header">Business Unit
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-bu"
+                                    onclick="sortTable('bu_name', 'asc'); toggleSort('sortDown-bu', 'sortUp-bu')"></i>
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-bu"
+                                    onclick="sortTable('bu_name', 'desc'); toggleSort('sortUp-bu', 'sortDown-bu')"
+                                    style="display: none;"></i>
+                            </th>
+                            <th scope="col" id="country-header">Country
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-country"
+                                    onclick="sortTable('country_name', 'asc'); toggleSort('sortDown-country', 'sortUp-country')"></i>
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-country"
+                                    onclick="sortTable('country_name', 'desc'); toggleSort('sortUp-country', 'sortDown-country')"
+                                    style="display: none;"></i>
+                            </th>
 
                             <th scope="col" id="buh-name">BUH Name
                                 <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-buh-name-unique"
@@ -105,17 +105,18 @@
                                 <td>{{ $user->buh_name }}</td> <!-- Displaying BUH -->
                                 <td>{{ $user->buh_email }}</td> <!-- Displaying BUH Email-->
                                 <td>{{ $user->nationality }}</td> <!-- Displaying Nationality -->
-                                <td class="d-flex justify-content-center">
-                                    <a class="btn hover-action" href=" {{ Auth::user()->role == 'Admin' ? 
-                                    route('admin#view-buh-detail', ['id' => $user->id]) : 
-                                    route('head#view-buh-detail', ['id' => $user->id]) }} ">
-                                    {{-- <a class="btn hover-action" href=" {{ route('admin#view-buh-detail', ['id' => $user->id]) }} "> --}}
+                                <td class="d-flex justify-content-center" style="gap: 10px">
+                                    <a class="btn hover-action"
+                                        href=" {{ Auth::user()->role == 'Admin'
+                                            ? route('admin#view-buh-detail', ['id' => $user->id])
+                                            : route('head#view-buh-detail', ['id' => $user->id]) }} ">
+                                        {{-- <a class="btn hover-action" href=" {{ route('admin#view-buh-detail', ['id' => $user->id]) }} "> --}}
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
-                                     <a class="btn hover-action" data-toggle="modal"
+                                    <a class="btn hover-action" data-toggle="modal"
                                         data-target="#deleteUserModal{{ $user->id }}">
                                         <i class="fa-solid fa-trash"></i>
-                                    </a> 
+                                    </a>
                                 </td>
                             </tr>
                         @empty
@@ -174,7 +175,7 @@
                 </ul>
             </div>
         </div>
-    {{-- <!-- Edit User Modal -->
+        {{-- <!-- Edit User Modal -->
     @foreach ($userData as $user)
         <div class="modal fade" id="editUserModal{{ $user->id }}" tabindex="-1"
             aria-labelledby="editUserModalLabel{{ $user->id }}" aria-hidden="true">
@@ -267,38 +268,40 @@
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger">Delete</button>
                             </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    @endforeach
+        @endforeach
 
-    <!-- Modal for Adding New User -->
-    <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content rounded-0">
-                <div class="modal-header" style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+        <!-- Modal for Adding New User -->
+        <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content rounded-0">
+                    <div class="modal-header"
+                        style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
                                 border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
-                    <h5 class="modal-title" id="addUserModalLabel" style="color: #91264c;">Create New User</h5>
-                </div>
-                <div class="modal-body" style="color: #91264c;">
-                    <form id="addUserForm"
-                        action="{{ Auth::user()->role == 'Admin' ? route('admin#save-buh') : route('head#save-user') }}"
-                        method="POST">
-                        {{-- <form id="addUserForm" action="{{ route('head#save-user') }}" method="POST"> --}}
+                        <h5 class="modal-title" id="addUserModalLabel" style="color: #91264c;">Create New User</h5>
+                    </div>
+                    <div class="modal-body" style="color: #91264c;">
+                        <form id="addUserForm"
+                            action="{{ Auth::user()->role == 'Admin' ? route('admin#save-buh') : route('head#save-user') }}"
+                            method="POST">
+                            {{-- <form id="addUserForm" action="{{ route('head#save-user') }}" method="POST"> --}}
                             @csrf
                             <div class="form-group">
                                 <label for="name">Name</label>
-                                <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}"
-                                    minlength="3" maxlength="50" required>
+                                <input type="text" class="form-control" id="name" name="name"
+                                    value="{{ old('name') }}" minlength="3" maxlength="50" required>
                                 @error('name')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>
                             <div class="form-group">
                                 <label for="email">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}"
-                                    required>
+                                <input type="email" class="form-control" id="email" name="email"
+                                    value="{{ old('email') }}" required>
                                 @error('email')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
@@ -359,74 +362,74 @@
     @endif
 
     <script src="{{ asset('js/add_agent_validation.js') }}"></script>
-<script>
-    function toggleSort(downIconId, upIconId) {
-        const sortDown = document.getElementById(downIconId);
-        const sortUp = document.getElementById(upIconId);
+    <script>
+        function toggleSort(downIconId, upIconId) {
+            const sortDown = document.getElementById(downIconId);
+            const sortUp = document.getElementById(upIconId);
 
-        if (sortDown.style.display === 'none') {
-            sortDown.style.display = 'inline';
-            sortUp.style.display = 'none';
-        } else {
-            sortDown.style.display = 'none';
-            sortUp.style.display = 'inline';
+            if (sortDown.style.display === 'none') {
+                sortDown.style.display = 'inline';
+                sortUp.style.display = 'none';
+            } else {
+                sortDown.style.display = 'none';
+                sortUp.style.display = 'inline';
+            }
         }
-    }
 
-    function sortTable(columnName, order) {
-        let table = document.querySelector(".table");
-        let rows = table.rows;
-        let switching = true;
+        function sortTable(columnName, order) {
+            let table = document.querySelector(".table");
+            let rows = table.rows;
+            let switching = true;
 
-        // Determine column index based on columnName
-        const columnIndex = {
-            'bu_name': 1,
-            'country_name': 2,
-            'buh_name': 3,
-            'buh_email': 4,
-            'nationality': 5
-        }[columnName];
+            // Determine column index based on columnName
+            const columnIndex = {
+                'bu_name': 1,
+                'country_name': 2,
+                'buh_name': 3,
+                'buh_email': 4,
+                'nationality': 5
+            } [columnName];
 
-        // Loop until no switching is done
-        while (switching) {
-            switching = false;
-            for (let i = 1; i < (rows.length - 1); i++) {
-                let x = rows[i].querySelectorAll("td")[columnIndex];
-                let y = rows[i + 1].querySelectorAll("td")[columnIndex];
-                if (x && y) {
-                    let shouldSwitch = (order === 'asc' && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) || 
-                                        (order === 'desc' && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase());
-                    if (shouldSwitch) {
-                        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                        switching = true;
-                        break;
+            // Loop until no switching is done
+            while (switching) {
+                switching = false;
+                for (let i = 1; i < (rows.length - 1); i++) {
+                    let x = rows[i].querySelectorAll("td")[columnIndex];
+                    let y = rows[i + 1].querySelectorAll("td")[columnIndex];
+                    if (x && y) {
+                        let shouldSwitch = (order === 'asc' && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) ||
+                            (order === 'desc' && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase());
+                        if (shouldSwitch) {
+                            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                            switching = true;
+                            break;
+                        }
                     }
                 }
             }
+            reassignRowNumbersTableContainer();
         }
-        reassignRowNumbersTableContainer();
-    }
 
-    function reassignRowNumbersTableContainer() {
-        const table = document.querySelector(".table");
-        const rows = table.rows;
-        const offset = ({{ $currentPage }} - 1) * {{ $perPage }};
+        function reassignRowNumbersTableContainer() {
+            const table = document.querySelector(".table");
+            const rows = table.rows;
+            const offset = ({{ $currentPage }} - 1) * {{ $perPage }};
 
-        for (let i = 1; i < rows.length; i++) {
-            rows[i].querySelectorAll("td")[0].innerText = offset + i;
+            for (let i = 1; i < rows.length; i++) {
+                rows[i].querySelectorAll("td")[0].innerText = offset + i;
+            }
         }
-    }
 
-    function updateCountryDropdown() {
-        const buDropdown = document.getElementById('buDropdown');
-        const selectedBU = buDropdown.value;
-        const countryDropdown = document.getElementById('countryDropdown');
+        function updateCountryDropdown() {
+            const buDropdown = document.getElementById('buDropdown');
+            const selectedBU = buDropdown.value;
+            const countryDropdown = document.getElementById('countryDropdown');
 
-        countryDropdown.innerHTML = '<option value="" selected disabled>Select Country</option>';
+            countryDropdown.innerHTML = '<option value="" selected disabled>Select Country</option>';
 
-        if (!selectedBU) return;
+            if (!selectedBU) return;
 
-        console.log("Fetching BU data for:", selectedBU);
+            console.log("Fetching BU data for:", selectedBU);
             fetch(`{{ route('get.bu.data') }}`, {
                     method: 'POST', // Use POST method
                     headers: {
@@ -463,65 +466,67 @@
                 .catch(error => console.error('Error fetching BU data:', error));
         }
 
-    function updateCountryDropdowninEdit(id) {
-        const buDropdown = document.getElementById(`buDropdowninedit${id}`);
-        const selectedBU = buDropdown.value;
-        const countryDropdown = document.getElementById(`countryDropdown${id}`);
+        function updateCountryDropdowninEdit(id) {
+            const buDropdown = document.getElementById(`buDropdowninedit${id}`);
+            const selectedBU = buDropdown.value;
+            const countryDropdown = document.getElementById(`countryDropdown${id}`);
 
-        countryDropdown.innerHTML = '<option value="" selected disabled>Select Country</option>';
+            countryDropdown.innerHTML = '<option value="" selected disabled>Select Country</option>';
 
-        if (!selectedBU) return;
+            if (!selectedBU) return;
 
-        fetch(`{{ route('get.bu.data') }}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ business_unit: selectedBU })
-        })
-        .then(response => response.json())
-        .then(data => {
-            data.countries.forEach(country => {
-                const option = document.createElement('option');
-                option.value = country;
-                option.textContent = country;
-                countryDropdown.appendChild(option);
-            });
-        })
-        .catch(error => console.error('Error fetching BU data:', error));
-    }
-
-    function updateSelectedCountryAndBuh() {
-        const countryDropdown = document.getElementById('countryDropdown');
-        const selectedCountry = countryDropdown.value;
-
-        document.getElementById('selectedCountry').textContent = selectedCountry || 'None';
-
-        const buhDropdown = document.getElementById('buhDropdown');
-        const buhValue = buhDropdown.value;
-
-        if (buhValue) {
-            const option = document.createElement('option');
-            option.value = buhValue;
-            option.textContent = buhValue;
-            buhDropdown.appendChild(option);
-            buhDropdown.value = buhValue;
-            document.getElementById('selectedBUH').textContent = buhValue;
-        } else {
-            document.getElementById('selectedBUH').textContent = 'None';
+            fetch(`{{ route('get.bu.data') }}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        business_unit: selectedBU
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    data.countries.forEach(country => {
+                        const option = document.createElement('option');
+                        option.value = country;
+                        option.textContent = country;
+                        countryDropdown.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching BU data:', error));
         }
-    }
 
-    function hideAll() {
-        document.getElementById('country-container').classList.add('d-none');
-        document.getElementById('buh-container').classList.add('d-none');
-        document.getElementById('import-container').classList.add('d-none');
-    }
+        function updateSelectedCountryAndBuh() {
+            const countryDropdown = document.getElementById('countryDropdown');
+            const selectedCountry = countryDropdown.value;
 
-    document.addEventListener('DOMContentLoaded', function () {
-        hideAll();
-    });
-</script>
-<script src=" {{ asset('js/search_input.js') }}" ></script>
+            document.getElementById('selectedCountry').textContent = selectedCountry || 'None';
+
+            const buhDropdown = document.getElementById('buhDropdown');
+            const buhValue = buhDropdown.value;
+
+            if (buhValue) {
+                const option = document.createElement('option');
+                option.value = buhValue;
+                option.textContent = buhValue;
+                buhDropdown.appendChild(option);
+                buhDropdown.value = buhValue;
+                document.getElementById('selectedBUH').textContent = buhValue;
+            } else {
+                document.getElementById('selectedBUH').textContent = 'None';
+            }
+        }
+
+        function hideAll() {
+            document.getElementById('country-container').classList.add('d-none');
+            document.getElementById('buh-container').classList.add('d-none');
+            document.getElementById('import-container').classList.add('d-none');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            hideAll();
+        });
+    </script>
+    <script src=" {{ asset('js/search_input.js') }}"></script>
 @endsection

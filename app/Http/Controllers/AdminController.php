@@ -36,7 +36,7 @@ class AdminController extends Controller
 
     public function index()
     {
-        $userData = User::paginate(10);
+        $userData = User::orderBy('id', 'desc')->paginate(10);
         return view('User_List_Page', [
             'userData' => $userData
         ]);
