@@ -65,7 +65,7 @@
                         </a>
                     </li>
                     @endif
-                    @if (Auth::check() && Auth::user()->role == 'Admin' || Auth::user()->role == 'BUH')
+                    @if (Auth::check() && Auth::user()->role == 'Admin' || Auth::user()->role == 'BUH'  || Auth::user()->role == 'Head')
                         <li
                             class="{{ in_array(Route::currentRouteName(), ['admin#viewSaleAgent', 'buh#view']) ? 'active-link' : 'nav-item' }} dashboard-link">
                             <a class="nav-link"

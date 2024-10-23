@@ -11,7 +11,7 @@
             });
         </script>
     @endif
-    @if ((Auth::check() && Auth::user()->role == 'BUH') || (Auth::check() && Auth::user()->role == 'Admin'))
+    @if ((Auth::check() && Auth::user()->role == 'BUH') || (Auth::check() && Auth::user()->role == 'Admin' ) || (Auth::check() && Auth::user()->role == 'Head' ))
         @if ($errors->any() || session('error'))
             <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="false">
                 <div class="modal-dialog">

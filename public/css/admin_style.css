@@ -598,7 +598,8 @@ label {
 }
 
 #archive,
-#discard {
+#discard,
+#countries {
     display: none;
 }
 
