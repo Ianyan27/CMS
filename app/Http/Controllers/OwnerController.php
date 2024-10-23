@@ -29,42 +29,36 @@ class OwnerController extends Controller
         $user = Auth::user();
         Log::info("User : " . $user);
 
-        // Check if the user is a BUH or Admin
+        $contact = Contact::where('fk_contacts__owner_pid', null)->count();
+        Log::info("Total of unassigned contacts: " . $contact);
+
+        // Define the query for SaleAgents
+        $query = SaleAgent::query();
+
+        // Check if the user is a BUH, Head, or Admin
         if ($user->role === 'BUH') {
+            // Get the BUH's country ID
+            $buhId = BUH::where('email', $user->email)->first();
+            $buCountry = BuCountry::where('buh_id', $buhId->id)->first();
+            Log::info("BUH's Country: " . $buCountry);
 
-            // getting bu country id
-            $buhId = BUH::where("email", $user->email)->get()->first();
-            $buCountry = BuCountry::where('buh_id', $buhId->id)
-                ->first();
-            Log::info("bu country: " . $buCountry);
-            // If the user is BUH, filter owners by the BUH's fk_buh
-            $owner = SaleAgent::where('bu_country_id', $buCountry->id)->paginate(10);
+            // Filter sale agents by the BUH's country
+            $query->where('bu_country_id', $buCountry->id);
+        } else if ($user->role === 'Head') {
+            // Filter sale agents by the Head's ID
+            $query = DB::table('sale_agent as sa')
+                ->join('bu_country as bc', 'sa.bu_country_id', '=', 'bc.id')
+                ->join('buh', 'buh.id', '=', 'bc.buh_id')
+                ->where('buh.head_id', $user->id)
+                ->select('sa.*');  // Select only sale agents
 
-            Log::info("user log: " . $user);
-            $contact = Contact::where('fk_contacts__owner_pid', null)->count();
-            // $archiveContact = ContactArchive::where('fk_contact_archives__owner_pid', null)->count();
-            // $discardContact = ContactDiscard::where('fk_contact_discards__owner_pid', null)->count();
-            Log::info("Total of unassigned contacts: " . $contact);
-        }else if ($user->role == 'Head'){
-            $owner = DB::table('sale_agent as sa')
-            ->join('bu_country as bc', 'sa.bu_country_id', '=', 'bc.id')
-            ->join('buh', 'buh.id', '=', 'bc.buh_id')
-            ->where('buh.head_id', $user->id)  // Filter by the head's ID
-            ->select('sa.*')  // Select sale agents only
-            ->paginate(10);  // Paginate results
-
-            $contact = Contact::where('fk_contacts__owner_pid', null)->count();
-            // Log the count of unassigned contacts for Head role
-            Log::info("Total of unassigned contacts: " . $contact);
-        }
-        
-        else {
-            // If the user is Admin, show all owners
-            $owner = SaleAgent::paginate(10);
-            $contact = Contact::get();
+            Log::info("Filtered sale agents by Head ID: " . $user->id);
         }
 
-        // Get Hubspot sales agents
+        // If the user is Admin, no filtering needed, just get all Sale Agents
+        $owner = $query->paginate(10);
+
+        // Get HubSpot sales agents
         $hubspotSalesAgents = $this->getHubspotSalesAgents();
 
         // Return the view with the appropriate data
