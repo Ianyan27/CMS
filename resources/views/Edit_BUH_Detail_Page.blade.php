@@ -381,6 +381,7 @@
     <script src="{{ asset('js/active_buttons.js') }}"></script>
     <script src="{{ asset('js/filter_sale_agent_by_status.js') }}"></script>
     <script src=" {{ asset('js/sale_agent_status_counter.js') }} "></script>
+    <script src=" {{asset('js/search_input.js')}} "></script>
     <script>
         function showSection(sectionId) {
             // Hide all sections

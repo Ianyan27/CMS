@@ -83,7 +83,9 @@
                             </div>
                             <div class="form-group">
                                 <label class="font-educ" for="contact-status">Status</label>
-                                <select class="form-control fonts" id="contact-status" name="status" @if (Auth::user()->role == 'Admin') disabled @endif required>
+                            
+                                <select class="form-control fonts" id="contact-status" name="status"
+                                    @if(Auth::user()->role == 'Admin') disabled @endif>
                                     <option value="InProgress"
                                         {{ $editContact->status === 'InProgress' ? 'selected' : '' }}>
                                         In Progress
@@ -92,22 +94,32 @@
                                         {{ $editContact->status === 'HubSpot Contact' ? 'selected' : '' }}>
                                         HubSpot
                                     </option>
-                                    <option value="Discard" {{ $editContact->status === 'Discard' ? 'selected' : '' }}>
+                                    <option value="Discard"
+                                        {{ $editContact->status === 'Discard' ? 'selected' : '' }}>
                                         Discard
                                     </option>
-                                    <option value="New" {{ $editContact->status === 'New' ? 'selected' : '' }}>
+                                    <option value="New"
+                                        {{ $editContact->status === 'New' ? 'selected' : '' }}>
                                         New
                                     </option>
-                                    <option value="Archive" {{ $editContact->status === 'Archive' ? 'selected' : '' }}>
+                                    <option value="Archive"
+                                        {{ $editContact->status === 'Archive' ? 'selected' : '' }}>
                                         Archive
                                     </option>
                                 </select>
+                            
+                                <!-- Hidden input to ensure the value is submitted if the dropdown is disabled -->
+                                @if(Auth::user()->role == 'Admin')
+                                    <input type="hidden" name="status" value="{{ $editContact->status }}">
+                                @endif
+                            
                                 @if ($errors->has('status'))
                                     <div class="text-danger">
                                         {{ $errors->first('status') }}
                                     </div>
                                 @endif
                             </div>
+                            
                         </div>
                     </div>
                     <div class="modal-footer">

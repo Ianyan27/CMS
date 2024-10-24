@@ -36,7 +36,7 @@ class AdminController extends Controller
 
     public function index()
     {
-        $userData = User::paginate(10);
+        $userData = User::orderBy('id', 'desc')->paginate(10);
         return view('User_List_Page', [
             'userData' => $userData
         ]);
@@ -540,75 +540,6 @@ class AdminController extends Controller
             'status' => $request->input('status')
         ]);
 
-        // Handle the "Archive" and "Discard" status cases after updating details
-        if (in_array($request->input('status'), ['Archive', 'Discard'])) {
-            $targetContactModel = $request->input('status') === 'Archive' ? new ContactArchive() : new ContactDiscard();
-            $targetContactModel->fill($contact->toArray());
-            $targetContactModel->status = $request->input('status');
-
-            // Set the owner PID
-            if ($request->input('status') === 'Archive') {
-                $targetContactModel->fk_contacts__sale_agent_id = $id;
-            } else {
-                $targetContactModel->fk_contacts__sale_agent_id = $id;
-            }
-
-            Log::info('Saving contact to archive/discard', [
-                'model' => $request->input('status') === 'Archive' ? 'ContactArchive' : 'ContactDiscard',
-                'id' => $id
-            ]);
-
-            $targetContactModel->save();
-
-            // try {
-            //     $targetContactModel->save();
-            // } catch (\Exception $e) {
-            //     Log::error('Failed to save contact to archive/discard', [
-            //         'error' => $e->getMessage(),
-            //         'owner_pid' => $id
-            //     ]);
-            //     return redirect()->route('admin#contact-listing')->with('error', 'Failed to save contact to archive/discard.');
-            // }
-
-            $newContactId = $request->input('status') === 'Archive'
-                ? $targetContactModel->contact_archive_pid
-                : $targetContactModel->contact_discard_pid;
-
-            $targetActivityModel = $request->input('status') === 'Archive' ? new EngagementArchive() : new EngagementDiscard();
-
-            foreach ($activities as $activity) {
-                $newActivity = $targetActivityModel->newInstance();
-                $newActivity->fill($activity->toArray());
-
-                if ($request->input('status') === 'Archive') {
-                    $newActivity->fk_engagement_archives__contact_archive_pid = $newContactId;
-                } else {
-                    $newActivity->fk_engagement_discards__contact_discard_pid = $newContactId;
-                }
-
-                try {
-                    $newActivity->save();
-                } catch (\Exception $e) {
-                    Log::error('Failed to save engagement activity to archive/discard', [
-                        'error' => $e->getMessage(),
-                        'activity_id' => $activity->id,
-                        'contact_id' => $newContactId
-                    ]);
-                    return redirect()->route('admin#contact-listing')->with('error', 'Failed to save engagement activities.');
-                }
-            }
-            ModelsLog::where('fk_logs__contact_pid', $contact_pid)->delete();
-            $contact->delete();
-            Engagement::where('fk_engagements__contact_pid', $contact_pid)->delete();
-
-            Log::info('Contact and activities moved successfully', [
-                'contact_pid' => $contact_pid,
-                'status' => $request->input('status')
-            ]);
-
-            return redirect()->route('admin#contact-listing')->with('success', 'Contact and activities moved to ' . $request->input('status') . ' successfully.');
-        }
-
         Log::info('Contact updated successfully', [
             'contact_pid' => $contact_pid
         ]);
@@ -730,15 +661,13 @@ class AdminController extends Controller
                 'buh.email as buh_email',
                 'buh.nationality'
             )
+            ->orderBy('bc.id', 'desc') // Order by the 'id' field in descending order
             ->paginate(10);
 
         $currentPage = $userData->currentPage();
         $perPage = $userData->perPage();
         $businessUnit = BU::all();
         $countries = Country::all();
-
-        // $dropdownData = DB::table('Business_Unit')->select('business_unit','country')->get();
-        // Log::info('dropdown Data are - '.$dropdownData);
 
         // Return the data to the view
         return view('Head_Page', [
@@ -747,9 +676,9 @@ class AdminController extends Controller
             'perPage' => $perPage,
             'businessUnit' => $businessUnit,
             'countries' => $countries
-
         ]);
     }
+
 
     public function saveBUH(Request $request)
     {

@@ -106,8 +106,7 @@
                                 </a>
                                 @if (Auth::user()->role == 'Admin')
                                     <a class="btn hover-action" data-toggle="modal" data-target="#deleteModal"
-                                        data-entity-id="{{ $bu->id }}" data-entity-type="BU"
-                                        data-section="admin">
+                                        data-entity-id="{{ $bu->id }}" data-entity-type="BU" data-section="admin">
                                         <i class="fa-solid fa-trash"></i>
                                     </a>
                                 @else
@@ -155,15 +154,15 @@
                                 </a>
 
                                 @if (Auth::user()->role == 'Admin')
-                                    <a class="btn hover-action" data-toggle="modal"
-                                        data-target="#deleteModal" data-entity-id="{{ $country->id }}"
-                                        data-entity-type="Country" data-section="admin">
+                                    <a class="btn hover-action" data-toggle="modal" data-target="#deleteModal"
+                                        data-entity-id="{{ $country->id }}" data-entity-type="Country"
+                                        data-section="admin">
                                         <i class="fa-solid fa-trash"></i>
                                     </a>
                                 @else
-                                    <a class="btn hover-action" data-toggle="modal"
-                                        data-target="#deleteModal" data-entity-id="{{ $country->id }}"
-                                        data-entity-type="Country" data-section="sales-admin">
+                                    <a class="btn hover-action" data-toggle="modal" data-target="#deleteModal"
+                                        data-entity-id="{{ $country->id }}" data-entity-type="Country"
+                                        data-section="sales-admin">
                                         <i class="fa-solid fa-trash"></i>
                                     </a>
                                 @endif
@@ -181,8 +180,7 @@
             <ul class="pagination justify-content-center">
                 <!-- Previous Button -->
                 <li class="page-item {{ $bus->onFirstPage() ? 'disabled' : '' }}">
-                    <a class="page-link font-educ" href="{{ $bus->previousPageUrl() }}"
-                        aria-label="Previous">&#60;</a>
+                    <a class="page-link font-educ" href="{{ $bus->previousPageUrl() }}" aria-label="Previous">&#60;</a>
                 </li>
                 <!-- First Page Button -->
                 @if ($bus->currentPage() > 3)
@@ -219,12 +217,30 @@
                 @endif
                 <!-- Next Button -->
                 <li class="page-item {{ !$bus->hasMorePages() ? 'disabled' : '' }}">
-                    <a class="page-link font-educ" href="{{ $bus->nextPageUrl() }}"
-                        aria-label="Next">&#62;</a>
+                    <a class="page-link font-educ" href="{{ $bus->nextPageUrl() }}" aria-label="Next">&#62;</a>
                 </li>
             </ul>
         </div>
     </div>
     <script src="{{ asset('js/show_bu&country_table.js') }}"></script>
     <script src=" {{ asset('js/search_input.js') }}"></script>
+    <script>
+        // Get references to the buttons
+        const buButton = document.getElementById('show-bu');
+        const countryButton = document.getElementById('show-country');
+
+        // Function to handle the active class toggle
+        function toggleActiveClass(event) {
+            // Remove 'active' class from both buttons
+            buButton.classList.remove('active');
+            countryButton.classList.remove('active');
+
+            // Add 'active' class to the clicked button
+            event.target.classList.add('active');
+        }
+
+        // Add event listeners to both buttons
+        buButton.addEventListener('click', toggleActiveClass);
+        countryButton.addEventListener('click', toggleActiveClass);
+    </script>
 @endsection

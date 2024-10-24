@@ -180,7 +180,7 @@
                                         @endif
                                     </span>
                                 </td>
-                                <td class="d-flex justify-content-center align-items-center">
+                                <td class="text-center">
                                     {{-- <a href=" {{ route('owner#transfer-contact', $owners->owner_pid) }} "
                                         class="btn hover-action" style="padding: 10px 12px;">
                                         <i class="fa-solid fa-right-left"></i>

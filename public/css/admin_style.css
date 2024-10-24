@@ -87,17 +87,13 @@ table {
 
 /* Responsive Adjustments */
 @media screen and (max-width: 1650px) {
-    /* .dashboard{
-        min-height: 500px;
-        max-height: 675px;
-    } */
     .container-max-height {
         min-height: 500px;
-        max-height: 530px;
+        max-height: auto; /* Allowing more fluidity */
     }
     .table-container {
         min-height: 350px;
-        max-height: 450px;
+        max-height: auto; /* Let content dictate height */
     }
 }
 
