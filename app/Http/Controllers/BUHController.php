@@ -337,6 +337,10 @@ class BUHController extends Controller
             $contacts = Contact::where('fk_contacts__sale_agent_id', $owner_pid)->get();
             $archivedContacts = ContactArchive::where('fk_contact_archives__owner_pid', $owner_pid)->get();
             $discardedContacts = ContactDiscard::where('fk_contact_discards__owner_pid', $owner_pid)->get();
+        }elseif($user->role == 'Head'){
+            $contacts = Contact::where('fk_contacts__sale_agent_id', $owner_pid)->get();
+            $archivedContacts = ContactArchive::where('fk_contact_archives__owner_pid', $owner_pid)->get();
+            $discardedContacts = ContactDiscard::where('fk_contact_discards__owner_pid', $owner_pid)->get();
         } else {
             $contacts = Contact::get();
             $archivedContacts = ContactArchive::get();
@@ -399,6 +403,8 @@ class BUHController extends Controller
             }
 
             if ($user->role === 'BUH') {
+                $userId = BUH::where("email", $user->email)->get()->first();
+            }else if($user->role === 'BUH'){
                 $userId = BUH::where("email", $user->email)->get()->first();
             } else {
                 $buCountry = $owner->buCountry;
