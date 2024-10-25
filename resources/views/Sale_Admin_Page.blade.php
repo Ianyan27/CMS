@@ -626,27 +626,31 @@
     <hr style="margin: 10px 0;">
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <p style="margin: 5px 0; font-size: 16px;">Invalid Rows:</p>
+         
         <div style="display: flex; align-items: center;">
-            <strong>${invalid_count}</strong>
-            ${invalid_rows_link ? `<a href="${invalid_rows_link}" id="download-invalid-btn" style="color: #007bff; text-decoration: underline; margin-left: 10px;">Download</a>` : ''}
-        </div>
+             ${invalid_rows_link ? `<a href="${invalid_rows_link}" id="download-invalid-btn" style="color: #007bff; text-decoration: underline; margin-left: 10px;">Download</a>` : ''}
+       
+            <strong style="margin-left: 10px;">${invalid_count}</strong>
+           </div>
     </div>
     <hr style="margin: 10px 0;">
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <p style="margin: 5px 0; font-size: 16px;">Duplicate Rows:</p>
-        ${duplicate_rows_link ? `<a href="${duplicate_rows_link}" id="download-duplicate-btn" style="color: #007bff; text-decoration: underline; margin-left: 10px;">Download</a>` : ''}
-        
+       
         <div style="display: flex; align-items: center;">
-            <strong>${duplicate_count}</strong>
+             ${duplicate_rows_link ? `<a href="${duplicate_rows_link}" id="download-duplicate-btn" style="color: #007bff; text-decoration: underline; margin-left: 10px;">Download</a>` : ''}
+        
+            <strong style="margin-left: 10px;">${duplicate_count}</strong>
         </div>
     </div>
     <hr style="margin: 10px 0;">
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <p style="margin: 5px 0; font-size: 16px;">Unselected CountryRows:</p>
-        ${unselected_country_rows_link ? `<a href="${unselected_country_rows_link}" id="download-duplicate-btn" style="color: #007bff; text-decoration: underline; margin-left: 10px;">Download</a>` : ''}
-        
+       
         <div style="display: flex; align-items: center;">
-            <strong>${unselected_country_count}</strong>
+             ${unselected_country_rows_link ? `<a href="${unselected_country_rows_link}" id="download-duplicate-btn" style="color: #007bff; text-decoration: underline; margin-left: 10px;">Download</a>` : ''}
+        
+            <strong style="margin-left: 10px;">${unselected_country_count}</strong>
         </div>
     </div>
     <hr style="margin: 10px 0;">
