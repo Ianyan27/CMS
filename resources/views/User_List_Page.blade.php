@@ -93,9 +93,9 @@
                                 <i style="cursor: pointer;" class="fa-solid fa-filter" id="filterIcon"
                                     onclick="toggleFilterRole()"></i>
                                 <!-- Filter Container -->
-                                <div id="filterStatusContainer" class="filter-popup container rounded-bottom"
+                                <div id="filterStatusContainer" class="filter-popup container rounded-bottom w-auto"
                                     style="display: none;">
-                                    <div class="row">
+                                    <div class="row" style="max-width: 175px;">
                                         <div class="filter-option">
                                             <input class="ml-3" type="checkbox" id="BUH" name="role"
                                                 value="Admin" onclick="applyRoleFilter()">

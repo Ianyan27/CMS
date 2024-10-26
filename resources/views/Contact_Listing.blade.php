@@ -64,10 +64,7 @@
                                 </th>
                             @endif
                             <th class=" position-relative" scope="col">
-                                Created At
-                            </th>
-                            <th class=" position-relative" scope="col">
-                                Updated At
+                                Last Modified
                             </th>
                             <th class=" position-relative" scope="col">
                                 Status
@@ -116,7 +113,6 @@
                                     <!-- Display Sales Agent only for Admins -->
                                     <td>{{ $contact->saleAgent->name ?? 'Not Assigned' }}</td>
                                 @endif
-                                <td>{{ $contact['created_at'] }}</td>
                                 <td>{{ $contact['updated_at'] }}</td>   
                                 <td>
                                     <span class="status-indicator"
