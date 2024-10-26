@@ -3,7 +3,7 @@
 @extends('layouts.app')
 @extends('layouts.Edit_Owner_Modal')
 @section('content')
-    @if ((Auth::check() && Auth::user()->role == 'Admin') || Auth::user()->role == 'BUH')
+    @if ((Auth::check() && Auth::user()->role == 'Admin') || Auth::user()->role == 'BUH' || Auth::user()->role == 'Head')
         @if (session('success'))
             <!-- Trigger the modal with a button (hidden, will be triggered by JavaScript) -->
             <button id="successModalBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal"
