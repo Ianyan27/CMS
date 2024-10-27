@@ -2,6 +2,7 @@
 // Need to be implement by Kyaw Naing Win still not finished
 namespace App\Http\Controllers;
 
+use App\Models\BuCountryBUH;
 use App\Models\Country;
 use App\Models\User; // Make sure to import the User model
 use App\Models\Contact; // Import the Contact model
@@ -24,7 +25,7 @@ class HeadController extends Controller
     {
         $headId = Auth::id(); // Get the authenticated user's ID
 
-        $userData = DB::table('bu_country as bc')
+        $userData = DB::table('bu_country_buh as bc')
             ->join('bu', 'bc.bu_id', '=', 'bu.id')
             ->join('country', 'bc.country_id', '=', 'country.id')
             ->join('buh', 'bc.buh_id', '=', 'buh.id')
@@ -59,41 +60,34 @@ class HeadController extends Controller
     }
 
     public function viewUser()
-    {
-        $userData = DB::table('bu_country as bc')
-            ->join('bu', 'bc.bu_id', '=', 'bu.id')
-            ->join('country', 'bc.country_id', '=', 'country.id')
-            ->join('buh', 'bc.buh_id', '=', 'buh.id')
-            ->select(
-                'bc.id as id',
-                'bu.name as bu_name',
-                'country.name as country_name',
-                'buh.name as buh_name',
-                'buh.email as buh_email',
-                'buh.nationality' // Include nationality here
-            )
-            ->paginate(10);
+{
+    $userData = DB::table('bu_country_buh as bc')
+        ->join('bu', 'bc.bu_id', '=', 'bu.id')
+        ->join('country', 'bc.country_id', '=', 'country.id')
+        ->join('buh', 'bc.buh_id', '=', 'buh.id')
+        ->select(
+            'bc.id as id',
+            'bu.name as bu_name',
+            'country.name as country_name',
+            'buh.name as buh_name',
+            'buh.email as buh_email',
+            'buh.nationality'
+        )
+        ->paginate(10);
 
-        // Pass the current page and per page values to the view
-        $currentPage = $userData->currentPage();
-        $perPage = $userData->perPage();
-        $businessUnit = BU::all();
-        $businessUnit = BU::with('countries')->get();
+    // Pass the results to the view
+    return view('Head_page', [
+        'userData' => $userData,
+        'businessUnit' => BU::with('countries')->get()
+    ]);
+}
 
-        // Pass the results to the view
-        return view('Head_page', [
-            'userData' => $userData,
-            'currentPage' => $currentPage,
-            'perPage' => $perPage,
-            'businessUnit' => $businessUnit
-        ]);
-    }
     // Save a new user
     public function saveUser(Request $request)
     {
-        // Define the allowed email domains as a regular expression
+        $headId = Auth::id();
         $domainRegex = 'lithan.com|educlaas.com|learning.educlaas.com';
-
+    
         // Validate the request data
         $validatedData = $request->validate([
             'name' => 'required|string|min:3|max:50',
@@ -104,61 +98,72 @@ class HeadController extends Controller
                 'max:255',
                 'unique:users', // Ensures the email is unique in the users table
                 function ($attribute, $value, $fail) use ($domainRegex) {
-                    // Validates the email domain against the allowed domains
                     if (!preg_match('/@(' . $domainRegex . ')$/', $value)) {
                         $fail('The email address must be one of the following domains: ' . str_replace('|', ', ', $domainRegex));
                     }
                 }
             ],
-            'nationality' => 'required|string|max:255', // Validation for nationality
-            'business_unit' => 'required',
-            'country' => 'required',
+            'nationality' => 'required|string|max:255',
+            'business_unit' => 'required|string',
+            'country' => 'required|array|min:1',
         ]);
-        Log::info('U');
-        // Insert into the users table
-        $userId = DB::table('users')->insertGetId([
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-            'role' => $request->input('role'),
-            'password' => bcrypt('default'), // Password is hashed before saving
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        // Get the authenticated head ID
-        $headId = Auth::id();
-
-        // Insert into the buh table, including the head_id
-        $buhId = DB::table('buh')->insertGetId([
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-            'nationality' => $validatedData['nationality'],
-            'head_id' => $headId, // Automatically assign the head_id
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        // Retrieve the ID from the 'bu' table based on the business_unit name
-        $buId = DB::table('bu')
-            ->where('name', $validatedData['business_unit'])
-            ->value('id');
-
-        // Retrieve the ID from the 'country' table based on the country name
-        $countryId = DB::table('country')
-            ->where('name', $validatedData['country'])
-            ->value('id');
-
-        // Insert into the bu_country table
-        DB::table('bu_country')->insert([
-            'buh_id' => $buhId,
-            'bu_id' => $buId,
-            'country_id' => $countryId,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        return redirect()->back()->with('success', 'User added successfully!');
+    
+        // Start a database transaction to ensure atomicity
+        DB::beginTransaction();
+        try {
+            // Check if the user already exists
+            $existingUser = User::where('email', $validatedData['email'])->first();
+            if ($existingUser) {
+                return redirect()->back()->withErrors(['email' => 'User with this email already exists.']);
+            }
+    
+            // Create the user only once
+            $user = new User();
+            $user->name = $validatedData['name'];
+            $user->email = $validatedData['email'];
+            $user->role = $request->input('role');
+            $user->password = bcrypt('default');
+            $user->save();
+    
+            // Create the BUH entry only once
+            $buh = new BUH();
+            $buh->name = $validatedData['name'];
+            $buh->email = $validatedData['email'];
+            $buh->nationality = $validatedData['nationality'];
+            $buh->head_id = $headId;
+            $buh->save();
+    
+            // Fetch the business unit
+            $bu = BU::where('name', $validatedData['business_unit'])->first();
+            if (!$bu) {
+                DB::rollBack();
+                return redirect()->back()->withErrors(['business_unit' => 'Business Unit not found.']);
+            }
+    
+            // Get country IDs for the provided country names
+            $countryIds = Country::whereIn('name', $validatedData['country'])->pluck('id');
+    
+            // Link BUH to multiple countries in the `bu_country_buh` table
+            foreach ($countryIds as $countryId) {
+                $buCountryBUH = new BuCountryBUH();
+                $buCountryBUH->bu_id = $bu->id;
+                $buCountryBUH->country_id = $countryId;
+                $buCountryBUH->buh_id = $buh->id;
+                $buCountryBUH->save();
+            }
+    
+            // Commit the transaction
+            DB::commit();
+            return redirect()->back()->with('success', 'User added successfully!');
+            
+        } catch (\Exception $e) {
+            // Rollback transaction if there is an error
+            DB::rollBack();
+            return redirect()->back()->withErrors(['error' => 'An error occurred while creating the user.']);
+        }
     }
+    
+
 
     // Edit user details
     public function editUser($id)
@@ -360,7 +365,7 @@ class HeadController extends Controller
     public function viewBUHDetails($id)
     {
 
-        $buhData = DB::table('bu_country as bc')
+        $buhData = DB::table('bu_country_buh as bc')
             ->join('bu', 'bc.bu_id', '=', 'bu.id')
             ->join('country', 'bc.country_id', '=', 'country.id')
             ->join('buh', 'bc.buh_id', '=', 'buh.id')

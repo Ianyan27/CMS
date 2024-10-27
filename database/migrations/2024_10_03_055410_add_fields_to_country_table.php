@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('bu_country', function (Blueprint $table) {
+        Schema::table('bu_country_buh', function (Blueprint $table) {
             $table->foreignId('bu_id')->constrained('bu')->nullable(); // Adding FK to BU table
             $table->foreignId('country_id')->constrained('country')->nullable(); // Adding FK to Country table
-            $table->foreignId('buh_id')->constrained('buh')->nullable(); // Adding FK to BUH table
+            $table->foreignId('buh_id')->constrained('buh'); // Adding FK to BUH table
         });
     }
 

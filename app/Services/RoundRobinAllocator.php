@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\BuCountry;
+use App\Models\BuCountryBUH;
 use App\Models\Contact;
 use App\Models\Owner;
 use App\Models\SaleAgent;
@@ -18,7 +19,7 @@ class RoundRobinAllocator
     {
 
         try {
-            $bu_country = BuCountry::where('buh_id', $buhId)->first();
+            $bu_country = BuCountryBUH::where('buh_id', $buhId)->first();
             $bu_country_id = $bu_country->id;
             Log::info("bu country id " . $bu_country_id);
             Log::info("country : " . $country);

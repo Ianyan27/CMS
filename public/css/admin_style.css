@@ -595,7 +595,8 @@ label {
 
 #archive,
 #discard,
-#countries {
+#country,
+#country-pagination{
     display: none;
 }
 

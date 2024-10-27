@@ -150,7 +150,7 @@
                                         Head
                                     @elseif($user->role == 'Sales_Admin')
                                         Sales Admin
-                                    @elseif($user->role == 'NA')
+                                    @elseif($user->role == ' ')
                                         Not Assigned
                                     @endif
                                 </td>
@@ -271,10 +271,10 @@
                                                     </option>
                                                     <option value="Head" {{ $user->role == 'Head' ? 'selected' : '' }}>
                                                         Head</option>
-                                                    <option value="Sale_Admin"
-                                                        {{ $user->role == 'Sale_Admin' ? 'selected' : '' }}>Sale Admin
+                                                    <option value="Sales_Admin"
+                                                        {{ $user->role == 'Sales_Admin' ? 'selected' : '' }}>Sale Admin
                                                     </option>
-                                                    <option value="NA" {{ $user->role == 'NA' ? 'selected' : '' }}>Not
+                                                    <option value="NA" {{ $user->role == ' ' ? 'selected' : ' ' }}>Not
                                                         Assigned</option>
                                                 @endif
                                             </select>
@@ -369,8 +369,6 @@
                                 <input type="text" class="form-control" id="name" name="name"
                                     value="{{ old('name') }}" minlength="3" maxlength="50" required>
 
-
-
                             </div>
                             <div class="form-group">
                                 <label for="email">Email</label>
@@ -378,14 +376,10 @@
                                     value="{{ old('email') }}" required>
                                 <small class="text-danger" id="emailError"></small>
 
-
-
                             </div>
                             <div class="form-group">
                                 <input type="hidden" class="form-control" id="password" name="password"
                                     value="creatingtestaccount" readonly>
-
-
 
                             </div>
                             <div class="form-group">

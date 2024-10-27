@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\ArchiveActivities;
+use App\Models\BU;
 use App\Models\BuCountry;
+use App\Models\BuCountryBUH;
 use App\Models\BUH;
 use App\Models\Contact;
 use App\Models\ContactArchive;
@@ -39,8 +41,9 @@ class OwnerController extends Controller
         if ($user->role === 'BUH') {
             // Get the BUH's country ID
             $buhId = BUH::where('email', $user->email)->first();
-            $buCountry = BuCountry::where('buh_id', $buhId->id)->first();
-            Log::info("BUH's Country: " . $buCountry);
+            $buCountry = BuCountryBUH::where('buh_id', $buhId->id)->first();
+            $bu = BU::where('id', $buCountry->bu_id)->pluck('name');
+            Log::info("BUH's Country: " . $buCountry . "Business Unit: " . $bu);
 
             // Filter sale agents by the BUH's country
             $query->where('bu_country_id', $buCountry->id);
@@ -66,7 +69,8 @@ class OwnerController extends Controller
             'owner' => $owner,
             'user' => $user,
             'hubspotSalesAgents' => $hubspotSalesAgents,
-            'contact' => $contact
+            'contact' => $contact,
+            'bu' => $bu
         ]);
     }
 

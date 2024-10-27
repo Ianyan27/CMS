@@ -87,8 +87,8 @@
                             <h5 class="fonts p-1 text-truncate" id="email">{{ $editContact->email }}</h5>
                         </div>
                         <div class="form-group">
-                            <label class="font-educ" for="country">Country</label>
-                            <h5 class="fonts p-1 text-truncate" id="country">{{ $editContact->country }}</h5>
+                            <label class="font-educ" for="countries">Country</label>
+                            <h5 class="fonts p-1 text-truncate" id="countries">{{ $editContact->country }}</h5>
                         </div>
                     </div>
                 </div>

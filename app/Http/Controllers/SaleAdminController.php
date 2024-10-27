@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BU;
 use App\Models\BuCountry;
+use App\Models\BuCountryBUH;
 use App\Models\BUH;
 use App\Models\BusinessUnit;
 use App\Models\Country;
@@ -31,12 +32,15 @@ class SaleAdminController extends Controller
         $user = Auth::user();
         Log::info($user);
         $bus = BU::paginate(10); // adjust the pagination limit as needed
+        $country = Country::all();
+        $countryCount = $country->count();
         $countries = Country::paginate(10); // adjust the pagination limit as needed
-
         return view('BU_Country')->with([
             'user' => $user,
             'bus' => $bus,
-            'countries' => $countries
+            'country' => $country,
+            'countries' => $countries,
+            'countryCount' => $countryCount
         ]);
     }
 
@@ -61,20 +65,23 @@ class SaleAdminController extends Controller
         // Get the corresponding BU ID
         $buId = $bu->id;
 
-        // Find the BuCountry records related to this BU
+        // Retrieve BuCountry records related to this BU
         $buCountries = BuCountry::with('country')
             ->where('bu_id', $buId)
             ->get();
 
+        // Extract unique country names related to this BU
         $countryNames = $buCountries->pluck('country.name')->unique()->values()->toArray();
-        Log::info("Countries associated with BU [{$buName}]: ", ['countries' => $countryNames]);
 
-        $buhList = BUH::whereHas('buCountries', function ($query) use ($buId) {
-            $query->where('bu_id', $buId);
+        // Find BUHs associated with this BU through BuCountry relationship
+        // Assuming BUH is related to BuCountry through `bu_country_id` or similar
+        $buhList = BUH::whereIn('id', function ($query) use ($buId) {
+            $query->select('buh_id')
+                ->from('bu_country_buh') // Assuming a pivot table `bu_country_buh`
+                ->where('country_id', $buId);
         })->get();
 
-
-        // Prepare the response by extracting the unique country names
+        // Prepare the response by extracting the unique country names and BUH names
         $response = [
             'countries' => $countryNames,
             'buh' => $buhList->pluck('name'), // Get the names of the BUHs related to this BU
@@ -125,28 +132,45 @@ class SaleAdminController extends Controller
 
     public function saveCountry(Request $request)
     {
+        // Validate the country name, ensuring it's unique in the `countries` table
         $request->validate([
-            'country-name' => 'required',
+            'country-name' => 'required|string|max:255|unique:country,name',
+        ], [
+            'country-name.unique' => 'The country already exists.', // Custom error message for existing country
         ]);
 
+        // If validation passes, create a new Country instance and save it
         $country = new Country();
         $country->name = $request->input('country-name');
         $country->save();
 
-        return redirect()->back()->with('country-success', 'Country added successfully!');
+        return redirect()->back()->with('success', 'Country added successfully!');
     }
+
 
     public function saveBU(Request $request)
     {
         $request->validate([
             'bu-name' => 'required',
+            'country' => 'required|array|min:1',  // Ensure at least one country is selected
         ]);
 
+        // Create the new Business Unit
         $bu = new BU();
         $bu->name = $request->input('bu-name');
         $bu->save();
 
-        return redirect()->back()->with('bu-success', 'Business Unit added successfully!');
+        // Save each selected country for this BU
+        $countryIds = $request->input('country');  // This is now an array of selected country IDs
+        Log::info($countryIds);
+        foreach ($countryIds as $countryId) {
+            $buCountry = new BuCountry();
+            $buCountry->bu_id = $bu->id;
+            $buCountry->country_id = $countryId;
+            $buCountry->save();
+        }
+
+        return redirect()->back()->with('success', 'Business Unit added successfully with selected countries!');
     }
 
     public function updateBU(Request $request, $id)
@@ -166,7 +190,7 @@ class SaleAdminController extends Controller
         $bu->name = $request->input('bu-name');
         $bu->save();
 
-        return redirect()->back()->with('bu-success', 'Business Unit updated successfully!');
+        return redirect()->back()->with('success', 'Business Unit updated successfully!');
     }
 
     public function updateCountry(Request $request, $id)
@@ -185,7 +209,7 @@ class SaleAdminController extends Controller
         $country->name = $request->input('country-name');
         $country->save();
 
-        return redirect()->back()->with('country-success', 'Country updated successfully!');
+        return redirect()->back()->with('success', 'Country updated successfully!');
     }
 
     public function deleteBU($id)
@@ -213,6 +237,6 @@ class SaleAdminController extends Controller
 
         $country->delete();
 
-        return redirect()->back()->with('country-success', 'Country deleted successfully!');
+        return redirect()->back()->with('success', 'Country deleted successfully!');
     }
 }

@@ -46,10 +46,10 @@
                 <div class="table-title d-flex justify-content-between align-items-center my-3">
                     <h2 class="mt-2 ml-3 headings">Contact Detail</h2>
                     @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
-                        <!-- <a href="{{ route('discard#edit', $editDiscard->contact_discard_pid) }}"
-                                                                            class="btn hover-action mx-1" data-toggle="modal" data-target="#editDiscardModal">
-                                                                            <i class="fa-solid fa-pen-to-square"></i>
-                                                                        </a> -->
+                        <a href="{{ route('discard#edit', $editDiscard->contact_discard_pid) }}"
+                            class="btn hover-action mx-1" data-toggle="modal" data-target="#editDiscardModal">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
                     @endif
                 </div>
                 <div class="row row-margin-bottom row-border-bottom mx-1">
@@ -78,13 +78,15 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="font-educ" for="address">Address</label>
-                            <h5 class="fonts text-truncate" id="address" style="height: 125px;">{{ $editDiscard->address }}</h5>
+                            <h5 class="fonts text-truncate" id="address" style="height: 125px;">
+                                {{ $editDiscard->address }}</h5>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="font-educ" for="date-of-allocation">Date of Allocation</label>
-                            <h5 class="fonts text-truncate" id="date-of-allocation">{{ $editDiscard->date_of_allocation }}</h5>
+                            <h5 class="fonts text-truncate" id="date-of-allocation">{{ $editDiscard->date_of_allocation }}
+                            </h5>
                         </div>
                         <div class="form-group">
                             <label class="font-educ" for="qualification">Qualification</label>
@@ -145,8 +147,8 @@
                 {{-- Iterating all the activities from all contacts --}}
                 <div class="activities">
                     @forelse ($engagementDiscard->groupBy(function ($date) {
-                            return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
-                            }) as $month => $activitiesInMonth)
+                                return \Carbon\Carbon::parse($date->date)->format('F Y'); // Group by month and year
+                                }) as $month => $activitiesInMonth)
                         <div class="activity-list" data-month="{{ $month }}">
                             <div class="activity-date my-3 ml-3">
                                 <span class="text-muted">{{ $month }}</span>
@@ -183,77 +185,79 @@
                                 <p class="text-muted">No WhatsApp taken.</p>
                             </div>
                         </div>
-                    </div>
-                    @empty
-                        <div class="no-activities text-center my-4">
-                            <p class="text-muted">No Activities Found</p>
-                        </div>
-                    @endforelse
                 </div>
-            </div>
-            <!-- Activity Taken Section -->
-            <div class="table-title d-flex justify-content-between align-items-center mt-5">
-                <div class="d-flex align-items-center">
-                    <h2 class="ml-2 mb-1 headings">Activity Taken</h2>
+            @empty
+                <div class="no-activities text-center my-4">
+                    <p class="text-muted">No Activities Found</p>
                 </div>
-            </div>
-            <!-- Table -->
-            <table class="table table-hover mt-2">
-                <thead class="font-educ text-left">
-                    <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Created Date</th>
-                        <th scope="col">Modified Date</th>
-                        <th scope="col">Type</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Attachment</th>
-                        {{-- @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
+    @endforelse
+    </div>
+    </div>
+    <!-- Activity Taken Section -->
+    <div class="table-title d-flex justify-content-between align-items-center mt-5">
+        <div class="d-flex align-items-center">
+            <h2 class="ml-2 mb-1 headings">Activity Taken</h2>
+        </div>
+    </div>
+    <!-- Table -->
+    <table class="table table-hover mt-2">
+        <thead class="font-educ text-left">
+            <tr>
+                <th scope="col">No</th>
+                <th scope="col">Date</th>
+                <th scope="col">Created Date</th>
+                <th scope="col">Modified Date</th>
+                <th scope="col">Type</th>
+                <th scope="col">Description</th>
+                <th scope="col">Attachment</th>
+                {{-- @if (Auth::check() && Auth::user()->role == 'Sales_Agent')
                             <th scope="col">Action</th>
                         @endif --}}
-                    </tr>
-                </thead>
-                <tbody class="text-left bg-row">
-                    <?php $i = 0; ?>
-                    @forelse ($engagementDiscard as $engagement)
-                        @php
-                            // Decode the JSON or handle the attachments array properly
-                            $attachments = json_decode($engagement->attachments, true); // Assuming it's a JSON string
-                        $filename = $attachments[0] ?? ''; // Get the first filename from the array
-                        $filePath = public_path('attachments/leads/' . $filename);
-                        @endphp
-                        <tr>
-                            <td> {{ ++$i }} </td>
-                            <td> {{ $engagement->date }} </td>
-                            <td>{{ \Carbon\Carbon::parse($engagement->created_at)->format('Y-m-d H:i:s') }}</td> <!-- Created Date -->
-                            <td>{{ \Carbon\Carbon::parse($engagement->updated_at)->format('Y-m-d H:i:s') }}</td> <!-- Modified Date -->
-                            <td> {{ $engagement->activity_name }} </td>
-                            <td> {{ $engagement->details }} </td>
-                            <td>
-                                @if ($filename)
-                                    <a href="#table-container" id="attachmentImage"
-                                        style="width: 100px; height: auto; cursor: pointer;"
-                                        data-image-url="{{ $filename }}">
-                                        View Attachment
-                                    </a>
-                                @else
-                                    No Image Available
-                                @endif
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="7" class="text-center">No Activity Taken.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-        @else
-        <div class="alert alert-danger text-center mt-5">
-            <strong>Access Denied!</strong> You do not have permission to view this page.
-        </div>
-        @endif
+            </tr>
+        </thead>
+        <tbody class="text-left bg-row">
+            <?php $i = 0; ?>
+            @forelse ($engagementDiscard as $engagement)
+                @php
+                    // Decode the JSON or handle the attachments array properly
+                    $attachments = json_decode($engagement->attachments, true); // Assuming it's a JSON string
+$filename = $attachments[0] ?? ''; // Get the first filename from the array
+$filePath = public_path('attachments/leads/' . $filename);
+                @endphp
+                <tr>
+                    <td> {{ ++$i }} </td>
+                    <td> {{ $engagement->date }} </td>
+                    <td>{{ \Carbon\Carbon::parse($engagement->created_at)->format('Y-m-d H:i:s') }}</td>
+                    <!-- Created Date -->
+                    <td>{{ \Carbon\Carbon::parse($engagement->updated_at)->format('Y-m-d H:i:s') }}</td>
+                    <!-- Modified Date -->
+                    <td> {{ $engagement->activity_name }} </td>
+                    <td> {{ $engagement->details }} </td>
+                    <td>
+                        @if ($filename)
+                            <a href="#table-container" id="attachmentImage"
+                                style="width: 100px; height: auto; cursor: pointer;"
+                                data-image-url="{{ $filename }}">
+                                View Attachment
+                            </a>
+                        @else
+                            No Image Available
+                        @endif
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="7" class="text-center">No Activity Taken.</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+    </div>
+@else
+    <div class="alert alert-danger text-center mt-5">
+        <strong>Access Denied!</strong> You do not have permission to view this page.
+    </div>
+    @endif
 
 
     <!-- Bootstrap Modal for Image -->
@@ -385,11 +389,11 @@
     </script>
     <script>
         document.addEventListener('click', function(event) {
-        if (event.target && event.target.id === 'attachmentImage') {
-            const imageUrl = event.target.getAttribute('data-image-url');
-            document.getElementById('modalImage').src = imageUrl;
-            $('#imageModal').modal('show');
-        }
-    });
+            if (event.target && event.target.id === 'attachmentImage') {
+                const imageUrl = event.target.getAttribute('data-image-url');
+                document.getElementById('modalImage').src = imageUrl;
+                $('#imageModal').modal('show');
+            }
+        });
     </script>
 @endsection

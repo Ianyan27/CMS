@@ -66,8 +66,8 @@
                             <h5 class="fonts text-truncate" id="business-unit">{{ $owner->business_unit }}</h5>
                         </div>
                         <div class="form-group mb-3">
-                            <label class="font-educ" for="country">Country</label>
-                            <h5 class="fonts text-truncate" id="country">{{ $owner->nationality }}</h5>
+                            <label class="font-educ" for="countries">Country</label>
+                            <h5 class="fonts text-truncate" id="countries">{{ $owner->nationality }}</h5>
                         </div>
 
                     </div>

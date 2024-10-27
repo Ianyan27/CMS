@@ -5,6 +5,33 @@
 @section('content')
 
     @if (Auth::check() && Auth::user()->role == 'BUH')
+    <script>
+        $(document).ready(function() {
+            $('#successModal').modal('show');
+            $('#errorModal').modal('show');
+        });
+    </script>
+    @if (Session::has('error'))
+            <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header"
+                            style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+                        border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
+                            <h5 class="modal-title" id="errorModalLabel" style="color: #91264c"><strong>Success</strong>
+                            </h5>
+                        </div>
+                        <div class="modal-body" style="color: #91264c;border:none;">
+                            {{ Session::get('error') }}
+                        </div>
+                        <div class="modal-footer" style="border:none;">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                style="background: #91264c; color:white;">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
         <div class="container-max-height">
             <div class="row">
                 <div class="col-sm-12">
@@ -30,7 +57,7 @@
                             style="font-size: medium">
                             Please Select Country *
                         </div>
-                        <select id="country" class="w-100 country search-bar" name="country">
+                        <select id="countries" class="w-100 country search-bar" name="countries">
                             <option value="" selected disabled>Select Country</option>
                             @foreach ($countries as $country)
                                 <option value="{{ $country }}">{{ $country }}</option>
@@ -170,10 +197,10 @@
             //create form data
             const formData = new FormData();
             const platformSelect = document.getElementById('platform');
-            const countrySelect = document.getElementById('country');
+            const countrySelect = document.getElementById('countries');
             formData.append('csv_file', fileInput.files[0]);
             formData.append('platform', platformSelect.value);
-            formData.append('country', countrySelect.value);
+            formData.append('countries', countrySelect.value);
 
 
 

@@ -13,7 +13,9 @@
                     style="height: 30px;">
             </div>
             <div class="modal-body">
-                <form action=" {{ route('discard#update-discard', $editDiscard->contact_discard_pid) }}" method="POST"
+                <form action=" {{ route('discard#update-discard', 
+                ['contact_discard_pid' => $editDiscard->contact_discard_pid, 
+                'id' => $owner->id]) }}" method="POST"
                     id="editContactForm">
                     @csrf
                     <div class="row">
@@ -90,20 +92,13 @@
                                         {{ $editDiscard->status === 'InProgress' ? 'selected' : '' }}>
                                         In Progress
                                     </option>
-                                    <option value="HubSpot"
-                                        {{ $editDiscard->status === 'HubSpot Contact' ? 'selected' : '' }}>
-                                        HubSpot
+                                    <option value="Archive"
+                                        {{ $editDiscard->status === 'Archive' ? 'selected' : '' }}>
+                                        Archive
                                     </option>
                                     <option value="Discard"
                                         {{ $editDiscard->status === 'Discard' ? 'selected' : '' }}>
                                         Discard
-                                    </option>
-                                    <option value="New" {{ $editDiscard->status === 'New' ? 'selected' : '' }}>
-                                        New
-                                    </option>
-                                    <option value="Archive"
-                                        {{ $editDiscard->status === 'Archive' ? 'selected' : '' }}>
-                                        Archive
                                     </option>
                                 </select>
                             </div>

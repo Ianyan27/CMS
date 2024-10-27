@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class BuCountry extends Model
+class BuCountryBUH extends Model
 {
     use HasFactory;
 
-    protected $table = 'bu_country';
+    protected $table = 'bu_country_buh';
 
-    protected $fillable = ['bu_id', 'country_id'];
+    protected $fillable = ['bu_id', 'country_id', 'buh_id'];
 
     // BU Country belongs to a single BU
     public function bu()
@@ -23,6 +23,12 @@ class BuCountry extends Model
     public function country()
     {
         return $this->belongsTo(Country::class, 'country_id');
+    }
+
+    // BU Country belongs to a single BUH
+    public function buh()
+    {
+        return $this->belongsTo(BUH::class, 'buh_id');
     }
 
     // BU Country has many Sale Agents

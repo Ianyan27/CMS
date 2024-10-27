@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bu_country_buh', function (Blueprint $table) {
+        Schema::create('bu_country', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->foreignId('bu_id')->constrained('bu')->nullable(); // Adding FK to BU table
+            $table->foreignId('country_id')->constrained('country')->nullable(); // Adding FK to Country table
         });
     }
 
@@ -22,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bu_country_buh');
+        Schema::dropIfExists('bu_countries');
     }
 };

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ArchiveLogs;
+use App\Models\BuCountryBUH;
 use App\Models\Inactive_Owners;
 use App\Models\Owner;
 use App\Models\User;
@@ -37,11 +38,27 @@ class BUHController extends Controller
     {
         $userEmail = Auth::user()->email;
         $buh = BUH::where("email", $userEmail)->first();
+        $buhData = DB::table('bu_country_buh as bc')
+            ->join('bu', 'bc.bu_id', '=', 'bu.id')
+            ->join('country', 'bc.country_id', '=', 'country.id')
+            ->join('buh', 'bc.buh_id', '=', 'buh.id')
+            ->select(
+                'bc.id as id',
+                'bu.name as bu_name',
+                'country.name as country_name',
+                'buh.name as buh_name',
+                'buh.email as buh_email',
+                'buh.nationality as buh_nationality'
+            )
+            ->where('bc.buh_id', $buh->id)
+            ->get();
         // Get the BUH country
-        $buCountries = $buh->buCountries;
-        $countryNames = $buCountries->pluck('country.name');
+        Log::info($buhData);
+        $buhCountries = $buhData->pluck('country_name');
 
-        return view('csv_import_form', ['countries' => $countryNames]);
+        Log::info($buhCountries);
+
+        return view('csv_import_form', ['countries' => $buhCountries]);
     }
 
     public function import(Request $request)
@@ -68,12 +85,12 @@ class BUHController extends Controller
 
         $file = $request->file('csv_file');
         $platform = $request->input('platform'); // Get the platform value
-        $country = $request->input('country');
+        $country = $request->input('countries');
         $userEmail = Auth::user()->email;
         $bu = $request->input('bu');
         $buh = $request->input('buh');
 
-        Log::info('Received country: ' . $request->input('country'));
+        Log::info('Received country: ' . $request->input('countries'));
         Log::info('Received BUH: ' . $request->input('buh'));
         Log::info('Received User email: ' . $userEmail);
 
@@ -260,7 +277,7 @@ class BUHController extends Controller
 
         // getting bu_country id
         $buh = BUH::where("email", $request->input('email_buh'))->get()->first();
-        $bu_country = BuCountry::where("buh_id", $buh->id)->get()->first();
+        $bu_country = BuCountryBUH::where("buh_id", $buh->id)->get()->first();
 
         // Begin a database transaction
         DB::beginTransaction();
@@ -598,14 +615,28 @@ class BUHController extends Controller
 
         // Fetch the BUH record associated with the logged-in user's email
         $buh = BUH::where('email', $user->email)->first();
+        $buhData = DB::table('bu_country_buh as bc')
+            ->join('bu', 'bc.bu_id', '=', 'bu.id')
+            ->join('country', 'bc.country_id', '=', 'country.id')
+            ->join('buh', 'bc.buh_id', '=', 'buh.id')
+            ->select(
+                'bc.id as id',
+                'bu.name as bu_name',
+                'country.name as country_name',
+                'buh.name as buh_name',
+                'buh.email as buh_email',
+                'buh.nationality as buh_nationality'
+            )
+            ->where('bc.buh_id', $buh->id)
+            ->get();
 
         // Check if the BUH exists
-        if (!$buh) {
+        if (!$buhData) {
             return redirect()->back()->with('error', 'No BUH found for the logged-in user.');
         }
 
         // Fetch all BuCountry records associated with this BUH
-        $buCountries = BuCountry::where('buh_id', $buh->id)->first();
+        $buCountries = BuCountryBUH::where('buh_id', $buh->id)->first();
 
         // Check if there are any associated BuCountry records
         if (!$buCountries) {

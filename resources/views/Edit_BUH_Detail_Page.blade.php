@@ -83,12 +83,12 @@
                             <h5 class="fonts text-truncate" id="business-unit">{{ $buhData->bu_name }}</h5>
                         </div>
                         <div class="form-group mb-3">
-                            <label class="font-educ" for="country">Country</label>
-                            <h5 class="fonts text-truncate" id="country">{{ $buhData->country_name }}</h5>
+                            <label class="font-educ" for="countries">Country</label>
+                            <h5 class="fonts text-truncate" id="countries">{{ $buhData->country_name }}</h5>
                         </div>
                         <div class="form-group mb-3">
-                            <label class="font-educ" for="country">Country</label>
-                            <h5 class="fonts text-truncate" id="country">{{ $buhData->buh_nationality }}</h5>
+                            <label class="font-educ" for="nationality">Nationality</label>
+                            <h5 class="fonts text-truncate" id="nationality">{{ $buhData->buh_nationality }}</h5>
                         </div>
                     </div>
                 </div>

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('total_assign_contacts')->default(0); // Total assigned contacts
             $table->integer('total_archive_contacts')->default(0); // Total archived contacts
             $table->integer('total_discard_contacts')->default(0); // Total discarded contacts
-            $table->foreignId('bu_country_id')->constrained('bu_country'); // Foreign key to BU Country
+            $table->foreignId('bu_country_id')->constrained('bu_country_buh'); // Foreign key to BU Country
             $table->timestamps(); // Laravel's created_at and updated_at fields
         });
     }

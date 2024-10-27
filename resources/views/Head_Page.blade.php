@@ -1,5 +1,35 @@
 @section('title', 'User Listing Page')
 
+<head>
+    <style>
+        /* Styling for selected country chips */
+        .selected-countries {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .country-chip {
+            display: flex;
+            align-items: center;
+            background-color: #91264c;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 14px;
+        }
+
+        .country-chip .remove-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 16px;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
 @extends('layouts.app')
 
 @section('content')
@@ -7,6 +37,7 @@
         <script>
             $(document).ready(function() {
                 $('#successModal').modal('show');
+                $('#errorModal').modal('show');
             });
         </script>
         @if (Session::has('success'))
@@ -22,6 +53,27 @@
                         </div>
                         <div class="modal-body" style="color: #91264c;border:none;">
                             {{ Session::get('success') }}
+                        </div>
+                        <div class="modal-footer" style="border:none;">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                style="background: #91264c; color:white;">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+        @if (Session::has('error'))
+            <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header"
+                            style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
+                        border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
+                            <h5 class="modal-title" id="errorModalLabel" style="color: #91264c"><strong>Success</strong>
+                            </h5>
+                        </div>
+                        <div class="modal-body" style="color: #91264c;border:none;">
+                            {{ Session::get('error') }}
                         </div>
                         <div class="modal-footer" style="border:none;">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal"
@@ -314,7 +366,7 @@
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>
-                            <div class="form-group">
+                            <div class="form-group d-none">
                                 <label for="role">Role</label>
                                 <select class="form-control" id="role" name="role" required>
                                     <option value="BUH" selected>BUH</option> <!-- Only BUH can be selected -->
@@ -334,14 +386,15 @@
                                 @enderror
                             </div>
                             <div class="form-group">
-                                <label class="font-educ d-block" for="countryDropdown">Select Country</label>
-                                <select id="countryDropdown" class="form-control platforms search-bar" name="country"
-                                    onchange="updateSelectedCountryAndBuh(); ">
+                                <label class="font-educ d-block" for="countryDropdown">Select Countries</label>
+                                <select id="countryDropdown" class="form-control platforms search-bar" name="country">
                                     <option value="">Select Country</option>
+                                    @foreach ($countries as $country)
+                                        <option value="{{ $country->id }}"> {{ $country->name }} </option>
+                                    @endforeach
                                 </select>
-                                @error('country_id')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
+                                <!-- Container for displaying selected countries as chips -->
+                                <div id="selectedCountries" class="selected-countries mt-2"></div>
                             </div>
                     </div>
                     <div class="modal-footer" style="border:none;">
@@ -362,6 +415,7 @@
     @endif
 
     <script src="{{ asset('js/add_agent_validation.js') }}"></script>
+    <script src=" {{ URL::asset('js/country_selection.js') }} "></script>
     <script>
         function toggleSort(downIconId, upIconId) {
             const sortDown = document.getElementById(downIconId);

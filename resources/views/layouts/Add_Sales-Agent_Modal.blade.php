@@ -78,15 +78,19 @@
                     <div class="row row-margin-bottom ">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="font-educ" for="businessUnit">Business Unit</label>
-                                <input type="text" name="businessUnit" class="form-control fonts" id="businessUnit"
-                                    placeholder="Enter business unit" required>
+                                <label for="businessUnit" class="font-educ">Business Unit</label>
+                                <select class="form-control fonts" name="businessUnit" id="businessUnit" required>
+                                    <option value="">Select Business Unit</option>
+                                    @foreach ($bu as $businessUnit)
+                                        <option value=" {{ $businessUnit }} "> {{ $businessUnit }} </option>
+                                    @endforeach
+                                </select>                           
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="font-educ" for="country">Country</label>
-                                <select name="country" class="form-control fonts" id="country" required>
+                                <label class="font-educ" for="countries">Country</label>
+                                <select name="country" class="form-control fonts" id="countries" required>
                                     <option value="">Select a country</option>
                                     <option value="Afghanistan">Afghanistan</option>
                                     <option value="Albania">Albania</option>

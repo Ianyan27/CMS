@@ -334,7 +334,7 @@ Route::group(['prefix' => 'sales-agent'], function () {
         DiscardController::class,
         'viewDiscard'
     ])->name('discard#view');
-    Route::post('/save-discard/{contact_discard_pid}', [
+    Route::post('/save-discard/{contact_discard_pid}/{id}', [
         DiscardController::class,
         'updateDiscard'
     ])->name('discard#update-discard');
