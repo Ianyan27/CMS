@@ -67,6 +67,19 @@ class ArchiveController extends Controller
             return redirect()->back()->with('error', 'Contact archive not found.');
         }
 
+        $activities = EngagementArchive::where('fk_engagement_archives__contact_archive_pid', $contact_archive_pid)->get();
+        $activitiesCount = $activities->count();
+
+        $rules = [
+            'status' => function ($attribute, $value, $fail) use ($activitiesCount) {
+                if (in_array($value, ['InProgress', 'Archive', 'Discard']) && $activitiesCount === 0) {
+                    $fail('Status cannot be updated: No engagement activities for this contact.');
+                }
+            }
+        ];
+
+        $request->validate($rules);
+
         //Lists all activities found on that contact
         $archiveActivities = ArchiveActivities::where('fk_engagements__contact_pid', $contact_archive_pid)->get();
         Log::info('Lists of Archive Activities Found: ', $archiveActivities->toArray());

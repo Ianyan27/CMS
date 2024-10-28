@@ -365,7 +365,13 @@
             <strong>Access Denied!</strong> You do not have permission to view this page.
         </div>
     @endif
-
+    <script>
+        @if ($errors->has('status'))
+            $(document).ready(function() {
+                $('#editArchiveModal').modal('show');
+            });
+        @endif
+    </script>
     <script>
         document.querySelectorAll('.activity-button').forEach(button => {
             button.addEventListener('click', function() {

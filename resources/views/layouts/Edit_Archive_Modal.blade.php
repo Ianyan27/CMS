@@ -97,7 +97,8 @@
                             </div>
                             <div class="form-group">
                                 <label class="font-educ" for="contact-status">Status</label>
-                                <select class="form-control fonts" id="contact-status" name="status" @if (Auth::user()->role == 'Admin') disabled @endif required>
+                                <select class="form-control fonts" id="contact-status" name="status"
+                                    @if (Auth::user()->role == 'Admin') disabled @endif required>
                                     <option value="InProgress"
                                         {{ $editArchive->status === 'InProgress' ? 'selected' : '' }}>
                                         In Progress
@@ -111,6 +112,11 @@
                                         Archive
                                     </option>
                                 </select>
+                                @if ($errors->has('status'))
+                                    <div class="text-danger">
+                                        {{ $errors->first('status') }}
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
