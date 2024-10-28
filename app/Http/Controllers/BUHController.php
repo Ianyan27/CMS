@@ -85,12 +85,12 @@ class BUHController extends Controller
 
         $file = $request->file('csv_file');
         $platform = $request->input('platform'); // Get the platform value
-        $country = $request->input('countries');
+        $country = $request->input('country');
         $userEmail = Auth::user()->email;
         $bu = $request->input('bu');
         $buh = $request->input('buh');
 
-        Log::info('Received country: ' . $request->input('countries'));
+        Log::info('Received country: ' . $request->input('country'));
         Log::info('Received BUH: ' . $request->input('buh'));
         Log::info('Received User email: ' . $userEmail);
 

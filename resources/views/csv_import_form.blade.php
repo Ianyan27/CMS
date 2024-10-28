@@ -57,7 +57,7 @@
                             style="font-size: medium">
                             Please Select Country *
                         </div>
-                        <select id="countries" class="w-100 country search-bar" name="countries">
+                        <select id="country" class="w-100 country search-bar" name="country">
                             <option value="" selected disabled>Select Country</option>
                             @foreach ($countries as $country)
                                 <option value="{{ $country }}">{{ $country }}</option>
@@ -197,10 +197,10 @@
             //create form data
             const formData = new FormData();
             const platformSelect = document.getElementById('platform');
-            const countrySelect = document.getElementById('countries');
+            const countrySelect = document.getElementById('country');
             formData.append('csv_file', fileInput.files[0]);
             formData.append('platform', platformSelect.value);
-            formData.append('countries', countrySelect.value);
+            formData.append('country', countrySelect.value);
 
 
 

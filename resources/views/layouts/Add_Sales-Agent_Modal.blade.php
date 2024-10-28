@@ -89,8 +89,8 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="font-educ" for="countries">Country</label>
-                                <select name="country" class="form-control fonts" id="countries" required>
+                                <label class="font-educ" for="country">Country</label>
+                                <select name="country" class="form-control fonts" id="country" required>
                                     <option value="">Select a country</option>
                                     <option value="Afghanistan">Afghanistan</option>
                                     <option value="Albania">Albania</option>

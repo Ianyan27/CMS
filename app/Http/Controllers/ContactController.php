@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BuCountryBUH;
 use App\Models\Contact;
 use App\Models\ContactArchive;
 use App\Models\ContactDiscard;
@@ -654,7 +655,7 @@ class ContactController extends Controller
             }
 
             // Fetch all BuCountry records associated with this BUH
-            $buCountries = BuCountry::where('buh_id', $buh->id)->first();
+            $buCountries = BuCountryBUH::where('buh_id', $buh->id)->first();
 
             // Fetch all SaleAgent records associated with the BuCountry records
             $saleAgents = SaleAgent::where('bu_country_id', $buCountries->id)->get();

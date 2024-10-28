@@ -87,8 +87,8 @@
                             <h5 class="fonts p-1 text-truncate" id="email">{{ $editContact->email }}</h5>
                         </div>
                         <div class="form-group">
-                            <label class="font-educ" for="countries">Country</label>
-                            <h5 class="fonts p-1 text-truncate" id="countries">{{ $editContact->country }}</h5>
+                            <label class="font-educ" for="country">Country</label>
+                            <h5 class="fonts p-1 text-truncate" id="country">{{ $editContact->country }}</h5>
                         </div>
                     </div>
                 </div>
@@ -219,9 +219,8 @@
             <div class="d-flex align-items-center mr-2 mb-2">
                 <!-- Button to trigger the modal -->
                 @if (
-                    (Auth::check() && Auth::user()->role == 'Sales_Agent') ||
-                        (Auth::check() && Auth::user()->role == 'Admin' && $editContact->status !== 'HubSpot Contact'))
-                    <button style="display: block;" class="btn hover-action add-activity-button" data-toggle="modal"
+                    (Auth::check() && Auth::user()->role == 'Sales_Agent' || Auth::user()->role == 'Admin'))
+                    <button style="display: @if($editContact->status === 'HubSpot Contact') none @else block @endif;" class="btn hover-action add-activity-button" data-toggle="modal"
                         data-target="#addActivityModal" id="addActivityBtn">
                         <i style="font-size: 22px;" class="fa-solid fa-square-plus p-1"></i>
                     </button>

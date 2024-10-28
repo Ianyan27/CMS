@@ -14,8 +14,8 @@ class BUH extends Model
     protected $fillable = ['name', 'email', 'nationality', 'hubspot_id'];
 
     // A BUH can have many BU Country records
-    public function buCountries()
+    public function buCountriesBuh()
     {
-        return $this->hasMany(BuCountry::class, 'buh_id');
+        return $this->hasMany(BuCountryBUH::class, 'buh_id');
     }
 }

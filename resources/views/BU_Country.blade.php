@@ -6,7 +6,7 @@
 @include('layouts.Country_Modal')
 
 @section('content')
-    @if ($errors->any() || session('country-error') || session('bu-error'))
+    @if ($errors->any())
         <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="false">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -16,14 +16,8 @@
                         <h5 class="modal-title" id="errorModalLabel" style="color: #91264c"><strong>Error</strong>
                         </h5>
                     </div>
-                    <div class="modal-body" style="color: #91264c;border:none;">
-                        @if (session('country-error'))
-                            {{ session('country-error') }}
-                        @elseif (session('bu-error'))
-                            {{ session('bu-error') }}
-                        @else
-                            {{ $errors->first() }}
-                        @endif
+                    <div class="modal-body text-center" style="color: #91264c;border:none;">
+                        {{ $errors->first() }}
                     </div>
                     <div class="modal-footer" style="border:none;">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal"
@@ -41,7 +35,7 @@
                     style="padding: 10px 12px;">
                     <i class="fa-solid fa-square-plus"></i>
                 </button>
-                <button class="btn hover-action" id="countries" data-toggle="modal" data-target="#addCountryModal"
+                <button class="btn hover-action" id="addCountryButton" data-toggle="modal" data-target="#addCountryModal"
                     style="padding: 10px 12px; display: none;">
                     <i class="fa-solid fa-square-plus"></i>
                 </button>
@@ -108,7 +102,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="table-container" id="country">
+        <div class="table-container" id="countries">
             <table class=" table table-hover mt-2" id="country-table">
                 <thead class="text-left font-educ">
                     <tr class="text-left font-educ">
@@ -134,7 +128,7 @@
                                     data-target="#editCountryModal{{ $country->id }}">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
-                                @if (Auth::user()->role == 'Admin')
+                                {{-- @if (Auth::user()->role == 'Admin')
                                     <a class="btn hover-action" data-toggle="modal" data-target="#deleteModal"
                                         data-entity-id="{{ $country->id }}" data-entity-type="Country"
                                         data-section="admin">
@@ -146,7 +140,7 @@
                                         data-section="sales-admin">
                                         <i class="fa-solid fa-trash"></i>
                                     </a>
-                                @endif
+                                @endif --}}
                             </td>
                         </tr>
                     @empty
@@ -266,32 +260,15 @@
             </div>
         </div>
     </div>
-    @error('country-name')
-        <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content rounded-0">
-                    <div class="modal-header"
-                        style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%);
-                            border:none;border-top-left-radius: 0; border-top-right-radius: 0;">
-                        <h5 class="modal-title" id="errorModalLabel" style="color: #91264c;">Success</h5>
-                    </div>
-                    <div class="modal-body text-center font-educ">
-                        {{ $message }}
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @enderror
     <script>
         $(document).ready(function() {
             @if (session('success'))
                 $('#successModal').modal('show');
             @endif
             @error('country-name')
+                $('#errorModal').modal('show');
+            @enderror
+            @error('bu-name')
                 $('#errorModal').modal('show');
             @enderror
         });
@@ -304,9 +281,9 @@
             const showBUButton = document.getElementById('show-bu');
             const showCountryButton = document.getElementById('show-country');
             const buTable = document.getElementById('bu');
-            const countryTable = document.getElementById('country');
+            const countryTable = document.getElementById('countries');
             const addBUButton = document.getElementById('business-unit');
-            const addCountryButton = document.getElementById('countries');
+            const addCountryButton = document.getElementById('addCountryButton');
             const buPagination = document.getElementById('bu-pagination');
             const countryPagination = document.getElementById('country-pagination');
 

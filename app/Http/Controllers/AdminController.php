@@ -649,7 +649,7 @@ class AdminController extends Controller
 
     public function viewBUH()
     {
-        $userData = DB::table('bu_country as bc')
+        $userData = DB::table('bu_country_buh as bc')
             ->join('bu', 'bc.bu_id', '=', 'bu.id')
             ->join('country', 'bc.country_id', '=', 'country.id')
             ->join('buh', 'bc.buh_id', '=', 'buh.id')

@@ -264,11 +264,11 @@
                                                     <!-- Admin can view and select all roles -->
                                                     <option value="Admin" {{ $user->role == 'Admin' ? 'selected' : '' }}>
                                                         Admin</option>
-                                                    <option value="BUH" {{ $user->role == 'BUH' ? 'selected' : '' }}>
+                                                    {{-- <option value="BUH" {{ $user->role == 'BUH' ? 'selected' : '' }}>
                                                         Business Unit Head</option>
                                                     <option value="Sales_Agent"
                                                         {{ $user->role == 'Sales_Agent' ? 'selected' : '' }}>Sales Agent
-                                                    </option>
+                                                    </option> --}}
                                                     <option value="Head" {{ $user->role == 'Head' ? 'selected' : '' }}>
                                                         Head</option>
                                                     <option value="Sales_Admin"
@@ -281,7 +281,7 @@
                                         </div>
                                     </div>
                                     <!-- BUH Inputs -->
-                                    <div class="col-md-12" id="buhDiv">
+                                    {{-- <div class="col-md-12" id="buhDiv">
                                         <div class="form-group">
                                             <label for="headList" class="font-educ">Head</label>
                                             <select name="headList" id="headList" class="form-control fonts">
@@ -310,8 +310,8 @@
                                                 <option value="">Select an Option</option>
                                             </select>
                                         </div>
-                                    </div>
-                                </div>
+                                    </div>--}}
+                                </div> 
                                 <div class="modal-footer" style="border: none">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                     <button type="submit" class="btn"

@@ -44,7 +44,7 @@
                             <h5 class="modal-title" id="successModalLabel" style="color: #91264c"><strong>Success</strong>
                             </h5>
                         </div>
-                        <div class="modal-body" style="color: #91264c;border:none;">
+                        <div class="modal-body text-center" style="color: #91264c;border:none;">
                             {{ Session::get('success') }}
                         </div>
                         <div class="modal-footer" style="border:none;">
@@ -59,10 +59,12 @@
             <div class="table-title d-flex justify-content-between align-items-center mb-3">
                 <div class="d-flex align-items-center">
                     <h2 style="margin: 0 0.5rem 0 0.25rem;" class="font-educ headings">Sales Agents</h2>
+                    @if(Auth::user()->role == 'BUH')
                     <button class="btn hover-action" data-toggle="modal" data-target="#addSalesAgentModal"
                         style="padding: 10px 12px;">
                         <i class="fa-solid fa-square-plus"></i>
                     </button>
+                    @endif
                 </div>
                 <div class="d-flex align-items-center mr-3">
                     <div class="search-box d-flex align-items-center ml-3">
@@ -135,7 +137,7 @@
                     </thead>
                     <tbody class="text-left fonts">
                         <?php $i = ($owner->currentPage() - 1) * $owner->perPage() + 1; ?>
-                        @foreach ($owner as $owners)
+                        @forelse ($owner as $owners)
                             <tr data-status="{{ $owners->status }}">
                                 <td> {{ $i++ }} </td>
                                 <td>{{ $owners->name }}</td>
@@ -203,7 +205,11 @@
                                     </a> --}}
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="10" class="text-center">No Sale Agent Available.</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

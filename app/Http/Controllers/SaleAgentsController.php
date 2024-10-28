@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BU;
 use App\Models\Contact;
 use App\Models\ContactArchive;
 use App\Models\ContactDiscard;
@@ -37,10 +38,11 @@ class SaleAgentsController extends Controller
             // Log the count of unassigned contacts for Head role
             Log::info("Total of unassigned contacts: " . $contact);
         }
-         else {
+        else {
             // If the user is Admin, show all owners
             $owner = SaleAgent::paginate(10);
             $contact = Contact::get();
+            $bu = BU::get();
         }
 
         // Get Hubspot sales agents
@@ -51,7 +53,8 @@ class SaleAgentsController extends Controller
             'owner' => $owner,
             'user' => $user,
             'hubspotSalesAgents' => $hubspotSalesAgents,
-            'contact' => $contact
+            'contact' => $contact,
+            'bu' => $bu
         ]);
     }
 

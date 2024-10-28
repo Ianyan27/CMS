@@ -27,9 +27,9 @@ class SaleAgent extends Model
     ];
 
     // Sale Agent belongs to a single BU Country
-    public function buCountry()
+    public function buCountryBuh()
     {
-        return $this->belongsTo(BuCountry::class, 'bu_country_id');
+        return $this->belongsTo(BuCountryBUH::class, 'bu_country_id');
     }
 
     public function contacts()

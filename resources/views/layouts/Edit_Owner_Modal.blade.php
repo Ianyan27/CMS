@@ -44,11 +44,19 @@
                             <div class="form-group">
                                 <label class="font-educ" for="business-unit">Business Unit</label>
                                 <input type="text" class="form-control fonts" id="business-unit" name="business_unit"
-                                    value="{{ $owner->business_unit }}" required>
+                                    value="{{ $owner->business_unit }}" readonly>
                             </div>
                             <div class="form-group">
                                 <label class="font-educ" for="country">Country</label>
-                                <select name="country" class="form-control fonts" id="country" required>
+                                <select name="country" id="country" class="form-control fonts">
+                                    @foreach ($countries as $country)
+                                        <option value="{{ $country->name }}" 
+                                            {{ $country->name == $owner->nationality ? 'selected' : '' }}> 
+                                            {{ $country->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                {{-- <select name="country" class="form-control fonts" id="country" required>
                                     <option value=" {{ $owner->country }} ">Select a country</option>
                                     <option value="Afghanistan">Afghanistan</option>
                                     <option value="Albania">Albania</option>
@@ -245,7 +253,7 @@
                                     <option value="Yemen">Yemen</option>
                                     <option value="Zambia">Zambia</option>
                                     <option value="Zimbabwe">Zimbabwe</option>
-                                </select>
+                                </select> --}}
                             </div>
                         </div>
                     </div>

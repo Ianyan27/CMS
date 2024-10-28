@@ -12,6 +12,7 @@ use App\Models\Owner;
 use App\Models\SaleAgent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class SaleAdminController extends Controller
@@ -93,41 +94,73 @@ class SaleAdminController extends Controller
 
     public function getBUHByCountry(Request $request)
     {
-        // Validate the incoming request
-        $request->validate([
-            'country' => 'required|string',
-            'business_unit' => 'required|string',
+        // Log the start of the request
+        Log::info('getBUHByCountry function called', [
+            'country' => $request->input('country'),
+            'business_unit' => $request->input('business_unit')
         ]);
+
+        // Validate the incoming request
+        try {
+            $request->validate([
+                'country' => 'required|string',
+                'business_unit' => 'required|string',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Validation failed for getBUHByCountry', ['errors' => $e->errors()]);
+            return response()->json(['error' => 'Invalid input data', 'details' => $e->errors()], 422);
+        }
 
         // Get country and business unit from request
         $countryName = $request->input('country');
         $businessUnitName = $request->input('business_unit');
 
-        // Find the corresponding BU
-        $bu = BU::where('name', $businessUnitName)->first();
-        if (!$bu) {
-            return response()->json(['error' => 'Business Unit not found'], 404);
+        try {
+            // Find the corresponding BU
+            $bu = BU::where('name', $businessUnitName)->first();
+            Log::info("BU: " . $bu);
+            if (!$bu) {
+                Log::warning('Business Unit not found', ['business_unit' => $businessUnitName]);
+                return response()->json(['error' => 'Business Unit not found'], 404);
+            }
+
+            // Find the country
+            $country = Country::where('name', $countryName)->first();
+            Log::info("Countries: " . $country);
+            if (!$country) {
+                Log::warning('Country not found', ['country' => $countryName]);
+                return response()->json(['error' => 'Country not found'], 404);
+            }
+
+            // Retrieve BUHs associated with this BU and country
+            $buhList = BUH::whereHas('buCountriesBuh', function ($query) use ($bu, $country) {
+                $query->where('bu_id', $bu->id)
+                    ->where('country_id', $country->id);
+            })->get()->unique('id'); // Ensure uniqueness based on BUH ID
+
+            // Check if any BUHs were found
+            if ($buhList->isEmpty()) {
+                Log::info('No BUH found for the specified country and business unit', [
+                    'country' => $countryName,
+                    'business_unit' => $businessUnitName
+                ]);
+                return response()->json(['error' => 'No BUH found for the specified country and business unit'], 404);
+            }
+
+            // Return the list of unique BUHs as JSON
+            Log::info('BUH retrieval successful', [
+                'country' => $countryName,
+                'business_unit' => $businessUnitName,
+                'buh_count' => $buhList->count()
+            ]);
+            return response()->json(['buh' => $buhList]);
+        } catch (\Exception $e) {
+            Log::error('Unexpected error in getBUHByCountry', [
+                'error_message' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString()
+            ]);
+            return response()->json(['error' => 'An unexpected error occurred. Please try again later.'], 500);
         }
-
-        // Find the country
-        $country = Country::where('name', $countryName)->first();
-        if (!$country) {
-            return response()->json(['error' => 'Country not found'], 404);
-        }
-
-        // Retrieve BUHs associated with this BU and country
-        $buhList = BUH::whereHas('buCountries', function ($query) use ($bu, $country) {
-            $query->where('bu_id', $bu->id)
-                ->where('country_id', $country->id);
-        })->get()->unique('id'); // Ensure uniqueness based on BUH ID
-
-        // Check if any BUHs were found
-        if ($buhList->isEmpty()) {
-            return response()->json(['error' => 'No BUH found for the specified country and business unit'], 404);
-        }
-
-        // Return the list of unique BUHs as JSON
-        return response()->json(['buh' => $buhList]);
     }
 
     public function saveCountry(Request $request)
@@ -151,8 +184,12 @@ class SaleAdminController extends Controller
     public function saveBU(Request $request)
     {
         $request->validate([
-            'bu-name' => 'required',
-            'country' => 'required|array|min:1',  // Ensure at least one country is selected
+            'bu-name' => 'required|string|max:255|unique:bu,name', // Validates uniqueness in the 'bu' table, 'name' column
+            'country' => 'required|array|min:1',                   // Ensures 'country' is an array with at least one selection
+        ], [
+            'bu-name.unique' => 'The Business Unit already exists.', // Custom error message for unique validation
+            'country.required' => 'Please select at least one country.', // Add custom error for missing country selection
+            'country.min' => 'Please select at least one country.' // Custom error for min selection in case array is empty
         ]);
 
         // Create the new Business Unit

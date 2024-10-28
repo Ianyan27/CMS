@@ -83,8 +83,8 @@
                             <h5 class="fonts text-truncate" id="business-unit">{{ $buhData->bu_name }}</h5>
                         </div>
                         <div class="form-group mb-3">
-                            <label class="font-educ" for="countries">Country</label>
-                            <h5 class="fonts text-truncate" id="countries">{{ $buhData->country_name }}</h5>
+                            <label class="font-educ" for="country">Country</label>
+                            <h5 class="fonts text-truncate" id="country">{{ $buhData->country_name }}</h5>
                         </div>
                         <div class="form-group mb-3">
                             <label class="font-educ" for="nationality">Nationality</label>
@@ -321,7 +321,7 @@
                             <div class="mb-3">
                                 <label for="email{{ $buhData->id }}" class="form-label font-educ">Email</label>
                                 <input type="email" class="form-control" name="email" id="email{{ $buhData->id }}"
-                                    value="{{ $buhData->buh_email }}" required>
+                                    value="{{ $buhData->buh_email }}" readonly>
                             </div>
                             <div class="mb-3">
                                 <label for="nationality{{ $buhData->id }}"
