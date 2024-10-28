@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\BU;
+use App\Models\BuCountry;
 use App\Models\Contact;
 use App\Models\ContactArchive;
 use App\Models\ContactDiscard;
+use App\Models\Country;
 use App\Models\SaleAgent;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -125,6 +127,24 @@ class SaleAgentsController extends Controller
             $id
         )->paginate(50);
 
+        $bus = BU::where('name', $owner->business_unit)->get(); // Get all BUs matching the name
+        Log::info("BUs: " . $bus);
+
+        $countries = collect(); // Initialize a collection to store all countries for the BU
+
+        foreach ($bus as $bu) {
+            $buCountries = BuCountry::where('bu_id', $bu->id)->get(); // Get all BuCountry records for each BU
+
+            foreach ($buCountries as $buCountry) {
+                $country = Country::where('id', $buCountry->country_id)->first(); // Retrieve each Country by ID
+                if ($country) {
+                    $countries->push($country); // Add the country to the collection
+                }
+            }
+        }
+
+        Log::info('All countries for the BU: ' . $countries);
+
         // Pass the data to the view
         return view('Edit_Owner_Detail_Page', [
             'totalContacts' => $totalContacts,
@@ -133,7 +153,8 @@ class SaleAgentsController extends Controller
             'ownerContacts' => $ownerContacts,
             'ownerArchive' => $ownerArchive,
             'ownerDiscard' => $ownerDiscard,
-            'owner' => $owner
+            'owner' => $owner,
+            'countries' => $countries
         ]);
     }
 
