@@ -5,13 +5,13 @@
 @section('content')
 
     @if (Auth::check() && Auth::user()->role == 'BUH')
-    <script>
-        $(document).ready(function() {
-            $('#successModal').modal('show');
-            $('#errorModal').modal('show');
-        });
-    </script>
-    @if (Session::has('error'))
+        <script>
+            $(document).ready(function() {
+                $('#successModal').modal('show');
+                $('#errorModal').modal('show');
+            });
+        </script>
+        @if (Session::has('error'))
             <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -60,8 +60,11 @@
                         <select id="country" class="w-100 country search-bar" name="country">
                             <option value="" selected disabled>Select Country</option>
                             @foreach ($countries as $country)
-                                <option value="{{ $country }}">{{ $country }}</option>
+                                <option value="{{ $country->country_name }}">
+                                    {{ $country->bu_name }} - {{ $country->country_name }}
+                                </option>
                             @endforeach
+
                         </select>
                     </div>
                     <div id="platform-container">
@@ -292,8 +295,8 @@
 
 
 
-       //show download promt
-       function showDownloadPrompt(valid_count, invalid_count, duplicate_count, unselected_country_count, total_count,
+        //show download promt
+        function showDownloadPrompt(valid_count, invalid_count, duplicate_count, unselected_country_count, total_count,
             invalid_rows_link,
             duplicate_rows_link, unselected_country_rows_link) {
             // Create the modal element

@@ -47,50 +47,33 @@ class SaleAdminController extends Controller
 
     public function getBUData(Request $request)
     {
-        // Validate that the business_unit is provided as a string
+        // Validate that business_unit is an array of strings
         $request->validate([
-            'business_unit' => 'required|string',
+            'business_unit' => 'required|array',
+            'business_unit.*' => 'string',
         ]);
 
-        // Get the name of the Business Unit from the request
-        $buName = $request->get('business_unit');
+        $countryNames = collect();
 
-        // Find the Business Unit by its name
-        $bu = BU::where('name', $buName)->first();
+        foreach ($request->get('business_unit') as $buName) {
+            $bu = BU::where('name', $buName)->first();
+            if (!$bu) continue;
 
-        // If no BU is found, return an error response
-        if (!$bu) {
-            return response()->json(['error' => 'Business Unit not found'], 404);
+            $buCountries = BuCountry::with('country')
+                ->where('bu_id', $bu->id)
+                ->get();
+
+            $countryNames = $countryNames->merge($buCountries->pluck('country.name'));
         }
 
-        // Get the corresponding BU ID
-        $buId = $bu->id;
+        // Remove duplicates
+        $countryNames = $countryNames->unique()->values()->toArray();
 
-        // Retrieve BuCountry records related to this BU
-        $buCountries = BuCountry::with('country')
-            ->where('bu_id', $buId)
-            ->get();
-
-        // Extract unique country names related to this BU
-        $countryNames = $buCountries->pluck('country.name')->unique()->values()->toArray();
-
-        // Find BUHs associated with this BU through BuCountry relationship
-        // Assuming BUH is related to BuCountry through `bu_country_id` or similar
-        $buhList = BUH::whereIn('id', function ($query) use ($buId) {
-            $query->select('buh_id')
-                ->from('bu_country_buh') // Assuming a pivot table `bu_country_buh`
-                ->where('country_id', $buId);
-        })->get();
-
-        // Prepare the response by extracting the unique country names and BUH names
-        $response = [
-            'countries' => $countryNames,
-            'buh' => $buhList->pluck('name'), // Get the names of the BUHs related to this BU
-        ];
-
-        // Return the response as JSON
-        return response()->json($response);
+        return response()->json([
+            'countries' => $countryNames
+        ]);
     }
+
 
     public function getBUHByCountry(Request $request)
     {

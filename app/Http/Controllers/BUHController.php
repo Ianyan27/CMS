@@ -37,7 +37,11 @@ class BUHController extends Controller
     public function index()
     {
         $userEmail = Auth::user()->email;
-        $buh = BUH::where("email", $userEmail)->first();
+
+        // Retrieve BUH data based on the authenticated user's email
+        $buh = BUH::where("email", $userEmail)->firstOrFail(); // Use firstOrFail to handle null values
+
+        // Fetch the BU and Country data related to this BUH
         $buhData = DB::table('bu_country_buh as bc')
             ->join('bu', 'bc.bu_id', '=', 'bu.id')
             ->join('country', 'bc.country_id', '=', 'country.id')
@@ -52,14 +56,14 @@ class BUHController extends Controller
             )
             ->where('bc.buh_id', $buh->id)
             ->get();
-        // Get the BUH country
-        Log::info($buhData);
-        $buhCountries = $buhData->pluck('country_name');
 
-        Log::info($buhCountries);
+        Log::info($buhData); // Log data to verify
 
-        return view('csv_import_form', ['countries' => $buhCountries]);
+        return view('csv_import_form', [
+            'countries' => $buhData,
+        ]);
     }
+
 
     public function import(Request $request)
     {
@@ -354,7 +358,7 @@ class BUHController extends Controller
             $contacts = Contact::where('fk_contacts__sale_agent_id', $owner_pid)->get();
             $archivedContacts = ContactArchive::where('fk_contact_archives__owner_pid', $owner_pid)->get();
             $discardedContacts = ContactDiscard::where('fk_contact_discards__owner_pid', $owner_pid)->get();
-        }elseif($user->role == 'Head'){
+        } elseif ($user->role == 'Head') {
             $contacts = Contact::where('fk_contacts__sale_agent_id', $owner_pid)->get();
             $archivedContacts = ContactArchive::where('fk_contact_archives__owner_pid', $owner_pid)->get();
             $discardedContacts = ContactDiscard::where('fk_contact_discards__owner_pid', $owner_pid)->get();
@@ -421,7 +425,7 @@ class BUHController extends Controller
 
             if ($user->role === 'BUH') {
                 $userId = BUH::where("email", $user->email)->get()->first();
-            }else if($user->role === 'BUH'){
+            } else if ($user->role === 'BUH') {
                 $userId = BUH::where("email", $user->email)->get()->first();
             } else {
                 $buCountry = $owner->buCountry;

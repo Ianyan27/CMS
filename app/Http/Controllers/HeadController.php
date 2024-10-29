@@ -60,34 +60,34 @@ class HeadController extends Controller
     }
 
     public function viewUser()
-{
-    $userData = DB::table('bu_country_buh as bc')
-        ->join('bu', 'bc.bu_id', '=', 'bu.id')
-        ->join('country', 'bc.country_id', '=', 'country.id')
-        ->join('buh', 'bc.buh_id', '=', 'buh.id')
-        ->select(
-            'bc.id as id',
-            'bu.name as bu_name',
-            'country.name as country_name',
-            'buh.name as buh_name',
-            'buh.email as buh_email',
-            'buh.nationality'
-        )
-        ->paginate(10);
+    {
+        $userData = DB::table('bu_country_buh as bc')
+            ->join('bu', 'bc.bu_id', '=', 'bu.id')
+            ->join('country', 'bc.country_id', '=', 'country.id')
+            ->join('buh', 'bc.buh_id', '=', 'buh.id')
+            ->select(
+                'bc.id as id',
+                'bu.name as bu_name',
+                'country.name as country_name',
+                'buh.name as buh_name',
+                'buh.email as buh_email',
+                'buh.nationality'
+            )
+            ->paginate(10);
 
-    // Pass the results to the view
-    return view('Head_page', [
-        'userData' => $userData,
-        'businessUnit' => BU::with('countries')->get()
-    ]);
-}
+        // Pass the results to the view
+        return view('Head_page', [
+            'userData' => $userData,
+            'businessUnit' => BU::with('countries')->get()
+        ]);
+    }
 
     // Save a new user
     public function saveUser(Request $request)
     {
         $headId = Auth::id();
         $domainRegex = 'lithan.com|educlaas.com|learning.educlaas.com';
-    
+
         // Validate the request data
         $validatedData = $request->validate([
             'name' => 'required|string|min:3|max:50',
@@ -96,7 +96,7 @@ class HeadController extends Controller
                 'string',
                 'email',
                 'max:255',
-                'unique:users', // Ensures the email is unique in the users table
+                'unique:users',
                 function ($attribute, $value, $fail) use ($domainRegex) {
                     if (!preg_match('/@(' . $domainRegex . ')$/', $value)) {
                         $fail('The email address must be one of the following domains: ' . str_replace('|', ', ', $domainRegex));
@@ -104,11 +104,13 @@ class HeadController extends Controller
                 }
             ],
             'nationality' => 'required|string|max:255',
-            'business_unit' => 'required|string',
+            'business_unit' => 'required|array|min:1', // Validate as array
+            'business_unit.*' => 'string', // Validate each entry in the business unit array
             'country' => 'required|array|min:1',
+            'country.*' => 'string', // Validate each entry in the country array
         ]);
-    
-        // Start a database transaction to ensure atomicity
+
+        // Start a database transaction
         DB::beginTransaction();
         try {
             // Check if the user already exists
@@ -116,53 +118,58 @@ class HeadController extends Controller
             if ($existingUser) {
                 return redirect()->back()->withErrors(['email' => 'User with this email already exists.']);
             }
-    
-            // Create the user only once
+
+            // Create the user
             $user = new User();
             $user->name = $validatedData['name'];
             $user->email = $validatedData['email'];
             $user->role = $request->input('role');
             $user->password = bcrypt('default');
             $user->save();
-    
-            // Create the BUH entry only once
+
+            // Create the BUH entry
             $buh = new BUH();
             $buh->name = $validatedData['name'];
             $buh->email = $validatedData['email'];
             $buh->nationality = $validatedData['nationality'];
             $buh->head_id = $headId;
             $buh->save();
-    
-            // Fetch the business unit
-            $bu = BU::where('name', $validatedData['business_unit'])->first();
-            if (!$bu) {
-                DB::rollBack();
-                return redirect()->back()->withErrors(['business_unit' => 'Business Unit not found.']);
-            }
-    
+
             // Get country IDs for the provided country names
             $countryIds = Country::whereIn('name', $validatedData['country'])->pluck('id');
-    
-            // Link BUH to multiple countries in the `bu_country_buh` table
-            foreach ($countryIds as $countryId) {
-                $buCountryBUH = new BuCountryBUH();
-                $buCountryBUH->bu_id = $bu->id;
-                $buCountryBUH->country_id = $countryId;
-                $buCountryBUH->buh_id = $buh->id;
-                $buCountryBUH->save();
+
+            // Loop through each business unit in the validated data
+            foreach ($validatedData['business_unit'] as $buName) {
+                // Fetch the business unit by name
+                $bu = BU::where('name', $buName)->first();
+
+                // If the business unit is found, proceed
+                if ($bu) {
+                    // Link BUH to multiple countries in the `bu_country_buh` table
+                    foreach ($countryIds as $countryId) {
+                        $buCountryBUH = new BuCountryBUH();
+                        $buCountryBUH->bu_id = $bu->id;
+                        $buCountryBUH->country_id = $countryId;
+                        $buCountryBUH->buh_id = $buh->id;
+                        $buCountryBUH->save();
+                    }
+                } else {
+                    // Rollback if any BU is not found
+                    DB::rollBack();
+                    return redirect()->back()->withErrors(['business_unit' => "Business Unit '{$buName}' not found."]);
+                }
             }
-    
+
             // Commit the transaction
             DB::commit();
             return redirect()->back()->with('success', 'User added successfully!');
-            
         } catch (\Exception $e) {
             // Rollback transaction if there is an error
             DB::rollBack();
             return redirect()->back()->withErrors(['error' => 'An error occurred while creating the user.']);
         }
     }
-    
+
 
 
     // Edit user details

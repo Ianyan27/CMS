@@ -27,6 +27,25 @@
             margin-left: 5px;
             cursor: pointer;
         }
+
+        .selected-countries .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5em 1em;
+            margin: 0.25em;
+            background-color: #007bff;
+            /* Bootstrap primary color */
+            color: white;
+            border-radius: 1em;
+        }
+
+        .selected-countries .close {
+            background: transparent;
+            border: none;
+            color: white;
+            /* Close button color */
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -374,14 +393,15 @@
                             </div>
                             <div class="form-group">
                                 <label for="bu">Business Unit (BU)</label>
-                                <select id="buDropdown" class="form-control platforms search-bar" name="business_unit"
-                                    onchange="updateCountryDropdown(); ">
+                                <select id="buDropdown" class="form-control platforms search-bar" name="business_unit">
                                     <option value="">Select BU</option>
                                     @foreach ($businessUnit as $bu)
                                         <option value="{{ $bu->name }}">{{ $bu->name }}</option>
                                     @endforeach
                                 </select>
-                                @error('bu_id')
+                                <div id="selectedbu" class="selected-countries mt-2"></div>
+                                <!-- Container for selected BUs -->
+                                @error('business_unit')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>
@@ -389,11 +409,7 @@
                                 <label class="font-educ d-block" for="countryDropdown">Select Countries</label>
                                 <select id="countryDropdown" class="form-control platforms search-bar" name="country">
                                     <option value="">Select Country</option>
-                                    @foreach ($countries as $country)
-                                        <option value="{{ $country->id }}"> {{ $country->name }} </option>
-                                    @endforeach
                                 </select>
-                                <!-- Container for displaying selected countries as chips -->
                                 <div id="selectedCountries" class="selected-countries mt-2"></div>
                             </div>
                     </div>
@@ -416,6 +432,7 @@
 
     <script src="{{ asset('js/add_agent_validation.js') }}"></script>
     <script src=" {{ URL::asset('js/country_selection.js') }} "></script>
+    <script src=" {{ URL::asset('js/bu_selection.js') }} "></script>
     <script>
         function toggleSort(downIconId, upIconId) {
             const sortDown = document.getElementById(downIconId);
@@ -473,113 +490,100 @@
                 rows[i].querySelectorAll("td")[0].innerText = offset + i;
             }
         }
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            const buDropdown = document.getElementById("buDropdown");
+            const selectedbuContainer = document.getElementById("selectedbu");
+            const selectedbu = new Map(); // Stores selected BUs by ID
+            const countryDropdown = document.getElementById("countryDropdown");
 
-        function updateCountryDropdown() {
-            const buDropdown = document.getElementById('buDropdown');
-            const selectedBU = buDropdown.value;
-            const countryDropdown = document.getElementById('countryDropdown');
+            // Event listener for dropdown selection
+            buDropdown.addEventListener("change", function() {
+                const selectedbuId = buDropdown.value;
+                const selectedbuName = buDropdown.options[buDropdown.selectedIndex].text;
 
-            countryDropdown.innerHTML = '<option value="" selected disabled>Select Country</option>';
+                // Only add if the BU is not already selected
+                if (selectedbuId && !selectedbu.has(selectedbuId)) {
+                    selectedbu.set(selectedbuId, selectedbuName);
+                    displaySelectedbu();
+                    fetchCountryData(); // Fetch data each time a new BU is selected
+                }
 
-            if (!selectedBU) return;
+                // Reset dropdown to default state after selection
+                buDropdown.value = "";
+            });
 
-            console.log("Fetching BU data for:", selectedBU);
-            fetch(`{{ route('get.bu.data') }}`, {
-                    method: 'POST', // Use POST method
-                    headers: {
-                        'Content-Type': 'application/json', // Specify the content type
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token for Laravel
-                    },
-                    body: JSON.stringify({
-                        business_unit: selectedBU
-                    }) // Send the selected BU in the request body
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json(); // Parse response as JSON
-                })
-                .then(data => {
-                    // Log the complete data received from the server to inspect its structure
-                    console.log("Complete data received from server:", data);
-                    console.log("buh: ", data.buh[0]);
+            // Function to display selected BUs as chips
+            function displaySelectedbu() {
+                selectedbuContainer.innerHTML = ""; // Clear the container
 
-                    // $.each(buhData, function(index, value) {
-                    //     $('#buhDropdown').append(`<option value="${value.id}">${value.name}</option>`);
-                    // });
-                    // Update country dropdown
-                    data.countries.forEach(country => {
-                        const option = document.createElement('option');
-                        option.value = country;
-                        option.textContent = country;
-                        countryDropdown.appendChild(option);
+                selectedbu.forEach((name, id) => {
+                    const chip = document.createElement("div");
+                    chip.classList.add("country-chip");
+                    chip.innerHTML = `
+                ${name} 
+                <button type="button" class="remove-btn" data-id="${id}">×</button>
+                <input type="hidden" name="business_unit[]" value="${id}">
+            `;
+                    selectedbuContainer.appendChild(chip);
+                });
+
+                // Add event listeners for each remove button
+                document.querySelectorAll(".remove-btn").forEach((button) => {
+                    button.addEventListener("click", function() {
+                        const buId = this.getAttribute("data-id");
+                        selectedbu.delete(buId);
+                        displaySelectedbu();
+                        fetchCountryData(); // Fetch data after removing a BU
                     });
-
-                })
-                .catch(error => console.error('Error fetching BU data:', error));
-        }
-
-        function updateCountryDropdowninEdit(id) {
-            const buDropdown = document.getElementById(`buDropdowninedit${id}`);
-            const selectedBU = buDropdown.value;
-            const countryDropdown = document.getElementById(`countryDropdown${id}`);
-
-            countryDropdown.innerHTML = '<option value="" selected disabled>Select Country</option>';
-
-            if (!selectedBU) return;
-
-            fetch(`{{ route('get.bu.data') }}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        business_unit: selectedBU
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    data.countries.forEach(country => {
-                        const option = document.createElement('option');
-                        option.value = country;
-                        option.textContent = country;
-                        countryDropdown.appendChild(option);
-                    });
-                })
-                .catch(error => console.error('Error fetching BU data:', error));
-        }
-
-        function updateSelectedCountryAndBuh() {
-            const countryDropdown = document.getElementById('countryDropdown');
-            const selectedCountry = countryDropdown.value;
-
-            document.getElementById('selectedCountry').textContent = selectedCountry || 'None';
-
-            const buhDropdown = document.getElementById('buhDropdown');
-            const buhValue = buhDropdown.value;
-
-            if (buhValue) {
-                const option = document.createElement('option');
-                option.value = buhValue;
-                option.textContent = buhValue;
-                buhDropdown.appendChild(option);
-                buhDropdown.value = buhValue;
-                document.getElementById('selectedBUH').textContent = buhValue;
-            } else {
-                document.getElementById('selectedBUH').textContent = 'None';
+                });
             }
-        }
 
-        function hideAll() {
-            document.getElementById('country-container').classList.add('d-none');
-            document.getElementById('buh-container').classList.add('d-none');
-            document.getElementById('import-container').classList.add('d-none');
-        }
+            // Function to fetch country data for all selected BUs
+            function fetchCountryData() {
+                const selectedBUs = Array.from(selectedbu.keys()); // Convert Map keys to array
 
-        document.addEventListener('DOMContentLoaded', function() {
-            hideAll();
+                // Clear existing country options
+                countryDropdown.innerHTML = '<option value="" selected disabled>Select Country</option>';
+
+                // Skip fetching if no BUs are selected
+                if (selectedBUs.length === 0) return;
+
+                fetch(`{{ route('get.bu.data') }}`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                        },
+                        body: JSON.stringify({
+                            business_unit: selectedBUs // Send all selected BU names
+                        }),
+                    })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error("Network response was not ok");
+                        }
+                        return response.json();
+                    })
+                    .then((data) => {
+                        console.log("Complete data received from server:", data);
+
+                        // Populate the country dropdown with the data
+                        if (data.countries && data.countries.length) {
+                            data.countries.forEach((country) => {
+                                const option = document.createElement("option");
+                                option.value = country;
+                                option.textContent = country;
+                                countryDropdown.appendChild(option);
+                            });
+                        } else {
+                            console.warn("No countries found for selected BUs.");
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error fetching BU data:", error);
+                    });
+            }
         });
     </script>
     <script src=" {{ asset('js/search_input.js') }}"></script>
