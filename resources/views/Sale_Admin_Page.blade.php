@@ -640,7 +640,7 @@
         <div style="display: flex; align-items: center;">
              ${duplicate_rows_link ? `<a href="${duplicate_rows_link}" id="download-duplicate-btn" style="color: #007bff; text-decoration: underline; margin-left: 10px;">Download</a>` : ''}
         
-            <strong style="margin-left: 10px;">${duplicate_count}</strong>
+            <strong style="margin-left: 10px;">${duplicate_count}</strong> 
         </div>
     </div>
     <hr style="margin: 10px 0;">
