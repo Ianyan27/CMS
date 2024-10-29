@@ -82,12 +82,26 @@
                                 <select class="form-control fonts" name="businessUnit" id="businessUnit" required>
                                     <option value="">Select Business Unit</option>
                                     @foreach ($bu as $businessUnit)
-                                        <option value=" {{ $businessUnit }} "> {{ $businessUnit }} </option>
+                                        <option value="{{ $businessUnit }}">{{ $businessUnit }}</option>
                                     @endforeach
                                 </select>                           
                             </div>
                         </div>
                         <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="country" class="font-educ">Country</label>
+                                <select class="form-control fonts" name="country" id="country" required>
+                                    <option value="">Select Country</option>
+                                    @foreach ($countries as $country)
+                                        <option value="{{ $country['country_name'] }}">
+                                            {{ $country['country_name'] . ' - ' . $country['bu_name'] }}
+                                        </option>
+                                    @endforeach
+                                </select>                           
+                            </div>
+                        </div>
+                        
+                        {{-- <div class="col-md-6">
                             <div class="form-group">
                                 <label class="font-educ" for="country">Country</label>
                                 <select name="country" class="form-control fonts" id="country" required>
@@ -289,7 +303,7 @@
                                     <option value="Zimbabwe">Zimbabwe</option>
                                 </select>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="modal-footer" style="border: none">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

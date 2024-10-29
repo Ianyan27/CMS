@@ -28,7 +28,7 @@ Route::post('/get-bu-data', [
     'getBUData'
 ])->name('get.bu.data');
 
-Route::post('/get-bu-data', [
+Route::post('/get-bu-data-import', [
     SaleAdminController::class,
     'getBUDataImport'
 ])->name('get.bu.data.import');

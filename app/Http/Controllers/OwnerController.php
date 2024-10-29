@@ -37,18 +37,32 @@ class OwnerController extends Controller
 
         // Define the query for SaleAgents
         $query = SaleAgent::query();
+        $bu = []; // Initialize $bu as an array to store business unit names
+        $countries = []; // Initialize $countries as an array to store country and BU names
 
         // Check if the user is a BUH, Head, or Admin
         if ($user->role === 'BUH') {
             // Get the BUH's country ID
-            $buhId = BUH::where('email', $user->email)->first();
-            $buCountry = BuCountryBUH::where('buh_id', $buhId->id)->first();
-            $bu = BU::where('id', $buCountry->bu_id)->pluck('name');
-            Log::info("BUH's Country: " . $buCountry . "Business Unit: " . $bu);
+            $buh = BUH::where('email', $user->email)->first();
+            Log::info('BUH: ' . $buh);
+            $buCountries = BuCountryBUH::where('buh_id', $buh->id)->get();
+            Log::info('BU Country:' . $buCountries);
+
+            // Collect business unit names and country names with BU names
+            foreach ($buCountries as $buCountry) {
+                $buName = BU::where('id', $buCountry->bu_id)->pluck('name')->first();
+                $countryName = Country::where('id', $buCountry->country_id)->pluck('name')->first();
+                Log::info("BUH's Country ID: " . $buCountry->country_id . " | Business Unit: " . $buName);
+                $bu[] = $buName; // Add BU name to the array
+                $countries[] = [
+                    'country_name' => $countryName,
+                    'bu_name' => $buName
+                ];
+            }
 
             // Filter sale agents by the BUH's country
-            $query->where('bu_country_id', $buCountry->id);
-        } else if ($user->role === 'Head') {
+            $query->whereIn('bu_country_id', $buCountries->pluck('id')->toArray());
+        } elseif ($user->role === 'Head') {
             // Filter sale agents by the Head's ID
             $query = DB::table('sale_agent as sa')
                 ->join('bu_country as bc', 'sa.bu_country_id', '=', 'bc.id')
@@ -71,9 +85,11 @@ class OwnerController extends Controller
             'user' => $user,
             'hubspotSalesAgents' => $hubspotSalesAgents,
             'contact' => $contact,
-            'bu' => $bu
+            'bu' => array_unique($bu), // Remove duplicates
+            'countries' => $countries // Pass country-BU pairs
         ]);
     }
+
 
     protected function getHubspotSalesAgents()
     {
