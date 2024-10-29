@@ -180,7 +180,7 @@
 
             // Fetch the countries and BUH from the server
             console.log("Fetching BU data for:", selectedBU);
-            fetch(`{{ route('get.bu.data') }}`, {
+            fetch(`{{ route('get.bu.data.import') }}`, {
                     method: 'POST', // Use POST method
                     headers: {
                         'Content-Type': 'application/json', // Specify the content type

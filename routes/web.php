@@ -28,6 +28,11 @@ Route::post('/get-bu-data', [
     'getBUData'
 ])->name('get.bu.data');
 
+Route::post('/get-bu-data', [
+    SaleAdminController::class,
+    'getBUDataImport'
+])->name('get.bu.data.import');
+
 Route::post('/get-buh-by-country', [
     SaleAdminController::class,
     'getBUHByCountry'
