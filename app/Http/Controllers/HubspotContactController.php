@@ -103,9 +103,9 @@ class HubspotContactController extends Controller
 
                 // Retrieve owner details for the email engagement
                 $owner = DB::table('contacts as c')
-                    ->join('owners as o', 'c.fk_contacts__owner_pid', '=', 'o.owner_pid')
+                    ->join('sale_agent as o', 'c.fk_contacts__sale_agent_id', '=', 'o.id')
                     ->where('c.contact_pid', $contact->contact_pid)
-                    ->select('o.owner_name', 'o.owner_email_id')
+                    ->select('o.name', 'o.email')
                     ->first();
 
                 //for whatsapp activity
@@ -190,8 +190,8 @@ class HubspotContactController extends Controller
                             "subject" => "Connected Via Mail",
                             "text" => $engagement->details,
                             "from" => [
-                                "email" => $owner->owner_email_id,
-                                "firstName" => $owner->owner_name
+                                "email" => $owner->email,
+                                "firstName" => $owner->name
                             ]
                         ],
                         "associations" => [
