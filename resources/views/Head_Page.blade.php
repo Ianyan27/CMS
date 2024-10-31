@@ -121,7 +121,7 @@
                                 <td>{{ $user->buh_name }}</td> <!-- Displaying BUH -->
                                 <td>{{ $user->buh_email }}</td> <!-- Displaying BUH Email-->
                                 <td>{{ $user->nationality }}</td> <!-- Displaying Nationality -->
-                                <td class="d-flex justify-content-center" style="gap: 10px">
+                                <td class="text-center">
                                     <a class="btn hover-action"
                                         href=" {{ Auth::user()->role == 'Admin'
                                             ? route('admin#view-buh-detail', ['id' => $user->id])
