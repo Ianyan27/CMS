@@ -155,30 +155,39 @@
             <div class="table-container" id="contacts">
                 <table class="table table-hover mt-2" id="contacts-table">
                     <thead class="text-left font-educ">
-                        <tr>
+                        <tr class="text-left font-educ">
                             <th scope="col">No #</th>
                             <th scope="col" id="name-header">Name
-                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name"
-                                    onclick="sortTable('name', 'asc'); toggleSort('sortDown-name', 'sortUp-name')"></i>
-                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name"
-                                    onclick="sortTable('name', 'desc'); toggleSort('sortUp-name', 'sortDown-name')"
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name-first"
+                                    onclick="sortTable('contacts-table','name', 'asc'); toggleSort('sortDown-name-first', 'sortUp-name-first')"></i>
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name-first"
+                                    onclick="sortTable('contacts-table','name', 'desc'); toggleSort('sortUp-name-first', 'sortDown-name-first')"
                                     style="display: none;"></i>
                             </th>
                             <th scope="col" id="email-header">Email
-                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-email"
-                                    onclick="sortTable('email', 'asc'); toggleSort('sortDown-email', 'sortUp-email')"></i>
-                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-email"
-                                    onclick="sortTable('email', 'desc'); toggleSort('sortUp-email', 'sortDown-email')"
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-email-first"
+                                    onclick="sortTable('contacts-table','email', 'asc'); toggleSort('sortDown-email-first', 'sortUp-email-first')"></i>
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-email-first"
+                                    onclick="sortTable('contacts-table','email', 'desc'); toggleSort('sortUp-email-first', 'sortDown-email-first')"
                                     style="display: none;"></i>
                             </th>
                             <th scope="col">Contact
                             </th>
                             <th scope="col">Country
-                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-country"
-                                    onclick="sortTable('country', 'asc'); toggleSort('sortDown-country', 'sortUp-country')"></i>
-                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-country"
-                                    onclick="sortTable('country', 'desc'); toggleSort('sortUp-country', 'sortDown-country')"
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-country-first"
+                                    onclick="sortTable('contacts-table','country', 'asc'); toggleSort('sortDown-country-first', 'sortUp-country-first')"></i>
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-country-first"
+                                    onclick="sortTable('contacts-table','country', 'desc'); toggleSort('sortUp-country-first', 'sortDown-country-first')"
                                     style="display: none;"></i>
+                            </th>
+                            @if (Auth::user()->role === 'Admin')
+                                <!-- Display Sales Agent only for Admins -->
+                                <th>
+                                    Sales Agent
+                                </th>
+                            @endif
+                            <th class=" position-relative" scope="col">
+                                Last Modified
                             </th>
                             <th class=" position-relative" scope="col">
                                 Status
@@ -204,8 +213,9 @@
                                             <label for="hubspot" style="color: #FF5C35;">HubSpot</label>
                                         </div>
                                     </div>
+                                </div>
                             </th>
-                            <th>Actions</th>
+                            <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody class="text-left bg-row fonts">
@@ -288,12 +298,30 @@
             <div class="table-container" id="archive">
                 <table class="table table-hover mt-2" id="archive-table">
                     <thead class="text-left font-educ">
-                        <tr class="text-left">
+                        <tr class="text-left font-educ">
                             <th scope="col">No #</th>
-                            <th scope="col">Name <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
-                            <th scope="col">Email <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
+                            <th scope="col">Name 
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name-second"
+                                    onclick="sortTable('archive-table','name', 'asc'); toggleSort('sortDown-name-second', 'sortUp-name-second')"></i>
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name-second"
+                                    onclick="sortTable('archive-table','name', 'desc'); toggleSort('sortUp-name-second', 'sortDown-name-second')"
+                                    style="display: none;"></i>
+                            </th>
+                            <th scope="col">Email 
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-email-second"
+                                    onclick="sortTable('archive-table','email', 'asc'); toggleSort('sortDown-email-second', 'sortUp-email-second')"></i>
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-email-second"
+                                    onclick="sortTable('archive-table','email', 'desc'); toggleSort('sortUp-email-second', 'sortDown-email-second')"
+                                    style="display: none;"></i>
+                            </th>
                             <th scope="col">Contact</th>
-                            <th scope="col">Country <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
+                            <th scope="col">Country 
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-country-second"
+                                    onclick="sortTable('archive-table','country', 'asc'); toggleSort('sortDown-country-second', 'sortUp-country-second')"></i>
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-country-second"
+                                    onclick="sortTable('archive-table','country', 'desc'); toggleSort('sortUp-country-second', 'sortDown-country-second')"
+                                    style="display: none;"></i>
+                            </th>
                             <th scope="col">
                                 Status
                                 <span class="ml-2" data-bs-toggle="tooltip" data-bs-placement="top"
@@ -301,7 +329,8 @@
                                     <i class="fa-solid fa-info-circle text-muted"></i>
                                 </span>
                             </th>
-                            <th scope="col">Actions</th>
+                            <th scope="col">Action
+                            </th>
                         </tr>
                     </thead>
                     <tbody class="text-left bg-row">
@@ -365,17 +394,36 @@
                     <thead class="font-educ text-left">
                         <tr class="font-educ text-left">
                             <th scope="col">No #</th>
-                            <th scope="col">Name <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
-                            <th scope="col">Email <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
+                            <th scope="col">Name 
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name-third"
+                                    onclick="sortTable('discard-table','name', 'asc'); toggleSort('sortDown-name-third', 'sortUp-name-third')"></i>
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name-third"
+                                    onclick="sortTable('discard-table','name', 'desc'); toggleSort('sortUp-name-third', 'sortDown-name-third')"
+                                    style="display: none;"></i>
+                            </th>
+                            <th scope="col">Email 
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-email-third"
+                                    onclick="sortTable('discard-table','email', 'asc'); toggleSort('sortDown-email-third', 'sortUp-email-third')"></i>
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-email-third"
+                                    onclick="sortTable('discard-table','email', 'desc'); toggleSort('sortUp-email-third', 'sortDown-email-third')"
+                                    style="display: none;"></i>
+                            </th>
                             <th scope="col">Contact</th>
-                            <th scope="col">Country <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a"></i></th>
+                            <th scope="col">Country 
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-country-third"
+                                    onclick="sortTable('discard-table','country', 'asc'); toggleSort('sortDown-country-third', 'sortUp-country-third')"></i>
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-country-third"
+                                    onclick="sortTable('discard-table','country', 'desc'); toggleSort('sortUp-country-third', 'sortDown-country-third')"
+                                    style="display: none;"></i>
+                            </th>
                             <th scope="col">
                                 Status
                                 <span class="ml-2" data-bs-toggle="tooltip" data-bs-placement="top"
                                     title="Status of the contact: Active, Discarded, New, In Progress, Archived">
                                     <i class="fa-solid fa-info-circle text-muted"></i>
                                 </span>
-                            </th>
+                                </td>
+                            <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody class="text-left bg-row">

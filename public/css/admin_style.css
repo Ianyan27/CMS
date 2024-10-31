@@ -596,7 +596,7 @@ label {
 #archive,
 #discard,
 #countries,
-#country-pagination{
+#country-pagination {
     display: none;
 }
 
@@ -945,12 +945,57 @@ input:checked + .slider .status-text {
     color: white;
 }
 
-.bu-buttons{
+.bu-buttons {
     min-width: 100px;
 }
 
-.filter-option{
+.filter-option {
     display: flex;
     justify-content: flex-start;
     gap: 10px;
+}
+
+/* Styling for selected country chips */
+.selected-countries {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.country-chip {
+    display: flex;
+    align-items: center;
+    background-color: #91264c;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 14px;
+}
+
+.country-chip .remove-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 16px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+.selected-countries .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5em 1em;
+    margin: 0.25em;
+    background-color: #007bff;
+    /* Bootstrap primary color */
+    color: white;
+    border-radius: 1em;
+}
+
+.selected-countries .close {
+    background: transparent;
+    border: none;
+    color: white;
+    /* Close button color */
+    cursor: pointer;
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\BU;
 use App\Models\BuCountry;
+use App\Models\BuCountryBUH;
+use App\Models\BUH;
 use App\Models\Contact;
 use App\Models\ContactArchive;
 use App\Models\ContactDiscard;
@@ -17,37 +19,57 @@ use Illuminate\Support\Facades\DB;
 
 class SaleAgentsController extends Controller
 {
-    public function saleAgent(){
+    public function saleAgent()
+    {
         // Get the current authenticated user
         $user = Auth::user();
-        // Check if the user is a BUH or Admin
-        if ($user->role == 'BUH') {
-            // If the user is BUH, filter owners by the BUH's fk_buh
-            $owner = SaleAgent::where('fk_buh', $user->id)->paginate(10);
-            $contact = Contact::where('fk_contacts__owner_pid', null)->count();
-            // $archiveContact = ContactArchive::where('fk_contact_archives__owner_pid', null)->count();
-            // $discardContact = ContactDiscard::where('fk_contact_discards__owner_pid', null)->count();
-            Log::info("Total of unassigned contacts: " . $contact);
-        }else if ($user->role == 'Head'){
-            $owner = DB::table('sale_agent as sa')
-            ->join('bu_country as bc', 'sa.bu_country_id', '=', 'bc.id')
-            ->join('buh', 'buh.id', '=', 'bc.buh_id')
-            ->where('buh.head_id', $user->id)  // Filter by the head's ID
-            ->select('sa.*')  // Select sale agents only
-            ->paginate(10);  // Paginate results
+        Log::info("User : " . $user);
 
-            $contact = Contact::where('fk_contacts__owner_pid', null)->count();
-            // Log the count of unassigned contacts for Head role
-            Log::info("Total of unassigned contacts: " . $contact);
-        }
-        else {
-            // If the user is Admin, show all owners
-            $owner = SaleAgent::paginate(10);
-            $contact = Contact::get();
-            $bu = BU::get();
+        $contact = Contact::where('fk_contacts__owner_pid', null)->count();
+        Log::info("Total of unassigned contacts: " . $contact);
+
+        // Define the query for SaleAgents
+        $query = SaleAgent::query();
+        $bu = []; // Initialize $bu as an array to store business unit names
+        $countries = []; // Initialize $countries as an array to store country and BU names
+
+        // Check if the user is a BUH, Head, or Admin
+        if ($user->role === 'BUH') {
+            // Get the BUH's country ID
+            $buh = BUH::where('email', $user->email)->first();
+            Log::info('BUH: ' . $buh);
+            $buCountries = BuCountryBUH::where('buh_id', $buh->id)->get();
+            Log::info('BU Country:' . $buCountries);
+
+            // Collect business unit names and country names with BU names
+            foreach ($buCountries as $buCountry) {
+                $buName = BU::where('id', $buCountry->bu_id)->pluck('name')->first();
+                $countryName = Country::where('id', $buCountry->country_id)->pluck('name')->first();
+                Log::info("BUH's Country ID: " . $buCountry->country_id . " | Business Unit: " . $buName);
+                $bu[] = $buName; // Add BU name to the array
+                $countries[] = [
+                    'country_name' => $countryName,
+                    'bu_name' => $buName
+                ];
+            }
+
+            // Filter sale agents by the BUH's country
+            $query->whereIn('bu_country_id', $buCountries->pluck('id')->toArray());
+        } elseif ($user->role === 'Head') {
+            // Filter sale agents by the Head's ID
+            $query = DB::table('sale_agent as sa')
+                ->join('bu_country as bc', 'sa.bu_country_id', '=', 'bc.id')
+                ->join('buh', 'buh.id', '=', 'bc.buh_id')
+                ->where('buh.head_id', $user->id)
+                ->select('sa.*');  // Select only sale agents
+
+            Log::info("Filtered sale agents by Head ID: " . $user->id);
         }
 
-        // Get Hubspot sales agents
+        // If the user is Admin, no filtering needed, just get all Sale Agents
+        $owner = $query->paginate(10);
+
+        // Get HubSpot sales agents
         $hubspotSalesAgents = $this->getHubspotSalesAgents();
 
         // Return the view with the appropriate data
@@ -56,7 +78,8 @@ class SaleAgentsController extends Controller
             'user' => $user,
             'hubspotSalesAgents' => $hubspotSalesAgents,
             'contact' => $contact,
-            'bu' => $bu
+            'bu' => array_unique($bu), // Remove duplicates
+            'countries' => $countries // Pass country-BU pairs
         ]);
     }
 
@@ -67,7 +90,7 @@ class SaleAgentsController extends Controller
             $response = $client->request('GET', 'https://api.hubapi.com/crm/v3/owners', [
                 'headers' => [
                     'Authorization' => 'Bearer ' . env('HUBSPOT_API_KEY'),
-                    'Content-Type'  => 'application/json',  
+                    'Content-Type'  => 'application/json',
                 ],
                 'verify' => false
             ]);
@@ -84,7 +107,8 @@ class SaleAgentsController extends Controller
             return [];
         }
     }
-    public function viewSaleAgent($id){
+    public function viewSaleAgent($id)
+    {
         $owner = SaleAgent::where('id', $id)->first();
         // Execute the queries to get the actual data
 
@@ -169,11 +193,10 @@ class SaleAgentsController extends Controller
         ]);
 
         return redirect()->route(
-            Auth::check() && Auth::user()->role == 'Admin' ? 'admin#view-sale-agent' : 'buh#view-sale-agent', 
+            Auth::check() && Auth::user()->role == 'Admin' ? 'admin#view-sale-agent' : 'buh#view-sale-agent',
             ['id' => $id]
         )->with('success', 'Sale Agent updated successfully.');
-        
+
         // return redirect()->route('buh#view-sale-agent', ['id' => $id])->with('success', 'Sale Agent updated successfully.');
     }
-
 }

@@ -83,25 +83,25 @@
                         <tr>
                             <th scope="col">No#</th>
                             <th scope="col" id="name-header">Name
-                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name"
-                                    onclick="sortTable('name', 'asc'); toggleSort('sortDown-name', 'sortUp-name')"></i>
-                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name"
-                                    onclick="sortTable('name', 'desc'); toggleSort('sortUp-name', 'sortDown-name')"
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name-first"
+                                    onclick="sortTable('sales-agents-table','name', 'asc'); toggleSort('sortDown-name-first', 'sortUp-name-first')"></i>
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name-first"
+                                    onclick="sortTable('sales-agents-table','name', 'desc'); toggleSort('sortUp-name-first', 'sortDown-name-first')"
                                     style="display: none;"></i>
                             </th>
                             <th scope="col">Hubspot ID</th>
                             <th scope="col" id="country-header">Country
-                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-country"
-                                    onclick="sortTable('country', 'asc'); toggleSort('sortDown-country', 'sortUp-country')"></i>
-                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-country"
-                                    onclick="sortTable('country', 'desc'); toggleSort('sortUp-country', 'sortDown-country')"
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-country-first"
+                                    onclick="sortTable('sales-agents-table','country', 'asc'); toggleSort('sortDown-country-first', 'sortUp-country-first')"></i>
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-country-first"
+                                    onclick="sortTable('sales-agents-table','country', 'desc'); toggleSort('sortUp-country-first', 'sortDown-country-first')"
                                     style="display: none;"></i>
                             </th>
                             <th scope="col" id="bu-header">BU
-                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-bu"
-                                    onclick="sortTable('bu', 'asc'); toggleSort('sortDown-bu', 'sortUp-bu')"></i>
-                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-bu"
-                                    onclick="sortTable('bu', 'desc'); toggleSort('sortUp-bu', 'sortDown-bu')"
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-bu-first"
+                                    onclick="sortTable('sales-agents-table','bu', 'asc'); toggleSort('sortDown-bu-first', 'sortUp-bu-first')"></i>
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-bu-first"
+                                    onclick="sortTable('sales-agents-table','bu', 'desc'); toggleSort('sortUp-bu-first', 'sortDown-bu-first')"
                                     style="display: none;"></i>
                             </th>
                             <th scope="col" class="text-center" data-toggle="tooltip" data-placement="top"

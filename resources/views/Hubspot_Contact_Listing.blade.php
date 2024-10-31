@@ -27,23 +27,23 @@
             </div>
             <!-- Table for No Sync Contacts -->
             <div class="table-container" id="no-sync">
-                <table class="table table-hover mt-2">
+                <table class="table table-hover mt-2" id="hubspot-table">
                     <thead class="text-left font-educ">
                         <tr class="text-left font-educ">
                             <th scope="col"></th>
                             <th scope="col">No#</th> <!-- Index column header -->
                             <th scope="col">Name
-                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name"
-                                    onclick="sortTable('name', 'asc'); toggleSort('sortDown-name', 'sortUp-name')"></i>
-                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name"
-                                    onclick="sortTable('name', 'desc'); toggleSort('sortUp-name', 'sortDown-name')"
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name-first"
+                                    onclick="sortTable('hubspot-table','name', 'asc'); toggleSort('sortDown-name-first', 'sortUp-name-first')"></i>
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name-first"
+                                    onclick="sortTable('hubspot-table','name', 'desc'); toggleSort('sortUp-name-first', 'sortDown-name-first')"
                                     style="display: none;"></i>
                             </th>
                             <th scope="col">Email
-                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-email"
-                                    onclick="sortTable('email', 'asc'); toggleSort('sortDown-email', 'sortUp-email')"></i>
-                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-email"
-                                    onclick="sortTable('email', 'desc'); toggleSort('sortUp-email', 'sortDown-email')"
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-email-first"
+                                    onclick="sortTable('hubspot-table','email', 'asc'); toggleSort('sortDown-email-first', 'sortUp-email-first')"></i>
+                                <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-email-first"
+                                    onclick="sortTable('hubspot-table','email', 'desc'); toggleSort('sortUp-email-first', 'sortDown-email-first')"
                                     style="display: none;"></i>
                             </th>
                             <th scope="col">Phone</th>
@@ -151,6 +151,7 @@
             <strong>Access Denied!</strong> You do not have permission to view this page.
         </div>
     @endif
+    <script src=" {{ URL::asset('js/sort.js') }} " ></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const showNoSyncBtn = document.getElementById('show-no-sync');

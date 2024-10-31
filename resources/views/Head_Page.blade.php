@@ -1,56 +1,6 @@
 @section('title', 'User Listing Page')
 
-<head>
-    <style>
-        /* Styling for selected country chips */
-        .selected-countries {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .country-chip {
-            display: flex;
-            align-items: center;
-            background-color: #91264c;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 14px;
-        }
-
-        .country-chip .remove-btn {
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 16px;
-            margin-left: 5px;
-            cursor: pointer;
-        }
-
-        .selected-countries .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.5em 1em;
-            margin: 0.25em;
-            background-color: #007bff;
-            /* Bootstrap primary color */
-            color: white;
-            border-radius: 1em;
-        }
-
-        .selected-countries .close {
-            background: transparent;
-            border: none;
-            color: white;
-            /* Close button color */
-            cursor: pointer;
-        }
-    </style>
-</head>
-
 @extends('layouts.app')
-
 @section('content')
     @if ((Auth::check() && Auth::user()->role == 'Head') || Auth::user()->role == 'Admin')
         <script>
@@ -70,7 +20,7 @@
                             <h5 class="modal-title" id="successModalLabel" style="color: #91264c"><strong>Success</strong>
                             </h5>
                         </div>
-                        <div class="modal-body" style="color: #91264c;border:none;">
+                        <div class="modal-body text-center" style="color: #91264c;border:none;">
                             {{ Session::get('success') }}
                         </div>
                         <div class="modal-footer" style="border:none;">
@@ -103,22 +53,19 @@
             </div>
         @endif
         <div class="container-max-height">
-            <div class="table-title d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center">
-                    <h2 style="margin: 0 0.5rem 0 0.25rem;" class="headings">Business Unit Head</h2>
-                    <button class="btn hover-action d-flex align-items-center justify-content-center" data-toggle="modal"
-                        data-target="#addUserModal" style="padding: 10px 12px;">
+                    <h2 class="mr-3 my-2 headings">Business Unit Head</h2>
+                    <button class="btn hover-action mx-3 " data-toggle="modal" data-target="#addUserModal">
                         <i class="fa-solid fa-square-plus"></i>
                     </button>
                 </div>
-                <div class="f-flex align-items-center mr-3">
-                    <div class="search-box d-flex align-items-center mr-3 mb-2">
-                        <input type="search" class="form-control mr-1" placeholder="Search by Email or Name"
-                            id="search-input" aria-label="Search">
-                        <button class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </button>
-                    </div>
+                <div class="search-box d-flex align-items-center mr-3 mb-2">
+                    <input type="search" class="form-control mr-1" placeholder="Search by Email or Name" id="search-input"
+                        aria-label="Search">
+                    <button class="btn hover-action mx-1" type="submit" data-toggle="tooltip" title="Search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
                 </div>
             </div>
             <div class="table-container">
@@ -126,7 +73,6 @@
                     <thead class="text-left font-educ">
                         <tr>
                             <th scope="col">No #</th>
-
                             <th scope="col" id="bu-header">Business Unit
                                 <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-bu"
                                     onclick="sortTable('bu_name', 'asc'); toggleSort('sortDown-bu', 'sortUp-bu')"></i>
@@ -141,7 +87,6 @@
                                     onclick="sortTable('country_name', 'desc'); toggleSort('sortUp-country', 'sortDown-country')"
                                     style="display: none;"></i>
                             </th>
-
                             <th scope="col" id="buh-name">BUH Name
                                 <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-buh-name-unique"
                                     onclick="sortTable('buh_name', 'asc'); toggleSort('sortDown-buh-name-unique', 'sortUp-buh-name-unique')"></i>
@@ -198,7 +143,6 @@
                     </tbody>
                 </table>
             </div>
-
             <div aria-label="Page navigation example" class="paginationContainer">
                 <ul class="pagination justify-content-center">
                     <!-- Previous Button -->
@@ -247,73 +191,73 @@
             </div>
         </div>
         {{-- <!-- Edit User Modal -->
-    @foreach ($userData as $user)
-        <div class="modal fade" id="editUserModal{{ $user->id }}" tabindex="-1"
-            aria-labelledby="editUserModalLabel{{ $user->id }}" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content rounded-0">
-                    <div class="modal-header d-flex justify-content-between align-items-center"
-                        style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%); border:none;">
-                        <h5 class="modal-title font-educ" id="editUserModalLabel{{ $user->id }}">
-                            <strong>Edit BUH</strong>
-                        </h5>
+        @foreach ($userData as $user)
+            <div class="modal fade" id="editUserModal{{ $user->id }}" tabindex="-1"
+                aria-labelledby="editUserModalLabel{{ $user->id }}" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content rounded-0">
+                        <div class="modal-header d-flex justify-content-between align-items-center"
+                            style="background: linear-gradient(180deg, rgb(255, 180, 206) 0%, hsla(0, 0%, 100%, 1) 100%); border:none;">
+                            <h5 class="modal-title font-educ" id="editUserModalLabel{{ $user->id }}">
+                                <strong>Edit BUH</strong>
+                            </h5>
+                        </div>
+                        <form action="{{ route('head#update-BUH', $user->id) }}" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="name{{ $user->id }}" class="form-label">BUH Name</label>
+                                    <input type="text" class="form-control" name="name" id="name{{ $user->id }}"
+                                        value="{{ $user->buh_name }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email{{ $user->id }}" class="form-label">Email</label>
+                                    <input type="email" class="form-control" name="email" id="email{{ $user->id }}"
+                                        value="{{ $user->buh_email }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="nationality{{ $user->id }}" class="form-label">Nationality</label>
+                                    <input type="text" class="form-control" name="nationality" id="nationality{{ $user->id }}"
+                                        value="{{ $user->nationality }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bu">Business Unit (BU)</label>
+                                    <select id="buDropdowninedit{{ $user->id }}" class="w-75 platforms search-bar"
+                                        name="business_unit" onchange="updateCountryDropdowninEdit({{ $user->id }});">
+                                        <option value="">Select BU</option>
+                                        @foreach ($businessUnit as $bu)
+                                            <option value="{{ $bu->name }}" {{ $user->bu_name === $bu->name ? 'selected' : '' }}>
+                                                {{ $bu->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('bu_id')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+                                <div class="form-group">
+                                    <label for="country">Country</label>
+                                    <select id="countryDropdown{{ $user->id }}" class="w-75 platforms search-bar" name="country"
+                                        onchange="updateSelectedCountryAndBuh({{ $user->id }});">
+                                        <option value="">Select Country</option>
+                                        @foreach ($countries as $country)
+                                            <option value="{{ $country->name }}" {{ $user->country_name === $country->name ? 'selected' : '' }}>{{ $country->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('country_id')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn hover-action">Update User</button>
+                            </div>
+                        </form>
                     </div>
-                    <form action="{{ route('head#update-BUH', $user->id) }}" method="POST">
-                        @csrf
-                        @method('PUT')
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="name{{ $user->id }}" class="form-label">BUH Name</label>
-                                <input type="text" class="form-control" name="name" id="name{{ $user->id }}"
-                                    value="{{ $user->buh_name }}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="email{{ $user->id }}" class="form-label">Email</label>
-                                <input type="email" class="form-control" name="email" id="email{{ $user->id }}"
-                                    value="{{ $user->buh_email }}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="nationality{{ $user->id }}" class="form-label">Nationality</label>
-                                <input type="text" class="form-control" name="nationality" id="nationality{{ $user->id }}"
-                                    value="{{ $user->nationality }}" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="bu">Business Unit (BU)</label>
-                                <select id="buDropdowninedit{{ $user->id }}" class="w-75 platforms search-bar"
-                                    name="business_unit" onchange="updateCountryDropdowninEdit({{ $user->id }});">
-                                    <option value="">Select BU</option>
-                                    @foreach ($businessUnit as $bu)
-                                        <option value="{{ $bu->name }}" {{ $user->bu_name === $bu->name ? 'selected' : '' }}>
-                                            {{ $bu->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('bu_id')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </div>
-                            <div class="form-group">
-                                <label for="country">Country</label>
-                                <select id="countryDropdown{{ $user->id }}" class="w-75 platforms search-bar" name="country"
-                                    onchange="updateSelectedCountryAndBuh({{ $user->id }});">
-                                    <option value="">Select Country</option>
-                                    @foreach ($countries as $country)
-                                        <option value="{{ $country->name }}" {{ $user->country_name === $country->name ? 'selected' : '' }}>{{ $country->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('country_id')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn hover-action">Update User</button>
-                        </div>
-                    </form>
                 </div>
             </div>
-        </div>
-    @endforeach --}}
+        @endforeach --}}
         @foreach ($userData as $user)
             <!-- Delete User Modal -->
             <div class="modal fade" id="deleteUserModal{{ $user->id }}" tabindex="-1"
@@ -423,7 +367,6 @@
                 </div>
             </div>
         </div>
-        </div>
     @else
         <div class="alert alert-danger text-center mt-5">
             <strong>Access Denied!</strong> You do not have permission to view this page.
@@ -490,7 +433,7 @@
                 rows[i].querySelectorAll("td")[0].innerText = offset + i;
             }
         }
-        
+
         document.addEventListener("DOMContentLoaded", function() {
             const buDropdown = document.getElementById("buDropdown");
             const selectedbuContainer = document.getElementById("selectedbu");

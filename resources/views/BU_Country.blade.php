@@ -55,15 +55,15 @@
             </div>
         </div>
         <div class="table-container" id="bu">
-            <table class=" table table-hover mt-2" id="bu-table">
+            <table class="table table-hover mt-2" id="bu-table">
                 <thead class="text-left font-educ">
                     <tr class="text-left font-educ">
                         <th scope="col" style="width:20%;">No #</th>
                         <th scope="col" style="width:60%;" id="name-header">Name
-                            <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name"
-                                onclick="sortTable('name', 'asc'); toggleSort('sortDown-name', 'sortUp-name')"></i>
-                            <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name"
-                                onclick="sortTable('name', 'desc'); toggleSort('sortUp-name', 'sortDown-name')"
+                            <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name-first"
+                                onclick="sortTable('bu-table','name', 'asc'); toggleSort('sortDown-name-first', 'sortUp-name-first')"></i>
+                            <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name-first"
+                                onclick="sortTable('bu-table','name', 'desc'); toggleSort('sortUp-name-first', 'sortDown-name-first')"
                                 style="display: none;"></i>
                         </th>
                         <th scope="col" style="width:20%;" class="text-center">Action</th>
@@ -75,7 +75,7 @@
                         <tr>
                             <td>{{ ++$i }}</td>
                             <td>{{ $bu->name }}</td>
-                            <td class="d-flex justify-content-center" style="gap: 0.75rem;">
+                            <td class="text-center">
                                 <a class="btn hover-action" data-toggle="modal"
                                     data-target="#editBUModal{{ $bu->id }}">
                                     <i class="fa-solid fa-pen-to-square"></i>
@@ -86,11 +86,11 @@
                                         <i class="fa-solid fa-trash"></i>
                                     </a>
                                 @else
-                                    <a class="btn hover-action" data-toggle="modal" data-target="#deleteModal"
+                                    {{-- <a class="btn hover-action" data-toggle="modal" data-target="#deleteModal"
                                         data-entity-id="{{ $bu->id }}" data-entity-type="BU"
                                         data-section="sales-admin">
                                         <i class="fa-solid fa-trash"></i>
-                                    </a>
+                                    </a> --}}
                                 @endif
                             </td>
                         </tr>
@@ -103,15 +103,15 @@
             </table>
         </div>
         <div class="table-container" id="countries">
-            <table class=" table table-hover mt-2" id="country-table">
+            <table class="table table-hover mt-2" id="country-table">
                 <thead class="text-left font-educ">
                     <tr class="text-left font-educ">
                         <th scope="col" style="width:20%;">No #</th>
                         <th scope="col" style="width:60%;" id="name-header">Name
-                            <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name"
-                                onclick="sortTable('name', 'asc'); toggleSort('sortDown-name', 'sortUp-name')"></i>
-                            <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name"
-                                onclick="sortTable('name', 'desc'); toggleSort('sortUp-name', 'sortDown-name')"
+                            <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name-second"
+                                onclick="sortTable('country-table','name', 'asc'); toggleSort('sortDown-name-second', 'sortUp-name-second')"></i>
+                            <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name-second"
+                                onclick="sortTable('country-table','name', 'desc'); toggleSort('sortDown-name-second', 'sortUp-name-second')"
                                 style="display: none;"></i>
                         </th>
                         <th scope="col" style="width:20%;" class="text-center">Action</th>
@@ -200,7 +200,8 @@
             <ul class="pagination justify-content-center">
                 <!-- Previous Button -->
                 <li class="page-item {{ $countries->onFirstPage() ? 'disabled' : '' }}">
-                    <a class="page-link font-educ" href="{{ $countries->previousPageUrl() }}" aria-label="Previous">&#60;</a>
+                    <a class="page-link font-educ" href="{{ $countries->previousPageUrl() }}"
+                        aria-label="Previous">&#60;</a>
                 </li>
                 <!-- First Page Button -->
                 @if ($countries->currentPage() > 3)
@@ -273,8 +274,69 @@
             @enderror
         });
     </script>
-    <script src="{{ asset('js/show_bu&country_table.js') }}"></script>
-    <script src=" {{ asset('js/search_input.js') }}"></script>
+    <script src=" {{ URL::asset('js/show_bu&country_table.js') }} "></script>
+    <script src=" {{ URL::asset('js/search_input.js') }} "></script>
+    <script>
+        function toggleSort(downIconId, upIconId) {
+            const sortDown = document.getElementById(downIconId);
+            const sortUp = document.getElementById(upIconId);
+
+            if (sortDown.style.display === "none") {
+                sortDown.style.display = "inline";
+                sortUp.style.display = "none";
+            } else {
+                sortDown.style.display = "none";
+                sortUp.style.display = "inline";
+            }
+        }
+
+        function sortTable(tableId, columnName, order) {
+            let table = document.getElementById(tableId),
+                rows, switching, i, x, y, shouldSwitch, columnIndex;
+
+            // Determine column index based on the column name
+            if (columnName === "name") columnIndex = 1;
+            else if (columnName === "email") columnIndex = 2;
+            else if (columnName === "role" || columnName === "country") columnIndex = 3;
+            else if (columnName === "country" || columnName === "bu") columnIndex = 4;
+
+            switching = true;
+
+            // Loop until no switching is needed
+            while (switching) {
+                switching = false;
+                rows = table.getElementsByTagName("tr");
+
+                for (i = 1; i < rows.length - 1; i++) {
+                    shouldSwitch = false;
+                    x = rows[i].querySelectorAll("td")[columnIndex];
+                    y = rows[i + 1].querySelectorAll("td")[columnIndex];
+
+                    if (order === "asc" && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    } else if (order === "desc" && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+            reassignRowNumbers(tableId);
+        }
+
+        function reassignRowNumbers(tableId) {
+            const table = document.getElementById(tableId);
+            const rows = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < rows.length; i++) {
+                rows[i].querySelectorAll("td")[0].innerText = i; // Update "No #" column (index 0)
+            }
+        }
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Select elements for buttons and tables
