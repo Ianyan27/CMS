@@ -101,11 +101,11 @@
                     <div class="col">
                         <div class="d-flex justify-content-center btn-group mb-3" role="group"
                             aria-label="Sales Engagement Buttons">
-                            <button type="button" class="btn hover-action activity-button mx-2 rounded active"
+                            <button type="button" class="btn hover-action activity-button mx-2 rounded active w-50"
                                 onclick="showSection('hubspotContactsSection')">
                                 Total Sale Agents
                             </button>
-                            <button type="button" class="btn hover-action activity-button mx-2 rounded"
+                            <button type="button" class="btn hover-action activity-button mx-2 rounded w-50"
                                 onclick="showSection('engagingContactsSection')">
                                 Total Disabled Sale Agents
                             </button>

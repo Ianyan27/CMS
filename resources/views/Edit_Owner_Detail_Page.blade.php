@@ -228,6 +228,8 @@
                                 <td>
                                     @if (!$contact['contact_number'])
                                         No Contact Number Found.
+                                    @else
+                                        {{$contact['contact_number']}}
                                     @endif
                                 </td>
                                 {{-- <td>{{ $contact['contact_number'] }}</td> --}}
@@ -247,6 +249,13 @@
                                         <span>No flag available</span>
                                     @endif
                                     {{ $contact['country'] }}
+                                </td>
+                                @inject('saleAgentModel', 'App\Models\SaleAgent')
+                                <td>
+                                    {{ $saleAgentModel->where('id', $contact->fk_contacts__sale_agent_id)->first()?->name ?? 'N/A' }}
+                                </td>
+                                <td>
+                                    {{ $contact['updated_at'] }}
                                 </td>
                                 <td>
                                     <span class="status-indicator"
@@ -300,14 +309,14 @@
                     <thead class="text-left font-educ">
                         <tr class="text-left font-educ">
                             <th scope="col">No #</th>
-                            <th scope="col">Name 
+                            <th scope="col">Name
                                 <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name-second"
                                     onclick="sortTable('archive-table','name', 'asc'); toggleSort('sortDown-name-second', 'sortUp-name-second')"></i>
                                 <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name-second"
                                     onclick="sortTable('archive-table','name', 'desc'); toggleSort('sortUp-name-second', 'sortDown-name-second')"
                                     style="display: none;"></i>
                             </th>
-                            <th scope="col">Email 
+                            <th scope="col">Email
                                 <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-email-second"
                                     onclick="sortTable('archive-table','email', 'asc'); toggleSort('sortDown-email-second', 'sortUp-email-second')"></i>
                                 <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-email-second"
@@ -315,7 +324,7 @@
                                     style="display: none;"></i>
                             </th>
                             <th scope="col">Contact</th>
-                            <th scope="col">Country 
+                            <th scope="col">Country
                                 <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-country-second"
                                     onclick="sortTable('archive-table','country', 'asc'); toggleSort('sortDown-country-second', 'sortUp-country-second')"></i>
                                 <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-country-second"
@@ -394,14 +403,14 @@
                     <thead class="font-educ text-left">
                         <tr class="font-educ text-left">
                             <th scope="col">No #</th>
-                            <th scope="col">Name 
+                            <th scope="col">Name
                                 <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-name-third"
                                     onclick="sortTable('discard-table','name', 'asc'); toggleSort('sortDown-name-third', 'sortUp-name-third')"></i>
                                 <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-name-third"
                                     onclick="sortTable('discard-table','name', 'desc'); toggleSort('sortUp-name-third', 'sortDown-name-third')"
                                     style="display: none;"></i>
                             </th>
-                            <th scope="col">Email 
+                            <th scope="col">Email
                                 <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-email-third"
                                     onclick="sortTable('discard-table','email', 'asc'); toggleSort('sortDown-email-third', 'sortUp-email-third')"></i>
                                 <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-email-third"
@@ -409,7 +418,7 @@
                                     style="display: none;"></i>
                             </th>
                             <th scope="col">Contact</th>
-                            <th scope="col">Country 
+                            <th scope="col">Country
                                 <i class="ml-2 fa-sharp fa-solid fa-arrow-down-z-a" id="sortDown-country-third"
                                     onclick="sortTable('discard-table','country', 'asc'); toggleSort('sortDown-country-third', 'sortUp-country-third')"></i>
                                 <i class="ml-2 fa-sharp fa-solid fa-arrow-up-a-z" id="sortUp-country-third"
