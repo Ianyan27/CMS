@@ -13,6 +13,7 @@ use App\Http\Controllers\SaleAdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\HeadController;
 use App\Http\Controllers\HubspotContactController;
+use App\Http\Controllers\HubspotContactSyncController;
 use App\Http\Controllers\SaleAgentsController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -296,6 +297,17 @@ Route::group(['prefix' => 'admin'], function () {
         SaleAdminController::class,
         'deleteBU'
     ])->name('admin#delete-bu');
+
+    Route::get('/hubspot/dashboard', [HubspotContactSyncController::class, 'dashboard'])->name('admin#hubspot-dashboard');
+    Route::get('/hubspot/history', [HubspotContactSyncController::class, 'syncHistory'])->name('admin#hubspot-history');
+    Route::post('/hubspot/sync', [HubspotContactSyncController::class, 'startSync'])->name('admin#hubspot-sync');
+    Route::get('/hubspot/status', [HubspotContactSyncController::class, 'checkStatus'])->name('admin#hubspot-status');
+    Route::post('/hubspot/cancel', [HubspotContactSyncController::class, 'cancelSync'])->name('admin#hubspot-cancel');
+    Route::get('/hubspot/retrieval-history', [HubspotContactSyncController::class, 'retrievalHistory'])->name('admin#hubspot-retrieval-history');
+    Route::post('/hubspot/schedule-sync', [HubspotContactSyncController::class, 'scheduleSync'])->name('admin#hubspot-schedule-sync');
+    Route::post('/hubspot/start-modified-sync', [HubspotContactSyncController::class, 'startModifiedSync'])
+    ->name('admin#hubspot-start-modified-sync');
+
 });
 
 Route::group(['prefix' => 'sales-agent'], function () {

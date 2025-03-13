@@ -15,7 +15,7 @@ class ContactsImportController extends Controller
     
     public function import(Request $request)
     {
-        set_time_limit(300);
+        set_time_limit(seconds: 300);
         // Validate the uploaded file
         $fileValidator = Validator::make($request->all(), [
             'csv_file' => 'required|mimes:csv,txt|max:102400',

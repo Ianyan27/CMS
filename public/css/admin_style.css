@@ -76,7 +76,7 @@ table {
 
 /* Base Styles */
 .content-width {
-    width: calc(100% - 260px);
+    width: calc(100% - 230px);
 }
 
 .content-height {
@@ -453,7 +453,8 @@ td .fa-trash {
 .fa-file-arrow-up,
 .fa-address-book,
 .fa-hubspot,
-.fa-globe {
+.fa-globe,
+.fa-scroll {
     margin-right: 15px;
     padding: 0 10px;
     font-size: 1.45rem;

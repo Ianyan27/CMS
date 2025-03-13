@@ -520,10 +520,12 @@
             <strong>Access Denied!</strong> You do not have permission to view this page.
         </div>
     @endif
-    <script src="{{ asset('js/show_hide_contacts_table.js') }}"></script>
-    <script src="{{ asset('js/active_activity_buttons.js') }}"></script>
-    <script src="{{ asset('js/sort.js') }}"></script>
-    <script src="{{ asset('js/active_buttons.js') }}"></script>
+    <script src="{{ URL::asset('js/show_hide_contacts_table.js') }}"></script>
+    <script src="{{ URL::asset('js/active_activity_buttons.js') }}"></script>
+    <script src="{{ URL::asset('js/sort.js') }}"></script>
+    <script src="{{ URL::asset('js/active_buttons.js') }}"></script>
+    <script src="{{ URL::asset('js/search_input.js') }}"></script>
+    <script src="{{ URL::asset('js/filter_status.js')}}"></script>
     <script>
         $(document).ready(function() {
             @if (session('success'))

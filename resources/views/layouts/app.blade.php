@@ -116,6 +116,12 @@
                                 <i class="fa-solid fa-globe" style="padding-left: 10px"></i><span>BU & Country</span>
                             </a>
                         </li>
+                        <li
+                            class="{{ in_array(Route::currentRouteName(), ['admin#hubspot-dashboard']) ? 'active-link' : 'nav-item' }} dashboard-link">
+                            <a class="nav-link" href="{{route('admin#hubspot-dashboard')}}">
+                                <i class="fa-solid fa-scroll" style="padding-left: 10px"></i><span>Script</span>
+                            </a>
+                        </li>
                     @endif
             </div>
             <div class="col-11 px-4 min-height content-width mb-4">

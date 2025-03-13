@@ -217,6 +217,7 @@ class SaleAdminController extends Controller
             'bu-name' => 'required|string|max:255|unique:bu,name', // Validates uniqueness in the 'bu' table, 'name' column
             'country' => 'required|array|min:1',                   // Ensures 'country' is an array with at least one selection
         ], [
+            'bu-name.required' => 'Business Unit Required', // Add customer error for missing business unit
             'bu-name.unique' => 'The Business Unit already exists.', // Custom error message for unique validation
             'country.required' => 'Please select at least one country.', // Add custom error for missing country selection
             'country.min' => 'Please select at least one country.' // Custom error for min selection in case array is empty

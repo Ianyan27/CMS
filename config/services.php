@@ -44,4 +44,9 @@ return [
         'include_tenant_info' => true,
     ],
 
+    'hubspot' => [
+        'api_key' => env('HUBSPOT_API_KEY'),
+        'use_oauth' => env('HUBSPOT_USE_OAUTH', false),
+    ],
+
 ];
