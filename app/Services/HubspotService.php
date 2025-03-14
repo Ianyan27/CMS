@@ -82,119 +82,92 @@ class HubspotService
      */
     public function findOptimalTimeWindow($startDate, $endDate)
     {
-        $targetBatchSize = 1000;  // Aim for 3000 contacts - safe for pagination and faster processing
-        $maxBatchSize = 10000;
+        $minBatchSize = 3000;  // Minimum contacts to retrieve in a batch
+        $maxBatchSize = 9999; // Maximum contacts to retrieve in a batch
         $optimalEndDate = $endDate;
 
         // Set script timeout to handle large datasets
         if (php_sapi_name() === 'cli') {
-            set_time_limit(300); // 5 minutes
+            set_time_limit(1500); // 15 minutes
         }
 
-        // First check if we need to adjust at all
+        // First check total contacts in the full time window
         $totalContacts = $this->countContacts($startDate, $optimalEndDate);
 
-        Log::info("Starting time window adjustment", [
+        Log::info("Starting adaptive time window adjustment", [
             'startDate' => $startDate,
             'endDate' => $optimalEndDate,
             'initialCount' => $totalContacts
         ]);
 
-        // If contacts are already in a good range, return immediately
-        if ($totalContacts <= $maxBatchSize && $totalContacts >= 1000) {
-            // If the contact count is over 9,000, it's too close to the API limit
-            if ($totalContacts > 10000) {
-                Log::info("Contact count close to API limit, reducing window slightly");
-                // Reduce by a small amount to be safe
-                $optimalEndDate = Carbon::parse($optimalEndDate)->subHours(6)->format('Y-m-d\TH:i:s\Z');
+        // Step 1: If too many contacts, reduce window by 1 hour until within max limit
+        while ($totalContacts > $maxBatchSize) {
+            // Reduce end date by 1 hour
+            $optimalEndDate = Carbon::parse($optimalEndDate)->subHour()->format('Y-m-d\TH:i:s\Z');
+
+            // Get new count
+            $totalContacts = $this->countContacts($startDate, $optimalEndDate);
+
+            Log::info("Reduced window by 1 hour", [
+                'newEndDate' => $optimalEndDate,
+                'newCount' => $totalContacts
+            ]);
+
+            // Check if we're getting too close to start date
+            if (Carbon::parse($optimalEndDate)->lte(Carbon::parse($startDate)->addDay())) {
+                Log::warning("End date approaching start date - resetting to buffer period");
+                // Reset to a small buffer after start date
+                $optimalEndDate = Carbon::parse($startDate)->addDays(1)->format('Y-m-d\TH:i:s\Z');
                 $totalContacts = $this->countContacts($startDate, $optimalEndDate);
-            } else {
-                Log::info("Contact count already in acceptable range, no adjustment needed");
-            }
-            return [
-                'endDate' => $optimalEndDate,
-                'totalContacts' => $totalContacts
-            ];
-        }
-
-        // Calculate total time span in seconds
-        $startDateTime = Carbon::parse($startDate);
-        $endDateTime = Carbon::parse($endDate);
-        $totalSeconds = $endDateTime->diffInSeconds($startDateTime);
-
-        // If we have too many contacts, use percentage-based reduction
-        if ($totalContacts > $maxBatchSize) {
-            // Calculate what percentage of the total window we should keep
-            // to get closer to the target batch size
-            $targetPercentage = ($targetBatchSize / $totalContacts) * 100;
-
-            // Safety check - don't go below 5%
-            $targetPercentage = max($targetPercentage, 5);
-
-            Log::info("Using percentage-based reduction", [
-                'totalContacts' => $totalContacts,
-                'targetBatchSize' => $targetBatchSize,
-                'targetPercentage' => $targetPercentage . '%',
-            ]);
-
-            // Calculate how many seconds to keep (percentage of total time span)
-            $secondsToKeep = ($totalSeconds * $targetPercentage) / 100;
-
-            // Calculate new end date
-            $optimalEndDate = $startDateTime->addSeconds($secondsToKeep)->format('Y-m-d\TH:i:s\Z');
-
-            // Get the actual contact count with this new window
-            $totalContacts = $this->countContacts($startDate, $optimalEndDate);
-
-            Log::info("Applied percentage-based reduction", [
-                'originalEndDate' => $endDate,
-                'newEndDate' => $optimalEndDate,
-                'newCount' => $totalContacts,
-                'percentageKept' => $targetPercentage . '%'
-            ]);
-        }
-
-        // Fine-tuning phase 
-        $attempts = 0;
-        $maxAttempts = 10;
-
-        // If we're under the minimum, gradually increase
-        while ($totalContacts < 10000 && $attempts < $maxAttempts) {
-            $currentStart = Carbon::parse($startDate);
-            $currentEnd = Carbon::parse($optimalEndDate);
-            $fullEnd = Carbon::parse($endDate);
-
-            // Calculate current percentage of full time span
-            $currentSpan = $currentEnd->diffInSeconds($currentStart);
-            $fullSpan = $fullEnd->diffInSeconds($currentStart);
-            $currentPercentage = ($currentSpan / $fullSpan) * 100;
-
-            // Increase by 50% each time
-            $newPercentage = min($currentPercentage * 1.5, 100);
-            $newSpan = ($fullSpan * $newPercentage) / 100;
-
-            $optimalEndDate = $currentStart->addSeconds($newSpan)->format('Y-m-d\TH:i:s\Z');
-
-            // Don't exceed original end date
-            if (Carbon::parse($optimalEndDate)->gt($fullEnd)) {
-                $optimalEndDate = $endDate;
-            }
-
-            $totalContacts = $this->countContacts($startDate, $optimalEndDate);
-
-            Log::info("Fine-tuning: increased time window by 50%", [
-                'newEndDate' => $optimalEndDate,
-                'newCount' => $totalContacts,
-                'newPercentage' => $newPercentage . '%'
-            ]);
-
-            $attempts++;
-
-            // If we found contacts, we're done
-            if ($totalContacts > 0) {
                 break;
             }
         }
+
+        // Step 2: If too few contacts, increase window by 1 minute until minimum threshold
+        while ($totalContacts < $minBatchSize) {
+            // Add 1 minute to end date
+            $optimalEndDate = Carbon::parse($optimalEndDate)->addMinute()->format('Y-m-d\TH:i:s\Z');
+
+            // Don't exceed original end date
+            if (Carbon::parse($optimalEndDate)->gt(Carbon::parse($endDate))) {
+                $optimalEndDate = $endDate;
+                $totalContacts = $this->countContacts($startDate, $optimalEndDate);
+                Log::info("Reached original end date during increase phase", [
+                    'finalEndDate' => $optimalEndDate,
+                    'finalCount' => $totalContacts
+                ]);
+                break;
+            }
+
+            // Get new count
+            $totalContacts = $this->countContacts($startDate, $optimalEndDate);
+
+            Log::info("Increased window by 1 minute", [
+                'newEndDate' => $optimalEndDate,
+                'newCount' => $totalContacts
+            ]);
+        }
+
+        // Step 3: Fine-tuning if we're over the max batch size
+        while ($totalContacts > $maxBatchSize) {
+            // Reduce by 5 seconds for fine adjustment
+            $optimalEndDate = Carbon::parse($optimalEndDate)->subSeconds(5)->format('Y-m-d\TH:i:s\Z');
+
+            // Get new count
+            $totalContacts = $this->countContacts($startDate, $optimalEndDate);
+
+            Log::info("Fine-tuning: reduced window by 5 seconds", [
+                'newEndDate' => $optimalEndDate,
+                'newCount' => $totalContacts
+            ]);
+        }
+
+        Log::info("Final time window adjustment result", [
+            'startDate' => $startDate,
+            'endDate' => $optimalEndDate,
+            'totalContacts' => $totalContacts,
+            'isWithinLimits' => ($totalContacts >= $minBatchSize && $totalContacts <= $maxBatchSize) ? 'Yes' : 'No'
+        ]);
 
         return [
             'endDate' => $optimalEndDate,
@@ -212,15 +185,17 @@ class HubspotService
         $hasMore = true;
         $batchSize = 100; // HubSpot's max page size
         $pageCount = 0;
-        $maxPages = 100; // Limit to prevent infinite loops
-        $maxContactsToRetrieve = 9999; // Make sure it's not a multiple of 1000
+        $maxPages = 200; // Increased to handle more contacts
+        $retrievalWarningLimit = 9000; // Warning threshold
+        $maxHubspotApiLimit = 10000; // Actual HubSpot API limit
 
         Log::info("Starting to fetch contacts", [
             'startDate' => $startDate,
             'endDate' => $endDate
         ]);
 
-        while ($hasMore && $pageCount < $maxPages && count($contacts) < $maxContactsToRetrieve) {
+        // Continue fetching until no more results or we hit page limit
+        while ($hasMore && $pageCount < $maxPages) {
             try {
                 // Respect API rate limits
                 if ($pageCount > 0) {
@@ -237,6 +212,18 @@ class HubspotService
                         $after = $response['paging']['next']['after'];
                     } else {
                         $hasMore = false;
+                    }
+
+                    // Warn when approaching HubSpot's limit
+                    if (count($contacts) >= $retrievalWarningLimit && count($contacts) < $maxHubspotApiLimit) {
+                        Log::warning("Approaching HubSpot API limit with " . count($contacts) . " contacts retrieved");
+                    }
+
+                    // If we've hit HubSpot's API limit, we need to stop and warn
+                    if (count($contacts) >= $maxHubspotApiLimit) {
+                        Log::warning("Reached HubSpot's API limit of 10,000 contacts. The current time window is too large and should be reduced.");
+                        $hasMore = false;
+                        break;
                     }
                 } else {
                     $hasMore = false;
@@ -256,15 +243,10 @@ class HubspotService
                     // If no contacts were retrieved, throw the exception
                     throw $e;
                 }
-
-                if (count($contacts) >= 9999) {
-                    Log::warning("Retrieved a large number of contacts (" . count($contacts) . "). This is close to HubSpot's API limit of 10,000. Some contacts may have been missed.");
-                }
             }
         }
 
         Log::info("Retrieved " . count($contacts) . " contacts");
-
         return $contacts;
     }
 
@@ -293,6 +275,7 @@ class HubspotService
         $status->update($data);
         return $status;
     }
+
     public function searchContactsByModifiedDate($startDate, $endDate, $limit = 100, $after = null)
     {
         $url = "{$this->baseUrl}/crm/v3/objects/contacts/search";
@@ -353,119 +336,108 @@ class HubspotService
      */
     public function findOptimalTimeWindowByModifiedDate($startDate, $endDate)
     {
-        $targetBatchSize = 1000;  // Aim for 1000 contacts
-        $maxBatchSize = 10000;
+        $minBatchSize = 3000;  // Minimum contacts to retrieve in a batch
+        $maxBatchSize = 10000; // Maximum contacts to retrieve in a batch
         $optimalEndDate = $endDate;
 
         // Set script timeout to handle large datasets
         if (php_sapi_name() === 'cli') {
-            set_time_limit(300); // 5 minutes
+            set_time_limit(1500); // 15 minutes
         }
 
-        // First check if we need to adjust at all
+        // First check total contacts in the full time window
         $totalContacts = $this->countContactsByModifiedDate($startDate, $optimalEndDate);
 
-        Log::info("Starting time window adjustment (by modified date)", [
+        Log::info("Starting dynamic time window adjustment (by modified date)", [
             'startDate' => $startDate,
             'endDate' => $optimalEndDate,
             'initialCount' => $totalContacts
         ]);
 
-        // If contacts are already in a good range, return immediately
-        if ($totalContacts <= $maxBatchSize && $totalContacts >= 1000) {
-            // If the contact count is over 9,000, it's too close to the API limit
-            if ($totalContacts > 10000) {
-                Log::info("Contact count close to API limit, reducing window slightly");
-                // Reduce by a small amount to be safe
-                $optimalEndDate = Carbon::parse($optimalEndDate)->subHours(6)->format('Y-m-d\TH:i:s\Z');
-                $totalContacts = $this->countContactsByModifiedDate($startDate, $optimalEndDate);
-            } else {
-                Log::info("Contact count already in acceptable range, no adjustment needed");
-            }
-            return [
-                'endDate' => $optimalEndDate,
-                'totalContacts' => $totalContacts
-            ];
-        }
-
-        // Calculate total time span in seconds
-        $startDateTime = Carbon::parse($startDate);
-        $endDateTime = Carbon::parse($endDate);
-        $totalSeconds = $endDateTime->diffInSeconds($startDateTime);
-
-        // If we have too many contacts, use percentage-based reduction
-        if ($totalContacts > $maxBatchSize) {
-            // Calculate what percentage of the total window we should keep
-            // to get closer to the target batch size
-            $targetPercentage = ($targetBatchSize / $totalContacts) * 100;
-
-            // Safety check - don't go below 5%
-            $targetPercentage = max($targetPercentage, 5);
-
-            Log::info("Using percentage-based reduction", [
-                'totalContacts' => $totalContacts,
-                'targetBatchSize' => $targetBatchSize,
-                'targetPercentage' => $targetPercentage . '%',
-            ]);
-
-            // Calculate how many seconds to keep (percentage of total time span)
-            $secondsToKeep = ($totalSeconds * $targetPercentage) / 100;
-
-            // Calculate new end date
-            $optimalEndDate = $startDateTime->addSeconds($secondsToKeep)->format('Y-m-d\TH:i:s\Z');
-
-            // Get the actual contact count with this new window
-            $totalContacts = $this->countContactsByModifiedDate($startDate, $optimalEndDate);
-
-            Log::info("Applied percentage-based reduction", [
-                'originalEndDate' => $endDate,
-                'newEndDate' => $optimalEndDate,
-                'newCount' => $totalContacts,
-                'percentageKept' => $targetPercentage . '%'
-            ]);
-        }
-
-        // Fine-tuning phase 
+        // Step 1: If too many contacts, reduce end_date by 1 hour until within max limit
         $attempts = 0;
-        $maxAttempts = 10;
+        $maxAttempts = 100; // Safeguard against infinite loops
 
-        // If we're under the minimum, gradually increase
-        while ($totalContacts < 10000 && $attempts < $maxAttempts) {
-            $currentStart = Carbon::parse($startDate);
-            $currentEnd = Carbon::parse($optimalEndDate);
-            $fullEnd = Carbon::parse($endDate);
+        while ($totalContacts > $maxBatchSize && $attempts < $maxAttempts) {
+            // Reduce end date by 1 hour
+            $optimalEndDate = Carbon::parse($optimalEndDate)->subHour()->format('Y-m-d\TH:i:s\Z');
 
-            // Calculate current percentage of full time span
-            $currentSpan = $currentEnd->diffInSeconds($currentStart);
-            $fullSpan = $fullEnd->diffInSeconds($currentStart);
-            $currentPercentage = ($currentSpan / $fullSpan) * 100;
-
-            // Increase by 50% each time
-            $newPercentage = min($currentPercentage * 1.5, 100);
-            $newSpan = ($fullSpan * $newPercentage) / 100;
-
-            $optimalEndDate = $currentStart->addSeconds($newSpan)->format('Y-m-d\TH:i:s\Z');
-
-            // Don't exceed original end date
-            if (Carbon::parse($optimalEndDate)->gt($fullEnd)) {
-                $optimalEndDate = $endDate;
-            }
-
+            // Get new count
             $totalContacts = $this->countContactsByModifiedDate($startDate, $optimalEndDate);
 
-            Log::info("Fine-tuning: increased time window by 50%", [
+            Log::info("Reduced window by 1 hour (modified date)", [
                 'newEndDate' => $optimalEndDate,
                 'newCount' => $totalContacts,
-                'newPercentage' => $newPercentage . '%'
+                'attempt' => $attempts + 1
             ]);
 
             $attempts++;
 
-            // If we found contacts, we're done
-            if ($totalContacts > 0) {
+            // Check if we're getting too close to start date
+            if (Carbon::parse($optimalEndDate)->lte(Carbon::parse($startDate))) {
+                Log::warning("End date approaching start date - stopping reduction");
+                // Reset to a small buffer after start date
+                $optimalEndDate = Carbon::parse($startDate)->addHours(1)->format('Y-m-d\TH:i:s\Z');
+                $totalContacts = $this->countContactsByModifiedDate($startDate, $optimalEndDate);
                 break;
             }
         }
+
+        // Step 2: If too few contacts, increase end_date by 1 minute until minimum threshold
+        $attempts = 0;
+
+        while ($totalContacts < $minBatchSize && $attempts < $maxAttempts) {
+            // Add 1 minute to end date
+            $optimalEndDate = Carbon::parse($optimalEndDate)->addMinute()->format('Y-m-d\TH:i:s\Z');
+
+            // Don't exceed original end date
+            if (Carbon::parse($optimalEndDate)->gt(Carbon::parse($endDate))) {
+                $optimalEndDate = $endDate;
+                $totalContacts = $this->countContactsByModifiedDate($startDate, $optimalEndDate);
+                Log::info("Reached original end date during increase phase (modified date)", [
+                    'finalEndDate' => $optimalEndDate,
+                    'finalCount' => $totalContacts
+                ]);
+                break;
+            }
+
+            // Get new count
+            $totalContacts = $this->countContactsByModifiedDate($startDate, $optimalEndDate);
+
+            Log::info("Increased window by 1 minute (modified date)", [
+                'newEndDate' => $optimalEndDate,
+                'newCount' => $totalContacts,
+                'attempt' => $attempts + 1
+            ]);
+
+            $attempts++;
+        }
+
+        // Step 3: Fine-tuning if we're over the max batch size
+        $attempts = 0;
+
+        while ($totalContacts > $maxBatchSize && $attempts < $maxAttempts) {
+            // Reduce by 5 seconds for fine adjustment
+            $optimalEndDate = Carbon::parse($optimalEndDate)->subSeconds(5)->format('Y-m-d\TH:i:s\Z');
+
+            // Get new count
+            $totalContacts = $this->countContactsByModifiedDate($startDate, $optimalEndDate);
+
+            Log::info("Fine-tuning: reduced window by 5 seconds (modified date)", [
+                'newEndDate' => $optimalEndDate,
+                'newCount' => $totalContacts,
+                'attempt' => $attempts + 1
+            ]);
+
+            $attempts++;
+        }
+
+        Log::info("Final time window adjustment result (modified date)", [
+            'startDate' => $startDate,
+            'endDate' => $optimalEndDate,
+            'totalContacts' => $totalContacts,
+            'isWithinLimits' => ($totalContacts >= $minBatchSize && $totalContacts <= $maxBatchSize) ? 'Yes' : 'No'
+        ]);
 
         return [
             'endDate' => $optimalEndDate,

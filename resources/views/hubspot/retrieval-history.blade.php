@@ -1,5 +1,13 @@
 @extends('layouts.app')
 @section('content')
+
+<style>
+    svg {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+    }
+</style>
     
     <div class="container py-4">
         <h1 class="mb-4">HubSpot Contact Retrieval History</h1>

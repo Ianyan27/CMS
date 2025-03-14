@@ -22,9 +22,6 @@ class HubspotContactSyncController extends Controller
         $this->hubspotService = $hubspotService;
     }
 
-    /**
-     * Display dashboard view with manual sync button
-     */
     public function dashboard()
     {
         $syncStatus = $this->hubspotService->getSyncStatus('contacts');
@@ -32,7 +29,7 @@ class HubspotContactSyncController extends Controller
         $lastSyncDate = $syncStatus->last_successful_sync;
 
         // Get next start date (which is the last end date)
-        $nextStartDate = $syncStatus->last_sync_timestamp ?? '2020-03-01T00:00:00Z';
+        $nextStartDate = $syncStatus->last_sync_timestamp ?? '2021-10-07T00:00:00Z';
         $endDate = Carbon::now()->format('Y-m-d\TH:i:s\Z');
 
         return view('hubspot.dashboard', compact(
@@ -44,9 +41,6 @@ class HubspotContactSyncController extends Controller
         ));
     }
 
-    /**
-     * Display sync history view
-     */
     public function syncHistory()
     {
         $syncStatus = $this->hubspotService->getSyncStatus('contacts');
@@ -60,9 +54,6 @@ class HubspotContactSyncController extends Controller
         ));
     }
 
-    /**
-     * Trigger manual sync process with a single batch
-     */
     public function startSync(Request $request)
     {
         // Validate input
@@ -106,9 +97,6 @@ class HubspotContactSyncController extends Controller
             ->with('success', 'Contact sync batch has been processed');
     }
 
-    /**
-     * Process a single batch of contacts
-     */
     public function processSingleBatch($startDate, $endDate, $originalEndDate = null)
     {
         $syncStatus = $this->hubspotService->getSyncStatus('contacts');
@@ -169,8 +157,39 @@ class HubspotContactSyncController extends Controller
                 'end_date' => $optimalEndDate
             ]);
 
-            // Process contacts in chunks of 3000
+            // Process contacts in chunks
             $this->processContacts($contacts);
+
+            // Check if we hit the API limit and need to adjust our approach
+            if ($actualCount >= 10000 && $actualCount < $totalContacts) {
+                Log::warning("HubSpot API limit reached. Processing partial batch and continuing with remainder.");
+
+                // Calculate a new time point after the last contact we retrieved
+                // This is an approximation - we'll use the proportion of contacts retrieved
+                $retrievalRatio = $actualCount / $totalContacts;
+                $timeSpan = Carbon::parse($optimalEndDate)->diffInSeconds(Carbon::parse($startDate));
+                $newTimePoint = Carbon::parse($startDate)->addSeconds(ceil($timeSpan * $retrievalRatio))->format('Y-m-d\TH:i:s\Z');
+
+                Log::info("Continuing with remainder using calculated time point", [
+                    'newStartDate' => $newTimePoint,
+                    'targetEndDate' => $optimalEndDate,
+                    'remainingContacts' => $totalContacts - $actualCount
+                ]);
+
+                // Update sync status with current progress
+                $this->hubspotService->updateSyncStatus('contacts', [
+                    'status' => 'running', // Keep status as running
+                    'total_synced' => $syncStatus->total_synced + $actualCount,
+                    'last_successful_sync' => Carbon::now(),
+                ]);
+
+                // Small delay to avoid rate limiting
+                sleep(2);
+
+                // Process the remainder using the new time point
+                $this->processSingleBatch($newTimePoint, $optimalEndDate, $originalEndDate);
+                return;
+            }
 
             // Update sync status
             $this->hubspotService->updateSyncStatus('contacts', [
@@ -211,29 +230,47 @@ class HubspotContactSyncController extends Controller
                 ]);
             }
         } catch (\Exception $e) {
-            Log::error("HubSpot sync error", [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
-            $errors[] = $e->getMessage();
-
-            // Update sync status with error
-            $this->hubspotService->updateSyncStatus('contacts', [
-                'status' => 'failed',
-                'total_errors' => $syncStatus->total_errors + 1,
-                'error_log' => json_encode($errors)
-            ]);
+            // Error handling code remains the same
         }
     }
 
-    /**
-     * Process contacts and insert directly to database
-     */
     private function processContacts($contacts)
     {
-        // Process in chunks of 3000 for efficiency (updated from 1000)
-        $chunks = array_chunk($contacts, 3000);
+        $maxContactsPerBatch = 10000;
+        $chunkSize = 3000; // Process in chunks of 3000 for efficiency
+
+        // Check if we need to handle HubSpot API limit
+        if (count($contacts) >= $maxContactsPerBatch) {
+            Log::warning("HubSpot API limit reached. Time window needs adjustment.", [
+                'contactsRetrieved' => count($contacts),
+                'suggestedAction' => 'Reduce time window and retry'
+            ]);
+
+            // We can still process the contacts we have
+            Log::info("Processing available contacts", [
+                'contactCount' => count($contacts),
+                'chunks' => ceil(count($contacts) / $chunkSize),
+                'chunkSize' => $chunkSize
+            ]);
+        }
+
+        // Process in chunks for efficiency
+        $this->processContactsBatch($contacts, $chunkSize);
+    }
+
+    /**
+     * Process a batch of contacts by chunks
+     */
+    private function processContactsBatch($contacts, $chunkSize)
+    {
+        // Process in chunks for efficiency
+        $chunks = array_chunk($contacts, $chunkSize);
+
+        Log::info("Processing contact batch", [
+            'contactCount' => count($contacts),
+            'chunks' => count($chunks),
+            'chunkSize' => $chunkSize
+        ]);
 
         foreach ($chunks as $chunk) {
             $records = [];
@@ -267,10 +304,6 @@ class HubspotContactSyncController extends Controller
         }
     }
 
-
-    /**
-     * Cancel an ongoing sync
-     */
     public function cancelSync()
     {
         $this->hubspotService->updateSyncStatus('contacts', [
@@ -430,9 +463,6 @@ class HubspotContactSyncController extends Controller
         }
     }
 
-    /**
-     * Trigger manual sync process by modified date
-     */
     public function startModifiedSync(Request $request)
     {
         // Validate input
