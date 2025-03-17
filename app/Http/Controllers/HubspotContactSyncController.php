@@ -254,6 +254,19 @@ class HubspotContactSyncController extends Controller
             ]);
         }
 
+        // Check for existing contacts that will be updated
+        $hubspotIds = array_map(function ($contact) {
+            return $contact['id'];
+        }, $contacts);
+
+        $existingCount = DB::table('hubspot_contacts')
+            ->whereIn('hubspot_id', $hubspotIds)
+            ->count();
+
+        if ($existingCount > 0) {
+            Log::info("Found {$existingCount} existing contacts that will be updated with HubSpot data");
+        }
+
         // Process in chunks for efficiency
         $this->processContactsBatch($contacts, $chunkSize);
     }
