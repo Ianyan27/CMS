@@ -295,22 +295,48 @@ class HubspotContactSyncController extends Controller
                     'firstname' => $contact['properties']['firstname'] ?? null,
                     'lastname' => $contact['properties']['lastname'] ?? null,
                     'gender' => $contact['properties']['gender'] ?? null,
+
+                    // Convert HubSpot date strings to Carbon instances
                     'hubspot_created_at' => isset($contact['properties']['createdate'])
                         ? Carbon::parse($contact['properties']['createdate'])
                         : null,
                     'hubspot_updated_at' => isset($contact['properties']['lastmodifieddate'])
                         ? Carbon::parse($contact['properties']['lastmodifieddate'])
                         : null,
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
+
+                    // Newly added columns
+                    'phone'             => $contact['properties']['phone'] ?? null,
+                    'hubspot_owner_id'  => $contact['properties']['hubspot_owner_id'] ?? null,
+                    'hs_lead_status'    => $contact['properties']['hs_lead_status'] ?? null,
+                    'company'           => $contact['properties']['company'] ?? null,
+                    'lifecyclestage'    => $contact['properties']['lifecyclestage'] ?? null,
+                    'country'           => $contact['properties']['country'] ?? null,
+
+                    'created_at'        => Carbon::now(),
+                    'updated_at'        => Carbon::now(),
                 ];
             }
 
             // Use upsert to handle duplicates
             DB::table('hubspot_contacts')->upsert(
                 $records,
-                ['hubspot_id'],
-                ['email', 'firstname', 'lastname', 'gender', 'hubspot_updated_at', 'updated_at']
+                ['hubspot_id'], // Unique key to check for existing records
+                [
+                    'email',
+                    'firstname',
+                    'lastname',
+                    'gender',
+                    'hubspot_updated_at',
+                    'updated_at',
+
+                    // Newly added columns
+                    'phone',
+                    'hubspot_owner_id',
+                    'hs_lead_status',
+                    'company',
+                    'lifecyclestage',
+                    'country',
+                ]
             );
 
             Log::info("Inserted batch of " . count($records) . " contacts");
@@ -517,5 +543,206 @@ class HubspotContactSyncController extends Controller
 
         return redirect()->route('admin#hubspot-dashboard')
             ->with('success', 'Modified contact sync batch has been processed');
+    }
+
+    public function importCSV(Request $request)
+    {
+        // Validate that the file exists, is a CSV file, and does not exceed the max size (2MB).
+        $request->validate([
+            'file' => 'required|file|mimes:csv,txt|max:2048'
+        ]);
+
+        $file = $request->file('file');
+
+        if (($handle = fopen($file->getRealPath(), 'r')) !== false) {
+            // Read the header row.
+            $header = fgetcsv($handle, 1000, ',');
+
+            /* 
+         * Define expected headers with alternative names.
+         * Required fields: hubspot_id, firstname, lastname, email.
+         * The remaining fields are optional.
+         */
+            $expectedHeaders = [
+                'hubspot_id'       => ['hubspot_id', 'id', 'contact_id'],
+                'firstname'        => ['firstname', 'first_name', 'fname'],
+                'lastname'         => ['lastname', 'last_name', 'lname'],
+                'email'            => ['email', 'mail'],
+                'gender'           => ['gender'],
+                'createdate'       => ['createdate', 'hubspot_created_at'],
+                'lastmodifieddate' => ['lastmodifieddate', 'hubspot_updated_at'],
+                'phone'            => ['phone'],
+                'hubspot_owner_id' => ['hubspot_owner_id'],
+                'hs_lead_status'   => ['hs_lead_status'],
+                'company'          => ['company'],
+                'lifecyclestage'   => ['lifecyclestage'],
+                'country'          => ['country']
+            ];
+
+            // Check required fields.
+            $requiredFields = ['hubspot_id', 'firstname', 'lastname', 'email'];
+            $missingFields = [];
+            foreach ($requiredFields as $field) {
+                $found = false;
+                foreach ($expectedHeaders[$field] as $alt) {
+                    if (in_array($alt, $header)) {
+                        $found = true;
+                        break;
+                    }
+                }
+                if (!$found) {
+                    $missingFields[] = $field;
+                }
+            }
+            if (!empty($missingFields)) {
+                fclose($handle);
+                $missingList = implode(', ', $missingFields);
+                return redirect()->back()->with('error', "Invalid CSV file. Missing required columns: {$missingList}");
+            }
+
+            $records = [];
+
+            // Process each row.
+            while (($row = fgetcsv($handle, 1000, ',')) !== false) {
+                // Normalize the row based on the expected headers.
+                $normalizedRow = [];
+                foreach ($expectedHeaders as $standard => $alternatives) {
+                    $normalizedRow[$standard] = null;
+                    foreach ($alternatives as $alt) {
+                        // Find the position of the alternative header in the CSV header row.
+                        $pos = array_search($alt, $header);
+                        if ($pos !== false && isset($row[$pos])) {
+                            $normalizedRow[$standard] = $row[$pos];
+                            break;
+                        }
+                    }
+                }
+
+                $records[] = [
+                    'hubspot_id'         => $normalizedRow['hubspot_id'] ?? null,
+                    'email'              => $normalizedRow['email'] ?? null,
+                    'firstname'          => $normalizedRow['firstname'] ?? null,
+                    'lastname'           => $normalizedRow['lastname'] ?? null,
+                    'gender'             => $normalizedRow['gender'] ?? null,
+                    'hubspot_created_at' => isset($normalizedRow['createdate'])
+                        ? Carbon::parse($normalizedRow['createdate'])
+                        : null,
+                    'hubspot_updated_at' => isset($normalizedRow['lastmodifieddate'])
+                        ? Carbon::parse($normalizedRow['lastmodifieddate'])
+                        : null,
+                    'phone'              => $normalizedRow['phone'] ?? null,
+                    'hubspot_owner_id'   => $normalizedRow['hubspot_owner_id'] ?? null,
+                    'hs_lead_status'     => $normalizedRow['hs_lead_status'] ?? null,
+                    'company'            => $normalizedRow['company'] ?? null,
+                    'lifecyclestage'     => $normalizedRow['lifecyclestage'] ?? null,
+                    'country'            => $normalizedRow['country'] ?? null,
+                    // Randomly assign marked_deleted ("yes" or "no").
+                    'marked_deleted'     => (rand(0, 1) === 1) ? 'yes' : 'no',
+                    'created_at'         => Carbon::now(),
+                    'updated_at'         => Carbon::now(),
+                ];
+            }
+            fclose($handle);
+
+            // Extract all hubspot_ids from the CSV records.
+            $csvIds = array_map(function ($record) {
+                return $record['hubspot_id'];
+            }, $records);
+
+            // Query the database for existing contacts with these hubspot_ids.
+            $existingIds = DB::table('hubspot_contacts')
+                ->whereIn('hubspot_id', $csvIds)
+                ->pluck('hubspot_id')
+                ->toArray();
+
+            // Count duplicates.
+            $duplicateCount = count($existingIds);
+
+            if ($duplicateCount > 0) {
+                Log::info('The following HubSpot contacts already exist and were skipped: ' . implode(', ', $existingIds));
+            }
+
+            // Insert records and ignore duplicates.
+            DB::table('hubspot_contacts')->insertOrIgnore($records);
+
+            // Prepare flash message.
+            $message = "CSV imported successfully!";
+            if ($duplicateCount > 0) {
+                $message .= " {$duplicateCount} duplicate contact(s) were skipped.";
+            }
+
+            return redirect()->back()->with('success', $message);
+        }
+
+        return redirect()->back()->with('error', 'Unable to open the file.');
+    }
+
+    public function exportActiveContacts()
+    {
+        // Query contacts that are not marked as deleted.
+        $records = DB::table('hubspot_contacts')
+            ->where('marked_deleted', 'no')
+            ->get();
+
+        // Define the CSV file path (you can adjust as needed).
+        $csvPath = storage_path('app/csv/active_hubspot_contacts.csv');
+
+        // Ensure the directory exists.
+        if (!file_exists(dirname($csvPath))) {
+            mkdir(dirname($csvPath), 0777, true);
+        }
+
+        // Open the file for writing.
+        $file = fopen($csvPath, 'w');
+
+        // Write the CSV header.
+        fputcsv($file, [
+            'hubspot_id',
+            'email',
+            'firstname',
+            'lastname',
+            'gender',
+            'hubspot_created_at',
+            'hubspot_updated_at',
+            'phone',
+            'hubspot_owner_id',
+            'hs_lead_status',
+            'company',
+            'lifecyclestage',
+            'country',
+            'marked_deleted',
+            'created_at',
+            'updated_at'
+        ]);
+
+        // Write each record as a row in the CSV.
+        foreach ($records as $record) {
+            fputcsv($file, [
+                $record->hubspot_id,
+                $record->email,
+                $record->firstname,
+                $record->lastname,
+                $record->gender,
+                $record->hubspot_created_at,
+                $record->hubspot_updated_at,
+                $record->phone,
+                $record->hubspot_owner_id,
+                $record->hs_lead_status,
+                $record->company,
+                $record->lifecyclestage,
+                $record->country,
+                $record->marked_deleted,
+                $record->created_at,
+                $record->updated_at,
+            ]);
+        }
+
+        fclose($file);
+
+        // Set headers to force download of the CSV file.
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=active_hubspot_contacts.csv');
+        readfile($csvPath);
+        exit;
     }
 }

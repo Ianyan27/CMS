@@ -19,5 +19,13 @@ class HubspotContacts extends Model
         'delete_flag',
         'hubspot_lastmodified',
         'marked_deleted',
+
+        // Newly added columns
+        'phone',
+        'hubspot_owner_id',
+        'hs_lead_status',
+        'company',
+        'lifecyclestage',
+        'country',
     ];
 }

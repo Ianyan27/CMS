@@ -42,7 +42,20 @@ class HubspotService
                     ]
                 ]
             ],
-            'properties' => ['firstname', 'lastname', 'gender', 'email', 'createdate', 'lastmodifieddate'],
+            'properties' => [
+                'firstname', 
+                'lastname', 
+                'gender', 
+                'email',
+                'phone',
+                'hubspot_owner_id',
+                'hs_lead_status',
+                'company',
+                'lifecyclestage',
+                'country', 
+                'createdate', 
+                'lastmodifieddate
+            '],
             'limit' => $limit,
         ];
 
@@ -297,7 +310,20 @@ class HubspotService
                     ]
                 ]
             ],
-            'properties' => ['firstname', 'lastname', 'gender', 'email', 'createdate', 'lastmodifieddate'],
+            'properties' => [
+                'firstname', 
+                'lastname', 
+                'gender', 
+                'email',
+                'phone',
+                'hubspot_owner_id',
+                'hs_lead_status',
+                'company',
+                'lifecyclestage',
+                'country', 
+                'createdate', 
+                'lastmodifieddate
+            '],
             'limit' => $limit,
         ];
 

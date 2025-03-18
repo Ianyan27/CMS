@@ -537,6 +537,11 @@ td .fa-trash {
     align-items: center;
 }
 
+.header-buttons a, 
+.header-buttons form{
+    width: clamp(200px, 230px, 250px);
+}
+
 .modal-header .close {
     position: absolute;
     right: 0.9rem;

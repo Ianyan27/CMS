@@ -305,8 +305,9 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('/hubspot/cancel', [HubspotContactSyncController::class, 'cancelSync'])->name('admin#hubspot-cancel');
     Route::get('/hubspot/retrieval-history', [HubspotContactSyncController::class, 'retrievalHistory'])->name('admin#hubspot-retrieval-history');
     Route::post('/hubspot/schedule-sync', [HubspotContactSyncController::class, 'scheduleSync'])->name('admin#hubspot-schedule-sync');
-    Route::post('/hubspot/start-modified-sync', [HubspotContactSyncController::class, 'startModifiedSync'])
-    ->name('admin#hubspot-start-modified-sync');
+    Route::post('/hubspot/start-modified-sync', [HubspotContactSyncController::class, 'startModifiedSync'])->name('admin#hubspot-start-modified-sync');
+    Route::post('/hubspot/import-csv', [HubspotContactSyncController::class, 'importCSV'])->name('import.csv');
+    Route::get('/hubpsot/export-active-contacts', [HubspotContactSyncController::class, 'exportActiveContacts'])->name('export.active.contacts');
 
 });
 
