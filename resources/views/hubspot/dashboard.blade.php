@@ -50,6 +50,75 @@
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
+    @php
+        $summary = session('import_summary') ?? null;
+    @endphp
+
+    @if ($summary)
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // Show the modal automatically
+                var importModal = new bootstrap.Modal(document.getElementById('importSummaryModal'));
+                importModal.show();
+            });
+        </script>
+    @endif
+
+    <!-- Modal -->
+    <div class="modal fade" id="importSummaryModal" tabindex="-1" aria-labelledby="importSummaryLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="importSummaryLabel">CSV Import Summary</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @php
+                        $validCount = $summary['valid_count'] ?? 0;
+                        $invalidCount = $summary['invalid_count'] ?? 0;
+                        $duplicateCount = $summary['duplicate_count'] ?? 0;
+                    @endphp
+
+                    <p>Valid Contacts: {{ $validCount }}</p>
+                    <p>
+                        <a href="{{ route('contacts.download.valid') }}" class="btn btn-sm btn-primary"
+                            @if ($validCount === 0) disabled @endif>
+                            Download Valid Contacts
+                        </a>
+                    </p>
+
+                    <p>Invalid Contacts: {{ $invalidCount }}</p>
+                    <p>
+                        <a href="{{ route('contacts.download.invalid') }}" class="btn btn-sm btn-danger"
+                            @if ($invalidCount === 0) disabled @endif>
+                            Download Invalid Contacts
+                        </a>
+                    </p>
+
+                    <p>Duplicate Contacts: {{ $duplicateCount }}</p>
+                    <p>
+                        <a href="{{ route('contacts.download.duplicate') }}" class="btn btn-sm btn-danger"
+                            @if ($duplicateCount === 0) disabled @endif>
+                            Download Duplicate Contacts
+                        </a>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <!-- Cancel just closes the modal (and leaves session data intact).
+                            If you want to clear session, create a route to do so. -->
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+
+                    <!-- Sync button calls the route that inserts valid records into DB -->
+                    <form action="{{ route('contacts.sync.valid') }}" method="POST" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-success">Sync Valid Contacts</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <div class="header d-flex align-items-center justify-content-between">
         <h2 class="mt-3 headings" style="width: 50%;">HubSpot Contact Sync Dashboard</h2>
         <div class="header-buttons d-flex align-items-center justify-content-around" style="width: 50%;">
@@ -70,15 +139,15 @@
     <!-- CSV Import Form -->
     <div class="row mt-4 gy-4">
         <div class="col-lg-12">
-            <form class="card" action="{{ route('import.csv') }}" method="POST" enctype="multipart/form-data">
+            <!-- Import Form -->
+            <form action="{{ route('contacts.import.preview') }}" method="POST" enctype="multipart/form-data"
+                class="me-3">
                 @csrf
-                <div class="card-header">
+                <div class="mb-3">
                     <label for="csvFile" class="form-label">Import CSV File</label>
+                    <input class="form-control" type="file" id="csvFile" name="file" accept=".csv">
                 </div>
-                <div class="card-body">
-                    <input class="form-control mt-2" type="file" id="csvFile" name="file" accept=".csv">
-                    <button type="submit" class="btn hover-action mt-4">Import Contacts</button>
-                </div>
+                <button type="submit" class="btn hover-action">Import Contacts</button>
             </form>
         </div>
     </div>
@@ -225,10 +294,10 @@
     {{-- Manual Sync & Sync by Modified Date --}}
     <div class="row mt-4 gy-3">
         {{-- Manually Trigger Sync --}}
-        <div class="col-md-6">
+        <div class="col-lg-12">
             <div class="card h-100">
                 <div class="card-header">
-                    <h5>Manually Trigger Sync</h5>
+                    <h5>Trigger Sync</h5>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('admin#hubspot-sync') }}" method="POST">
@@ -247,7 +316,7 @@
                         </div>
                         <button type="submit" class="btn hover-action" id="start-sync-btn"
                             {{ $syncStatus->status === 'running' ? 'disabled' : '' }}>
-                            Sync Next Batch
+                            <i class="fas fa-sync"></i> Sync Next Batch
                         </button>
 
                         @if ($syncStatus->status === 'running')
@@ -259,7 +328,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        {{-- <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
                     <h5>Sync by Modified Date</h5>
@@ -275,9 +344,9 @@
                             A sync is currently in progress. Please wait for it to complete.
                         </div>
                     @else
-                        <form action="{{ route('admin#hubspot-start-modified-sync') }}" method="POST" class="row g-3">
+                        <form action="{{ route('admin#hubspot-start-modified-sync') }}" method="POST">
                             @csrf
-                            <div class="col-md-4">
+                            <div class="mb-3">
                                 <label for="modified_start_date" class="form-label">Start Date</label>
                                 <input type="datetime-local" class="form-control" id="modified_start_date"
                                     name="start_date">
@@ -286,7 +355,7 @@
                                     {{ $syncStatus->last_modified_sync_timestamp ?? 'None (will use default)' }}
                                 </small>
                             </div>
-                            <div class="col-md-4">
+                            <div class="mb-3">
                                 <label for="modified_end_date" class="form-label">End Date</label>
                                 <input type="datetime-local" class="form-control" id="modified_end_date"
                                     name="end_date">
@@ -294,16 +363,44 @@
                                     Leave blank to use current time
                                 </small>
                             </div>
-                            <div class="col-md-4 d-flex align-items-end">
-                                <button type="submit" class="btn hover-action">
-                                    <i class="fas fa-sync"></i> Start Modified Sync
-                                </button>
-                            </div>
+                            <button type="submit" class="btn hover-action">
+                                <i class="fas fa-sync"></i> Start Modified Sync
+                            </button>
                         </form>
                     @endif
                 </div>
             </div>
+        </div> --}}
+    </div>
+
+    <div class="row mt-4 gy-3">
+        <div class="dashboard-section">
+            <h3>CSV Import History</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>File Name</th>
+                        <th>Uploaded By</th>
+                        <th>Uploaded At</th>
+                        <th class="text-center">Download</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($csvImports as $import)
+                        <tr>
+                            <td>{{ $import->file_name }}</td>
+                            <td>{{ $import->user_id ? \App\Models\User::find($import->user_id)->name : 'N/A' }}</td>
+                            <td>{{ $import->created_at->format('Y-m-d H:i:s') }}</td>
+                            <td class="text-center">
+                                <a href="{{ route('csv.download', $import->id) }}" class="btn hover-action"><i
+                                        class="fa-solid fa-download"></i></a>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
+
     </div>
 
     {{-- Schedule Sync Modal --}}
