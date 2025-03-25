@@ -311,21 +311,17 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/hubpsot/export-active-contacts', [HubspotContactSyncController::class, 'exportActiveContacts'])->name('export.active.contacts');
     Route::get('/hubspot/csv/download/{id}', [HubspotContactSyncController::class, 'downloadCSV'])->name('csv.download');
     Route::get('/hubspot/csv/template', [HubspotContactSyncController::class, 'downloadCSVTemplate'])->name('csv.template.download');
-    Route::get('/hubspot/csv/invalid/{filename}', [HubspotContactSyncController::class, 'downloadInvalidCSV'])
-        ->name('csv.invalid.download');
-
-
-
+    Route::get('/hubspot/csv/invalid/{filename}', [HubspotContactSyncController::class, 'downloadInvalidCSV'])->name('csv.invalid.download');
     // 1. Preview CSV
     Route::post('/contacts/import-preview', [ImportCSV::class, 'importPreview'])->name('contacts.import.preview');
-
     // 2. Download routes
     Route::get('/contacts/download-valid', [ImportCSV::class, 'downloadValidRecords'])->name('contacts.download.valid');
     Route::get('/contacts/download-invalid', [ImportCSV::class, 'downloadInvalidRecords'])->name('contacts.download.invalid');
     Route::get('/contacts/download-duplicate', [ImportCSV::class, 'downloadDuplicateRecords'])->name('contacts.download.duplicate');
-
     // 3. Sync valid
     Route::post('/contacts/sync-valid', [ImportCSV::class, 'syncValidRecords'])->name('contacts.sync.valid');
+    // In your routes/web.php (or similar)
+    Route::get('/contacts/download/removed', [ImportCSV::class, 'downloadRemovedRecords'])->name('contacts.download.removed');
 });
 
 Route::group(['prefix' => 'sales-agent'], function () {

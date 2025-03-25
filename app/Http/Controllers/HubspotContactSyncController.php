@@ -286,8 +286,8 @@ class HubspotContactSyncController extends Controller
 
         Log::info("Processing contact batch", [
             'contactCount' => count($contacts),
-            'chunks' => count($chunks),
-            'chunkSize' => $chunkSize
+            'chunks'       => count($chunks),
+            'chunkSize'    => $chunkSize
         ]);
 
         foreach ($chunks as $chunk) {
@@ -295,30 +295,27 @@ class HubspotContactSyncController extends Controller
 
             foreach ($chunk as $contact) {
                 $records[] = [
-                    'hubspot_id' => $contact['id'],
-                    'email' => $contact['properties']['email'] ?? null,
-                    'firstname' => $contact['properties']['firstname'] ?? null,
-                    'lastname' => $contact['properties']['lastname'] ?? null,
-                    'gender' => $contact['properties']['gender'] ?? null,
-
-                    // Convert HubSpot date strings to Carbon instances
+                    'hubspot_id'         => $contact['id'],
+                    'email'              => $contact['properties']['email'] ?? null,
+                    'firstname'          => $contact['properties']['firstname'] ?? null,
+                    'lastname'           => $contact['properties']['lastname'] ?? null,
+                    'gender'             => $contact['properties']['gender'] ?? null,
                     'hubspot_created_at' => isset($contact['properties']['createdate'])
                         ? Carbon::parse($contact['properties']['createdate'])
                         : null,
                     'hubspot_updated_at' => isset($contact['properties']['lastmodifieddate'])
                         ? Carbon::parse($contact['properties']['lastmodifieddate'])
                         : null,
-
-                    // Newly added columns
-                    'phone'             => $contact['properties']['phone'] ?? null,
-                    'hubspot_owner_id'  => $contact['properties']['hubspot_owner_id'] ?? null,
-                    'hs_lead_status'    => $contact['properties']['hs_lead_status'] ?? null,
-                    'company'           => $contact['properties']['company'] ?? null,
-                    'lifecyclestage'    => $contact['properties']['lifecyclestage'] ?? null,
-                    'country'           => $contact['properties']['country'] ?? null,
-
-                    'created_at'        => Carbon::now(),
-                    'updated_at'        => Carbon::now(),
+                    'phone'              => $contact['properties']['phone'] ?? null,
+                    'hubspot_owner_id'   => $contact['properties']['hubspot_owner_id'] ?? null,
+                    'hs_lead_status'     => $contact['properties']['hs_lead_status'] ?? null,
+                    'company'            => $contact['properties']['company'] ?? null,
+                    'lifecyclestage'     => $contact['properties']['lifecyclestage'] ?? null,
+                    'country'            => $contact['properties']['country'] ?? null,
+                    // Randomly assign marked_deleted as "yes" or "no"
+                    'marked_deleted'     => (rand(0, 1) === 1) ? 'yes' : 'no',
+                    'created_at'         => Carbon::now(),
+                    'updated_at'         => Carbon::now(),
                 ];
             }
 
@@ -333,14 +330,13 @@ class HubspotContactSyncController extends Controller
                     'gender',
                     'hubspot_updated_at',
                     'updated_at',
-
-                    // Newly added columns
                     'phone',
                     'hubspot_owner_id',
                     'hs_lead_status',
                     'company',
                     'lifecyclestage',
                     'country',
+                    'marked_deleted'
                 ]
             );
 
@@ -731,9 +727,7 @@ class HubspotContactSyncController extends Controller
     public function exportActiveContacts()
     {
         // Query contacts that are not marked as deleted.
-        $records = DB::table('hubspot_contacts')
-            ->where('marked_deleted', 'no')
-            ->get();
+        $records = DB::table('hubspot_contacts')->get();
 
         // Define the CSV file path
         $csvPath = storage_path('app/csv/active_hubspot_contacts.csv');
@@ -761,7 +755,6 @@ class HubspotContactSyncController extends Controller
             'company',
             'lifecyclestage',
             'country',
-            'marked_deleted',
             'created_at',
             'updated_at'
         ]);
@@ -782,7 +775,6 @@ class HubspotContactSyncController extends Controller
                 $record->company,
                 $record->lifecyclestage,
                 $record->country,
-                $record->marked_deleted,
                 $record->created_at,
                 $record->updated_at,
             ]);
@@ -800,16 +792,20 @@ class HubspotContactSyncController extends Controller
     public function downloadCSV($id)
     {
         $csvImport = CSVImport::findOrFail($id);
-        if ($csvImport->file_content) {
-            $filename = $csvImport->file_name;
-            $headers = [
-                'Content-Type'        => 'text/csv',
-                'Content-Disposition' => "attachment; filename={$filename}",
-            ];
-            return response($csvImport->file_content, 200, $headers);
+
+        if (!$csvImport->file_content) {
+            return redirect()->back()->with('error', 'File not found.');
         }
-        return redirect()->back()->with('error', 'File not found.');
+
+        $filename = $csvImport->file_name;
+
+        // Just serve the stored CSV content as is.
+        return response($csvImport->file_content, 200, [
+            'Content-Type'        => 'text/csv',
+            'Content-Disposition' => "attachment; filename={$filename}",
+        ]);
     }
+
 
     public function downloadCSVTemplate()
     {

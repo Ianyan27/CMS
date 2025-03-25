@@ -8,167 +8,188 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use App\Models\CSVImport;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ImportCSV extends Controller
 {
     /**
      * Step 1: Preview CSV Import
-     *
-     * This method saves the uploaded CSV file to the database,
-     * parses it into valid, invalid, and duplicate records,
-     * and stores these arrays in the session.
      */
     public function importPreview(Request $request)
     {
         $user = Auth::user();
-        // Validate file type and size.
+
+        // Basic file validation
         $request->validate([
             'file' => 'required|file|mimes:csv,txt|max:2048'
         ]);
 
         $file = $request->file('file');
 
-        // Open the file for processing using its temporary location.
         if (($handle = fopen($file->getRealPath(), 'r')) === false) {
             return redirect()->back()->with('error', 'Unable to open the file.');
         }
 
-        // Read header row.
+        // Read the header row.
         $header = fgetcsv($handle, 1000, ',');
 
-        // Minimal header check.
-        $requiredFields = ['hubspot_id', 'firstname', 'lastname', 'email'];
-        $missing = array_diff($requiredFields, $header);
-        if (!empty($missing)) {
-            fclose($handle);
-            return redirect()->back()->with('error', 'Invalid CSV. Missing header(s): ' . implode(', ', $missing));
-        }
-
-        // Arrays to hold records.
-        $validRecords   = [];
-        $invalidRecords = [];
-        $rowNumber      = 1; // header is row 1
-
-        // Process each row.
+        // Read all CSV rows into an array.
+        $records = [];
         while (($rowData = fgetcsv($handle, 1000, ',')) !== false) {
-            $rowNumber++;
-            // Map row data to header columns.
+            // Map CSV columns to an associative array.
             $row = array_combine($header, $rowData);
 
-            // Basic validations for required fields and email format.
-            $errors = [];
-            foreach ($requiredFields as $field) {
-                if (empty($row[$field])) {
-                    $errors[] = "Missing $field";
-                }
-            }
-            if (!empty($row['email']) && !filter_var($row['email'], FILTER_VALIDATE_EMAIL)) {
-                $errors[] = "Invalid email format";
-            }
+            // Optionally, if your CSV might have a "marked as deleted" column:
+            // $row['marked_deleted'] = isset($row['marked as deleted'])
+            //     ? strtolower(trim($row['marked as deleted']))
+            //     : 'no';
 
-            if (empty($errors)) {
-                // Build a record for valid rows.
-                $validRecords[] = [
-                    'hubspot_id'         => $row['hubspot_id'],
-                    'firstname'          => $row['firstname'],
-                    'lastname'           => $row['lastname'],
-                    'email'              => $row['email'],
-                    'gender'             => $row['gender'] ?? null,
-                    'hubspot_created_at' => isset($row['createdate']) ? Carbon::parse($row['createdate']) : null,
-                    'hubspot_updated_at' => isset($row['lastmodifieddate']) ? Carbon::parse($row['lastmodifieddate']) : null,
-                    'phone'              => $row['phone'] ?? null,
-                    'hubspot_owner_id'   => $row['hubspot_owner_id'] ?? null,
-                    'hs_lead_status'     => $row['hs_lead_status'] ?? null,
-                    'company'            => $row['company'] ?? null,
-                    'lifecyclestage'     => $row['lifecyclestage'] ?? null,
-                    'country'            => $row['country'] ?? null,
-                    // Randomly assign marked_deleted ("yes" or "no")
-                    'marked_deleted'     => (rand(0, 1) === 1) ? 'yes' : 'no',
-                    'created_at'         => now(),
-                    'updated_at'         => now(),
-                ];
-            } else {
-                // If invalid, add error details and row number.
-                $invalidRecords[] = array_merge($row, [
-                    'row_number'   => $rowNumber,
-                    'error_reason' => implode('; ', $errors),
-                ]);
-            }
+            $records[] = $row;
         }
         fclose($handle);
 
-        // Check for duplicates among valid records.
-        $hubspotIds = array_column($validRecords, 'hubspot_id');
-        $existingIds = DB::table('hubspot_contacts')
-            ->whereIn('hubspot_id', $hubspotIds)
-            ->pluck('hubspot_id')
+        // Collect all emails from CSV records.
+        $emails = array_column($records, 'email');
+
+        // Query the database for existing records by email
+        // We'll retrieve their 'marked_deleted' value too, so we can differentiate reasons.
+        // Key = email, Value = 'yes' or 'no'
+        $existingRecords = DB::table('hubspot_contacts')
+            ->whereIn('email', $emails)
+            ->pluck('marked_deleted', 'email')
             ->toArray();
 
+        // Arrays to hold the categorized records
+        $invalidRecords   = [];
+        $removedRecords   = [];
         $duplicateRecords = [];
-        $finalValidRecords = [];
-        foreach ($validRecords as $record) {
-            if (in_array($record['hubspot_id'], $existingIds)) {
-                // Mark duplicates with an error reason.
-                $record['error_reason'] = 'Duplicate: hubspot_id already exists';
-                $duplicateRecords[] = $record;
-            } else {
-                $finalValidRecords[] = $record;
+        $validRecords     = [];
+
+        // Track emails we've already accepted as valid in this CSV to handle duplicates
+        $seenEmailsInCsv = [];
+
+        foreach ($records as $record) {
+            // 1) Check for invalid or empty email
+            $email = isset($record['email']) ? trim($record['email']) : '';
+            if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $record['removal_reason'] = 'Invalid or empty email';
+                $invalidRecords[] = $record;
+                continue;
             }
+
+            // 2) Check if it already exists in the database or is marked as deleted in DB
+            if (isset($existingRecords[$email])) {
+                if (strtolower($existingRecords[$email]) === 'yes') {
+                    $record['removal_reason'] = 'Marked as deleted in DB';
+                } else {
+                    $record['removal_reason'] = 'Already exists in DB';
+                }
+                $removedRecords[] = $record;
+                continue;
+            }
+
+            // 3) Check for duplicates within this CSV
+            if (isset($seenEmailsInCsv[$email])) {
+                // This is a duplicate in the CSV itself
+                $record['removal_reason'] = 'Duplicate email in CSV';
+                $duplicateRecords[] = $record;
+                continue;
+            }
+
+            // Otherwise, it's valid
+            $validRecords[] = $record;
+            // Mark this email as "seen"
+            $seenEmailsInCsv[$email] = true;
         }
 
-        // If no valid records exist, store summary and inform the user.
-        if (count($finalValidRecords) == 0) {
-            $summary = [
-                'valid_count'     => 0,
-                'invalid_count'   => count($invalidRecords),
-                'duplicate_count' => count($duplicateRecords),
-                'message'         => 'No new valid records found. All records are either duplicates or invalid.'
-            ];
-            Session::put('import_summary', $summary);
-            return redirect()->back()->with('error', 'The CSV file does not contain any new valid records. Please review the summary for details.');
+        // If no valid records remain, inform the user.
+        if (empty($validRecords)) {
+            Session::put('import_summary', [
+                'message' => 'No new valid records found.'
+            ]);
+            return redirect()->back()->with('error', 'No new valid records found.');
         }
 
-        // Generate a "clean" CSV content from the final valid records.
-        // We'll use the keys from the first valid record as the header.
+        // Generate a clean CSV from the remaining (valid) records.
+        // If you have a "marked_deleted" column, remove it from the final CSV:
         $handleTemp = fopen('php://temp', 'r+');
-        $csvHeaders = array_keys($finalValidRecords[0]);
+        $csvHeaders = array_keys($validRecords[0]);
+
+        // Example: if you want to remove 'marked_deleted' from the final file
+        // if (($key = array_search('marked_deleted', $csvHeaders)) !== false) {
+        //     unset($csvHeaders[$key]);
+        // }
+        // $csvHeaders = array_values($csvHeaders);
+
+        // Write header row
         fputcsv($handleTemp, $csvHeaders);
-        foreach ($finalValidRecords as $record) {
+
+        // Write data rows
+        foreach ($validRecords as $record) {
+            // Optionally remove 'marked_deleted'
+            // unset($record['marked_deleted']);
+
             $rowData = [];
             foreach ($csvHeaders as $headerKey) {
                 $rowData[] = $record[$headerKey] ?? '';
             }
             fputcsv($handleTemp, $rowData);
         }
+
         rewind($handleTemp);
         $cleanedCSV = stream_get_contents($handleTemp);
         fclose($handleTemp);
 
-        // Save the cleaned CSV file to the database.
-        // We use a new file name (with a "cleaned_" prefix) so users know it is processed.
+        // Check for confirmation before saving.
+        if (!$request->has('confirm_import') || $request->input('confirm_import') !== 'true') {
+            // Store preview data in session for later confirmation/download.
+            Session::put('valid_records', $validRecords);
+            Session::put('invalid_records', $invalidRecords);
+            Session::put('removed_records', $removedRecords);
+            Session::put('duplicate_records', $duplicateRecords);
+
+            // Summaries for the user
+            Session::put('import_summary', [
+                'valid_count'     => count($validRecords),
+                'invalid_count'   => count($invalidRecords),
+                'removed_count'   => count($removedRecords),
+                'duplicate_count' => count($duplicateRecords),
+                'message'         => 'CSV import preview generated. Please confirm the import to save the file.'
+            ]);
+
+            return redirect()->back()->with('info', 'CSV import preview generated. Please confirm to save.');
+        }
+
+        // If confirmed, save the clean CSV file.
         $timestamp = now()->format('Y-m-d-H-i-s');
         $cleanFileName = 'imported-file.' . $timestamp . '.csv';
 
-        $csvImport =CSVImport::create([
+        $csvImport = CSVImport::create([
             'file_name'    => $cleanFileName,
             'file_content' => $cleanedCSV,
             'user_id'      => $user->id ?? null,
         ]);
 
-        // Store the arrays in session for preview/download functionality.
-        Session::put('valid_records', $finalValidRecords);
+        // Generate a download link (assumes a route named 'csv.download').
+        $downloadLink = route('csv.download', ['id' => $csvImport->id]);
+
+        // Store arrays in session for separate downloads.
+        Session::put('valid_records', $validRecords);
         Session::put('invalid_records', $invalidRecords);
+        Session::put('removed_records', $removedRecords);
         Session::put('duplicate_records', $duplicateRecords);
 
-        // Prepare a summary for the modal.
-        $summary = [
-            'valid_count'     => count($finalValidRecords),
+        Session::put('import_summary', [
+            'valid_count'     => count($validRecords),
             'invalid_count'   => count($invalidRecords),
+            'removed_count'   => count($removedRecords),
             'duplicate_count' => count($duplicateRecords),
-        ];
-        Session::put('import_summary', $summary);
+            'download_link'   => $downloadLink,
+        ]);
 
-        return redirect()->back()->with('info', 'Preview ready. Please review the modal.');
+        return redirect()->back()
+            ->with('info', 'Clean CSV ready for download.')
+            ->with('download_link', $downloadLink);
     }
 
 
@@ -197,6 +218,29 @@ class ImportCSV extends Controller
     {
         $duplicateRecords = Session::get('duplicate_records', []);
         return $this->downloadCsvFromArray($duplicateRecords, 'duplicate_records.csv');
+    }
+
+    /**
+     * Download CSV from session data for Removed Records.
+     */
+    public function downloadRemovedRecords()
+    {
+        $removedRecords = Session::get('removed_records', []);
+        $processedRecords = [];
+
+        foreach ($removedRecords as $record) {
+            // Remove the marked_deleted field
+            if (isset($record['marked_deleted'])) {
+                unset($record['marked_deleted']);
+            }
+            // Ensure a removal_reason exists.
+            if (!isset($record['removal_reason'])) {
+                $record['removal_reason'] = 'Not specified';
+            }
+            $processedRecords[] = $record;
+        }
+
+        return $this->downloadCsvFromArray($processedRecords, 'removed_records.csv');
     }
 
     /**
@@ -233,6 +277,9 @@ class ImportCSV extends Controller
 
     /**
      * Sync valid records into the database.
+     *
+     * Only contacts that do not exist in the database and are not marked as deleted (i.e. in the preview CSV)
+     * are inserted.
      */
     public function syncValidRecords()
     {
@@ -241,13 +288,78 @@ class ImportCSV extends Controller
             return redirect()->back()->with('error', 'No valid records found to sync.');
         }
 
-        // Insert valid records into the hubspot_contacts table.
-        DB::table('hubspot_contacts')->insertOrIgnore($validRecords);
+        // Define columns that exist in hubspot_contacts
+        $allowedColumns = [
+            'firstname',
+            'lastname',
+            'email',
+            'gender',
+            'hubspot_created_at',
+            'hubspot_updated_at',
+            'phone',
+            'hubspot_owner_id',
+            'hs_lead_status',
+            'company',
+            'lifecyclestage',
+            'country',
+        ];
 
-        // Clear session data.
+        // Filter each record to only these columns
+        $filteredValidRecords = [];
+        foreach ($validRecords as $record) {
+            $newRecord = [];
+            foreach ($allowedColumns as $col) {
+                $newRecord[$col] = $record[$col] ?? null;
+            }
+            // Add timestamps
+            $newRecord['created_at'] = now();
+            $newRecord['updated_at'] = now();
+
+            $filteredValidRecords[] = $newRecord;
+        }
+
+        // Break into chunks to avoid "too many placeholders"
+        $chunks = array_chunk($filteredValidRecords, 500);
+
+        // Insert or ignore duplicates (requires a unique index on 'email')
+        foreach ($chunks as $chunk) {
+            DB::table('hubspot_contacts')->insertOrIgnore($chunk);
+        }
+
+        // Generate a CSV with the same column order
+        $user = Auth::user();
+        $handleTemp = fopen('php://temp', 'r+');
+
+        // Use the $allowedColumns array as your header row
+        fputcsv($handleTemp, $allowedColumns);
+
+        // Write each row in the same column order
+        foreach ($filteredValidRecords as $record) {
+            $rowData = [];
+            foreach ($allowedColumns as $col) {
+                $rowData[] = $record[$col] ?? '';
+            }
+            fputcsv($handleTemp, $rowData);
+        }
+
+        rewind($handleTemp);
+        $csvContent = stream_get_contents($handleTemp);
+        fclose($handleTemp);
+
+        $timestamp = now()->format('Y-m-d-H-i-s');
+        $cleanFileName = 'synced-file.' . $timestamp . '.csv';
+
+        CSVImport::create([
+            'file_name'    => $cleanFileName,
+            'file_content' => $csvContent,
+            'user_id'      => $user->id ?? null,
+        ]);
+
+        // Clear session
         Session::forget('valid_records');
         Session::forget('invalid_records');
         Session::forget('duplicate_records');
+        Session::forget('removed_records');
         Session::forget('import_summary');
 
         return redirect()->back()->with('success', 'Successfully synced valid contacts to the database.');

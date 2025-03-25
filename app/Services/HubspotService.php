@@ -101,7 +101,7 @@ class HubspotService
 
         // Set script timeout to handle large datasets
         if (php_sapi_name() === 'cli') {
-            set_time_limit(1500); // 15 minutes
+            set_time_limit(6000); // 15 minutes
         }
 
         // First check total contacts in the full time window
@@ -164,12 +164,12 @@ class HubspotService
         // Step 3: Fine-tuning if we're over the max batch size
         while ($totalContacts > $maxBatchSize) {
             // Reduce by 5 seconds for fine adjustment
-            $optimalEndDate = Carbon::parse($optimalEndDate)->subSeconds(5)->format('Y-m-d\TH:i:s\Z');
+            $optimalEndDate = Carbon::parse($optimalEndDate)->subSeconds(30)->format('Y-m-d\TH:i:s\Z');
 
             // Get new count
             $totalContacts = $this->countContacts($startDate, $optimalEndDate);
 
-            Log::info("Fine-tuning: reduced window by 5 seconds", [
+            Log::info("Fine-tuning: reduced window by 30 seconds", [
                 'newEndDate' => $optimalEndDate,
                 'newCount' => $totalContacts
             ]);

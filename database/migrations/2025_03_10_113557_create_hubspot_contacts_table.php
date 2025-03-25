@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('hubspot_contacts', function (Blueprint $table) {
             $table->id();
-            $table->string('hubspot_id')->unique()->index();
-            $table->string('email')->nullable()->index();
+            $table->string('hubspot_id')->index()->nullable();
+            $table->string('email')->unique()->nullable()->index();
             $table->string('firstname')->nullable();
             $table->string('lastname')->nullable();
             $table->string('gender')->nullable();

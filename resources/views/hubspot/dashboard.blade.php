@@ -77,6 +77,7 @@
                         $validCount = $summary['valid_count'] ?? 0;
                         $invalidCount = $summary['invalid_count'] ?? 0;
                         $duplicateCount = $summary['duplicate_count'] ?? 0;
+                        $removedCount = $summary['removed_count'] ?? 0;
                     @endphp
 
                     <p>Valid Contacts: {{ $validCount }}</p>
@@ -102,10 +103,19 @@
                             Download Duplicate Contacts
                         </a>
                     </p>
+
+                    <!-- New: Removed Contacts -->
+                    <p>Removed Contacts: {{ $removedCount }}</p>
+                    <p>
+                        <a href="{{ route('contacts.download.removed') }}" class="btn btn-sm btn-warning"
+                            @if ($removedCount === 0) disabled @endif>
+                            Download Removed Contacts
+                        </a>
+                    </p>
                 </div>
                 <div class="modal-footer">
                     <!-- Cancel just closes the modal (and leaves session data intact).
-                            If you want to clear session, create a route to do so. -->
+                             If you want to clear session, create a route to do so. -->
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
 
                     <!-- Sync button calls the route that inserts valid records into DB -->
@@ -117,6 +127,7 @@
             </div>
         </div>
     </div>
+
 
 
     <div class="header d-flex align-items-center justify-content-between">
@@ -143,9 +154,16 @@
             <form action="{{ route('contacts.import.preview') }}" method="POST" enctype="multipart/form-data"
                 class="me-3">
                 @csrf
-                <div class="mb-3">
-                    <label for="csvFile" class="form-label">Import CSV File</label>
-                    <input class="form-control" type="file" id="csvFile" name="file" accept=".csv">
+                <div class="row">
+                    <div class="col-lg-12 mb-3 d-flex justify-content-between">
+                        <label for="csvFile" class="form-label">Import CSV File</label>
+                        <div>
+                            <a href="{{ route('csv.template.download') }}" class="btn hover-action">Download Template</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 mb-3">
+                        <input class="form-control" type="file" id="csvFile" name="file" accept=".csv">
+                    </div>
                 </div>
                 <button type="submit" class="btn hover-action">Import Contacts</button>
             </form>
