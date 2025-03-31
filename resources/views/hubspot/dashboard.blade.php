@@ -115,7 +115,7 @@
                 </div>
                 <div class="modal-footer">
                     <!-- Cancel just closes the modal (and leaves session data intact).
-                             If you want to clear session, create a route to do so. -->
+                                     If you want to clear session, create a route to do so. -->
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
 
                     <!-- Sync button calls the route that inserts valid records into DB -->
@@ -323,13 +323,15 @@
                         <div class="mb-3">
                             <label for="start_date" class="form-label">Start Date (Greater Than)</label>
                             <input type="datetime-local" class="form-control" id="start_date" name="start_date"
-                                value="{{ Carbon\Carbon::parse($nextStartDate)->format('Y-m-d\TH:i') }}">
+                                step="1"
+                                value="{{ Carbon\Carbon::parse($nextStartDate)->format('Y-m-d\TH:i:s') }}">
                             <div class="form-text">Default is the last sync timestamp</div>
                         </div>
                         <div class="mb-3">
                             <label for="end_date" class="form-label">End Date (Less Than)</label>
                             <input type="datetime-local" class="form-control" id="end_date" name="end_date"
-                                value="{{ Carbon\Carbon::now()->format('Y-m-d\TH:i') }}">
+                                step="1"
+                                value="{{ Carbon\Carbon::now()->format('Y-m-d\TH:i:s') }}">
                             <div class="form-text">Default is current time</div>
                         </div>
                         <button type="submit" class="btn hover-action" id="start-sync-btn"
