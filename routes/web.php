@@ -8,6 +8,7 @@ use App\Http\Controllers\ContactController;
 
 use App\Http\Controllers\CSVDownloadController;
 use App\Http\Controllers\DiscardController;
+use App\Http\Controllers\HubspotController;
 use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\SaleAdminController;
 use App\Http\Controllers\UserController;
@@ -322,6 +323,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('/contacts/sync-valid', [ImportCSV::class, 'syncValidRecords'])->name('contacts.sync.valid');
     // In your routes/web.php (or similar)
     Route::get('/contacts/download/removed', [ImportCSV::class, 'downloadRemovedRecords'])->name('contacts.download.removed');
+
+    Route::get('/hubspot/contacts-v2', [HubspotContactSyncController::class, 'viewContactsV2'])->name('hubspot.contacts.v2');
 });
 
 Route::group(['prefix' => 'sales-agent'], function () {

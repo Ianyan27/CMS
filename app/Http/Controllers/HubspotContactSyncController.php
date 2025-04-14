@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ContactActivitiesStatus;
+use App\Models\ContactEngagementStatus;
+use App\Models\ContactProfile;
 use App\Models\CSVImport;
 use App\Models\HubspotRetrievalHistory;
 use App\Models\HubspotContact;
 use App\Models\HubspotSyncStatus;
 use App\Models\HubspotContactBuffer;
+use App\Models\HubspotContactV2;
 use App\Models\User;
 use App\Services\HubspotService;
 use Illuminate\Http\Request;
@@ -29,6 +33,9 @@ class HubspotContactSyncController extends Controller
     {
         $syncStatus = $this->hubspotService->getSyncStatus('contacts');
         $totalContacts = HubspotContact::count();
+        $totalContact = HubspotContactV2::count();
+        $totalHubContacts = ContactProfile::count();
+        Log::info("Total contacts in HubSpot V2: {$totalContact}");
         $csvImports = CSVImport::orderBy('created_at', 'desc')->get();
         $lastSyncDate = $syncStatus->last_successful_sync;
 
@@ -39,11 +46,24 @@ class HubspotContactSyncController extends Controller
         return view('hubspot.dashboard', compact(
             'syncStatus',
             'totalContacts',
+            'totalContact',
+            'totalHubContacts',
             'lastSyncDate',
             'nextStartDate',
             'endDate',
             'csvImports'
         ));
+    }
+
+    public function viewContactsV2()
+    {
+        $contacts = HubspotContactV2::paginate(20);
+        return view('hubspot.contacts-v2', compact('contacts'));
+    }
+
+    public function displayHubspotContacts()
+    {
+        return view('hubspot.display-hubspot-contacts');
     }
 
     public function syncHistory()
@@ -264,7 +284,7 @@ class HubspotContactSyncController extends Controller
             return $contact['id'];
         }, $contacts);
 
-        $existingCount = DB::table('hubspot_contacts')
+        $existingCount = DB::table(table: 'hubspot_contacts_v2')
             ->whereIn('hubspot_id', $hubspotIds)
             ->count();
 
@@ -276,12 +296,8 @@ class HubspotContactSyncController extends Controller
         $this->processContactsBatch($contacts, $chunkSize);
     }
 
-    /**
-     * Process a batch of contacts by chunks
-     */
     private function processContactsBatch($contacts, $chunkSize)
     {
-        // Process in chunks for efficiency
         $chunks = array_chunk($contacts, $chunkSize);
 
         Log::info("Processing contact batch", [
@@ -290,59 +306,198 @@ class HubspotContactSyncController extends Controller
             'chunkSize'    => $chunkSize
         ]);
 
-        foreach ($chunks as $chunk) {
-            $records = [];
+        foreach ($chunks as $chunkIndex => $chunk) {
+            foreach ($chunk as $contactIndex => $contact) {
+                if (!isset($contact['id']) || !isset($contact['properties'])) {
+                    Log::warning("Invalid contact format detected", [
+                        'chunk' => $chunkIndex,
+                        'index' => $contactIndex,
+                        'raw'   => $contact
+                    ]);
+                    continue;
+                }
 
-            foreach ($chunk as $contact) {
-                $records[] = [
-                    'hubspot_id'         => $contact['id'],
-                    'email'              => $contact['properties']['email'] ?? null,
-                    'firstname'          => $contact['properties']['firstname'] ?? null,
-                    'lastname'           => $contact['properties']['lastname'] ?? null,
-                    'gender'             => $contact['properties']['gender'] ?? null,
-                    'hubspot_created_at' => isset($contact['properties']['createdate'])
-                        ? Carbon::parse($contact['properties']['createdate'])
-                        : null,
-                    'hubspot_updated_at' => isset($contact['properties']['lastmodifieddate'])
-                        ? Carbon::parse($contact['properties']['lastmodifieddate'])
-                        : null,
-                    'phone'              => $contact['properties']['phone'] ?? null,
-                    'hubspot_owner_id'   => $contact['properties']['hubspot_owner_id'] ?? null,
-                    'hs_lead_status'     => $contact['properties']['hs_lead_status'] ?? null,
-                    'company'            => $contact['properties']['company'] ?? null,
-                    'lifecyclestage'     => $contact['properties']['lifecyclestage'] ?? null,
-                    'country'            => $contact['properties']['country'] ?? null,
-                    // Randomly assign marked_deleted as "yes" or "no"
-                    'marked_deleted'     => (rand(0, 1) === 1) ? 'yes' : 'no',
-                    'created_at'         => Carbon::now(),
-                    'updated_at'         => Carbon::now(),
+                $props = $contact['properties'];
+                Log::info("Logging contact properties", ['hubspot_id' => $contact['id'], 'properties' => $props]);
+
+                $hubspotId = $contact['id'];
+
+                // Build core record from HubSpot contact
+                $record = [
+                    'hubspot_id'             => $hubspotId,
+                    'contact_source'         => $props['ad_channel'] ?? null,
+                    'contact_email'          => $props['email'] ?? null,
+                    'contact_lastname'       => $props['lastname'] ?? null,
+                    'contact_firstname'      => $props['firstname'] ?? null,
+                    'contact_mobile'         => $props['phone'] ?? null,
+                    'linkedin_id'            => $props['hs_linkedin_url'] ?? null,
+                    'passport_full_name'     => $props['full_name_of_student__as_in_nric_'] ?? null,
+                    'nric_id'                => $props['nric_number__for_sc_pr_'] ?? null,
+                    'passport_id'            => $props['passport_number___fin__indicate_n_a_if_not_applicable___sgret_'] ?? null,
+                    'date_of_birth'          => $props['age__sgret_'] ?? null,
+                    'race'                   => $props['race'] ?? null,
+                    'nationality'            => $props['nationality'] ?? null,
+                    'parent_name'            => $props['parent_guardian_contact_no___for_student_under_18_years_old__enter_n_a_if_not_applicable_'] ?? null,
+                    'highest_qualification'  => $props['highest_level_of_education'] ?? null,
+                    'business_unit'          => $props['business_unit'] ?? null,
+                    'work_experience_yrs'    => $props['how_many_years_of_work_experience_do_you_have'] ?? null,
+                    'current_company'        => $props['current_or_last_company'] ?? null,
+                    'company_classification' => $props['company_type'] ?? null,
+                    'current_job_role'       => $props['jobtitle'] ?? null,
                 ];
+
+                // Insert ContactProfile first
+                $contactProfile = ContactProfile::updateOrCreate(
+                    ['hubspot_id' => $hubspotId],
+                    $record
+                );
+
+                if (!$contactProfile->contact_id) {
+                    Log::error("ContactProfile insertion failed", [
+                        'hubspot_id' => $hubspotId
+                    ]);
+                    continue;
+                }
+
+                Log::info("Inserted ContactProfile", [
+                    'hubspot_id' => $hubspotId,
+                    'contact_id' => $contactProfile->contact_id
+                ]);
+
+                // Upsert related ContactEngagementStatus
+                $engagementStatus = ContactEngagementStatus::updateOrCreate(
+                    ['contact_id' => $contactProfile->contact_id],
+                    [
+                        'contact_mgr'       => $props["account_manager__hed_"],
+                        'contact_exec'      => $props["hubspot_owner_id"],
+                        'contact_status'    => $props["contact_status"],
+                        'cilos_stage'       => $props["lifecyclestage"],
+                        'cilos_substage'    => $props["sales_lifecycle_l2"],
+                        'product_interest'  => $props["which_course_are_you_interested_in_"],
+                        'lead_status'    => $props["hs_lead_status"],
+                    ]
+                );
+
+                Log::info("Inserted ContactEngagementStatus", [
+                    'contact_id' => $contactProfile->contact_id,
+                    'engagement_id' => $engagementStatus->contact_engagement_status_id
+                ]);
+
+                // Optional: re-fetch engagement data and update ContactProfile
+                $engagementData = [
+                    'account_manager_hed_'                => $engagementStatus->contact_mgr,
+                    'hubspot_owner_id'                    => $engagementStatus->contact_exec,
+                    'contact_status'                      => $engagementStatus->contact_status,
+                    'lifecyclestage'                      => $engagementStatus->cilos_stage,
+                    'sales_lifecycle_l2'                  => $engagementStatus->cilos_substage,
+                    'which_course_are_you_interested_in_' => $engagementStatus->product_interest,
+                    'hs_lead_status'                      => $engagementStatus->hs_lead_status,
+                ];
+
+                // Final update to enrich profile with engagement data
+                ContactProfile::updateOrCreate(
+                    ['hubspot_id' => $hubspotId],
+                    array_merge($record, $engagementData)
+                );
             }
-
-            // Use upsert to handle duplicates
-            DB::table('hubspot_contacts')->upsert(
-                $records,
-                ['hubspot_id'], // Unique key to check for existing records
-                [
-                    'email',
-                    'firstname',
-                    'lastname',
-                    'gender',
-                    'hubspot_updated_at',
-                    'updated_at',
-                    'phone',
-                    'hubspot_owner_id',
-                    'hs_lead_status',
-                    'company',
-                    'lifecyclestage',
-                    'country',
-                    'marked_deleted'
-                ]
-            );
-
-            Log::info("Inserted batch of " . count($records) . " contacts");
         }
     }
+
+    /**
+     * Process a batch of contacts by chunks
+     */
+    // private function processContactsBatch($contacts, $chunkSize)
+    // {
+    //     // Process in chunks for efficiency
+    //     $chunks = array_chunk($contacts, $chunkSize);
+
+    //     Log::info("Processing contact batch", [
+    //         'contactCount' => count($contacts),
+    //         'chunks'       => count($chunks),
+    //         'chunkSize'    => $chunkSize
+    //     ]);
+
+    //     foreach ($chunks as $chunk) {
+    //         $records = [];
+
+    //         // foreach ($chunk as $contact) {
+    //         //     $records[] = [
+    //         //         'hubspot_id'         => $contact['id'],
+    //         //         'email'              => $contact['properties']['email'] ?? null,
+    //         //         'firstname'          => $contact['properties']['firstname'] ?? null,
+    //         //         'lastname'           => $contact['properties']['lastname'] ?? null,
+    //         //         'gender'             => $contact['properties']['gender'] ?? null,
+    //         //         'hubspot_created_at' => isset($contact['properties']['createdate'])
+    //         //             ? Carbon::parse($contact['properties']['createdate'])
+    //         //             : null,
+    //         //         'hubspot_updated_at' => isset($contact['properties']['lastmodifieddate'])
+    //         //             ? Carbon::parse($contact['properties']['lastmodifieddate'])
+    //         //             : null,
+    //         //         'phone'              => $contact['properties']['phone'] ?? null,
+    //         //         'hubspot_owner_id'   => $contact['properties']['hubspot_owner_id'] ?? null,
+    //         //         'hs_lead_status'     => $contact['properties']['hs_lead_status'] ?? null,
+    //         //         'company'            => $contact['properties']['company'] ?? null,
+    //         //         'lifecyclestage'     => $contact['properties']['lifecyclestage'] ?? null,
+    //         //         'country'            => $contact['properties']['country'] ?? null,
+    //         //         // Randomly assign marked_deleted as "yes" or "no"
+    //         //         'marked_deleted'     => (rand(0, 1) === 1) ? 'yes' : 'no',
+    //         //         'created_at'         => Carbon::now(),
+    //         //         'updated_at'         => Carbon::now(),
+    //         //     ];
+    //         // }
+
+    //         // // Use upsert to handle duplicates
+    //         // DB::table('hubspot_contacts')->upsert(
+    //         //     $records,
+    //         //     ['hubspot_id'], // Unique key to check for existing records
+    //         //     [
+    //         //         'email',
+    //         //         'firstname',
+    //         //         'lastname',
+    //         //         'gender',
+    //         //         'hubspot_updated_at',
+    //         //         'updated_at',
+    //         //         'phone',
+    //         //         'hubspot_owner_id',
+    //         //         'hs_lead_status',
+    //         //         'company',
+    //         //         'lifecyclestage',
+    //         //         'country',
+    //         //         'marked_deleted'
+    //         //     ]
+    //         // );
+
+    //         foreach ($chunk as $contact) {
+    //             $records[] = [
+    //                 'hubspot_id'         => $contact['id'],
+    //                 'ad_channel'              => $contact['properties']['ad_channel'] ?? null,
+    //                 'business_unit'          => $contact['properties']['business_unit'] ?? null,
+    //                 'campaign_group'           => $contact['properties']['campaign_group'] ?? null,
+    //                 'country'             => $contact['properties']['country'] ?? null,
+    //                 'country_from' => $contact['properties']['country_from'] ?? null,
+    //                 'your_specialization'   => $contact['properties']['your_specialization'] ?? null,
+    //             ];
+    //         }
+
+    //         // Use upsert to handle duplicates
+    //         // Use upsert to handle duplicates
+    //         DB::table('hubspot_contacts_v2')->upsert(
+    //             $records,
+    //             ['hubspot_id'], // Unique key to check for existing records
+    //             [
+    //                 'ad_channel',
+    //                 'business_unit',
+    //                 'campaign_group',
+    //                 'country',
+    //                 'country_from', // ✅ Corrected from country__from_
+    //                 'your_specialization'
+    //             ]
+    //         );
+
+
+    //         Log::info("Inserted batch of " . count($records) . " contacts");
+    //     }
+    // }
 
     public function cancelSync()
     {
@@ -873,5 +1028,16 @@ class HubspotContactSyncController extends Controller
             return response()->download($filePath, $filename);
         }
         return redirect()->back()->with('error', 'File not found.');
+    }
+
+    public function checkStatus()
+    {
+        $syncStatus = $this->hubspotService->getSyncStatus('contacts');
+
+        return response()->json([
+            'status' => $syncStatus->status,
+            'last_sync' => $syncStatus->last_sync_timestamp,
+            'total_synced' => $syncStatus->total_synced
+        ]);
     }
 }

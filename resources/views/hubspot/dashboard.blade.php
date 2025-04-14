@@ -194,7 +194,8 @@
             <div class="card h-100 stats-card">
                 <div class="card-body">
                     <h5 class="card-title">Total Contacts</h5>
-                    <h2 id="total-contacts">{{ number_format($totalContacts) }}</h2>
+                    {{-- <h2 id="total-contacts">{{ number_format($totalContacts) }}</h2> --}}
+                    <h2 id="total-contacts"> {{ number_format($totalHubContacts) }} </h2>
                 </div>
             </div>
         </div>
@@ -331,9 +332,9 @@
                             <label for="end_date" class="form-label">End Date (Less Than)</label>
                             <input type="datetime-local" class="form-control" id="end_date" name="end_date"
                                 step="1"
-                                value="{{ Carbon\Carbon::now()->format('Y-m-d\TH:i:s') }}">
-                            <div class="form-text">Default is current time</div>
-                        </div>
+                                value="{{ \Carbon\Carbon::now('Asia/Singapore')->format('Y-m-d\TH:i:s') }}">
+                            <div class="form-text">Default is current time (Singapore Timezone)</div>
+                        </div>                        
                         <button type="submit" class="btn hover-action" id="start-sync-btn"
                             {{ $syncStatus->status === 'running' ? 'disabled' : '' }}>
                             <i class="fas fa-sync"></i> Sync Next Batch
