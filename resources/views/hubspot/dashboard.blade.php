@@ -115,7 +115,7 @@
                 </div>
                 <div class="modal-footer">
                     <!-- Cancel just closes the modal (and leaves session data intact).
-                                     If you want to clear session, create a route to do so. -->
+                                    If you want to clear session, create a route to do so. -->
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
 
                     <!-- Sync button calls the route that inserts valid records into DB -->
@@ -195,7 +195,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Total Contacts</h5>
                     {{-- <h2 id="total-contacts">{{ number_format($totalContacts) }}</h2> --}}
-                    <h2 id="total-contacts"> {{ number_format($totalHubContacts) }} </h2>
+                    <h2 id="total-contacts"> {{ number_format($totalContacts) }} </h2>
                 </div>
             </div>
         </div>

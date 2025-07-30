@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('SalesDB_Contact_Profile', function (Blueprint $table) {
+        Schema::create('salesdb_contact_profile', function (Blueprint $table) {
             $table->id('contact_id');
             $table->string('hubspot_id')->nullable(); //hubspot_id
             $table->string('contact_source')->nullable(); //ad_channel
@@ -66,7 +66,7 @@ return new class extends Migration
             
         });
 
-        Schema::create('SalesDB_Contact_Engagement_Status', function (Blueprint $table) {
+        Schema::create('salesdb_contact_engagement_status', function (Blueprint $table) {
             $table->id('contact_engagement_status_id');
             $table->unsignedBigInteger('contact_id');
             $table->string('contact_mgr')->nullable(); //account_manager__hed_
@@ -81,13 +81,13 @@ return new class extends Migration
             $table->string('product_interest')->nullable(); //which_course_are_you_interested_in
             $table->timestamps();
 
-            $table->foreign('contact_id')->references('contact_id')->on('SalesDB_Contact_Profile');
+            $table->foreign('contact_id')->references('contact_id')->on('salesdb_contact_profile');
         });
 
-        Schema::create('SalesDB_Contact_Activities_Status', function (Blueprint $table) {
+        Schema::create('salesdb_contact_activities_status', function (Blueprint $table) {
             $table->id('contact_activities_status_id');
             $table->unsignedBigInteger('contact_id');
-            $table->dateTime('last_messaging_date')->nullable(); //notes_last_updated
+            $table->string('last_messaging_date')->nullable(); //notes_last_updated
             $table->text('last_messaging_contents')->nullable();
             $table->dateTime('last_campaign_date')->nullable();
             $table->text('last_campaign_contents')->nullable();
@@ -95,14 +95,14 @@ return new class extends Migration
             $table->text('digital_conversation_contents')->nullable();
             $table->timestamps();
 
-            $table->foreign('contact_id')->references('contact_id')->on('SalesDB_Contact_Profile');
+            $table->foreign('contact_id')->references('contact_id')->on('salesdb_contact_profile');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('SalesDB_Contact_Activities_Status');
-        Schema::dropIfExists('SalesDB_Contact_Engagement_Status');
-        Schema::dropIfExists('SalesDB_Contact_Profile');
+        Schema::dropIfExists('salesdb_contact_activities_status');
+        Schema::dropIfExists('salesdb_contact_engagement_status');
+        Schema::dropIfExists('salesdb_contact_profile');
     }
 };

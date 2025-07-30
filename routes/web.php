@@ -325,6 +325,18 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/contacts/download/removed', [ImportCSV::class, 'downloadRemovedRecords'])->name('contacts.download.removed');
 
     Route::get('/hubspot/contacts-v2', [HubspotContactSyncController::class, 'viewContactsV2'])->name('hubspot.contacts.v2');
+
+    Route::get('/test-export', function () {
+        $path = 'exports/test.xlsx';
+    
+        if (!file_exists(storage_path('app/exports'))) {
+            mkdir(storage_path('app/exports'), 0777, true);
+        }
+    
+        $saved = \Maatwebsite\Excel\Facades\Excel::store(new \App\Exports\ContactProfileExport, $path);
+    
+        return $saved ? 'Saved!' : 'Failed to save!';
+    });
 });
 
 Route::group(['prefix' => 'sales-agent'], function () {

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ContactEngagementStatus extends Model
 {
-    protected $table = 'SalesDB_Contact_Engagement_Status';
+    protected $table = 'salesdb_contact_enagagement_status';
     protected $primaryKey = 'contact_engagement_status_id';
     public $timestamps = true;
 

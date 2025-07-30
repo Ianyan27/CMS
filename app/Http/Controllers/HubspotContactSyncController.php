@@ -2,22 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ContactActivitiesStatus;
-use App\Models\ContactEngagementStatus;
+use App\Exports\ContactProfileExport;
 use App\Models\ContactProfile;
+use App\Models\ContactTable;
 use App\Models\CSVImport;
 use App\Models\HubspotRetrievalHistory;
 use App\Models\HubspotContact;
-use App\Models\HubspotSyncStatus;
-use App\Models\HubspotContactBuffer;
 use App\Models\HubspotContactV2;
-use App\Models\User;
 use App\Services\HubspotService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Response;
 
 class HubspotContactSyncController extends Controller
 {
@@ -32,10 +31,10 @@ class HubspotContactSyncController extends Controller
     public function dashboard()
     {
         $syncStatus = $this->hubspotService->getSyncStatus('contacts');
-        $totalContacts = HubspotContact::count();
+        $totalContacts = ContactTable::count();
         $totalContact = HubspotContactV2::count();
         $totalHubContacts = ContactProfile::count();
-        Log::info("Total contacts in HubSpot V2: {$totalContact}");
+        $totalHubspotContactProfile = ContactTable::count();
         $csvImports = CSVImport::orderBy('created_at', 'desc')->get();
         $lastSyncDate = $syncStatus->last_successful_sync;
 
@@ -51,7 +50,8 @@ class HubspotContactSyncController extends Controller
             'lastSyncDate',
             'nextStartDate',
             'endDate',
-            'csvImports'
+            'csvImports',
+            'totalHubspotContactProfile',
         ));
     }
 
@@ -262,7 +262,7 @@ class HubspotContactSyncController extends Controller
     private function processContacts($contacts)
     {
         $maxContactsPerBatch = 10000;
-        $chunkSize = 3000; // Process in chunks of 3000 for efficiency
+        $chunkSize = 100000; // Process in chunks of 3000 for efficiency
 
         // Check if we need to handle HubSpot API limit
         if (count($contacts) >= $maxContactsPerBatch) {
@@ -296,119 +296,8 @@ class HubspotContactSyncController extends Controller
         $this->processContactsBatch($contacts, $chunkSize);
     }
 
-    private function processContactsBatch($contacts, $chunkSize)
-    {
-        $chunks = array_chunk($contacts, $chunkSize);
-
-        Log::info("Processing contact batch", [
-            'contactCount' => count($contacts),
-            'chunks'       => count($chunks),
-            'chunkSize'    => $chunkSize
-        ]);
-
-        foreach ($chunks as $chunkIndex => $chunk) {
-            foreach ($chunk as $contactIndex => $contact) {
-                if (!isset($contact['id']) || !isset($contact['properties'])) {
-                    Log::warning("Invalid contact format detected", [
-                        'chunk' => $chunkIndex,
-                        'index' => $contactIndex,
-                        'raw'   => $contact
-                    ]);
-                    continue;
-                }
-
-                $props = $contact['properties'];
-                Log::info("Logging contact properties", ['hubspot_id' => $contact['id'], 'properties' => $props]);
-
-                $hubspotId = $contact['id'];
-
-                // Build core record from HubSpot contact
-                $record = [
-                    'hubspot_id'             => $hubspotId,
-                    'contact_source'         => $props['ad_channel'] ?? null,
-                    'contact_email'          => $props['email'] ?? null,
-                    'contact_lastname'       => $props['lastname'] ?? null,
-                    'contact_firstname'      => $props['firstname'] ?? null,
-                    'contact_mobile'         => $props['phone'] ?? null,
-                    'linkedin_id'            => $props['hs_linkedin_url'] ?? null,
-                    'passport_full_name'     => $props['full_name_of_student__as_in_nric_'] ?? null,
-                    'nric_id'                => $props['nric_number__for_sc_pr_'] ?? null,
-                    'passport_id'            => $props['passport_number___fin__indicate_n_a_if_not_applicable___sgret_'] ?? null,
-                    'date_of_birth'          => $props['age__sgret_'] ?? null,
-                    'race'                   => $props['race'] ?? null,
-                    'nationality'            => $props['nationality'] ?? null,
-                    'parent_name'            => $props['parent_guardian_contact_no___for_student_under_18_years_old__enter_n_a_if_not_applicable_'] ?? null,
-                    'highest_qualification'  => $props['highest_level_of_education'] ?? null,
-                    'business_unit'          => $props['business_unit'] ?? null,
-                    'work_experience_yrs'    => $props['how_many_years_of_work_experience_do_you_have'] ?? null,
-                    'current_company'        => $props['current_or_last_company'] ?? null,
-                    'company_classification' => $props['company_type'] ?? null,
-                    'current_job_role'       => $props['jobtitle'] ?? null,
-                ];
-
-                // Insert ContactProfile first
-                $contactProfile = ContactProfile::updateOrCreate(
-                    ['hubspot_id' => $hubspotId],
-                    $record
-                );
-
-                if (!$contactProfile->contact_id) {
-                    Log::error("ContactProfile insertion failed", [
-                        'hubspot_id' => $hubspotId
-                    ]);
-                    continue;
-                }
-
-                Log::info("Inserted ContactProfile", [
-                    'hubspot_id' => $hubspotId,
-                    'contact_id' => $contactProfile->contact_id
-                ]);
-
-                // Upsert related ContactEngagementStatus
-                $engagementStatus = ContactEngagementStatus::updateOrCreate(
-                    ['contact_id' => $contactProfile->contact_id],
-                    [
-                        'contact_mgr'       => $props["account_manager__hed_"],
-                        'contact_exec'      => $props["hubspot_owner_id"],
-                        'contact_status'    => $props["contact_status"],
-                        'cilos_stage'       => $props["lifecyclestage"],
-                        'cilos_substage'    => $props["sales_lifecycle_l2"],
-                        'product_interest'  => $props["which_course_are_you_interested_in_"],
-                        'lead_status'    => $props["hs_lead_status"],
-                    ]
-                );
-
-                Log::info("Inserted ContactEngagementStatus", [
-                    'contact_id' => $contactProfile->contact_id,
-                    'engagement_id' => $engagementStatus->contact_engagement_status_id
-                ]);
-
-                // Optional: re-fetch engagement data and update ContactProfile
-                $engagementData = [
-                    'account_manager_hed_'                => $engagementStatus->contact_mgr,
-                    'hubspot_owner_id'                    => $engagementStatus->contact_exec,
-                    'contact_status'                      => $engagementStatus->contact_status,
-                    'lifecyclestage'                      => $engagementStatus->cilos_stage,
-                    'sales_lifecycle_l2'                  => $engagementStatus->cilos_substage,
-                    'which_course_are_you_interested_in_' => $engagementStatus->product_interest,
-                    'hs_lead_status'                      => $engagementStatus->hs_lead_status,
-                ];
-
-                // Final update to enrich profile with engagement data
-                ContactProfile::updateOrCreate(
-                    ['hubspot_id' => $hubspotId],
-                    array_merge($record, $engagementData)
-                );
-            }
-        }
-    }
-
-    /**
-     * Process a batch of contacts by chunks
-     */
     // private function processContactsBatch($contacts, $chunkSize)
     // {
-    //     // Process in chunks for efficiency
     //     $chunks = array_chunk($contacts, $chunkSize);
 
     //     Log::info("Processing contact batch", [
@@ -417,87 +306,249 @@ class HubspotContactSyncController extends Controller
     //         'chunkSize'    => $chunkSize
     //     ]);
 
-    //     foreach ($chunks as $chunk) {
-    //         $records = [];
+    //     foreach ($chunks as $chunkIndex => $chunk) {
+    //         foreach ($chunk as $contactIndex => $contact) {
+    //             try {
+    //                 if (!isset($contact['id']) || !isset($contact['properties'])) {
+    //                     Log::warning("Invalid contact format detected", [
+    //                         'chunk' => $chunkIndex,
+    //                         'index' => $contactIndex,
+    //                         'raw'   => $contact
+    //                     ]);
+    //                     continue;
+    //                 }
 
-    //         // foreach ($chunk as $contact) {
-    //         //     $records[] = [
-    //         //         'hubspot_id'         => $contact['id'],
-    //         //         'email'              => $contact['properties']['email'] ?? null,
-    //         //         'firstname'          => $contact['properties']['firstname'] ?? null,
-    //         //         'lastname'           => $contact['properties']['lastname'] ?? null,
-    //         //         'gender'             => $contact['properties']['gender'] ?? null,
-    //         //         'hubspot_created_at' => isset($contact['properties']['createdate'])
-    //         //             ? Carbon::parse($contact['properties']['createdate'])
-    //         //             : null,
-    //         //         'hubspot_updated_at' => isset($contact['properties']['lastmodifieddate'])
-    //         //             ? Carbon::parse($contact['properties']['lastmodifieddate'])
-    //         //             : null,
-    //         //         'phone'              => $contact['properties']['phone'] ?? null,
-    //         //         'hubspot_owner_id'   => $contact['properties']['hubspot_owner_id'] ?? null,
-    //         //         'hs_lead_status'     => $contact['properties']['hs_lead_status'] ?? null,
-    //         //         'company'            => $contact['properties']['company'] ?? null,
-    //         //         'lifecyclestage'     => $contact['properties']['lifecyclestage'] ?? null,
-    //         //         'country'            => $contact['properties']['country'] ?? null,
-    //         //         // Randomly assign marked_deleted as "yes" or "no"
-    //         //         'marked_deleted'     => (rand(0, 1) === 1) ? 'yes' : 'no',
-    //         //         'created_at'         => Carbon::now(),
-    //         //         'updated_at'         => Carbon::now(),
-    //         //     ];
-    //         // }
+    //                 $props = $contact['properties'];
+    //                 Log::info("Logging contact properties", ['hubspot_id' => $contact['id'], 'properties' => $props]);
 
-    //         // // Use upsert to handle duplicates
-    //         // DB::table('hubspot_contacts')->upsert(
-    //         //     $records,
-    //         //     ['hubspot_id'], // Unique key to check for existing records
-    //         //     [
-    //         //         'email',
-    //         //         'firstname',
-    //         //         'lastname',
-    //         //         'gender',
-    //         //         'hubspot_updated_at',
-    //         //         'updated_at',
-    //         //         'phone',
-    //         //         'hubspot_owner_id',
-    //         //         'hs_lead_status',
-    //         //         'company',
-    //         //         'lifecyclestage',
-    //         //         'country',
-    //         //         'marked_deleted'
-    //         //     ]
-    //         // );
+    //                 $hubspotId = $contact['id'];
 
-    //         foreach ($chunk as $contact) {
-    //             $records[] = [
-    //                 'hubspot_id'         => $contact['id'],
-    //                 'ad_channel'              => $contact['properties']['ad_channel'] ?? null,
-    //                 'business_unit'          => $contact['properties']['business_unit'] ?? null,
-    //                 'campaign_group'           => $contact['properties']['campaign_group'] ?? null,
-    //                 'country'             => $contact['properties']['country'] ?? null,
-    //                 'country_from' => $contact['properties']['country_from'] ?? null,
-    //                 'your_specialization'   => $contact['properties']['your_specialization'] ?? null,
-    //             ];
+    //                 // Build core record from HubSpot contact
+    //                 $record = [
+    //                     'hubspot_id'             => $hubspotId,
+    //                     'contact_source'         => $props['ad_channel'] ?? null,
+    //                     'contact_email'          => $props['email'] ?? null,
+    //                     'contact_lastname'       => $props['lastname'] ?? null,
+    //                     'contact_firstname'      => $props['firstname'] ?? null,
+    //                     'contact_mobile'         => $props['phone'] ?? null,
+    //                     'linkedin_id'            => $props['hs_linkedin_url'] ?? null,
+    //                     'passport_full_name'     => $props['full_name_of_student__as_in_nric_'] ?? null,
+    //                     'nric_id'                => $props['nric_number__for_sc_pr_'] ?? null,
+    //                     'passport_id'            => $props['passport_number___fin__indicate_n_a_if_not_applicable___sgret_'] ?? null,
+    //                     'date_of_birth'          => $props['age__sgret_'] ?? null,
+    //                     'race'                   => $props['race'] ?? null,
+    //                     'nationality'            => $props['nationality'] ?? null,
+    //                     'parent_name'            => $props['parent_guardian_contact_no___for_student_under_18_years_old__enter_n_a_if_not_applicable_'] ?? null,
+    //                     'highest_qualification'  => $props['highest_level_of_education'] ?? null,
+    //                     'business_unit'          => $props['business_unit'] ?? null,
+    //                     'work_experience_yrs'    => $props['how_many_years_of_work_experience_do_you_have'] ?? null,
+    //                     'current_company'        => $props['current_or_last_company'] ?? null,
+    //                     'company_classification' => $props['company_type'] ?? null,
+    //                     'current_job_role'       => $props['jobtitle'] ?? null,
+    //                 ];
+
+    //                 // Insert ContactProfile
+    //                 $contactProfile = ContactProfile::updateOrCreate(
+    //                     ['hubspot_id' => $hubspotId],
+    //                     $record
+    //                 );
+
+    //                 if (!$contactProfile->contact_id) {
+    //                     Log::error("ContactProfile insertion failed", [
+    //                         'hubspot_id' => $hubspotId
+    //                     ]);
+    //                     continue;
+    //                 }
+
+    //                 Log::info("Inserted ContactProfile", [
+    //                     'hubspot_id' => $hubspotId,
+    //                     'contact_id' => $contactProfile->contact_id
+    //                 ]);
+
+    //                 // Insert/Update ContactEngagementStatus
+    //                 $engagementStatus = ContactEngagementStatus::updateOrCreate(
+    //                     ['contact_id' => $contactProfile->contact_id],
+    //                     [
+    //                         'contact_mgr'       => $props["account_manager__hed_"] ?? null,
+    //                         'contact_exec'      => $props["hubspot_owner_id"] ?? null,
+    //                         'contact_status'    => $props["contact_status"] ?? null,
+    //                         'cilos_stage'       => $props["lifecyclestage"] ?? null,
+    //                         'cilos_substage'    => $props["sales_lifecycle_l2"] ?? null,
+    //                         'product_interest'  => $props["which_course_are_you_interested_in_"] ?? null,
+    //                         'lead_status'       => $props["hs_lead_status"] ?? null,
+    //                     ]
+    //                 );
+
+    //                 Log::info("Inserted ContactEngagementStatus", [
+    //                     'contact_id' => $contactProfile->contact_id,
+    //                     'engagement_id' => $engagementStatus->contact_engagement_status_id
+    //                 ]);
+
+    //                 // Insert/Update ContactActivitiesStatus
+    //                 $activityStatus = ContactActivitiesStatus::updateOrCreate(
+    //                     ['contact_id' => $contactProfile->contact_id],
+    //                     [
+    //                         'last_messaging_date' => $props["notes_last_updated"] ?? null,
+    //                     ]
+    //                 );
+
+    //                 Log::info("Inserted ContactActivitiesStatus", [
+    //                     'contact_id' => $contactProfile->contact_id,
+    //                     'activity_id' => $activityStatus->contact_activities_status_id
+    //                 ]);
+
+    //                 // Final enrichment of ContactProfile
+    //                 $engagementData = [
+    //                     'account_manager_hed_'                => $engagementStatus->contact_mgr,
+    //                     'hubspot_owner_id'                    => $engagementStatus->contact_exec,
+    //                     'contact_status'                      => $engagementStatus->contact_status,
+    //                     'lifecyclestage'                      => $engagementStatus->cilos_stage,
+    //                     'sales_lifecycle_l2'                  => $engagementStatus->cilos_substage,
+    //                     'which_course_are_you_interested_in_' => $engagementStatus->product_interest,
+    //                     'hs_lead_status'                      => $engagementStatus->hs_lead_status,
+    //                 ];
+
+    //                 $activityData = [
+    //                     'last_messaging_date' => $activityStatus->last_messaging_date,
+    //                 ];
+
+    //                 ContactProfile::updateOrCreate(
+    //                     ['hubspot_id' => $hubspotId],
+    //                     array_merge($record, $engagementData, $activityData)
+    //                 );
+    //             } catch (\Exception $e) {
+    //                 Log::error("Error processing contact", [
+    //                     'hubspot_id' => $contact['id'] ?? null,
+    //                     'error'      => $e->getMessage(),
+    //                     'trace'      => $e->getTraceAsString()
+    //                 ]);
+    //                 continue;
+    //             }
     //         }
-
-    //         // Use upsert to handle duplicates
-    //         // Use upsert to handle duplicates
-    //         DB::table('hubspot_contacts_v2')->upsert(
-    //             $records,
-    //             ['hubspot_id'], // Unique key to check for existing records
-    //             [
-    //                 'ad_channel',
-    //                 'business_unit',
-    //                 'campaign_group',
-    //                 'country',
-    //                 'country_from', // ✅ Corrected from country__from_
-    //                 'your_specialization'
-    //             ]
-    //         );
-
-
-    //         Log::info("Inserted batch of " . count($records) . " contacts");
     //     }
     // }
+
+    /**
+     * Process a batch of contacts by chunks
+     */
+    private function processContactsBatch($contacts, $chunkSize = 1000)
+    {
+        $chunks = array_chunk($contacts, $chunkSize);
+        Log::info("Processing contact batch", [
+            'contactCount' => count($contacts),
+            'chunks'       => count($chunks),
+            'chunkSize'    => $chunkSize
+        ]);
+
+        foreach ($chunks as $chunkIndex => $chunk) {
+            $records = [];
+
+            foreach ($chunk as $contact) {
+                try {
+                    if (!isset($contact['id'], $contact['properties']) || !is_array($contact['properties'])) {
+                        Log::warning('Skipping malformed contact', ['contact' => $contact]);
+                        continue;
+                    }
+
+                    $properties = $contact['properties'];
+
+                    $records[] = [
+                        'hubspot_id'             => $contact['id'],
+                        'contact_source'         => $properties['ad_channel'] ?? null,
+                        'contact_email'          => $properties['email'] ?? null,
+                        'contact_lastname'       => $properties['lastname'] ?? null,
+                        'contact_firstname'      => $properties['firstname'] ?? null,
+                        'contact_mobile'         => $properties['phone'] ?? null,
+                        'linkedin_id'            => $properties['linkedin_profile'] ?? null,
+                        //'updated_linkedin_id'    => $properties['hs_linkedin_url'] ?? null,
+                        'passport_full_name'     => $properties['full_name_of_student__as_in_nric_'] ?? null,
+                        'nric_id'                => $properties['nric_number__for_sc_pr_'] ?? null,
+                        'passport_id'            => $properties['passport_number___fin__indicate_n_a_if_not_applicable___sgret_'] ?? null,
+                        'date_of_birth'          => $properties['age__sgret_'] ?? null,
+                        'race'                   => $properties['race'] ?? null,
+                        'nationality'            => $properties['nationality'] ?? null,
+                        'parent_name'            => $properties['parent_guardian_contact_no___for_student_under_18_years_old__enter_n_a_if_not_applicable_'] ?? null,
+                        'parent_email_id'        => $properties['parent_guardian_email'] ?? null,
+                        'highest_qualification'  => $properties['highest_level_of_education'] ?? null,
+                        'business_unit'          => $properties['business_unit'] ?? null,
+                        'work_experience_yrs'    => $properties['how_many_years_of_work_experience_do_you_have'] ?? null,
+                        'current_company'        => $properties['current_or_last_company'] ?? null,
+                        'company_classification' => $properties['company_type'] ?? null,
+                        'current_job_role'       => $properties['jobtitle'] ?? null,
+                        'contact_mgr'            => $properties['account_manager__hed_'] ?? null,
+                        'contact_exec'           => $properties['hubspot_owner_id'] ?? null,
+                        'contact_status'         => $properties['contact_status'] ?? null,
+                        'cilos_stage'            => $properties['lifecyclestage'] ?? null,
+                        'cilos_substage'         => $properties['sales_lifecycle_l2'] ?? null,
+                        'lead_status'            => $properties['hs_lead_status'] ?? null,
+                        'product_interest'       => $properties['which_course_are_you_interested_in_'] ?? null,
+                        'last_messaging_date'    => $properties['notes_last_updated'] ?? null,
+                        'hubspot_created_at'     => $properties['createdate'] ?? null,
+                        'hubspot_updated_at'     => $properties['lastmodifieddate'] ?? null,
+                        'created_at'             => now(),
+                        'updated_at'             => now(),
+                    ];
+                } catch (\Throwable $e) {
+                    Log::error('Error processing contact', [
+                        'message' => $e->getMessage(),
+                        'contact' => $contact
+                    ]);
+                }
+            }
+
+            // Sub-batch insert to stay under MySQL placeholder limit
+            $safeBatchSize = 500; // 500 rows * 28 cols = 14,000 placeholders
+            $safeChunks = array_chunk($records, $safeBatchSize);
+
+            foreach ($safeChunks as $subIndex => $safeChunk) {
+                try {
+                    DB::table('hubpsot_contact_profile_2nd_copy')->upsert(
+                        $safeChunk,
+                        ['hubspot_id'],
+                        [
+                            'contact_source',
+                            'contact_email',
+                            'contact_lastname',
+                            'contact_firstname',
+                            'contact_mobile',
+                            'linkedin_id',
+                            //'updated_linkedin_id',
+                            'passport_full_name',
+                            'nric_id',
+                            'passport_id',
+                            'date_of_birth',
+                            'race',
+                            'nationality',
+                            'parent_name',
+                            'parent_email_id',
+                            'highest_qualification',
+                            'business_unit',
+                            'work_experience_yrs',
+                            'current_company',
+                            'company_classification',
+                            'current_job_role',
+                            'contact_mgr',
+                            'contact_exec',
+                            'contact_status',
+                            'cilos_stage',
+                            'cilos_substage',
+                            'lead_status',
+                            'product_interest',
+                            'last_messaging_date',
+                            'updated_at',
+                            'hubspot_created_at',
+                            'hubspot_updated_at',
+                        ]
+                    );
+                } catch (\Throwable $e) {
+                    Log::error("Failed inserting sub-batch {$chunkIndex}.{$subIndex}", [
+                        'message' => $e->getMessage(),
+                        'records' => $safeChunk
+                    ]);
+                }
+            }
+        }
+    }
 
     public function cancelSync()
     {
@@ -881,67 +932,177 @@ class HubspotContactSyncController extends Controller
 
     public function exportActiveContacts()
     {
+        // Log::info("Generating XLSX and saving to storage");
+        // ini_set('memory_limit', '1024M'); // just in case
+
+        // $filePath = 'exports/contact-profile.xlsx';
+        // $saved = Excel::store(new ContactProfileExport, $filePath);
+
+        // if ($saved) {
+        //     Log::info("✅ Excel file saved to: storage/app/$filePath");
+        //     return redirect()->back()->with('success', 'Excel file saved!')->with('path', storage_path("app/$filePath"));
+        // } else {
+        //     Log::error("❌ Excel file NOT saved.");
+        //     return response()->json([
+        //         'error' => 'Excel file could not be saved.'
+        //     ], 500);
+        // }
+
         // Query contacts that are not marked as deleted.
-        $records = DB::table('hubspot_contacts')->get();
+        $records = DB::table('Hubspot_Contact_Profile')
+            ->where('temp_id', '<', 20001)
+            ->get();
 
-        // Define the CSV file path
-        $csvPath = storage_path('app/csv/active_hubspot_contacts.csv');
+        $headers = [
+            'Content-Type'        => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="active_hubspot_contacts.csv"',
+        ];
 
-        // Ensure the directory exists.
-        if (!file_exists(dirname($csvPath))) {
-            mkdir(dirname($csvPath), 0777, true);
-        }
+        $callback = function () use ($records) {
+            $out = fopen('php://output', 'w');
 
-        // Open the file for writing.
-        $file = fopen($csvPath, 'w');
-
-        // Write the CSV header.
-        fputcsv($file, [
-            'hubspot_id',
-            'email',
-            'firstname',
-            'lastname',
-            'gender',
-            'hubspot_created_at',
-            'hubspot_updated_at',
-            'phone',
-            'hubspot_owner_id',
-            'hs_lead_status',
-            'company',
-            'lifecyclestage',
-            'country',
-            'created_at',
-            'updated_at'
-        ]);
-
-        // Write each record as a row in the CSV.
-        foreach ($records as $record) {
-            fputcsv($file, [
-                $record->hubspot_id,
-                $record->email,
-                $record->firstname,
-                $record->lastname,
-                $record->gender,
-                $record->hubspot_created_at,
-                $record->hubspot_updated_at,
-                $record->phone,
-                $record->hubspot_owner_id,
-                $record->hs_lead_status,
-                $record->company,
-                $record->lifecyclestage,
-                $record->country,
-                $record->created_at,
-                $record->updated_at,
+            fputcsv($out, [
+                'contact_id',
+                'hubspot_id',
+                'contact_source',
+                'contact_email',
+                'contact_lastname',
+                'contact_firstname',
+                'contact_mobile',
+                'linkedin_id',
+                'facebook_id',
+                'passport_full_name',
+                'nric_id',
+                'passport_id',
+                'date_of_birth',
+                'race',
+                'nationality',
+                'parent_name',
+                'parent_email_id',
+                'parent_passport_id',
+                'highest_qualification',
+                'qualifications_list',
+                'business_unit',
+                'academic_aptitude',
+                'career_segment',
+                'work_experience_yrs',
+                'current_company',
+                'company_classification',
+                'current_job_role',
+                'job_classification',
+                'career_level',
+                'contact_cv',
+                'general_ksa_profile',
+                'digital_skills_profile',
+                'management_skills_profile',
+                'stem_skills',
+                'coding_skills',
+                'ai_skills',
+                'digital_marketing_skills',
+                'applications_skills',
+                'project_magt_skills',
+                'business_leader_skills',
+                'customer_magt_skills',
+                'contact_persona',
+                'sales_affiliate',
+                'contact_mgr',
+                'contact_exec',
+                'managed_contact_yn',
+                'contact_status',
+                'cilos_status',
+                'cilos_stage',
+                'cilos_substage',
+                'win_lost_reasons',
+                'proposed_solution',
+                'product_interest',
+                'last_messaging_date',
+                'last_messaging_contents',
+                'last_campaign_date',
+                'last_campaign_contents',
+                'last_digital_conversation_date',
+                'digital_conversation_contents',
+                'campaign_engagement_contents',
+                'messaging_engagement_score',
+                'messaging_sentiment_score',
+                'conversation_engagement_score',
+                'leads_score',
+                'leads_score_summary'
             ]);
-        }
 
-        fclose($file);
+            foreach ($records as $row) {
+                fputcsv($out, [
+                    $row->contact_id,
+                    $row->hubspot_id,
+                    $row->contact_source,
+                    $row->contact_email,
+                    $row->contact_lastname,
+                    $row->contact_firstname,
+                    $row->contact_mobile,
+                    $row->linkedin_id,
+                    $row->facebook_id,
+                    $row->passport_full_name,
+                    $row->nric_id,
+                    $row->passport_id,
+                    $row->date_of_birth,
+                    $row->race,
+                    $row->nationality,
+                    $row->parent_name,
+                    $row->parent_email_id,
+                    $row->parent_passport_id,
+                    $row->highest_qualification,
+                    $row->qualifications_list,
+                    $row->business_unit,
+                    $row->academic_aptitude,
+                    $row->career_segment,
+                    $row->work_experience_yrs,
+                    $row->current_company,
+                    $row->company_classification,
+                    $row->current_job_role,
+                    $row->job_classification,
+                    $row->career_level,
+                    $row->contact_cv,
+                    $row->general_ksa_profile,
+                    $row->digital_skills_profile,
+                    $row->management_skills_profile,
+                    $row->stem_skills,
+                    $row->coding_skills,
+                    $row->ai_skills,
+                    $row->digital_marketing_skills,
+                    $row->applications_skills,
+                    $row->project_magt_skills,
+                    $row->business_leader_skills,
+                    $row->customer_magt_skills,
+                    $row->contact_persona,
+                    $row->sales_affiliate,
+                    $row->contact_mgr,
+                    $row->contact_exec,
+                    $row->managed_contact_yn,
+                    $row->contact_status,
+                    $row->cilos_status,
+                    $row->cilos_stage,
+                    $row->cilos_substage,
+                    $row->win_lost_reasons,
+                    $row->proposed_solution,
+                    $row->product_interest,
+                    $row->last_messaging_date,
+                    $row->last_messaging_contents,
+                    $row->last_campaign_date,
+                    $row->last_campaign_contents,
+                    $row->last_digital_conversation_date,
+                    $row->digital_conversation_contents,
+                    $row->campaign_engagement_contents,
+                    $row->messaging_engagement_score,
+                    $row->messaging_sentiment_score,
+                    $row->conversation_engagement_score,
+                    $row->leads_score,
+                    $row->leads_score_summary
+                ]);
+            }
 
-        // Set headers to force download of the CSV file.
-        header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename=active_hubspot_contacts.csv');
-        readfile($csvPath);
-        exit;
+            fclose($out);
+        };
+
+        return Response::stream($callback, 200, $headers);
     }
 
     public function downloadCSV($id)
@@ -966,19 +1127,76 @@ class HubspotContactSyncController extends Controller
     {
         // Define the header row.
         $headers = [
+            //Contact Profile`
+            'contact_id',
             'hubspot_id',
-            'firstname',
-            'lastname',
-            'email',
-            'gender',
-            'createdate',
-            'lastmodifieddate',
-            'phone',
-            'hubspot_owner_id',
-            'hs_lead_status',
-            'company',
-            'lifecyclestage',
-            'country'
+            'contact_source',
+            'contact_email',
+            'contact_lastname',
+            'contact_firstname',
+            'contact_mobile',
+            'linkedin_id',
+            'facebook_id',
+            'passport_full_name',
+            'nric_id',
+            'passport_id',
+            'date_of_birth',
+            'race',
+            'nationality',
+            'parent_name',
+            'parent_email_id',
+            'parent_passport_id',
+            'highest_qualification',
+            'qualifications_list',
+            'business_unit',
+            'academic_aptitude',
+            'career_segment',
+            'work_experience_yrs',
+            'current_company',
+            'company_classification',
+            'current_job_role',
+            'job_classification',
+            'career_level',
+            'contact_cv',
+            'general_ksa_profile',
+            'digital_skills_profile',
+            'management_skills_profile',
+            'stem_skills',
+            'coding_skills',
+            'ai_skills',
+            'digital_marketing_skills',
+            'applications_skills',
+            'project_magt_skills',
+            'business_leader_skills',
+            'customer_magt_skills',
+            'contact_persona',
+            'sales_affiliate',
+
+            //Contact Engagement Status
+            'contact_mgr',
+            'contact_exec',
+            'managed_contact__yn',
+            'contact_status',
+            'cilos_status',
+            'cilos_stage',
+            'cilos_substage',
+            'win_lost_reasons',
+            'proposed_solution',
+            'product_interest',
+
+            //Contact Activities Status
+            'last_messaging_date',
+            'last_messaging_contents',
+            'last_campaign_date',
+            'last_campaign_contents',
+            'last_digital_conversation_date',
+            'digital_conversation_contents',
+            'campaign_engagement_contents',
+            'messaging_engagement_score',
+            'messaging_sentiment_score',
+            'conversation_engagement_score',
+            'leads_score',
+            'leads_score_summary'
         ];
 
         // Create an example row with sample data.

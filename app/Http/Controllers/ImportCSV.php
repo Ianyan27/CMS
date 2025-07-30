@@ -21,7 +21,7 @@ class ImportCSV extends Controller
 
         // Basic file validation
         $request->validate([
-            'file' => 'required|file|mimes:csv,txt|max:2048'
+            'file' => 'required|file|mimes:xslx,txt|max:2048'
         ]);
 
         $file = $request->file('file');
@@ -290,18 +290,71 @@ class ImportCSV extends Controller
 
         // Define columns that exist in hubspot_contacts
         $allowedColumns = [
-            'firstname',
-            'lastname',
-            'email',
-            'gender',
-            'hubspot_created_at',
-            'hubspot_updated_at',
-            'phone',
-            'hubspot_owner_id',
-            'hs_lead_status',
-            'company',
-            'lifecyclestage',
-            'country',
+            'hubspot_id',
+            'contact_source',
+            'contact_email',
+            'contact_lastname',
+            'contact_firstname',
+            'contact_mobile',
+            'linkedin_id',
+            'facebook_id',
+            'passport_full_name',
+            'nric_id',
+            'passport_id',
+            'date_of_birth',
+            'race',
+            'nationality',
+            'parent_name',
+            'parent_email_id',
+            'parent_passport_id',
+            'highest_qualification',
+            'qualifications_list',
+            'business_unit',
+            'academic_aptitude',
+            'career_segment',
+            'work_experience_yrs',
+            'current_company',
+            'company_classification',
+            'current_job_role',
+            'job_classification',
+            'career_level',
+            'contact_cv',
+            'general_ksa_profile',
+            'digital_skills_profile',
+            'management_skills_profile',
+            'stem_skills',
+            'coding_skills',
+            'ai_skills',
+            'digital_marketing_skills',
+            'applications_skills',
+            'project_magt_skills',
+            'business_leader_skills',
+            'customer_magt_skills',
+            'contact_persona',
+            'sales_affiliate',
+            'contact_mgr',
+            'contact_exec',
+            'managed_contact_yn',
+            'contact_status',
+            'cilos_status',
+            'cilos_stage',
+            'cilos_substage',
+            'win_lost_reasons',
+            'proposed_solution',
+            'product_interest',
+            'last_messaging_date',
+            'last_messaging_contents',
+            'last_campaign_date',
+            'last_campaign_contents',
+            'last_digital_conversation_date',
+            'digital_conversation_contents',
+            'campaign_engagement_contents',
+            'messaging_engagement_score',
+            'messaging_sentiment_score',
+            'conversation_engagement_score',
+            'leads_score',
+            'leads_score_summary'
+            
         ];
 
         // Filter each record to only these columns

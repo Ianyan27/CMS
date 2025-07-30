@@ -42,20 +42,6 @@ class HubspotService
                     ]
                 ]
             ],
-            // 'properties' => [
-            //     'firstname',
-            //     'lastname',
-            //     'gender',
-            //     'email',
-            //     'phone',
-            //     'hubspot_owner_id',
-            //     'hs_lead_status',
-            //     'company',
-            //     'lifecyclestage',
-            //     'country',
-            //     'createdate',
-            //     'lastmodifieddate
-            // '
             'properties' => [
                 "ad_channel",
                 "email",
@@ -63,13 +49,15 @@ class HubspotService
                 "firstname",
                 "phone",
                 "linkedin_profile",
+                "hs_linked_url", //hs_linked_url -> updated one?
                 "full_name_of_student__as_in_nric_",
                 "nric_number__for_sc_pr_",
                 "passport_number___fin__indicate_n_a_if_not_applicable___sgret_",
                 "age__sgret_",
                 "race",
                 "nationality",
-                "parent_guardian_contact_no___for_student_under_18_years_old__enter_n_a_if_not_applicable_",
+                "parent_guardian_contact_no___for_student_under_18_years_old__enter_n_a_if_not_applicable_", 
+                //Full Name of Parent/Guardian
                 "highest_level_of_education",
                 "business_unit",
                 "how_many_years_of_work_experience_do_you_have",
@@ -342,17 +330,16 @@ class HubspotService
         $retrievalWarningLimit = 9000; // Warning threshold
         $maxHubspotApiLimit = 10000; // Actual HubSpot API limit
 
-        Log::info("Starting to fetch contacts", [
+        Log::info("🔁 [HubSpot Sync] Starting contact fetch (createdate)", [
             'startDate' => $startDate,
             'endDate' => $endDate
         ]);
-
         // Continue fetching until no more results or we hit page limit
         while ($hasMore && $pageCount < $maxPages) {
             try {
                 // Respect API rate limits
                 if ($pageCount > 0) {
-                    usleep(100000); // 100ms delay
+                    usleep(100000); // Delay to avoid rate limit
                 }
 
                 $response = $this->searchContacts($startDate, $endDate, $batchSize, $after);
@@ -360,21 +347,31 @@ class HubspotService
                 if (isset($response['results']) && !empty($response['results'])) {
                     $contacts = array_merge($contacts, $response['results']);
 
-                    // Check pagination
-                    if (isset($response['paging']) && isset($response['paging']['next']['after'])) {
+                    Log::info("📦 [HubSpot Sync] Fetched page {$pageCount}", [
+                        'pageCount' => $pageCount,
+                        'pageSize' => count($response['results']),
+                        'totalSoFar' => count($contacts)
+                    ]);
+
+                    // Handle pagination
+                    if (isset($response['paging']['next']['after'])) {
                         $after = $response['paging']['next']['after'];
                     } else {
                         $hasMore = false;
                     }
 
-                    // Warn when approaching HubSpot's limit
                     if (count($contacts) >= $retrievalWarningLimit && count($contacts) < $maxHubspotApiLimit) {
-                        Log::warning("Approaching HubSpot API limit with " . count($contacts) . " contacts retrieved");
+                        Log::warning("⚠️ Approaching HubSpot 10k contact cap", [
+                            'retrieved' => count($contacts)
+                        ]);
                     }
 
-                    // If we've hit HubSpot's API limit, we need to stop and warn
                     if (count($contacts) >= $maxHubspotApiLimit) {
-                        Log::warning("Reached HubSpot's API limit of 10,000 contacts. The current time window is too large and should be reduced.");
+                        Log::warning("🚫 Hit HubSpot 10,000 contact limit. This time window is too large!", [
+                            'retrieved' => count($contacts),
+                            'startDate' => $startDate,
+                            'endDate' => $endDate
+                        ]);
                         $hasMore = false;
                         break;
                     }
@@ -384,22 +381,25 @@ class HubspotService
 
                 $pageCount++;
             } catch (\Exception $e) {
-                Log::error("Error fetching contacts", [
+                Log::error("❌ Error during HubSpot sync fetch", [
                     'error' => $e->getMessage(),
                     'page' => $pageCount
                 ]);
 
-                // If we have some contacts, return them instead of failing completely
                 if (count($contacts) > 0) {
                     $hasMore = false;
                 } else {
-                    // If no contacts were retrieved, throw the exception
                     throw $e;
                 }
             }
         }
 
-        Log::info("Retrieved " . count($contacts) . " contacts");
+        Log::info("✅ [HubSpot Sync] Finished fetching contacts", [
+            'totalRetrieved' => count($contacts),
+            'startDate' => $startDate,
+            'endDate' => $endDate
+        ]);
+
         return $contacts;
     }
 
@@ -408,7 +408,7 @@ class HubspotService
      */
     public function getSyncStatus($entityType = 'contacts')
     {
-        return HubspotSyncStatus::firstOrCreate(
+        return HubspotSyncStatus::firstOrCreate( 
             ['entity_type' => $entityType],
             [
                 'last_sync_timestamp' => null,
